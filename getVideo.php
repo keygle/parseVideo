@@ -17,7 +17,8 @@ include_once "../xhprof/xhprof_lib/utils/xhprof_runs.php";
 //xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);  //同时分析CPU和Mem的开销
 
 //$url = "http://v.qq.com/cover/y/ypq1qwp0ktzusj9/h00132shwru.html";
-$url = "http://v.youku.com/v_show/id_XNzM0MzEyNDY0.html";
+// $url = "http://v.youku.com/v_show/id_XNzM0MzEyNDY0.html";
+$url = "http://www.iqiyi.com/v_19rrnbyreg.html";
 //$url = $_GET['url'];>
 debug($url);
 
