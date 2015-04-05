@@ -145,8 +145,8 @@ def analyse_json(json_obj, tvid):
     
     server_time = time_data['t']
     
-    urls_data = {}
     data = {}
+    data['video'] = []
     
     # check info
     if len(vs) < 1:	# failed
@@ -181,23 +181,25 @@ def analyse_json(json_obj, tvid):
             
             urls.append(final_url)
         
+        one = {}
+        one['url'] = get_real_urls(urls)
         # get video format
         if bid == 96:
-            urls_data['fluent'] = get_real_urls(urls)
+            one['quality'] = '超低画质'
         elif bid == 1:
-            urls_data['normal'] = get_real_urls(urls)
+            one['quality'] = '低画质'
         elif bid == 2:
-            urls_data['high'] 	= get_real_urls(urls)
+            one['quality'] = '中等画质'
         elif bid == 3:
-            urls_data['super'] 	= get_real_urls(urls)
+            one['quality'] = '高画质'
         elif bid == 4:
-            urls_data['p720'] 	= get_real_urls(urls)
+            one['quality'] = '720p'
         elif bid == 5:
-            urls_data['p1080'] 	= get_real_urls(urls)
+            one['quality'] = '1080p'
         elif bid == 10:
-            urls_data['k4'] 	= get_real_urls(urls)
+            one['quality'] = '4k'
     # done
-    data['urls'] = urls_data
+    data['video'].append(one)
     return data
 
 # parse_flv2, a second method to parse flv format video
@@ -237,16 +239,16 @@ def parse(url):
     tvid = tvids[0][1]
     
     # parse video and return info
-    data = parse_flv2(vid, tvid)
+    info = parse_flv2(vid, tvid)
     
     # add video title
     try:
-        data['title'] = tvnames[0]
+        info['title'] = tvnames[0]
     except:
-        data['title'] = ''
+        info['title'] = ''
     
     # done
-    return data
+    return info
 
 
 # end iqiyi.py
