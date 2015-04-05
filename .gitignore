@@ -1,0 +1,5 @@
+# ignore python files
+
+*.py[cod]
+
+# end .gitignore

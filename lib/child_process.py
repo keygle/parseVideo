@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # child_process.py, part for evdh : EisF Video Download Helper, sceext <sceext@foxmail.com> 2009EisF2015, 2015.04 
 # child_process: like child_process module in node.js, used to create child processes. 
-# version 0.0.3.0 test201504051522 (public version)
+# version 0.0.3.1 test201504051525 (public version)
 # author sceext <sceext@foxmail.com> 2015.04 
 # copyright 2015 sceext 
 #
@@ -37,6 +37,7 @@ def run(args, shell=False):
 
 def get_output(args, shell=False):
     
+    PIPE = subprocess.PIPE
     p = subprocess.Popen(args, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     return p.communicate()
 
