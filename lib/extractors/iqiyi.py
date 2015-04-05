@@ -109,9 +109,17 @@ def get_real_urls(raw_urls):
     # NOTE should get many urls at the same time
     for i in raw_urls:
         json_raw = base.cget(i).decode('utf-8')
-        info = json.loads(json_raw)
         
-        real_urls.append(info['l'])
+        if json_raw:
+            info = json.loads(json_raw)
+            location = info['l']
+            
+            # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
+            loc = location.replace('/videosv0/', '/videos/v0/', 1)
+            
+            real_urls.append(info['l'])
+        else:
+            real_urls.append('')
     
     # done
     return real_urls
@@ -244,8 +252,8 @@ def parse(url):
     data = parse_flv2(vid, tvid)
     
     # add video title
-    if '1' in tvnames:
-        data['title'] = tvnames[1]
+    if '0' in tvnames:
+        data['title'] = tvnames[0]
     else:
         data['title'] = ''
     
