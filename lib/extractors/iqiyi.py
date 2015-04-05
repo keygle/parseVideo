@@ -76,7 +76,7 @@ def parse(url):
         tvid = ''
     
     # check vid and tvid
-    if (vid == '') || (tvid == ''):
+    if (vid == '') or (tvid == ''):
         # failed
         return None
     
