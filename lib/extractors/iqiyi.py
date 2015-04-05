@@ -40,8 +40,6 @@ from .. import base
 deadpara = 1000
 enc_key = 'ts56gh'
 
-# classes
-
 # functions
 
 # base functions
@@ -140,8 +138,6 @@ def analyse_json(json_obj, tvid):
     vs = json_obj['data']['vp']['tkl'][0]['vs']		# .data.vp.tkl[0].vs
     
     time_url = 'http://data.video.qiyi.com/t?tn=' + str(random_float())
-    # FIXME debug here
-    print('time_url ' + time_url)
     
     # get time data
     json_raw1 = base.cget(time_url).decode('utf-8')
@@ -210,9 +206,6 @@ def parse_flv2(vid, tvid):
     # make request api url
     api_url = make_request_url(vid, tvid)
     
-    # FIXME debug here
-    print(api_url + '\n')
-    
     # http get json info
     json_raw = base.cget(api_url).decode('utf-8')
     
@@ -240,8 +233,6 @@ def parse(url):
     tvnames = re.findall('data-videodownload-tvname="([^"]+)"', html)
     
     # FIXME debug here
-    print('vids ' + str(vids))
-    print('tvids ' + str(tvids))
     print('tvnames' + str(tvnames))
     
     # get vid and tvid
@@ -253,7 +244,7 @@ def parse(url):
     
     # add video title
     if '0' in tvnames:
-        data['title'] = tvnames[0]
+        data['title'] = tvnames[0][0]
     else:
         data['title'] = ''
     
