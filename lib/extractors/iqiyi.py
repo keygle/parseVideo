@@ -29,6 +29,9 @@
 # python3 modules
 import re
 import hashlib
+import random
+import math
+import json
 
 # parse_video modules
 from .. import base
@@ -45,8 +48,115 @@ enc_key = 'ts56gh'
 def md5_hash(string):
     return hashlib.md5(bytes(string, 'utf-8')).hexdigest()
 
+def calenc(tvid):
+    return md5_hash(enc_key + deadpara + tvid)
+
+def calauth_key(tvid):
+    return md5_hash('' + deadpara + tvid)
+
+def random_float(min=0, max=1):
+    return min + random.random() * (max - min)
+
+def calmd(t, fileid):
+    
+    l3 = ')(*&^flash@#$%a'
+    l4 = math.floor(t / 600)
+    
+    return md5_hash(l4 + l3 + fileid)
+
+def get_vrs_xor_code(a1, a2):
+    l3 = a2 %3
+    if l3 == 1:
+        return (a1 ^ 121)
+    elif:
+        return (a1 ^ 72)
+    else:
+        return (a1 ^ 103)
+
+def from_char_code(codes):
+    # NOTE this may be not complete
+    string = ''
+    
+    for i in codes:
+        string += chr(i)
+    
+    return string
+
+def get_vrs_encode_code(a1):
+    
+    l2 = ''
+    l3 = a1.split('-')
+    l4 = len(l3)
+    l5 = l4 - 1
+    
+    while l5 > 0:
+        l6_1 = int(l3[l4 - l5 - 1], 16)
+        l6 = get_vrs_xor_code(l6_1, l5)
+        
+        l2 = from_char_code(l6) + l2
+        
+        l5 -= 1
+    
+    return l2
+
 # parse function
+
+# make request api url
+def make_request_url(tvid):
+    api_url = 'http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c'
+    ap = '&tvId=' + tvid + '&vid=' + vid + '&vinfo=1&tm=' + deadpara
+    ap += '&enc=' + calenc(tvid) + '&qyid=08ca8cb480c0384cb5d3db068161f44f&&puid=&authKey='
+    ap += caluth_key(tvid) + '&tn=' + random_float()
+    
+    return api_url + ap
+
+def analyse_json(json_obj):
+    
+    vs = json_obj['data']['vp']['tkl'][0]['vs']		# .data.vp.tkl[0].vs
+    
+    time_url = 'http://data.video.qiyi.com/t?tn=' + random_float()
+    # get time data
+    content1, info_err = base.cget(time_url)
+    json_raw1 = content1.decode('utf-8')
+    time_data = json.loads(json_raw1)
+    
+    server_time = time_data['t']
+    
+    urls_data = []
+    data = []
+    
+    # check info
+    if (type(vs) != type([])) or (len(vs) < 1):	# failed
+        return None
+    
+    # get info
+    for i in vs:
+        # can not get 720p and 1080p video now
+        data['seconds'] = i['duration']
+        
+        pass
+    
+    pass
+
+# parse_flv2, a second method to parse flv format video
 def parse_flv2(vid, tvid):
+    
+    # make request api url
+    api_url = make_request_url(tvid)
+    
+    # http get json info
+    json_raw, info_err = base.cget(api_url)
+    json_text = json_raw.decode('utf-8')
+    
+    # FIXME debug here
+    print(json_text)
+    return
+    
+    # parse json string
+    json_obj = json.loads(json_text)
+    
+    # get info from json
+    info = analyse_json(json_obj)
     
     pass
 
