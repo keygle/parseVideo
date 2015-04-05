@@ -30,6 +30,7 @@
 import re
 
 # parse_video modules
+from . import dy_import
 
 # global vars
 
@@ -47,12 +48,16 @@ list_url_to = {
 
 # check support
 def check_url_support(url):
-    for p, m in list_url_to:
+    for p in list_url_to:
         # check match url
         ma = re.match(p, url)
         if ma:	# match this url
             # import this module
-            import_str = 'from .extractors import ' + m + ' as extractor'
+            m = list_url_to[p]
+            
+            # dynamic import extractor modules
+            extractor = dy_import.dimport(m, '.extractors')
+            
             # return it
             return extractor	# done
     # not supported url
