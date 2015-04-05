@@ -60,9 +60,9 @@ def random_float(min=0, max=1):
 def calmd(t, fileid):
     
     l3 = ')(*&^flash@#$%a'
-    l4 = math.floor(t / 600)
+    l4 = math.floor(float(t) / 600)
     
-    return md5_hash(l4 + l3 + fileid)
+    return md5_hash(str(l4) + l3 + fileid)
 
 def get_vrs_xor_code(a1, a2):
     l3 = a2 %3
@@ -76,6 +76,10 @@ def get_vrs_xor_code(a1, a2):
 def from_char_code(codes):
     # NOTE this may be not complete
     string = ''
+    
+    if type(codes) == type(0):
+        string += chr(codes)
+        return string
     
     for i in codes:
         string += chr(i)
@@ -110,13 +114,20 @@ def make_request_url(vid, tvid):
     
     return api_url + ap
 
-def analyse_json(json_obj):
+def analyse_json(json_obj, tvid):
     
     vs = json_obj['data']['vp']['tkl'][0]['vs']		# .data.vp.tkl[0].vs
     
-    time_url = 'http://data.video.qiyi.com/t?tn=' + random_float()
+    time_url = 'http://data.video.qiyi.com/t?tn=' + str(random_float())
+    # FIXME debug here
+    print('time_url ' + time_url)
+    
     # get time data
     json_raw1 = base.cget(time_url).decode('utf-8')
+    
+    # FIXME debug here
+    print('\n' + json_raw1)
+    
     time_data = json.loads(json_raw1)
     
     server_time = time_data['t']
@@ -146,7 +157,7 @@ def analyse_json(json_obj):
             sp = this_link.split('/')
             sp_length = len(sp)
             
-            fileid = sp[sp_length - 1].split(.)[0]
+            fileid = sp[sp_length - 1].split('.')[0]
             this_key = calmd(server_time, fileid)
             
             # generate video part file url
@@ -188,15 +199,14 @@ def parse_flv2(vid, tvid):
     # http get json info
     json_raw = base.cget(api_url).decode('utf-8')
     
-    # FIXME debug here
-    print(json_raw)
-    return
-    
     # parse json string
     json_obj = json.loads(json_raw)
     
     # get info from json
-    info = analyse_json(json_obj)
+    info = analyse_json(json_obj, tvid)
+    
+    # FIXME debug here
+    return info
     
     pass
 
