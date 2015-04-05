@@ -106,7 +106,7 @@ def make_request_url(vid, tvid):
     api_url = 'http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c'
     ap = '&tvId=' + tvid + '&vid=' + vid + '&vinfo=1&tm=' + str(deadpara)
     ap += '&enc=' + calenc(tvid) + '&qyid=08ca8cb480c0384cb5d3db068161f44f&&puid=&authKey='
-    ap += caluth_key(tvid) + '&tn=' + random_float()
+    ap += calauth_key(tvid) + '&tn=' + str(random_float())
     
     return api_url + ap
 
@@ -121,21 +121,60 @@ def analyse_json(json_obj):
     
     server_time = time_data['t']
     
-    urls_data = []
-    data = []
+    urls_data = {}
+    data = {}
     
     # check info
-    if (type(vs) != type([])) or (len(vs) < 1):	# failed
+    if len(vs) < 1:	# failed
         return None
     
     # get info
-    for i in vs:
+    for v in vs:
         # can not get 720p and 1080p video now
-        data['seconds'] = i['duration']
+        data['seconds'] = v['duration']
+        urls = []
         
-        pass
-    
-    pass
+        bid = v['bid']
+        
+        # get each file info
+        for f in v['fs']:
+            this_link = f['l']
+            
+            if (bid == 4) or (bid == 5) or (bid == 10):
+                this_link = get_vrs_encode_code(this_link)
+            
+            sp = this_link.split('/')
+            sp_length = len(sp)
+            
+            fileid = sp[sp_length - 1].split(.)[0]
+            this_key = calmd(server_time, fileid)
+            
+            # generate video part file url
+            this_link += '?ran=' + str(deadpara)
+            this_link += '&qyid=08ca8cb480c0384cb5d3db068161f44f&qypid=' + tvid + '_11&retry=1'
+            
+            final_url = 'http://data.video.qiyi.com/' + this_key + '/videos' + this_link
+            
+            urls.append(final_url)
+        
+        # get video format
+        if bid == 96:
+            urls_data['fluent'] = urls
+        elif bid == 1:
+            urls_data['normal'] = urls
+        elif bid == 2:
+            urls_data['high'] = urls
+        elif bid == 3:
+            urls_data['super'] = urls
+        elif bid == 4:
+            urls_data['p720'] = urls
+        elif bid == 5:
+            urls_data['p1080'] = urls
+        elif bid == 10:
+            urls_data['k4'] = urls
+    # done
+    data['urls'] = urls_data
+    return data
 
 # parse_flv2, a second method to parse flv format video
 def parse_flv2(vid, tvid):
@@ -186,6 +225,9 @@ def parse(url):
     
     # parse video and return info
     data = parse_flv2(vid, tvid)
+    
+    # FIXME debug here
+    return data
     
     # add video title
     if tvnames[1]:
