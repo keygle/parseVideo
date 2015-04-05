@@ -49,10 +49,10 @@ def md5_hash(string):
     return hashlib.md5(bytes(string, 'utf-8')).hexdigest()
 
 def calenc(tvid):
-    return md5_hash(enc_key + deadpara + tvid)
+    return md5_hash(enc_key + str(deadpara) + tvid)
 
 def calauth_key(tvid):
-    return md5_hash('' + deadpara + tvid)
+    return md5_hash('' + str(deadpara) + tvid)
 
 def random_float(min=0, max=1):
     return min + random.random() * (max - min)
@@ -102,9 +102,9 @@ def get_vrs_encode_code(a1):
 # parse function
 
 # make request api url
-def make_request_url(tvid):
+def make_request_url(vid, tvid):
     api_url = 'http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c'
-    ap = '&tvId=' + tvid + '&vid=' + vid + '&vinfo=1&tm=' + deadpara
+    ap = '&tvId=' + tvid + '&vid=' + vid + '&vinfo=1&tm=' + str(deadpara)
     ap += '&enc=' + calenc(tvid) + '&qyid=08ca8cb480c0384cb5d3db068161f44f&&puid=&authKey='
     ap += caluth_key(tvid) + '&tn=' + random_float()
     
@@ -141,7 +141,7 @@ def analyse_json(json_obj):
 def parse_flv2(vid, tvid):
     
     # make request api url
-    api_url = make_request_url(tvid)
+    api_url = make_request_url(vid, tvid)
     
     # FIXME debug here
     print(api_url + '\n')
@@ -165,8 +165,6 @@ def parse_flv2(vid, tvid):
 def parse(url):
     
     html = base.cget(url).decode('utf-8')
-    # FIXME debug here
-    return html
     
     vids = []
     tvids = []
@@ -180,21 +178,11 @@ def parse(url):
     # FIXME debug here
     print('vids ' + str(vids))
     print('tvids ' + str(tvids))
+    print('tvnames' + str(tvnames))
     
     # get vid and tvid
-    if vids[2]:
-        vid = vids[2]
-    else:
-        vid = ''
-    if tvids[2]:
-        tvid = tvids[2]
-    else:
-        tvid = ''
-    
-    # check vid and tvid
-    if (vid == '') or (tvid == ''):
-        # failed
-        return None
+    vid = vids[0][1]
+    tvid = tvids[0][1]
     
     # parse video and return info
     data = parse_flv2(vid, tvid)
