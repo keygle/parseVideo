@@ -29,14 +29,16 @@
 
 # python3 modules
 import sys
+import json
 
 # parse_video modules
 from lib import parser
 
 # functions
-def json_output(info_obj):
-    
-    pass
+def json_output(info_obj, fix_unicode=False):
+    text = json.dumps(info_obj, sort_keys=True, indent=4, ensure_ascii=fix_unicode)
+    # just print it
+    print(text)
 
 # main funciton
 def main():

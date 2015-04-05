@@ -232,9 +232,6 @@ def parse(url):
     tvids = re.findall('data-(player|drama)-tvid="([^"]+)"', html)
     tvnames = re.findall('data-videodownload-tvname="([^"]+)"', html)
     
-    # FIXME debug here
-    print('tvnames' + str(tvnames))
-    
     # get vid and tvid
     vid = vids[0][1]
     tvid = tvids[0][1]
