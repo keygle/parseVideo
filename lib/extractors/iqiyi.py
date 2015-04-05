@@ -68,7 +68,7 @@ def get_vrs_xor_code(a1, a2):
     l3 = a2 %3
     if l3 == 1:
         return (a1 ^ 121)
-    elif:
+    elif l3 == 2:
         return (a1 ^ 72)
     else:
         return (a1 ^ 103)
@@ -116,8 +116,7 @@ def analyse_json(json_obj):
     
     time_url = 'http://data.video.qiyi.com/t?tn=' + random_float()
     # get time data
-    content1, info_err = base.cget(time_url)
-    json_raw1 = content1.decode('utf-8')
+    json_raw1 = base.cget(time_url).decode('utf-8')
     time_data = json.loads(json_raw1)
     
     server_time = time_data['t']
@@ -144,16 +143,18 @@ def parse_flv2(vid, tvid):
     # make request api url
     api_url = make_request_url(tvid)
     
+    # FIXME debug here
+    print(api_url + '\n')
+    
     # http get json info
-    json_raw, info_err = base.cget(api_url)
-    json_text = json_raw.decode('utf-8')
+    json_raw = base.cget(api_url).decode('utf-8')
     
     # FIXME debug here
-    print(json_text)
+    print(json_raw)
     return
     
     # parse json string
-    json_obj = json.loads(json_text)
+    json_obj = json.loads(json_raw)
     
     # get info from json
     info = analyse_json(json_obj)
@@ -163,17 +164,22 @@ def parse_flv2(vid, tvid):
 # main entry function
 def parse(url):
     
-    html, err_info = base.cget(url)
-    html = html.decode('utf-8')
+    html = base.cget(url).decode('utf-8')
+    # FIXME debug here
+    return html
     
     vids = []
     tvids = []
     tvnames = []
     
     # use re to get info from html
-    vids = re.findall('#data-(player|drama)-videoid="([^"]+)"#iU', html)
-    tvids = re.findall('#data-(player|drama)-tvid="([^"]+)"#iU', html)
-    tvnames = re.findall('#data-videodownload-tvname="([^"]+)"#iU', html)
+    vids = re.findall('data-(player|drama)-videoid="([^"]+)"', html)
+    tvids = re.findall('data-(player|drama)-tvid="([^"]+)"', html)
+    tvnames = re.findall('data-videodownload-tvname="([^"]+)"', html)
+    
+    # FIXME debug here
+    print('vids ' + str(vids))
+    print('tvids ' + str(tvids))
     
     # get vid and tvid
     if vids[2]:
