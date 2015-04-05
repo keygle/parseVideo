@@ -103,6 +103,19 @@ def get_vrs_encode_code(a1):
     
     return l2
 
+def get_real_urls(raw_urls):
+    real_urls = []
+    
+    # NOTE should get many urls at the same time
+    for i in raw_urls:
+        json_raw = base.cget(i).decode('utf-8')
+        info = json.loads(json_raw)
+        
+        real_urls.append(info['l'])
+    
+    # done
+    return real_urls
+
 # parse function
 
 # make request api url
@@ -124,10 +137,6 @@ def analyse_json(json_obj, tvid):
     
     # get time data
     json_raw1 = base.cget(time_url).decode('utf-8')
-    
-    # FIXME debug here
-    print('\n' + json_raw1)
-    
     time_data = json.loads(json_raw1)
     
     server_time = time_data['t']
@@ -170,19 +179,19 @@ def analyse_json(json_obj, tvid):
         
         # get video format
         if bid == 96:
-            urls_data['fluent'] = urls
+            urls_data['fluent'] = get_real_urls(urls)
         elif bid == 1:
-            urls_data['normal'] = urls
+            urls_data['normal'] = get_real_urls(urls)
         elif bid == 2:
-            urls_data['high'] = urls
+            urls_data['high'] 	= get_real_urls(urls)
         elif bid == 3:
-            urls_data['super'] = urls
+            urls_data['super'] 	= get_real_urls(urls)
         elif bid == 4:
-            urls_data['p720'] = urls
+            urls_data['p720'] 	= get_real_urls(urls)
         elif bid == 5:
-            urls_data['p1080'] = urls
+            urls_data['p1080'] 	= get_real_urls(urls)
         elif bid == 10:
-            urls_data['k4'] = urls
+            urls_data['k4'] 	= get_real_urls(urls)
     # done
     data['urls'] = urls_data
     return data
@@ -205,10 +214,8 @@ def parse_flv2(vid, tvid):
     # get info from json
     info = analyse_json(json_obj, tvid)
     
-    # FIXME debug here
+    # done
     return info
-    
-    pass
 
 # main entry function
 def parse(url):
@@ -236,11 +243,8 @@ def parse(url):
     # parse video and return info
     data = parse_flv2(vid, tvid)
     
-    # FIXME debug here
-    return data
-    
     # add video title
-    if tvnames[1]:
+    if '1' in tvnames:
         data['title'] = tvnames[1]
     else:
         data['title'] = ''
