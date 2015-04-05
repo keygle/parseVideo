@@ -117,7 +117,7 @@ def get_real_urls(raw_urls):
             # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
             loc = location.replace('/videosv0/', '/videos/v0/', 1)
             
-            real_urls.append(info['l'])
+            real_urls.append(loc)
         else:
             real_urls.append('')
     
