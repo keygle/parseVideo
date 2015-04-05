@@ -198,8 +198,9 @@ def analyse_json(json_obj, tvid):
             one['quality'] = '1080p'
         elif bid == 10:
             one['quality'] = '4k'
+        # just add this video info
+        data['video'].append(one)
     # done
-    data['video'].append(one)
     return data
 
 # parse_flv2, a second method to parse flv format video
