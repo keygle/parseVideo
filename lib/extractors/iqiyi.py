@@ -155,7 +155,8 @@ def analyse_json(json_obj, tvid):
     # get info
     for v in vs:
         # can not get 720p and 1080p video now
-        data['seconds'] = v['duration']
+        if not 'time_s' in data:
+            data['time_s'] = v['duration']
         urls = []
         
         bid = v['bid']
