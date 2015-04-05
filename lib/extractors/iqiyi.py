@@ -243,9 +243,9 @@ def parse(url):
     data = parse_flv2(vid, tvid)
     
     # add video title
-    if 0 in tvnames:
+    try:
         data['title'] = tvnames[0]
-    else:
+    except:
         data['title'] = ''
     
     # done
