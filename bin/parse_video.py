@@ -32,7 +32,6 @@ import sys
 import json
 
 # parse_video modules
-from lib import parser
 
 # functions
 def json_output(info_obj, fix_unicode=False):
@@ -41,10 +40,13 @@ def json_output(info_obj, fix_unicode=False):
     print(text)
 
 # main funciton
-def main():
+def main(lib):
     
     # get command line input url
     url = sys.argv[1]
+    
+    # import parse_video modules
+    from lib import parser
     
     # parse
     info = parser.entry(url)
