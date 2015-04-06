@@ -165,8 +165,8 @@ def analyse_json(json_obj, tvid):
         # get each file info
         for f in v['fs']:
             # get part_size, and part_time_s
-            part_size.append(f['b'])
-            part_time_s.append(f['d'] / 1e3)
+            part_size = f['b']
+            part_time_s = f['d'] / 1e3
             
             # get video real url
             this_link = f['l']
