@@ -106,7 +106,8 @@ def get_real_urls(raw_urls):
     
     # NOTE should get many urls at the same time
     for i in raw_urls:
-        json_raw = base.cget(i).decode('utf-8')
+        url_to = i['url']
+        json_raw = base.cget(url_to).decode('utf-8')
         
         if json_raw:
             info = json.loads(json_raw)
@@ -115,12 +116,11 @@ def get_real_urls(raw_urls):
             # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
             loc = location.replace('/videosv0/', '/videos/v0/', 1)
             
-            real_urls.append(loc)
-        else:
-            real_urls.append('')
+            # just modify it
+            i['url'] = loc
     
     # done
-    return real_urls
+    return raw_urls
 
 # parse function
 
@@ -157,12 +157,18 @@ def analyse_json(json_obj, tvid):
         # can not get 720p and 1080p video now
         if not 'time_s' in data:
             data['time_s'] = v['duration']
-        urls = []
+        
+        files = []
         
         bid = v['bid']
         
         # get each file info
         for f in v['fs']:
+            # get part_size, and part_time_s
+            part_size.append(f['b'])
+            part_time_s.append(f['d'] / 1e3)
+            
+            # get video real url
             this_link = f['l']
             
             if (bid == 4) or (bid == 5) or (bid == 10):
@@ -180,10 +186,16 @@ def analyse_json(json_obj, tvid):
             
             final_url = 'http://data.video.qiyi.com/' + this_key + '/videos' + this_link
             
-            urls.append(final_url)
+            one_file = {}
+            one_file['url'] = final_url
+            one_file['size'] = part_size
+            one_file['time_s'] = part_time_s
+            
+            files.append(one_file)
         
         one = {}
-        one['url'] = get_real_urls(urls)
+        one['file'] = get_real_urls(files)
+        # add part size and part time_s
         # get video format
         if bid == 96:
             one['quality'] = '超低画质'
@@ -201,6 +213,8 @@ def analyse_json(json_obj, tvid):
             one['quality'] = '4k'
         # just add this video info
         data['video'].append(one)
+    # get video sub title
+    data['title'] = json_obj['data']['vi']['subt']
     # done
     return data
 
@@ -245,7 +259,7 @@ def parse(url):
     
     # add video title
     try:
-        info['title'] = tvnames[0]
+        info['title'] = tvnames[0] + '_' + info['title']
     except:
         info['title'] = ''
     
