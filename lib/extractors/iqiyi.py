@@ -195,22 +195,31 @@ def analyse_json(json_obj, tvid):
         
         one = {}
         one['file'] = get_real_urls(files)
-        # add part size and part time_s
+        # just set file format to flv
+        one['type'] = 'flv'
+        
         # get video format
         if bid == 96:
             one['quality'] = '超低画质'
+            one['hd'] = 0	# add a hd attribute
         elif bid == 1:
             one['quality'] = '低画质'
+            one['hd'] = 1
         elif bid == 2:
             one['quality'] = '中等画质'
+            one['hd'] = 2
         elif bid == 3:
             one['quality'] = '高画质'
+            one['hd'] = 3
         elif bid == 4:
             one['quality'] = '720p'
+            one['hd'] = 4
         elif bid == 5:
             one['quality'] = '1080p'
+            one['hd'] = 5
         elif bid == 10:
             one['quality'] = '4k'
+            one['hd'] = 8
         # just add this video info
         data['video'].append(one)
     # get video sub title
@@ -256,6 +265,9 @@ def parse(url):
     
     # parse video and return info
     info = parse_flv2(vid, tvid)
+    
+    # add more information
+    info['site'] = 'iqiyi'
     
     # add video title
     try:
