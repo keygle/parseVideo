@@ -73,7 +73,7 @@ def entry(url):
         return extractor.parse(url)
     else:
         # not supported url
-        print('ERROR: not supported this url "' + url + '" ! ')
+        raise Exception('ERROR: not supported this url "' + url + '" ! ')
 
 
 # end parser.py
