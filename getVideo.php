@@ -8,8 +8,8 @@ function debug($url){
     print_r($result);
 }
 
-include_once "../xhprof/xhprof_lib/utils/xhprof_lib.php";
-include_once "../xhprof/xhprof_lib/utils/xhprof_runs.php";
+//include_once "../xhprof/xhprof_lib/utils/xhprof_lib.php";
+//include_once "../xhprof/xhprof_lib/utils/xhprof_runs.php";
 
 
 // start profiling
@@ -19,7 +19,7 @@ include_once "../xhprof/xhprof_lib/utils/xhprof_runs.php";
 //$url = "http://v.qq.com/cover/y/ypq1qwp0ktzusj9/h00132shwru.html";
 // $url = "http://v.youku.com/v_show/id_XNzM0MzEyNDY0.html";
 $url = "http://www.iqiyi.com/v_19rrnbyreg.html";
-//$url = $_GET['url'];>
+//$url = $_GET['url'];
 debug($url);
 
 /*
