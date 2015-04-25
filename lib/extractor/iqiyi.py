@@ -107,16 +107,19 @@ def get_real_urls(raw_urls):
     
     real_urls = []
     
-    # NOTE should get many urls at the same time
+    # NOTE now get many urls at the same time
+    pool_size = 10
+    # make args
+    url_list = []
     for i in raw_urls:
-        # FIXME debug here
-        print(' :: debug got here 2')
-        
-        url_to = i['url']
-        # FIXME debug here
-        print(url_to)
-        
-        json_raw = base.cget(url_to).decode('utf-8')
+        url_list.append(i['url'])
+    # get output
+    output = base.cget_pool(raw_urls, pool_size)
+    # process output
+    # FIXME debug here
+    print(' :: debug got here 2')
+    for i in output:
+        json_raw = i.decode('utf-8')
         
         if json_raw:
             info = json.loads(json_raw)

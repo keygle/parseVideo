@@ -31,24 +31,52 @@ from . import child_process
 
 USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0'
 
+CURL_BIN = 'curl'
+
 # classes
 
 # functions
+
+# just make cget arg and return it
+def _cget_make_arg(url, user_agent, referer):
+    # check user_agent
+    if user_agent == None:
+        user_agent = USER_AGENT
+    # do make it
+    if referer != None:
+        curl_args = [CURL_BIN, '--user-agent', user_agent, '--referer', referer, url]
+    else:
+        curl_args = [CURL_BIN, '--user-agent', user_agent, url]
+    # done
+    return curl_args
 
 # cget, http get by curl
 def cget(url, user_agent=USER_AGENT, referer=None):
     
     # make curl args
-    if referer != None:
-        curl_args = ['curl', '--user-agent', user_agent, '--referer', referer, url]
-    else:
-        curl_args = ['curl', '--user-agent', user_agent, url]
+    curl_args = _cget_make_arg(url, user_agent, referer)
     # just call curl
     stdout, stderr = child_process.get_output(curl_args)
     
     # done
     return stdout
 
+# use sub process pool to cget, cget many urls at the same time
+def cget_pool(url_list, user_agent=None, referer=None, pool_size=4):
+    
+    # make args_list
+    args_list = []
+    for i in url_list:
+        args = _cget_make_arg(i, user_agent, referer)
+        args_list.append(args)
+    # start pool
+    tmp = child_process.get_output_pool(args_list, pool_size)
+    # make stdout output
+    output = []
+    for i in tmp:
+        output.append(i[0])
+    # done
+    return output
 
 # end base.py
 

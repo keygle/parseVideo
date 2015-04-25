@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # child_process.py, part for evdh : EisF Video Download Helper, sceext <sceext@foxmail.com> 2009EisF2015, 2015.04 
 # child_process: like child_process module in node.js, used to create child processes. 
-# version 0.0.3.1 test201504051525 (public version)
+# version 0.0.4.0 test201504251251 (public version)
 # author sceext <sceext@foxmail.com> 2015.04 
 # copyright 2015 sceext 
 #
@@ -27,6 +27,7 @@
 
 # require import modules
 import subprocess
+import multiprocessing
 
 # functions
 
@@ -41,6 +42,24 @@ def get_output(args, shell=False):
     p = subprocess.Popen(args, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     return p.communicate()
 
+# use multiprocessing, run many process at the same time
+def get_output_pool(args_list, pool_size=4):
+    
+    pool = multiprocessing.Pool(processes=pool_size, initializer=pool_start_process)
+    pool_output = pool.map(pool_do_sub, args_list)
+    
+    pool.close()
+    pool.join()
+    
+    # done
+    return pool_output
+
+def pool_do_sub(args):
+    return get_output(args)
+
+def pool_start_process():	# for debug
+    # FIXME debug here
+    print('start ' + multiprocessing.current_process().name)
 
 # end child_process.py
 
