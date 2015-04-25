@@ -56,7 +56,7 @@ def check_url_support(url):
             m = list_url_to[p]
             
             # dynamic import extractor modules
-            extractor = dy_import.dimport(m, 'lib.extractors')
+            extractor = dy_import.dimport(m, 'lib.extractor')
             
             # return it
             return extractor	# done

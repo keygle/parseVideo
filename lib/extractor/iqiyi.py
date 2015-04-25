@@ -102,11 +102,20 @@ def get_vrs_encode_code(a1):
     return l2
 
 def get_real_urls(raw_urls):
+    # FIXME debug here
+    print(' :: debug got here 1')
+    
     real_urls = []
     
     # NOTE should get many urls at the same time
     for i in raw_urls:
+        # FIXME debug here
+        print(' :: debug got here 2')
+        
         url_to = i['url']
+        # FIXME debug here
+        print(url_to)
+        
         json_raw = base.cget(url_to).decode('utf-8')
         
         if json_raw:
