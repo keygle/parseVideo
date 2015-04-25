@@ -116,9 +116,10 @@ def get_real_urls(info0):
     # use pool to many cget at the same time
     # NOTE now get many urls at the same time
     
-    pool_size = 20
+    pool_size = 50
+    max_time = 60
     # get output
-    output = base.cget_pool(raw_urls, pool_size=pool_size)
+    output = base.cget_pool(raw_urls, pool_size=pool_size, max_time=max_time)
     # process output
     
     # get real urls

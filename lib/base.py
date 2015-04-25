@@ -39,15 +39,22 @@ CURL_BIN = 'curl'
 # functions
 
 # just make cget arg and return it
-def _cget_make_arg(url, user_agent, referer):
+def _cget_make_arg(url, user_agent, referer, max_time=0):
     # check user_agent
     if user_agent == None:
         user_agent = USER_AGENT
     # do make it
+    curl_args = [CURL_BIN, '--user-agent', user_agent]
+    # add max_time
+    if max_time > 0:
+        curl_args.append('--max-time')
+        curl_args.append(str(max_time))
+    # add referer
     if referer != None:
-        curl_args = [CURL_BIN, '--user-agent', user_agent, '--referer', referer, url]
-    else:
-        curl_args = [CURL_BIN, '--user-agent', user_agent, url]
+        curl_args.append('--referer')
+        curl_args.append(referer)
+    # add url
+    curl_args.append(url)
     # done
     return curl_args
 
@@ -63,12 +70,12 @@ def cget(url, user_agent=USER_AGENT, referer=None):
     return stdout
 
 # use sub process pool to cget, cget many urls at the same time
-def cget_pool(url_list, user_agent=None, referer=None, pool_size=4):
+def cget_pool(url_list, user_agent=None, referer=None, pool_size=4, max_time=0):
     
     # make args_list
     args_list = []
     for i in url_list:
-        args = _cget_make_arg(i, user_agent, referer)
+        args = _cget_make_arg(i, user_agent, referer, max_time)
         args_list.append(args)
     # start pool
     tmp = child_process.get_output_pool(args_list, pool_size)
