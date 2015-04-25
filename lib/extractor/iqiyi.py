@@ -109,15 +109,16 @@ def get_real_urls(info0):
         for f in v['file']:
             url = f['url']
             # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
-            fixed = url.replace('/videosv0/', '/videos/v0/', 1)
+            #fixed = url.replace('/videosv0/', '/videos/v0/', 1)
+            fixed = url
             raw_urls.append(fixed)
     # get raw_urls done
     
     # use pool to many cget at the same time
     # NOTE now get many urls at the same time
     
-    pool_size = 50
-    max_time = 60
+    pool_size = 10
+    max_time = 30
     # get output
     output = base.cget_pool(raw_urls, pool_size=pool_size, max_time=max_time)
     # process output
