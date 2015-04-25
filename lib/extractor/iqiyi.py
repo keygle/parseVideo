@@ -101,23 +101,28 @@ def get_vrs_encode_code(a1):
     
     return l2
 
-def get_real_urls(raw_urls):
-    # FIXME debug here
-    print(' :: debug got here 1')
+# get_real_urls
+def get_real_urls(info0):
+    # get raw_urls
+    raw_urls = []
+    for v in info0['video']:
+        for f in v['file']:
+            url = f['url']
+            # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
+            fixed = url.replace('/videosv0/', '/videos/v0/', 1)
+            raw_urls.append(fixed)
+    # get raw_urls done
     
-    real_urls = []
-    
+    # use pool to many cget at the same time
     # NOTE now get many urls at the same time
-    pool_size = 10
-    # make args
-    url_list = []
-    for i in raw_urls:
-        url_list.append(i['url'])
+    
+    pool_size = 20
     # get output
-    output = base.cget_pool(raw_urls, pool_size)
+    output = base.cget_pool(raw_urls, pool_size=pool_size)
     # process output
-    # FIXME debug here
-    print(' :: debug got here 2')
+    
+    # get real urls
+    real_urls = []
     for i in output:
         json_raw = i.decode('utf-8')
         
@@ -128,11 +133,23 @@ def get_real_urls(raw_urls):
             # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
             loc = location.replace('/videosv0/', '/videos/v0/', 1)
             
-            # just modify it
-            i['url'] = loc
+            # just save it
+            real_urls.append(loc)
+        else:
+            real_urls.append('')
+    # get real urls done
+    
+    # just update urls
+    url_count = 0
+    for v in info0['video']:
+        for f in v['file']:
+            # just update it
+            f['url'] = real_urls[url_count]
+            url_count += 1
+    # update urls done
     
     # done
-    return raw_urls
+    return info0
 
 # parse function
 
@@ -206,7 +223,7 @@ def analyse_json(json_obj, tvid):
             files.append(one_file)
         
         one = {}
-        one['file'] = get_real_urls(files)
+        one['file'] = files
         # just set file format to flv
         one['type'] = 'flv'
         
@@ -253,6 +270,9 @@ def parse_flv2(vid, tvid):
     
     # get info from json
     info = analyse_json(json_obj, tvid)
+    
+    # get real urls
+    info = get_real_urls(info)
     
     # done
     return info
