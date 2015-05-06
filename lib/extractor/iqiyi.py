@@ -106,6 +106,9 @@ def get_real_urls(info0):
     # get raw_urls
     raw_urls = []
     for v in info0['video']:
+        # FIXME debug here
+        if v['hd'] < 5:
+            continue
         for f in v['file']:
             url = f['url']
             # NOTE fix iqiyi bug for /videosv0/ to /videos/v0/
@@ -117,8 +120,8 @@ def get_real_urls(info0):
     # use pool to many cget at the same time
     # NOTE now get many urls at the same time
     
-    pool_size = 10
-    max_time = 30
+    pool_size = 9
+    max_time = 240
     # get output
     output = base.cget_pool(raw_urls, pool_size=pool_size, max_time=max_time)
     # process output
@@ -144,6 +147,11 @@ def get_real_urls(info0):
     # just update urls
     url_count = 0
     for v in info0['video']:
+        # FIXME debug here
+        if v['hd'] < 5:
+            for f in v['file']:
+                f['url'] = ''
+            continue
         for f in v['file']:
             # just update it
             f['url'] = real_urls[url_count]
@@ -251,6 +259,9 @@ def analyse_json(json_obj, tvid):
         elif bid == 10:
             one['quality'] = '4k'
             one['hd'] = 8
+        # FIXME debug here
+        if one['hd'] < 4:
+            continue
         # just add this video info
         data['video'].append(one)
     # get video sub title
