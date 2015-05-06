@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.0.7.0 test201505061505
+# version 0.0.8.0 test201505061854
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -161,7 +161,7 @@ def add_more_info_one_video(one):
     return one
 
 # entry main function
-def parse(url_to, config=etc):
+def parse(url_to, config=etc, flag_restruct=True):
     # check input url
     extractor_name = url_to_extractor(url_to)
     if extractor_name == None:	# not support this url
@@ -176,7 +176,76 @@ def parse(url_to, config=etc):
     evinfo0['info']['extractor'] = extractor_name	# set in extractor_name
     evinfo = add_more_info(evinfo0)
     # done
+    if flag_restruct:
+        return restruct_evinfo(evinfo)
     return evinfo
+
+# restruct info, sort keys
+def restruct_evinfo(old):
+    evinfo = {}
+    evinfo['info'] = restruct_info(old['info'])
+    evinfo['video'] = restruct_info(old['video'])
+    # done
+    return evinfo
+
+def restruct_key(old, key_list):
+    obj = {}
+    for key in key_list:
+        obj[key] = old[key]
+    return obj
+
+def restruct_info(old):
+    key_list = [
+        'error', 
+        'info_version', 
+        'info_source', 
+        'extractor', 
+        'extractor_name', 
+        'title', 
+        'title_short', 
+        'title_no', 
+        'title_sub', 
+        'site', 
+        'site_name', 
+        'url', 
+    ]
+    return restruct_key(old, key_list)
+
+def restruct_video(old):
+    # first sort video by hd
+    old.sort(key=lambda item:item['hd'], reverse=False)
+    # restruct each video
+    video = []
+    for one in old:
+        video.append(restruct_one_video(one))
+    # done
+    return video
+
+def restruct_one_video(old):
+    key_list = [
+        'hd', 
+        'quality', 
+        'size_px', 
+        'size_byte', 
+        'time_s', 
+        'format', 
+    ]
+    one = restruct_key(old, key_list)
+    # restruct files
+    flist = old['file']
+    one['file'] = []
+    for f in flist:
+        one['file'].append(restruct_one_file(f))
+    # done
+    return one
+
+def restruct_one_file(old):
+    key_list = [
+        'size', 
+        'time_s', 
+        'url', 
+    ]
+    return restruct_key(old, key_list)
 
 # end entry.py
 
