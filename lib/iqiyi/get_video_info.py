@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.0.6.0 test201505061833
+# version 0.0.7.0 test201505062141
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -57,7 +57,10 @@ BID_TO_HD = {	# video bid to video hd
 
 def get_one_video_meta_data(meta_url):
     # load it
-    raw = base.get_html_content(meta_url)
+    try:
+        raw = base.get_html_content(meta_url)
+    except Exception as err:
+        raise Exception('parse_video: ERROR: iqiyi, get_one_video_meta_data http error', err)
     # parse xml
     root = etree.fromstring(raw)
     flv = root.find('flv')

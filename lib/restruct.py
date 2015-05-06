@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # restruct.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/restruct: restruct output evinfo, key sort. 
-# version 0.0.3.0 test201505061945
+# version 0.1.0.0 test201505061949
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #

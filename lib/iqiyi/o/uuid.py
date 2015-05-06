@@ -37,8 +37,11 @@ class UUIDManager(object):
     def _load_from_server(self):
         # make a url to request
         url_to = UUID_URL + '?tn=' + str(random.random())
-        # get uuid by http request
-        info = base.get_html_content(url_to)
+        try:
+            # get uuid by http request
+            info = base.get_html_content(url_to)
+        except Exception as err:
+            raise Exception('DEBUG: iqiyi, load uuid http error', err)
         # an example of info
         # 'var uid={"uid":"f21e1ae1c44f6c40f0674316ba7cf55b"};'
         # analyse received text

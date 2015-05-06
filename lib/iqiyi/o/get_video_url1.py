@@ -24,7 +24,10 @@ BEFORE_FINAL_URL = 'http://data.video.qiyi.com/'
 # functions
 def get_server_time():
     time_url = config.FIRST_DISPATCH_URL + '?tn=' + str(random.random())
-    info = base.get_json_info(time_url)
+    try:
+        info = base.get_json_info(time_url)
+    except Exception as err:
+        raise Exception('DEBUG: iqiyi, get_server_time http error', err)
     server_time = info['t']
     return server_time
 

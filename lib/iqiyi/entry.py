@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.0.6.0 test201505061812
+# version 0.0.7.0 test201505062138
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -61,8 +61,12 @@ RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
 RE_TVID = 'data-(player|drama)-tvid="([^"]+)"'
 
 def get_vid(url):
-    # get html text
-    html_text = base.get_html_content(url)
+    html_text = ''
+    try:
+        # get html text
+        html_text = base.get_html_content(url)
+    except Exception as err:
+        raise Exception('parse_video: ERROR: iqiyi, get_vid http error', err)
     # use re to get vid and tvid
     vids = re.findall(RE_VID, html_text)
     tvids = re.findall(RE_TVID, html_text)
