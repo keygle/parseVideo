@@ -21,8 +21,11 @@ def set_import(base0, flash0):
 # global vars
 BEFORE_FINAL_URL = 'http://data.video.qiyi.com/'
 
+GET_SERVER_TIME_RETRY = 5
+GET_SERVER_TIME_DEBUG = True
+
 # functions
-def get_server_time():
+def get_server_time0():
     time_url = config.FIRST_DISPATCH_URL + '?tn=' + str(random.random())
     try:
         info = base.get_json_info(time_url)
@@ -30,6 +33,23 @@ def get_server_time():
         raise Exception('DEBUG: iqiyi, get_server_time http error', err)
     server_time = info['t']
     return server_time
+
+# auto retry to get server_time 0
+def get_server_time():
+    retry = 0
+    while retry < GET_SERVER_TIME_RETRY:
+        try:
+            server_time = get_server_time0()
+            if GET_SERVER_TIME_DEBUG:
+                print('DEBUG: get_server_time ok at retry ' + str(retry))
+            return server_time
+        except Exception as err:
+            if retry < GET_SERVER_TIME_RETRY:
+                retry += 1
+                continue
+            else:
+                raise Exception('DEBUG: get_server_time retry time', retry, err)
+    # done
 
 def get_time_now():
     time_now = flash.getTimer()
