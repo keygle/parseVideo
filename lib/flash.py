@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # flash.py, part for parse_video : a fork from parseVideo. 
 # flash: support some flash functions (action script 3) in python3. 
-# version 0.0.5.0 test201505061452
+# version 0.1.0.0 test201505062235
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #

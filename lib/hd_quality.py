@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # hd_quality.py, part for parse_video : a fork from parseVideo. 
 # evparse:lib/hd_quality: definition of video hd and quality. 
-# version 0.0.6.0 test201505061454
+# version 0.1.0.0 test201505062235
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #

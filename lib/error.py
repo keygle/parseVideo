@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # error.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/error: parse_video error define. 
-# version 0.0.2.0 test201505061447
+# version 0.1.0.0 test201505062235
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #

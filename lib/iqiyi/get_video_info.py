@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.0.8.0 test201505062218
+# version 0.1.0.0 test201505062234
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -30,6 +30,9 @@
 import xml.etree.ElementTree as etree
 import math
 
+# FIXME import for debug
+import sys
+
 from .o import exports
 from .. import base
 
@@ -41,6 +44,8 @@ get_video_url = exports.get_video_url1
 
 POOL_SIZE_GET_VINFO = 4
 POOL_SIZE_GET_REAL_URL = 8
+
+GET_REAL_URL_RETRY = 5
 
 BID_TO_HD = {	# video bid to video hd
     '96' : -3, 	# topspeed, 	渣清
@@ -182,9 +187,25 @@ def get_real_urls(vinfo):
     # done
     return vinfo
 
+# auto retry get_one_real_url
 def get_one_real_url(raw_url):
-    info = base.get_json_info(raw_url)
-    return info['l']
+    retry = 0
+    while retry < GET_REAL_URL_RETRY:
+        try:
+            real = get_one_real_url0(raw_url)
+            return real
+        except Exception as err:
+            if retry >= GET_REAL_URL_RETRY:
+                print('DEBUG: retry ' + str(retry) + ' error ' + str(err), file=sys.stderr)
+                return raw_url
+    # done
+
+def get_one_real_url0(raw_url):
+    try:
+        info = base.get_json_info(raw_url)
+        return info['l']
+    except Exception as err:
+        raise Exception('iqiyi, get_one_real_url http error', raw_url, err)
 
 # end get_video_info.py
 
