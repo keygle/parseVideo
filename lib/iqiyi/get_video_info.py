@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.0.5.0 test201505061812
+# version 0.0.6.0 test201505061833
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -35,7 +35,7 @@ from .. import base
 
 from . import get_base_info
 
-get_video_url = exports.get_video_url
+get_video_url = exports.get_video_url1
 
 # global vars
 

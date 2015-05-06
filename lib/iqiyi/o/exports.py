@@ -12,7 +12,7 @@ from ... import base
 from . import key as key0
 from . import uuid as uuid0
 from . import remote_mixer
-from . import get_video_url as get_video_url0
+from . import get_video_url1 as get_video_url1_0
 
 # set in
 uuid0.set_import(base)
@@ -24,7 +24,7 @@ MixerRemote = remote_mixer.MixerRemote
 UUIDManager = uuid0.UUIDManager
 
 key = key0
-get_video_url = get_video_url0
+get_video_url1 = get_video_url1_0
 
 # end exports.py
 

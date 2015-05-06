@@ -17,10 +17,11 @@ def rotateRight(param1, param2):
     _loc5_ = 0
     while _loc5_ < param2:
         _loc3_ = _loc4_ & 1
-        _loc4_ = _loc4_ >>> 1	# TODO
+        # TODO
+        # _loc4_ = _loc4_ >>> 1
         _loc3_ = _loc3_ << 31
         _loc4_ = _loc4_ + _loc3_
-        _loc5_++
+        _loc5_ += 1
     return _loc4_
 
 def getVRSXORCode(param1, param2):

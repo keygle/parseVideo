@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.2.0 test201505061511
+# version 0.1.3.0 test201505061834
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -46,7 +46,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.1.2.0 test201505061511'
+PARSE_VIDEO_VERSION = 'parse_video version 0.1.3.0 test201505061834'
 
 etc = {}
 etc['flag_debug'] = False
@@ -120,7 +120,7 @@ def start_parse():
     try:
         evinfo = entry.parse(url_to)
         # just print info as json
-        t = json.dumps(evinfo, indent=4, sort_keys=True, ensure_ascii=etc['flag_fix_unicode'])
+        t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
         print(t)
     except error.NotSupportURLError as err:
         msg, url = err.args
