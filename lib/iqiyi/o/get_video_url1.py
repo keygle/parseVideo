@@ -6,6 +6,9 @@
 
 import random
 
+# FIXME import for DEBUG
+import sys
+
 from . import config
 from . import key
 
@@ -40,8 +43,8 @@ def get_server_time():
     while retry < GET_SERVER_TIME_RETRY:
         try:
             server_time = get_server_time0()
-            if GET_SERVER_TIME_DEBUG:
-                print('DEBUG: get_server_time ok at retry ' + str(retry))
+            if GET_SERVER_TIME_DEBUG and retry > 0:
+                print('DEBUG: get_server_time ok at retry ' + str(retry), file = sys.stderr)
             return server_time
         except Exception as err:
             if retry < GET_SERVER_TIME_RETRY:

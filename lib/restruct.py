@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # restruct.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/restruct: restruct output evinfo, key sort. 
-# version 0.1.0.0 test201505061949
+# version 0.1.1.0 test201505062207
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -56,7 +56,7 @@ def restruct_info(old):
 
 def restruct_video(old):
     # first sort video by hd
-    old.sort(key=lambda item:item['hd'], reverse=False)
+    old.sort(key=lambda item:item['hd'], reverse=True)
     # restruct each video
     video = []
     for one in old:

@@ -18,6 +18,8 @@ def set_import(base1):
 # global static config
 UUID_URL = 'http://data.video.qiyi.com/uid'
 
+LOAD_UUID_RETRY = 5
+
 # class
 
 class UUIDManager(object):
@@ -33,8 +35,20 @@ class UUIDManager(object):
         self.uuid = self._load_from_server()
         return self.uuid
     
-    # load a user uuid from iqiyi server
+    # auto retry load
     def _load_from_server(self):
+        retry = 0
+        while retry < LOAD_UUID_RETRY:
+            try:
+                uid = self._load_from_server0()
+                return uid
+            except Exception as err:
+                if retry >= LOAD_UUID_RETRY:
+                    raise Exception('DEBUG: load uuid retry' + str(retry) + ' failed', err)
+        # done
+    
+    # load a user uuid from iqiyi server
+    def _load_from_server0(self):
         # make a url to request
         url_to = UUID_URL + '?tn=' + str(random.random())
         try:
