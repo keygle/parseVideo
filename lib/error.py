@@ -1,8 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# parsev, part for parse_video : a fork from parseVideo. 
-# parsev: parse_video start script, should be run in python3. 
-# version 0.1.1.0 test201505061514
+# error.py, part for parse_video : a fork from parseVideo. 
+# parse_video:lib/error: parse_video error define. 
+# version 0.1.0.0 test201505062235
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -28,24 +27,14 @@
 
 # import
 
-from lib import entry
-from lib import error
-from bin import parse_video
+# class
 
-# main function
-def main():
-    # set import
-    parse_video.set_import(entry, error)
-    # just start it
-    return parse_video.main()
+class ParseVideoError(Exception):
+    pass
 
-# start from main
-if __name__ == '__main__':
-    ret = main()
-    if ret == None:
-        ret = 0
-    exit(ret)
+class NotSupportURLError(ParseVideoError):
+    pass
 
-# end parsev
+# end error.py
 
 

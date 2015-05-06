@@ -1,5 +1,5 @@
 :: README.md for parse_video <br />
-last update at `2015-04-06 11:26 GMT+0800 CST`
+last update at `2015-05-06 15:16 GMT+0800 CST`
 
 
 # parse_video : parseVideo in python3
@@ -20,7 +20,7 @@ You can try this:
 
 ## version
 
-parse_video version 0.1.0.0 test201504061123
+parse_video version 0.1.2.0 test201505061511
 
 
 :: end README.md

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-# base.py, part for parse_video
-# base: base part of parse_video. 
-# author sceext <sceext@foxmail.com> 2015.04 
-# copyright 2015 sceext 
+# base.py, part for parse_video : a fork from parseVideo. 
+# base: base part. 
+# version 0.1.0.0 test201505062234
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
 # please see README.md and LICENSE for more information. 
 #
-#    parse_video : parse videos from many websites. 
+#    parse_video : a fork from parseVideo. 
 #    Copyright (C) 2015 sceext <sceext@foxmail.com> 
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -24,67 +25,76 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# import modules
-from . import child_process
+# import
 
-# global config
+from urllib import request
+import re
+import json
+import multiprocessing
 
-#USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0'
+# global vars
+# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0'
-
-CURL_BIN = 'curl'
-
-# classes
 
 # functions
 
-# just make cget arg and return it
-def _cget_make_arg(url, user_agent, referer, max_time=0):
-    # check user_agent
-    if user_agent == None:
-        user_agent = USER_AGENT
-    # do make it
-    curl_args = [CURL_BIN, '--user-agent', user_agent]
-    # add max_time
-    if max_time > 0:
-        curl_args.append('--max-time')
-        curl_args.append(str(max_time))
-    # add referer
+def re1(re0, text):
+    result = re.findall(re0, text)
+    return result[0]
+
+# just return the content of the url as raw string
+# TODO this may be not stable
+def simple_http_get(url, user_agent, referer):
+    # make headers
+    header = {}
+    header['User-Agent'] = user_agent
     if referer != None:
-        curl_args.append('--referer')
-        curl_args.append(referer)
-    # add url
-    curl_args.append(url)
+        header['Referer'] = referer
+    # start a http request
+    req = request.Request(url, headers=header)
+    # res, response
+    res = request.urlopen(req)
+    data = res.read()
+    # check 'Content-Encoding'
+    try:
+        ch = re1(r'charset=([\w-]+)', res.getheader('Content-Type'))
+    except BaseException as err:
+        ch = 'utf-8'
+    if type(ch) != type(''):
+        ch = 'utf-8'
+    if ch == '':
+        ch = 'utf-8'
+    # just use this charset
+    content = data.decode(ch, 'ignore')
     # done
-    return curl_args
+    return content
 
-# cget, http get by curl
-def cget(url, user_agent=USER_AGENT, referer=None):
-    
-    # make curl args
-    curl_args = _cget_make_arg(url, user_agent, referer)
-    # just call curl
-    stdout, stderr = child_process.get_output(curl_args)
-    
-    # done
-    return stdout
+# return the html content of url as string
+def get_html_content(url, user_agent=USER_AGENT, referer=None):
+    # just use simple_http_get
+    return simple_http_get(url, user_agent=user_agent, referer=referer)
 
-# use sub process pool to cget, cget many urls at the same time
-def cget_pool(url_list, user_agent=None, referer=None, pool_size=4, max_time=0):
-    
-    # make args_list
-    args_list = []
-    for i in url_list:
-        args = _cget_make_arg(i, user_agent, referer, max_time)
-        args_list.append(args)
-    # start pool
-    tmp = child_process.get_output_pool(args_list, pool_size)
-    # make stdout output
-    output = []
-    for i in tmp:
-        output.append(i[0])
+# return object, the text of the url is json format
+def get_json_info(url, user_agent=USER_AGENT, referer=None):
+    # get text
+    text = simple_http_get(url, user_agent=user_agent, referer=referer)
+    # use json to decode it
+    info = json.loads(text)
     # done
-    return output
+    return info
+
+# map_do, do many tasks at the same time, use multiprocessing.Pool(), .map()
+def map_do(todo_list, worker, pool_size=4):
+    # create process pool
+    pool = multiprocessing.Pool(processes=pool_size)
+    pool_output = pool.map(worker, todo_list)
+    # do it
+    pool.close()
+    pool.join()
+    # done
+    return pool_output
+
+# class
 
 # end base.py
 
