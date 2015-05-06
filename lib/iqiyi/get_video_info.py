@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.0.7.0 test201505062141
+# version 0.0.8.0 test201505062218
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -159,9 +159,32 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # get video info, use base.map_do()
     vinfo = base.map_do(video_list, get_one_info, pool_size=POOL_SIZE_GET_VINFO)
-    # TODO get real urls
+    # get real urls
+    vinfo = get_real_urls(vinfo)
     # done
     return vinfo
+
+# get real urls
+def get_real_urls(vinfo):
+    # get raw urls
+    url_list = []
+    for v in vinfo:
+        for f in v['file']:
+            url_list.append(f['url'])
+    # base.map_do() get real urls
+    real = base.map_do(url_list, get_one_real_url, pool_size=POOL_SIZE_GET_REAL_URL)
+    # update real urls
+    url_i = 0
+    for v in vinfo:
+        for f in v['file']:
+            f['url'] = real[url_i]
+            url_i += 1
+    # done
+    return vinfo
+
+def get_one_real_url(raw_url):
+    info = base.get_json_info(raw_url)
+    return info['l']
 
 # end get_video_info.py
 
