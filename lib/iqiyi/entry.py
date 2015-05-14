@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.0.0 test201505062233
+# version 0.1.1.0 test201505142214
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,7 @@ from . import get_base_info, get_video_info
 
 # TODO
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.0.3.0 test201505061528'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.1.0.0 test201505142214'
 
 # http://www.iqiyi.com/v_19rrn64t40.html
 RE_SUPPORT_URL = '^http://www\.iqiyi\.com/v_.+\.html$'

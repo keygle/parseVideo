@@ -53,7 +53,7 @@ class MixerRemote(object):
         else:
             _loc2_ = 0
         
-        _loc3_ = 'aw6UWGtp'
+        _loc3_ = 'Qakh4T0A'
         _loc4_ = getTimer()
         _loc5_ = md5_hash(_loc3_ + str(_loc4_) + self.tvid)
         _loc6_ = md5_hash(md5_hash(self.ugcAuthKey) + str(_loc4_) + self.tvid)
