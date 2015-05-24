@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.1.0 test201505221423
+# version 0.1.2.0 test201505241317
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -49,7 +49,9 @@ etc['EV_INFO_SOURCE'] = 'parse_video'
 
 LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
     # http://www.iqiyi.com/v_19rrn64t40.html
-    '^http://www\.iqiyi\.com/v_.+\.html$' : 'iqiyi', 
+    '^http://www\.iqiyi\.com/v_.+\.html' : 'iqiyi', 
+    # http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
+    '^http://www\.iqiyi\.com/dianying/[0-9]+/[0-9a-z]+\.html' : 'iqiyi', 
     # TODO
     #
     # '^http://' : 'youku', 

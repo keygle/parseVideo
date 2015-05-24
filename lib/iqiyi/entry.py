@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.1.0 test201505142214
+# version 0.1.2.0 test201505241317
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -39,8 +39,11 @@ from . import get_base_info, get_video_info
 # version of this extractor
 THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.1.0.0 test201505142214'
 
+RE_SUPPORT_URL = []
 # http://www.iqiyi.com/v_19rrn64t40.html
-RE_SUPPORT_URL = '^http://www\.iqiyi\.com/v_.+\.html$'
+RE_SUPPORT_URL.append('^http://www\.iqiyi\.com/v_.+\.html')
+# http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
+RE_SUPPORT_URL.append('^http://www\.iqiyi\.com/dianying/[0-9]+/[0-9a-z]+\.html')
 
 # global config obj
 etc = {}	# NOTE should be set
@@ -80,7 +83,12 @@ def get_vid(url):
 
 def parse(url_to):	# this site entry main entry function
     # frist re-check url, if supported by this
-    if not re.match(RE_SUPPORT_URL, url_to):
+    flag_support = False
+    for r in RE_SUPPORT_URL:
+        if re.match(r, url_to):
+            flag_support = True
+            break
+    if not flag_support:
         raise error.NotSupportURLError('not support this url', url_to)
     # create evinfo
     evinfo = {}
