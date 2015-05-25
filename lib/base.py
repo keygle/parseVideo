@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # base.py, part for parse_video : a fork from parseVideo. 
 # base: base part. 
-# version 0.1.0.0 test201505062234
+# version 0.1.1.0 test201505221514
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -30,7 +30,7 @@
 from urllib import request
 import re
 import json
-import multiprocessing
+import multiprocessing.dummy as multiprocessing
 
 # global vars
 # USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0'

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.0.0 test201505062234
+# version 0.1.1.0 test201505251518
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -112,6 +112,10 @@ def get_one_info(one_raw):
     vinfo['size_byte'] = number(meta['filesize'])
     vinfo['time_s'] = number(meta['duration'])
     vinfo['size_px'] = [number(meta['width']), number(meta['height'])]
+    # add count
+    vinfo['count'] = 0
+    if 'fs' in raw:
+        vinfo['count'] = len(raw['fs'])
     # check flag_get_file
     if raw['flag_get_file']:
         # reset size_byte and time_s
