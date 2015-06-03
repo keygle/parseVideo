@@ -27,20 +27,20 @@ class UUIDManager(object):
     def __init__(self):
         self.uuid = ''
     
-    def get_uuid(self):
+    def get_uuid(self, flag_debug=False):
         # check uuid
         if self.uuid != '':
             return self.uuid
         # load from server
-        self.uuid = self._load_from_server()
+        self.uuid = self._load_from_server(flag_debug)
         return self.uuid
     
     # auto retry load
-    def _load_from_server(self):
+    def _load_from_server(self, flag_debug):
         retry = 0
         while retry < LOAD_UUID_RETRY:
             try:
-                uid = self._load_from_server0()
+                uid = self._load_from_server0(flag_debug)
                 return uid
             except Exception as err:
                 if retry >= LOAD_UUID_RETRY:
@@ -48,9 +48,12 @@ class UUIDManager(object):
         # done
     
     # load a user uuid from iqiyi server
-    def _load_from_server0(self):
+    def _load_from_server0(self, flag_debug):
         # make a url to request
         url_to = UUID_URL + '?tn=' + str(random.random())
+        # DEBUG info
+        if flag_debug:
+            print('lib/iqiyi/o/uuid: DEBUG: request \"' + url_to + '\"')
         try:
             # get uuid by http request
             info = base.get_html_content(url_to)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.2.0 test201505241317
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# version 0.1.3.0 test201506032304
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -39,11 +39,12 @@ from . import get_base_info, get_video_info
 # version of this extractor
 THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.1.0.0 test201505142214'
 
+# check supported, week check, not strong check
 RE_SUPPORT_URL = []
 # http://www.iqiyi.com/v_19rrn64t40.html
-RE_SUPPORT_URL.append('^http://www\.iqiyi\.com/v_.+\.html')
 # http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
-RE_SUPPORT_URL.append('^http://www\.iqiyi\.com/dianying/[0-9]+/[0-9a-z]+\.html')
+# http://www.iqiyi.com/dianshiju/sjll_wjt.html
+RE_SUPPORT_URL.append('^http://www\.iqiyi\.com/.+\.html')
 
 # global config obj
 etc = {}	# NOTE should be set

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.0.0 test201505062236
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# version 0.1.1.0 test201506032304
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -52,11 +52,17 @@ def get_info(vid_info, flag_debug=False):
     # set data
     mixer.vid = vid_info['vid']
     mixer.tvid = vid_info['tvid']
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got vid:tvid \"' + vid_info['vid'] + ':' + vid_info['tvid'] + '\"')
     # load uuid and set it
     global user_uuid
     um = exports.UUIDManager()
-    user_uuid = um.get_uuid()
+    user_uuid = um.get_uuid(flag_debug)
     mixer.uuid = user_uuid
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got uuid \"' + user_uuid + '\"')
     # get request url
     url_to = mixer.getRequest()
     # DEBUG info
@@ -67,6 +73,9 @@ def get_info(vid_info, flag_debug=False):
         info = base.get_json_info(url_to)
     except Exception as err:
         raise Exception('parse_video: ERROR: iqiyi, load first url http error', err)
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got first url data done. ')
     # get more info
     more = get_more_info(info)
     # done
