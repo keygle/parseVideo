@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.1.0 test201505251518
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# version 0.1.2.0 test201506032303
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -43,7 +43,7 @@ get_video_url = exports.get_video_url1
 # global vars
 
 POOL_SIZE_GET_VINFO = 4
-POOL_SIZE_GET_REAL_URL = 8
+POOL_SIZE_GET_REAL_URL = 20
 
 GET_REAL_URL_RETRY = 5
 
@@ -105,6 +105,12 @@ def get_one_info(one_raw):
     vinfo['hd'] = raw['hd']
     vinfo['format'] = 'flv'	# NOTE the format should be flv
     vinfo['file'] = []
+    # read flag_debug
+    flag_debug = one_raw['flag_debug']
+    list_i = one_raw['list_i']
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: list_i [' + str(list_i) + '] starting get info ... ')
     # get video meta data
     meta_url = raw['meta_base'] + raw['meta_url']
     meta = get_one_video_meta_data(meta_url)
@@ -134,6 +140,9 @@ def get_one_info(one_raw):
         for onef in flist:
             onef_info = get_one_file_info(onef, more)
             vinfo['file'].append(onef_info)
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: list_i [' + str(list_i) + '] get info done')
     # done
     return vinfo
 
@@ -143,7 +152,11 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
     video_list = []
     # get meta data base url
     meta_base = info['data']['vp']['dm']
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: getting video info ... ')
     # get info from raw to fill video list
+    video_list_i = 0
     for raw in raw_list:
         one = {}	# one video
         one['fs'] = raw['fs']
@@ -157,6 +170,10 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
         one['tvid'] = more['tvid']
         # get video hd number by bid
         one['hd'] = BID_TO_HD[str(bid)]
+        # add list_i and flag_debug
+        one['list_i'] = video_list_i
+        video_list_i += 1
+        one['flag_debug'] = flag_debug
         # add this one
         video_list.append(one)
     # process hd_min and hd_max, set get_file flag
@@ -166,20 +183,32 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
             one['flag_get_file'] = True
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: starting map_do() [' + str(len(video_list)) + '] ... ')
     # get video info, use base.map_do()
     vinfo = base.map_do(video_list, get_one_info, pool_size=POOL_SIZE_GET_VINFO)
     # get real urls
-    vinfo = get_real_urls(vinfo)
+    vinfo = get_real_urls(vinfo, flag_debug=flag_debug)
     # done
     return vinfo
 
 # get real urls
-def get_real_urls(vinfo):
+def get_real_urls(vinfo, flag_debug=False):
     # get raw urls
     url_list = []
+    list_i = 0
     for v in vinfo:
         for f in v['file']:
-            url_list.append(f['url'])
+            one = {}
+            one['url'] = f['url']
+            one['i'] = list_i
+            list_i += 1
+            one['flag_debug'] = flag_debug
+            url_list.append(one)
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: starting get real_urls [' + str(len(url_list)) + '] at ' + str(POOL_SIZE_GET_REAL_URL) + ' ... ')
     # base.map_do() get real urls
     real = base.map_do(url_list, get_one_real_url, pool_size=POOL_SIZE_GET_REAL_URL)
     # update real urls
@@ -188,19 +217,32 @@ def get_real_urls(vinfo):
         for f in v['file']:
             f['url'] = real[url_i]
             url_i += 1
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: get real_urls done')
     # done
     return vinfo
 
 # auto retry get_one_real_url
-def get_one_real_url(raw_url):
+def get_one_real_url(raw_info):
+    # debug info
+    flag_debug = raw_info['flag_debug']
+    list_i = raw_info['i']
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: starting get real_url [' + str(list_i) + '] \"' + raw_info['url'] + '\"')
+    # start get
+    raw_url = raw_info['url']
     retry = 0
     while retry < GET_REAL_URL_RETRY:
         try:
             real = get_one_real_url0(raw_url)
+            # debug info
+            if flag_debug:
+                print('lib.iqiyi: DEBUG: got real_url [' + str(list_i) + '] done')
             return real
         except Exception as err:
             if retry >= GET_REAL_URL_RETRY:
-                print('DEBUG: retry ' + str(retry) + ' error ' + str(err), file=sys.stderr)
+                print('DEBUG: get real_url [' + str(list_i) + '] retry ' + str(retry) + ' error ' + str(err), file=sys.stderr)
                 return raw_url
     # done
 

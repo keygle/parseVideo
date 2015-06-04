@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.8.0 test201505251519
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# version 0.1.9.0 test201506041108
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -46,7 +46,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.2.0 test201505251519'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.3.0 test201506041107'
 
 etc = {}
 etc['flag_debug'] = False
@@ -103,6 +103,10 @@ Options:
     
     --min <hd_min>  set min hd number of video info to get
     --max <hd_max>  set max hd number of video info to get
+    
+    --debug         output DEBUG information
+    --fix-unicode   output pure ASCII json text
+                    used on systems not support unicode well
     
     --version       show version of evparse
     --help          show this help information of evparse
