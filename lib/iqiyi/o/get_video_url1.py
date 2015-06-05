@@ -5,8 +5,6 @@
 # import
 
 import random
-
-# FIXME import for DEBUG
 import sys
 
 from . import config
@@ -26,6 +24,12 @@ BEFORE_FINAL_URL = 'http://data.video.qiyi.com/'
 
 GET_SERVER_TIME_RETRY = 5
 GET_SERVER_TIME_DEBUG = True
+
+# get random time
+def get_ran_time(t_min=0, t_max=1):
+    r = random.random()
+    t = t_min + (t_max - t_min) * r
+    return round(t)
 
 # functions
 def get_server_time0():
@@ -54,7 +58,12 @@ def get_server_time():
                 raise Exception('DEBUG: get_server_time retry time', retry, err)
     # done
 
+# new random time
 def get_time_now():
+    return get_ran_time(1000, 2000)
+
+# old reserved
+def get_time_now0():
     time_now = flash.getTimer()
     return time_now
 

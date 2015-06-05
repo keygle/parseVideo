@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # base.py, part for parse_video : a fork from parseVideo. 
 # base: base part. 
-# version 0.1.2.0 test201506032303
+# version 0.1.3.0 test201506041115
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,9 +33,9 @@ import json
 import multiprocessing.dummy as multiprocessing
 
 # global vars
-# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0'
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0'
-USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0'
+# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0'
+USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0'
 
 # functions
 
