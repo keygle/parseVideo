@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.2.0 test201506032303
+# version 0.1.3.0 test201506051626
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -134,10 +134,12 @@ def get_one_info(one_raw):
         more['tvid'] = raw['tvid']
         # get server_time and now
         more['server_time'] = get_video_url.get_server_time()
-        more['time_now'] = get_video_url.get_time_now()
         # get each file info
         flist = raw['fs']
         for onef in flist:
+            # for each url, get once time_now
+            more['time_now'] = get_video_url.get_time_now()
+            # get one url info
             onef_info = get_one_file_info(onef, more)
             vinfo['file'].append(onef_info)
     # debug info
