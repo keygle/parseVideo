@@ -14,7 +14,7 @@ def main():
     # get python bin
     pybin = sys.executable
     # start parsev
-    arg = [pybin, 'parsev', '--output-easy', '--min', '10', url]
+    arg = [pybin, 'parsev', '--output-easy', '--make-ffmpeg-list', url]
     exit_code = subprocess.call(arg, shell=False)
     return exit_code
 
