@@ -1,6 +1,6 @@
 # output_text.py, part for parse_video : a fork from parseVideo. 
 # output_text: bin/output_text: output result in easy text. 
-# version 0.0.4.0 test201506052051
+# version 0.0.5.0 test201506052105
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -117,25 +117,27 @@ def make_easy_text(evinfo):
     t.append('标题      : ' + info['title'])
     t.append('小标题    : ' + info['title_sub'])
     t.append('短标题    : ' + info['title_short'])
-    t.append('集数      : ' + info['title_no'])
+    t.append('集数      : ' + str(info['title_no']))
     t.append('网站      : ' + info['site_name'])
     t.append('源 URL    : ' + info['url'])
     t.append('')
-    t.append('下载信息            parse_video 发现 ' + str(len(evinfo['video'])) + ' 个 视频 ! ')
+    t.append('下载信息                           parse_video 发现 ' + str(len(evinfo['video'])) + ' 个 视频 ! ')
     t.append('=====================================================================')
+    t.append('清晰度     分辨率         总大小     hd  [文件格式]            总时长')
+    # append('1080p    1920 x 1072    1023.61 MB   hd=4 [flv]   15 个文件   45:43.12')
     t.append('')
     # make download info
     for v in evinfo['video']:
         # print each video info
         l = ''	# video info
-        l += text_algin(9, v['quality'])
-        l += text_algin(10, str(v['size_px'][0]) + 'x' + str(v['size_px'][1]), True)
-        l += text_algin(6, 'hd=' + str(v['hd']))
-        l += text_algin(5, v['format'])
-        l += text_algin(11, byte2unit(v['size_byte']), True)
-        l += text_algin(3, str(v['count']), True)
+        l += text_align(9, v['quality'])
+        l += text_align(10, str(v['size_px'][0]) + ' x ' + str(v['size_px'][1]), True)
+        l += text_align(14, byte2unit(v['size_byte']), True)
+        l += text_align(7, '   hd=' + str(v['hd']))
+        l += text_align(5, ' [' + v['format'] + '] ')
+        l += text_align(4, str(v['count']), True)
         l += ' 个文件 '
-        l += text_algin(9, second2time(v['time_s']), True)
+        l += text_align(11, second2time(v['time_s']), True)
         t.append(l)
         t.append('---------------------------------------------------------------------')
         # add urls
