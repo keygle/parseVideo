@@ -1,6 +1,6 @@
 # make_ffmpeg_list.py, part for parse_video : a fork from parseVideo. 
 # make_ffmpeg_list: bin/make_ffmpeg_list: write ffmpeg concat list files, for output file name. 
-# version 0.0.2.0 test201506060051
+# version 0.0.3.0 test201506060110
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -85,6 +85,9 @@ def make_list(evinfo):
     title = evinfo['info']['title']
     # make each list
     for v in evinfo['video']:
+        # check null file list
+        if len(v['file']) < 1:
+            continue	# not make this list
         # make list file name
         fname = make_list_file_name(title, v)
         # make list

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.12.0 test201506060055
+# version 0.1.13.0 test201506060111
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -150,7 +150,7 @@ def start_parse():
             # debug info
             if etc['flag_debug']:
                 print('DEBUG: writing ffmpeg_list ... ')
-                make_ffmpeg_list.make_list(evinfo)
+            make_ffmpeg_list.make_list(evinfo)
     except error.NotSupportURLError as err:
         msg, url = err.args
         print('parse_video: ERROR: not support this url \"' + url + '\"')
