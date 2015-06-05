@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.11.2 test201506052005
+# version 0.1.12.0 test201506060055
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -28,6 +28,7 @@
 # NOTE support --max --min --debug command line options. 
 # NOTE support --fix-unicode output option. 
 # NOTE support --output-easy output result in easy text. 
+# NOTE support --make-ffmpeg-list write ffmpeg list file
 
 # import
 
@@ -35,6 +36,7 @@ import sys
 import json
 
 from . import output_text
+from . import make_ffmpeg_list
 
 # NOTE should be set
 entry = None
@@ -55,6 +57,7 @@ etc = {}
 etc['flag_debug'] = False
 etc['flag_fix_unicode'] = False
 etc['flag_output_easy_text'] = False
+etc['flag_make_ffmpeg_list'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
 
@@ -142,6 +145,12 @@ def start_parse():
             t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
         # just print it
         print(t)
+        # make ffmpeg list file
+        if etc['flag_make_ffmpeg_list']:
+            # debug info
+            if etc['flag_debug']:
+                print('DEBUG: writing ffmpeg_list ... ')
+                make_ffmpeg_list.make_list(evinfo)
     except error.NotSupportURLError as err:
         msg, url = err.args
         print('parse_video: ERROR: not support this url \"' + url + '\"')
@@ -173,6 +182,8 @@ def get_args():
             etc['flag_fix_unicode'] = True
         elif one == '--output-easy':
             etc['flag_output_easy_text'] = True
+        elif one == '--make-ffmpeg-list':
+            etc['flag_make_ffmpeg_list'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]
