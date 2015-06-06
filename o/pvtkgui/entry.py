@@ -42,15 +42,18 @@ MAIN_TEXT_INIT_TEXT = ''' 请在 （ ↑ 上方 ↑ 的) 文本框 中 输入 �
 
 
 
+
+
+
+
+
 更多帮助信息, 请见
-<https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide>
+  https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide
 
   如有更多问题, 需要讨论, 请
-
-      加 qq 群 飞驴友视频下载交流群 141712855
+          加 qq 群 飞驴友视频下载交流群 141712855
 
 copyright 2015 sceext <sceext@foxmail.com> 2015.06
-
 '''
 
 etc = {}
