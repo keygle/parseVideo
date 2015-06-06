@@ -2,7 +2,7 @@
 echo parse_video ¼òµ¥²âÊÔ 2.bat 0.py
 set /p url=ÇëÊäÈë URL: 
 
-%1 parsev --output-easy --make-ffmpeg-list %url%
+%1 parsev --output-easy --make-rename-list %url%
 
 pause
 

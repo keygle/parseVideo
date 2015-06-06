@@ -106,7 +106,7 @@ def text_align(length, text, right=False):
 ---------------------------------------------------------------------
 '''
 
-def make_easy_text(evinfo):
+def make_easy_text(evinfo, flag_write_output_file=False):
     t = []	# output text
     l = ''	# one line text
     # make video info

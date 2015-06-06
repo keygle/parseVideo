@@ -28,7 +28,8 @@
 # NOTE support --max --min --debug command line options. 
 # NOTE support --fix-unicode output option. 
 # NOTE support --output-easy output result in easy text. 
-# NOTE support --make-ffmpeg-list write ffmpeg list file
+# NOTE support --make-rename-list write rename list json file
+# NOTE support --write-output-file write URLs in txt file
 
 # import
 
@@ -36,7 +37,7 @@ import sys
 import json
 
 from . import output_text
-from . import make_ffmpeg_list
+from . import make_rename_list
 
 # NOTE should be set
 entry = None
@@ -57,7 +58,8 @@ etc = {}
 etc['flag_debug'] = False
 etc['flag_fix_unicode'] = False
 etc['flag_output_easy_text'] = False
-etc['flag_make_ffmpeg_list'] = False
+etc['flag_make_rename_list'] = False
+etc['flag_write_output_file'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
 
@@ -139,18 +141,18 @@ def start_parse():
         evinfo = entry.parse(url_to)
         # check flag_output_easy_text
         if etc['flag_output_easy_text']:
-            t = output_text.make_easy_text(evinfo)
+            t = output_text.make_easy_text(evinfo, etc['flag_write_output_file'])
         else:
             # just print info as json
             t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
         # just print it
         print(t)
-        # make ffmpeg list file
-        if etc['flag_make_ffmpeg_list']:
+        # make rename list file
+        if etc['flag_make_rename_list']:
             # debug info
             if etc['flag_debug']:
-                print('DEBUG: writing ffmpeg_list ... ')
-            make_ffmpeg_list.make_list(evinfo)
+                print('DEBUG: writing rename list ... ')
+            make_rename_list.make_list(evinfo)
     except error.NotSupportURLError as err:
         # check args length
         if len(err.args) == 2:
@@ -188,8 +190,10 @@ def get_args():
             etc['flag_fix_unicode'] = True
         elif one == '--output-easy':
             etc['flag_output_easy_text'] = True
-        elif one == '--make-ffmpeg-list':
-            etc['flag_make_ffmpeg_list'] = True
+        elif one == '--make-rename-list':
+            etc['flag_make_rename_list'] = True
+        elif one == '--write-output-file':
+            etc['flag_write_output_file'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]
