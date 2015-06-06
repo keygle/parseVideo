@@ -1,6 +1,6 @@
 # output_text.py, part for parse_video : a fork from parseVideo. 
 # output_text: bin/output_text: output result in easy text. 
-# version 0.0.6.0 test201506061239
+# version 0.0.7.0 test201506061244
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -149,7 +149,7 @@ def make_easy_text(evinfo, flag_write_output_file=False):
         # add urls done
         t.append('')
         # check flag_write_output_file
-        if flag_write_output_file:
+        if flag_write_output_file and (len(v['file']) > 0):
             list_file_name = make_rename_list.make_list_file_name(evinfo['info'], v, after=URL_LIST_FILE_AFTER_NAME)
             # get url list
             url_list = []
