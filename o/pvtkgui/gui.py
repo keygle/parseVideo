@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.2.0 test201506061747
+# version 0.0.3.0 test201506061900
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,12 +27,14 @@
 # import
 
 from tkinter import *
+from tkinter.ttk import *
 from tkinter.font import Font
 
 # global vars
 
 TEXT_MAIN_FONT_SIZE = 16	# 16px
 MAIN_BUTTON_TEXT = 'Start prase'
+MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
 
 # functions
 
@@ -62,8 +64,16 @@ class MainWin(object):
         # create root window
         root = Tk()
         self.root = root
+        # set main window title
+        root.title(MAIN_WIN_TITLE)
         
-        # create font
+        # create style for ttk
+        style = Style()
+        # set font
+        style.configure('.', font=('微软雅黑', 16))
+        style.configure('My.TEntry', padding=5)
+        
+        # create font for main Text and man Entry
         f = Font(root, size=TEXT_MAIN_FONT_SIZE)
         
         # create frame
@@ -74,9 +84,9 @@ class MainWin(object):
         
         # create top part
         # main button
-        b = Button(f0, font=f, command=self._main_button_on_click, text=MAIN_BUTTON_TEXT)
+        b = Button(f0, command=self._main_button_on_click, text=MAIN_BUTTON_TEXT, style='TButton')
         # main entry
-        e = Entry(f0, font=f)
+        e = Entry(f0, font=f, style='My.TEntry')
         # pack it
         b.pack(side=RIGHT, fill=NONE, expand=False)
         e.pack(side=LEFT, fill=X, expand=True)
@@ -89,7 +99,7 @@ class MainWin(object):
         sx = Scrollbar(f1, orient=HORIZONTAL)
         sy = Scrollbar(f1, orient=VERTICAL)
         # main Text area
-        t = Text(f1, wrap=NONE, font=f)
+        t = Text(f1, wrap=NONE, font=f, padx=0, pady=0, relief=FLAT, bd=0, bg='#ddd', fg='#333')
         self.text_main = t
         # pack it
         sy.pack(side=RIGHT, fill=Y)
