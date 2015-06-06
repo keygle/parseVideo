@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.0.2.0 test201506062034
+# version 0.0.3.0 test201506062105
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -38,7 +38,7 @@ BIN_PARSE_VIDEO = 'parsev'
 # run sub process
 def run_sub(arg, shell=False):
     PIPE = subprocess.PIPE
-    p = subprocess.Popen(arg, shell=shell, stdin=PIYE, stdout=PIPE, stderr=PIPE)
+    p = subprocess.Popen(arg, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     return p.communicate()
 
 # run parse_video
@@ -46,7 +46,7 @@ def run_pv(url):
     # get python bin file
     pybin = sys.executable
     # make args
-    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', url]
+    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', '--min', '10', url]
     # start parse_video
     stdout, stderr = run_sub(arg)
     # done

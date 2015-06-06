@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.6.0 test201506062001
+# version 0.0.7.0 test201506062105
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -89,7 +89,7 @@ class MainWin(object):
     def enable_main_button(self):
         self.button.config(state=NORMAL)
     
-    def disable_main_text(self):
+    def disable_main_button(self):
         self.button.config(state=DISABLED)
     
     # start create and show main window
