@@ -12,7 +12,7 @@ def main():
     # get python bin
     pybin = sys.executable
     # just start not.bat
-    arg = ['o\\not.bat', pybin, 'o\\a.py']
+    arg = ['o\\2.bat', pybin]
     exit_code = subprocess.call(arg, shell=True)
     return exit_code
 
