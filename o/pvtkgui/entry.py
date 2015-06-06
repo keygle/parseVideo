@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.2.0 test201506062137
+# version 0.0.3.0 test201506062205
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,14 +30,24 @@ from . import gui
 from . import run_sub
 
 # global vars
-MAIN_TEXT_INIT_TEXT = '''Please input URL ↑ here ↑ 
+MAIN_TEXT_INIT_TEXT = ''' 请在 （ ↑ 上方 ↑ 的) 文本框 中 输入 视频播放页面 的 URL. 
+    点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
 
- parse_video Tk GUI 1
+    请使用 键盘 快捷键 Ctrl+V 粘贴, Ctrl+C 复制. 暂时不支持 右键 菜单 操作 ! 
 
-test
+ parse_video Tk GUI 1          parse_video 图形界面
+    version 0.0.1.0 test201506062204
 
-More help information, please see 
+更多帮助信息, 请见
 <https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide>
+
+
+
+  如有更多问题, 需要讨论, 请
+
+      加 qq 群 飞驴友视频下载交流群 141712855
+
+copyright 2015 sceext <sceext@foxmail.com> 2015.06
 
 '''
 
@@ -87,7 +97,7 @@ def on_main_button():
     w.enable_main_text()
     
     # set text
-    w.set_main_text('Now doing parse URL \"' + url_to + '\" ... \n        Please wait a moment. ')
+    w.set_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
     
     # FIXME debug info
     print('DEBUG: starting parse_video')

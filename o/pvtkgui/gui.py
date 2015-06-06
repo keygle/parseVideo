@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.7.0 test201506062105
+# version 0.0.8.0 test201506062158
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,7 +33,7 @@ from tkinter.font import Font
 # global vars
 
 TEXT_MAIN_FONT_SIZE = 16	# 16px
-MAIN_BUTTON_TEXT = 'Start prase'
+MAIN_BUTTON_TEXT = '开始解析'
 MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
 MAIN_FONT_NAME = '微软雅黑'
 

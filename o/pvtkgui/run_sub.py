@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.0.4.0 test201506062137
+# version 0.0.5.0 test201506062159
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -46,7 +46,7 @@ def run_pv(url):
     # get python bin file
     pybin = sys.executable
     # make args
-    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', '--force-output-utf8', '--min', '10', url]
+    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', '--force-output-utf8', '--min', '3', url]
     # start parse_video
     stdout, stderr = run_sub(arg)
     # done
