@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.3.0 test201506062205
+# version 0.0.4.0 test201506062226
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,13 +35,15 @@ MAIN_TEXT_INIT_TEXT = ''' 请在 （ ↑ 上方 ↑ 的) 文本框 中 输入 �
 
     请使用 键盘 快捷键 Ctrl+V 粘贴, Ctrl+C 复制. 暂时不支持 右键 菜单 操作 ! 
 
+
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.1.0 test201506062204
+    version 0.0.2.0 test201506062226
+
+
+
 
 更多帮助信息, 请见
 <https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide>
-
-
 
   如有更多问题, 需要讨论, 请
 
