@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# run, part for parse_video : a fork from parseVideo. 
-# run: lieying-plugin entry file. 
-# version 0.0.1.0 test201506070125
+# error.py, part for parse_video : a fork from parseVideo. 
+# error: o/lieying_plugin/error: errors definition for lieying_plugin. 
+# version 0.0.3.0 test201506070244
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -26,15 +26,34 @@
 #
 
 # import
-from .o.lieying_plugin import entry as entry0
 
-# export functions for lieying plugin
-GetName = entry0.lieying_plugin_get_name	# get_name()
-GetType = entry0.lieying_plugin_get_type	# get_type()
-GetFilter = entry0.lieying_plugin_get_filter	# get_filter()
-ParseFormat = entry0.lieying_plugin_parse_format	# parse_format(url)
-ParseUrl = entry0.lieying_plugin_parse_url	# parse_url(url, format_text)
+# class for errors
 
-# end run.py
+# parse_video lieying_plugin base error
+class ParseVideoLieyingPluginError(Exception):
+    pass
+
+class BError(ParseVideoLieyingPluginError):	# base error
+    pass
+
+class NotSupportURLError(BError):
+    pass
+
+class ParseError(BError):
+    pass
+
+class UnknowError(BError):
+    pass
+
+class MsgError(BError):
+    pass
+
+class DecodeUtf8Error(BError):
+    pass
+
+class HdError(BError):
+    pass
+
+# end error.py
 
 
