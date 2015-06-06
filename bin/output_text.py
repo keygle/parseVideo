@@ -1,6 +1,6 @@
 # output_text.py, part for parse_video : a fork from parseVideo. 
 # output_text: bin/output_text: output result in easy text. 
-# version 0.0.5.0 test201506052105
+# version 0.0.6.0 test201506061239
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,7 +27,10 @@
 # import
 import math
 
+from . import make_rename_list
+
 # global vars
+URL_LIST_FILE_AFTER_NAME = '_.URL_list.txt'
 
 # functions
 
@@ -145,6 +148,17 @@ def make_easy_text(evinfo, flag_write_output_file=False):
             t.append(f['url'])
         # add urls done
         t.append('')
+        # check flag_write_output_file
+        if flag_write_output_file:
+            list_file_name = make_rename_list.make_list_file_name(evinfo['info'], v, after=URL_LIST_FILE_AFTER_NAME)
+            # get url list
+            url_list = []
+            for f in v['file']:
+                url_list.append(f['url'])
+            url_text = ('\n').join(url_list)
+            # write output file
+            with open(list_file_name, 'w') as f1:
+                f1.write(url_text)
     # add one video info done
     
     # make final text

@@ -1,6 +1,6 @@
 # make_rename_list.py, part for parse_video : a fork from parseVideo. 
 # make_rename_list: bin/make_rename_list: write rename list files, for output file name. 
-# version 0.0.4.0 test201506061227
+# version 0.0.5.0 test201506061233
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -56,6 +56,7 @@ def clean_file_name(text, remove_chars='/|\\ ?	*<>:\'\"', replace_char='_'):
 
 def make_part_name(hinfo):
     t = hinfo['title'] + '_' + hinfo['title_sub']
+    t = clean_file_name(t)
     return t
 
 def make_list_file_name(hinfo, vinfo, after=LIST_FILE_AFTER):
@@ -82,6 +83,7 @@ def make_one_list(flist, part_before):
         fname = get_file_name_from_url(f['url'])
         after = ':' + part_before
         after += '_' + make_num_len(f_i) + '.' + fname.split('.')[-1]
+        f_i += 1
         
         t.append(fname + after)
     # make output text
