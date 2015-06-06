@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.5.1 test201506052132
+# version 0.1.7.0 test201506061030
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -50,13 +50,12 @@ etc['EV_INFO_SOURCE'] = 'parse_video'
 LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
     # http://www.iqiyi.com/v_19rrn64t40.html
     # http://www.iqiyi.com/w_19rrp737k5.html
-    '^http://www\.iqiyi\.com/(v|w)_[a-z0-9]+\.html' : 'iqiyi', 
+    # http://yule.iqiyi.com/pcb.html?src=focustext_0_20130527_7
     # http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
-    '^http://www\.iqiyi\.com/dianying/[0-9]+/[0-9a-z]+\.html' : 'iqiyi', 
     # http://www.iqiyi.com/dianshiju/sjll_wjt.html
-    '^http://www\.iqiyi\.com/dianshiju/[a-z_]+\.html' : 'iqiyi', 
     # http://www.iqiyi.com/dianshiju/20121108/879eec15c7810d10.html
-    '^http://www\.iqiyi\.com/dianshiju/[0-9]+/[a-z0-9]+\.html' : 'iqiyi', 
+    'http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
+    # NOTE check iqiyi supported url, by get vid and tvid, not by RE to url
     # TODO
     #
     # '^http://' : 'youku', 
