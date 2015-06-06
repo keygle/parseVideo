@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.1.0 test201506062056
+# version 0.0.2.0 test201506062137
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -100,9 +100,20 @@ def on_sub_finished(stdout, stderr):
     print('DEBUG: sub process parse_video ended')
     w = etc['w']
     
+    # decode sub output as utf-8, try to handle errors
+    try:
+        stdout = str(stdout.decode('utf-8', ))
+    except Exception as e:
+        # FIXME DEBUG here
+        print('DEBUG: decode stdout as utf-8 failed\n' + str(e))
+        stdout = str(stdout.decode('utf-8', 'ignore'))
+    try:
+        stderr = str(stderr.decode('utf-8', ))
+    except Exception as e:
+        # FIXME DEBUG here
+        print('DEBUG: decode stderr as utf-8 failed\n' + str(e))
+        stderr = str(stderr.decode('utf-8', 'ignore'))
     # write result
-    stdout = str(stdout.decode('utf-8'))
-    stderr = str(stderr.decode('utf-8'))
     out = stderr + '\n' + stdout + '\n'
     
     w.enable_main_text()

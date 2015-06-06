@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.16.0 test201506061234
+# version 0.1.17.0 test201506062134
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,6 +30,7 @@
 # NOTE support --output-easy output result in easy text. 
 # NOTE support --make-rename-list write rename list json file
 # NOTE support --write-output-file write URLs in txt file
+# NOTE support --force-output-utf8 to write utf-8 encoding text to stdout
 
 # import
 
@@ -60,6 +61,7 @@ etc['flag_fix_unicode'] = False
 etc['flag_output_easy_text'] = False
 etc['flag_make_rename_list'] = False
 etc['flag_write_output_file'] = False
+etc['flag_force_output_utf8'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
 
@@ -69,13 +71,22 @@ etc['url_to'] = ''	# url to analyse
 
 # functions
 
+def print_stdout(text):
+    # check flag
+    if etc['flag_force_output_utf8']:
+        t = text.encode('utf-8')
+        sys.stdout.buffer.write(t)
+    else:	# just print it
+        print(t)
+    # done
+
 # print functions
 def print_version():
-    print(PARSE_VIDEO_VERSION)
+    print_stdout(PARSE_VIDEO_VERSION)
     print_free()
 
 def print_free():
-    print('''
+    print_stdout('''
     author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05
  copyright 2015 sceext
 
@@ -100,8 +111,8 @@ def print_free():
 ''')
 
 def print_help():
-    print('parse_video: HELP')
-    print('''
+    print_stdout('parse_video: HELP')
+    print_stdout('''
 Usage:
     evp [OPTIONS] <url>
     evp --version
@@ -124,7 +135,7 @@ Options:
 ''')
 
 def print_help_notice():
-    print('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
+    print_stdout('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
     return 1
 
 # start parse
@@ -146,22 +157,22 @@ def start_parse():
             # just print info as json
             t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
         # just print it
-        print(t)
+        print_stdout(t)
         # make rename list file
         if etc['flag_make_rename_list']:
             # debug info
             if etc['flag_debug']:
-                print('DEBUG: writing rename list ... ')
+                print_stdout('DEBUG: writing rename list ... ')
             make_rename_list.make_list(evinfo)
     except error.NotSupportURLError as err:
         # check args length
         if len(err.args) == 2:
             msg, url = err.args
-            print('parse_video: ERROR: not support this url \"' + url + '\"')
+            print_stdout('parse_video: ERROR: not support this url \"' + url + '\"')
         # check get vid error
         if (len(err.args) > 2) and (err.args[2] == 'get_vid'):
             url = err.args[1]
-            print('parse_video: ERROR: not support this url (get_vid) \"' + url + '\"')
+            print_stdout('parse_video: ERROR: not support this url (get_vid) \"' + url + '\"')
         return 2
     # done
 
@@ -194,6 +205,8 @@ def get_args():
             etc['flag_make_rename_list'] = True
         elif one == '--write-output-file':
             etc['flag_write_output_file'] = True
+        elif one == '--force-output-utf8':
+            etc['flag_force_output_utf8'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]
