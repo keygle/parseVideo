@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.17.0 test201506072234
+# version 0.0.18.0 test201506072251
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -139,13 +139,16 @@ class MainWin(object):
         self.hd_entry_var.set(text)
     
     def get_main_text(self):
-        return self.text_main.get(1.0, END)
+        return self.text_main.get('1.0', END)
     
     def clear_main_text(self):
-        self.text_main.delete(1.0, END)
+        self.text_main.delete('1.0', END)
     
     def append_main_text(self, text=''):
         self.text_main.insert(END, text)
+    
+    def insert_main_text(self, text='', pos='1.0'):
+        self.text_main.insert(pos, text)
     
     def enable_main_text(self):
         self.text_main.config(state=NORMAL)

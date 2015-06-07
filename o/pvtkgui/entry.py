@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.9.0 test201506071747
+# version 0.0.11.0 test201506072308
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,6 +30,20 @@ import json
 
 from . import gui
 from . import run_sub
+from . import xunlei_dl
+
+make_rename_list_ = None
+output_text_ = None
+
+# set import
+def set_import(make_rename_list=None, output_text=None):
+    global make_rename_list_
+    global output_text_
+    make_rename_list_ = make_rename_list
+    output_text_ = output_text
+    # set sub import
+    xunlei_dl.set_import(make_rename_list=make_rename_list, output_text=output_text)
+    # set import done
 
 # global vars
 MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框 中 输入 视频播放页面 的 URL. 
@@ -64,6 +78,11 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 copyright 2015 sceext <sceext@foxmail.com> 2015.06
 '''
+
+DL_XUNLEI_TEXT1 = '正在向 迅雷 添加下载任务, 请稍候 ... '
+DL_XUNLEI_ERR1 = '错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
+DL_XUNLEI_TEXT2 = ['成功: 已经添加 ', ' 个下载任务至 迅雷. ']
+DL_XUNLEI_ERR2 = '错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
 
 # parse_video Tk GUI, pvtkgui config file path
 CONFIG_FILE = './etc/pvtkgui.conf.json'
@@ -142,10 +161,12 @@ def init():
     # set callback
     w.callback_main_button = on_main_button
     w.callback_copy_url = on_copy_url
+    w.callback_xunlei_dl = on_xunlei_dl
     # show main window
     w.start()
     # set init text
-    w.set_main_text(MAIN_TEXT_INIT_TEXT)
+    w.clear_main_text()
+    w.append_main_text(MAIN_TEXT_INIT_TEXT)
     # DEBUG info
     print('DEBUG: main window created, starting main loop')
     # load default config file
@@ -195,7 +216,8 @@ def on_main_button():
     w.set_hd_text(str(hd))
     
     # set text
-    w.set_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
+    w.clear_main_text()
+    w.append_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
     
     # DEBUG info
     print('DEBUG: starting parse_video')
@@ -248,14 +270,29 @@ def on_sub_finished(stdout, stderr):
         # DEBUG info
         print('DEBUG: decode stderr as utf-8 failed\n' + str(e))
         stderr = str(stderr.decode('utf-8', 'ignore'))
+    # try to parse stdout as json
+    flag_sub_ok = False
+    try:
+        evinfo = json.loads(stdout)
+        flag_sub_ok = True
+    except Exception:
+        # make error output
+        out = stderr + '\n' + stdout + '\n'
+    # check sub_ok
+    if flag_sub_ok:
+        # make output text
+        out = output_text_.make_easy_text(evinfo)
     # write result
-    out = stderr + '\n' + stdout + '\n'
+    
+    # save evinfo
+    etc['evinfo'] = evinfo
     
     # save Text
     etc['main_text'] = out
     # set to main Text
     w.enable_main_text()
-    w.set_main_text(out)
+    w.clear_main_text()
+    w.append_main_text(out)
     
     # check error
     if stderr == '':
@@ -268,6 +305,32 @@ def on_sub_finished(stdout, stderr):
     w.enable_main_button()
     # set flag_doing
     etc['flag_doing'] = False
+    # done
+
+# use xunlei do download all files
+def on_xunlei_dl():
+    # check evinfo
+    if (not 'evinfo' in etc) or (etc['evinfo'] == None):
+        # DEBUG info
+        print('DEBUG: parse not successful finished. can not add dl tasks to xunlei')
+        return
+    # set UI
+    evinfo = etc['evinfo']
+    w = etc['w']
+    w.insert_main_text('\n')
+    w.insert_main_text(DL_XUNLEI_TEXT1 + '\n')
+    
+    # try to add tasks to xunlei
+    try:
+        task_added_n = xunlei_dl.add_task(evinfo)
+        # set UI
+        w.insert_main_text(DL_XUNLEI_TEXT2[0] + str(task_added_n) + DL_XUNLEI_TEXT2[1] + '\n')
+    except xunlei_dl.ComTypesError:
+        # set UI
+        w.insert_main_text(DL_XUNLEI_ERR1 + '\n')
+    except xunlei_dl.CreateComObjError:
+        # set UI
+        w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
     # done
 
 # end entry.py
