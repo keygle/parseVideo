@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.6.0 test201506071447
+# version 0.0.7.0 test201506071503
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -32,19 +32,19 @@ from . import gui
 from . import run_sub
 
 # global vars
-MAIN_TEXT_INIT_TEXT = ''' 请在 （ ↑ 上方 ↑ 的) 文本框 中 输入 视频播放页面 的 URL. 
-    点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
+MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框 中 输入 视频播放页面 的 URL. 
+                点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
 
     请使用 键盘 快捷键 Ctrl+V 粘贴, Ctrl+C 复制. 暂时不支持 右键 菜单 操作 ! 
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.2.0 test201506062226
+    version 0.0.3.0 test201506071503
 
-
-
-
-
+hd 值 说明
+     左侧上方的文本框, hd= 数字, 用于选择 解析并输出 哪种 清晰度 的视频文件 URL. 
+ 这样做可以加快解析速度. 
+     hd 值 请在解析结果 中 查看. 
 
 
 

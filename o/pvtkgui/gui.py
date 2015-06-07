@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.9.0 test201506071422
+# version 0.0.10.0 test201506071457
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -147,6 +147,7 @@ class MainWin(object):
         
         # bind key event for main Entry
         e.bind('<Return>', self._on_return_key)
+        e2.bind('<Return>', self._on_return_key)
         
         # create bottom part
         # create scrollbar
