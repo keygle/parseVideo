@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.0.2.0 test201506070224
+# version 0.0.3.0 test201506071139
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -119,7 +119,7 @@ def lieying_plugin_parse_url(url_to, format_text):
         raise error.MsgError(stdout + '\n' + stderr)
         return
     # try to translate info
-    out = tinfo.t2one(evinfo)
+    out = tinfo.t2one(evinfo, hd)
     out_text = json.dumps(out)
     # done
     return out_text

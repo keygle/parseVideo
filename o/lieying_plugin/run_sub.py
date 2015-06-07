@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/lieying_plugin/run_sub: call and run parsev as sub process. 
-# version 0.0.1.0 test201506070208
+# version 0.0.1.1 test201506071112
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -49,7 +49,7 @@ def run_pv(arg):
     farg = [pybin, pvpath]
     farg += arg
     # just run sub process
-    return run_sub()
+    return run_sub(farg)
 
 def make_bin_parsev_path():
     now_file = os.path.abspath(__file__)

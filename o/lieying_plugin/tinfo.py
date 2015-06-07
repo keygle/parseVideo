@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.0.2.0 test201506071104
+# version 0.0.3.0 test201506071139
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -26,6 +26,8 @@
 #
 
 # import
+
+import math
 
 from . import error
 
@@ -104,7 +106,7 @@ def second2time(sec=0):
 # function
 
 def make_format_text(vinfo):
-    t = []
+    t = ''
     t += str(vinfo['hd']) + '_'
     t += vinfo['quality'] + '_'
     t += str(vinfo['size_px'][0]) + 'x' + str(vinfo['size_px'][1]) + '_'
@@ -114,7 +116,7 @@ def make_format_text(vinfo):
     # done
     return t
 
-def get_hd_from_format_text(format_tex):
+def get_hd_from_format_text(format_text):
     hd = format_text.split('_', 1)[0]
     return int(hd)
 
@@ -154,7 +156,7 @@ def t2one(evinfo, hd):
             v = i
             break
     # check v
-    if v == None
+    if v == None:
         raise error.HdError(hd)
         return
     # add urls
@@ -163,11 +165,11 @@ def t2one(evinfo, hd):
     # add each url
     for f in v['file']:
         one = {}
-        one['Protocol'] = LIEYING_PLUGIN_PROTOCAL
+        one['Protocol'] = LIEYING_PLUGIN_PROTOCOL
         one['Args'] = LIEYING_PLUGIN_ARGS
         one['Value'] = f['url']
         # add one done
-        ulist.push(one)
+        ulist.append(one)
     # done
     return out
 
