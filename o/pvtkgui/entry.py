@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.7.0 test201506071503
+# version 0.0.8.0 test201506071738
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -66,6 +66,7 @@ etc = {}
 etc['w'] = None	# main window obj
 etc['flag_doing'] = False	# global doing flag
 etc['conf'] = None	# pvtkgui config obj
+etc['main_text'] = ''	# main text showed in main Text GUI window
 
 # base funciton
 def make_default_config_obj():
@@ -133,6 +134,7 @@ def init():
     etc['w'] = w
     # set callback
     w.callback_main_button = on_main_button
+    w.callback_copy_url = on_copy_url
     # show main window
     w.start()
     # set init text
@@ -197,6 +199,29 @@ def write_config():
     write_config_file(etc['conf'])
     # done
 
+# on copy URL, to copy urls in main_text to clip board
+def on_copy_url():
+    text = conf['main_text']
+    w = conf['w']
+    to = get_url_list(text)
+    # check result
+    if to != None:
+        w.clip_set(to)
+    # done
+
+def get_url_list(text):
+    line = text.split('\n')
+    out = []
+    for l in line:
+        if l.find('http://') == 0:
+            out.append(l)
+    out.append('')
+    # output
+    if len(out) > 1:	# found urls
+        return ('\n').join(out)
+    else:	# not found url
+        return None
+
 # on sub finished
 def on_sub_finished(stdout, stderr):
     # DEBUG info
@@ -219,6 +244,9 @@ def on_sub_finished(stdout, stderr):
     # write result
     out = stderr + '\n' + stdout + '\n'
     
+    # save Text
+    conf['main_text'] = out
+    # set to main Text
     w.enable_main_text()
     w.set_main_text(out)
     
