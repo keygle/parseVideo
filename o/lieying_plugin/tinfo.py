@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.0.3.0 test201506071139
+# version 0.0.4.0 test201506071203
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -140,8 +140,7 @@ def t2list(evinfo):
         video_size = byte2unit(v['size_byte'])
         one['Label'] = video_format
         one['Size'] = video_size
-        # only add null url list
-        one['Urls'] = []
+        one['Ext'] = v['format']
         # add one info done
         vlist.append(one)
     # done
