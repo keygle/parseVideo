@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.8.0 test201506062158
+# version 0.0.9.0 test201506071422
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -53,6 +53,7 @@ class MainWin(object):
         self.text_main = None	# main Text area, show text
         
         self.text_entry_var = None
+        self.hd_entry_var = None
         
         self.callback_main_button = None	# main button on click calback function
         
@@ -72,6 +73,12 @@ class MainWin(object):
     # operation functions
     def get_entry_text(self):
         return self.text_entry_var.get()
+    
+    def get_hd_text(self):
+        return self.hd_entry_var.get()
+    
+    def set_hd_text(self, text):
+        self.hd_entry_var.set(text)
     
     def get_main_text(self):
         return self.text_main.get(1.0, END)
@@ -115,17 +122,24 @@ class MainWin(object):
         f0.pack(side=TOP, fill=X, expand=False)
         f1.pack(side=BOTTOM, fill=BOTH, expand=True)
         
-        # create textvar for main Entry
+        # create textvar for main Entry, and hd Entry
         v1 = StringVar()
         self.text_entry_var = v1
+        v2 = StringVar()
+        self.hd_entry_var = v2
         
         # create top part
         # main button
         b = Button(f0, command=self._main_button_on_click, text=MAIN_BUTTON_TEXT, style='TButton')
         # main entry
         e = Entry(f0, textvariable=v1, font=f, style='My.TEntry')
+        # add Label and hd= support
+        la = Label(f0, text='hd=', font=f)
+        e2 = Entry(f0, textvariable=v2, font=f, style='My.TEntry', width=3)
         # pack it
-        b.pack(side=RIGHT, fill=NONE, expand=False)
+        b.pack(side=RIGHT, fill=Y, expand=False)
+        la.pack(side=LEFT, fill=Y, expand=False)
+        e2.pack(side=LEFT, fill=Y, expand=False)
         e.pack(side=LEFT, fill=BOTH, expand=True)
         # save objs
         self.button = b
