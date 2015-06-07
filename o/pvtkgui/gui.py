@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.10.0 test201506071457
+# version 0.0.11.0 test201506071712
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,6 +36,8 @@ TEXT_MAIN_FONT_SIZE = 16	# 16px
 MAIN_BUTTON_TEXT = '开始解析'
 MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
 MAIN_FONT_NAME = '微软雅黑'
+MENU_LABEL1 = 'paste URL'
+MENU_LABEL2 = 'copy URL'
 
 # functions
 
@@ -55,7 +57,11 @@ class MainWin(object):
         self.text_entry_var = None
         self.hd_entry_var = None
         
+        self.menu_url = None	# top part, url Entry menu
+        self.menu_text = None	# body part, main Text menu
+        
         self.callback_main_button = None	# main button on click calback function
+        self.callback_copy_url = None
         
         pass
     
@@ -66,9 +72,35 @@ class MainWin(object):
             self.callback_main_button()
     
     # process main Entry key event
-    def _on_return_key(self, event):
+    def _on_return_key(self, event=None):
         # just callback as _main_button_on_click
         self._main_button_on_click()
+    
+    # press C key in main Text, to copy all URLs
+    def _on_c_key(self, event=None):
+        # just callback copy_url
+        # self.callback_copy_url()
+        # FIXME debug here
+        print('DEBUG: _on_c_key')
+        pass
+    
+    # press mouse right button, to show paste menu in url Entry
+    def _on_url_entry_menu(self, event=None):
+        m = self.menu_url
+        m.post(event.x_root, event.y_root)
+        pass
+    
+    # press middle mouse botton, or click on paste menu in url Entry, to paste from clipboard
+    def _on_url_entry_paste(self, event=None):
+        # FIXME debug here
+        print('DEBUG: _on_url_entry_paste')
+        pass
+    
+    # press mouse right button, to show copy urls menu is main Text
+    def _on_main_text_menu(self, event=None):
+        m = self.menu_text
+        m.post(event.x_root, event.y_root)
+        pass
     
     # operation functions
     def get_entry_text(self):
@@ -98,6 +130,16 @@ class MainWin(object):
     
     def disable_main_button(self):
         self.button.config(state=DISABLED)
+    
+    # copy paste with clip board
+    def clip_get(self):
+        root = self.root
+        return root.clipboard_get()
+    
+    def clip_set(self, text):
+        root = self.root
+        root.clipboard_clear()
+        root.clipboard_append(text)
     
     # start create and show main window
     def start(self):
@@ -145,9 +187,21 @@ class MainWin(object):
         self.button = b
         self.text_entry = e
         
+        # create menus
+        m1 = Menu(root, tearoff=0)	# url Entry menu
+        m2 = Menu(root, tearoff=0)	# main Text menu
+        self.menu_url = m1
+        self.menu_text = m2
+        
+        m1.add_command(label=MENU_LABEL1, command=self._on_url_entry_paste)
+        m2.add_command(label=MENU_LABEL2, command=self._on_c_key)
+        
         # bind key event for main Entry
         e.bind('<Return>', self._on_return_key)
         e2.bind('<Return>', self._on_return_key)
+        # bind more event for main Entry
+        e.bind('<Button-2>', self._on_url_entry_paste)	# mouse middle button, just paste url
+        e.bind('<Button-3>', self._on_url_entry_menu)	# show url Entry menu, mouse right button
         
         # create bottom part
         # create scrollbar
@@ -165,6 +219,10 @@ class MainWin(object):
         sy.config(command=t.yview)
         t.config(xscrollcommand=sx.set)
         t.config(yscrollcommand=sy.set)
+        
+        # bind more event to Text
+        t.bind('c', self._on_c_key)	# copy urls
+        t.bind('<Button-3>', self._on_main_text_menu)	# show main Text menu
         
         # create main window done
     
