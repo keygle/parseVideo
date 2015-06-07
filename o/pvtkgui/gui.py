@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.12.0 test201506071722
+# version 0.0.14.0 test201506071731
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,8 +36,8 @@ TEXT_MAIN_FONT_SIZE = 16	# 16px
 MAIN_BUTTON_TEXT = '开始解析'
 MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
 MAIN_FONT_NAME = '微软雅黑'
-MENU_LABEL1 = 'paste URL'
-MENU_LABEL2 = 'copy URL'
+MENU_LABEL1 = '粘贴 URL'
+MENU_LABEL2 = '复制 URL'
 
 # functions
 
@@ -63,7 +63,7 @@ class MainWin(object):
         self.callback_main_button = None	# main button on click calback function
         self.callback_copy_url = None
         
-        pass
+        # __init__ done
     
     # when main button be clicked, this will be callback
     def _main_button_on_click(self):
@@ -78,11 +78,10 @@ class MainWin(object):
     
     # press C key in main Text, to copy all URLs
     def _on_c_key(self, event=None):
+        # DEBUG info
+        print('DEBUG: _on_c_key F9')
         # just callback copy_url
-        # self.callback_copy_url()
-        # FIXME debug here
-        print('DEBUG: _on_c_key')
-        pass
+        self.callback_copy_url()
     
     # press middle mouse botton, or click on paste menu in url Entry, to paste from clipboard
     def _on_url_entry_paste(self, event=None):
@@ -91,9 +90,8 @@ class MainWin(object):
         # check type and null string
         if (type(t) == type('')) and (t != ''):
             self.set_entry_text(t)
-        # FIXME debug here
+        # DEBUG info
         print('DEBUG: _on_url_entry_paste')
-        pass
     
     # hide menus
     def _hide_menus(self, event=None):
@@ -119,6 +117,9 @@ class MainWin(object):
     # operation functions
     def get_entry_text(self):
         return self.text_entry_var.get()
+    
+    def set_entry_text(self, text):
+        self.text_entry_var.set(text)
     
     def get_hd_text(self):
         return self.hd_entry_var.get()
@@ -238,7 +239,7 @@ class MainWin(object):
         t.config(yscrollcommand=sy.set)
         
         # bind more event to Text
-        t.bind('c', self._on_c_key)	# copy urls
+        root.bind('<F9>', self._on_c_key)	# copy urls
         t.bind('<Button-3>', self._on_main_text_menu)	# show main Text menu
         
         # create main window done
