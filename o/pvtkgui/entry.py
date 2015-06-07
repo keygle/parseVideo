@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.13.0 test201506072352
+# version 0.0.14.0 test201506080108
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -83,6 +83,8 @@ DL_XUNLEI_TEXT1 = '1. 正在向 迅雷 添加下载任务, 请稍候 ... '
 DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
 DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
 DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
+
+AUTO_RETRY_TEXT = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析清晰度 最高的 视频 ... \n    目标 hd=']
 
 # parse_video Tk GUI, pvtkgui config file path
 CONFIG_FILE = './etc/pvtkgui.conf.json'
@@ -272,6 +274,7 @@ def on_sub_finished(stdout, stderr):
         stderr = str(stderr.decode('utf-8', 'ignore'))
     # try to parse stdout as json
     flag_sub_ok = False
+    evinfo = None
     try:
         evinfo = json.loads(stdout)
         flag_sub_ok = True
@@ -285,7 +288,13 @@ def on_sub_finished(stdout, stderr):
     # write result
     
     # save evinfo
-    etc['evinfo'] = evinfo
+    if not flag_sub_ok:
+        try:
+            etc.pop('evinfo')
+        except Exception:
+            pass
+    else:
+        etc['evinfo'] = evinfo
     
     # save Text
     etc['main_text'] = out
@@ -299,12 +308,44 @@ def on_sub_finished(stdout, stderr):
         # no error, not let user change destroy result
         w.disable_main_text()
     
+    # check result, auto retry
+    if evinfo != None:
+        # check url numbers
+        ulist = []
+        for v in evinfo['video']:
+            for f in v['file']:
+                ulist.append(f)
+        if len(ulist) < 1:
+            # should start auto retry
+            auto_retry(evinfo)
+            return
+    
+    # get result OK, not need retry
+    
     # write result OK, set UI
     
     # enable main button
     w.enable_main_button()
     # set flag_doing
     etc['flag_doing'] = False
+    # done
+
+# auto retry, when analyse not get the hd= video, auto try to get max hd video info
+def auto_retry(evinfo):
+    # get hd
+    if len(evinfo['video']) < 1:
+        # DEBUG info
+        print('DEBUG: no video in evinfo, len 0')
+        return
+    hd = evinfo['video'][0]['hd']
+    url_to = evinfo['info']['url']
+    # set auto retry text
+    w = etc['w']
+    w.enable_main_text()
+    w.insert_main_text(AUTU_RETRY_TEXT[0] + str(hd) + '\n')
+    
+    # just start re analyse
+    run_sub.run_pv_thread(on_sub_finished, url_to, hd)
     # done
 
 # use xunlei do download all files
