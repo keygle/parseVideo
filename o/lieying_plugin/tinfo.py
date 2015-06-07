@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.0.1.0 test201506070243
+# version 0.0.2.0 test201506071104
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -31,7 +31,7 @@ from . import error
 
 # global vars
 LIEYING_PLUGIN_PROTOCOL = 'http'
-LIEYING_PLUGIN_ARGS = []
+LIEYING_PLUGIN_ARGS = {}
 
 # base function
 # make number length
@@ -65,13 +65,58 @@ def byte2unit(byte_n, unit0=['Byte', 'B']):
     # done
     return t + ' ' + units[i - 1] + unit0[1]
 
+def second2time(sec=0):
+    # make minute and hour
+    minute = math.floor(sec / 60)
+    sec -= minute * 60
+    hour = math.floor(minute / 60)
+    minute -= hour * 60
+    # make text
+    t = str(sec)	# second
+    # check .
+    if t.find('.') != -1:
+        ts = t.split('.')
+        if len(ts[0]) < 2:
+            ts[0] = '0' + ts[0]
+        if len(ts[1]) > 3:
+            ts[1] = ts[1][:3]
+        if int(ts[1]) == 0:
+            t = ts[0]
+        else:
+            t = ts[0] + '.' + ts[1]
+    else:
+        if len(t) < 2:
+            t = '0' + t
+    # minute
+    m = str(minute)
+    if len(m) < 2:
+        m = '0' + m
+    t = m + ':' + t
+    # add hour
+    if hour > 0:
+        h = str(hour)
+        if len(h) < 2:
+            h = '0' + h
+        t = h + ':' + t
+    # done
+    return t
+
 # function
 
 def make_format_text(vinfo):
-    pass
+    t = []
+    t += str(vinfo['hd']) + '_'
+    t += vinfo['quality'] + '_'
+    t += str(vinfo['size_px'][0]) + 'x' + str(vinfo['size_px'][1]) + '_'
+    t += vinfo['format'] + '_'
+    t += second2time(vinfo['time_s']) + '_'
+    t += str(vinfo['count'])
+    # done
+    return t
 
 def get_hd_from_format_text(format_tex):
-    pass
+    hd = format_text.split('_', 1)[0]
+    return int(hd)
 
 def make_title(tinfo):
     t = '_' + tinfo['title'] + '_' + tinfo['title_sub'] + '_' + tinfo['site_name']
