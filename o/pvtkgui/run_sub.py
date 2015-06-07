@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.0.6.0 test201506062227
+# version 0.0.7.0 test201506071437
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -42,27 +42,28 @@ def run_sub(arg, shell=False):
     return p.communicate()
 
 # run parse_video
-def run_pv(url):
+def run_pv(url, hd):
     # get python bin file
     pybin = sys.executable
     # make args
-    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', '--force-output-utf8', url]
+    arg = [pybin, BIN_PARSE_VIDEO, '--output-easy', '--force-output-utf8', '--min', hd, '--max', hd, url]
     # start parse_video
     stdout, stderr = run_sub(arg)
     # done
     return stdout, stderr
 
-def sub_thread(callback, url):
-    # FIXME debug info
+def sub_thread(callback, url, hd):
+    # DEBUG info
     print('DEBUG: run parse_video sub_thread start')
-    stdout, stderr = run_pv(url)
+    stdout, stderr = run_pv(url, hd)
+    # DEBUG info
     print('DEBUG: run parse_video sub_thream end')
     callback(stdout, stderr)
 
 # run parse_video in sub thread
-def run_pv_thread(callback, url):
+def run_pv_thread(callback, url, hd):
     # create thread
-    t = threading.Thread(target=sub_thread, args=(callback, url))
+    t = threading.Thread(target=sub_thread, args=(callback, url, hd))
     # just start it
     t.start()
 
