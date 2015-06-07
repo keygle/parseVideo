@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.11.0 test201506072308
+# version 0.0.12.0 test201506072331
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -79,10 +79,10 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 copyright 2015 sceext <sceext@foxmail.com> 2015.06
 '''
 
-DL_XUNLEI_TEXT1 = '正在向 迅雷 添加下载任务, 请稍候 ... '
-DL_XUNLEI_ERR1 = '错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
-DL_XUNLEI_TEXT2 = ['成功: 已经添加 ', ' 个下载任务至 迅雷. ']
-DL_XUNLEI_ERR2 = '错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
+DL_XUNLEI_TEXT1 = '1. 正在向 迅雷 添加下载任务, 请稍候 ... '
+DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
+DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
+DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
 
 # parse_video Tk GUI, pvtkgui config file path
 CONFIG_FILE = './etc/pvtkgui.conf.json'
@@ -317,19 +317,24 @@ def on_xunlei_dl():
     # set UI
     evinfo = etc['evinfo']
     w = etc['w']
+    w.enable_main_text()
     w.insert_main_text('\n')
     w.insert_main_text(DL_XUNLEI_TEXT1 + '\n')
+    w.disable_main_text()
     
     # try to add tasks to xunlei
     try:
         task_added_n = xunlei_dl.add_task(evinfo)
         # set UI
+        w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_TEXT2[0] + str(task_added_n) + DL_XUNLEI_TEXT2[1] + '\n')
     except xunlei_dl.ComTypesError:
         # set UI
+        w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR1 + '\n')
     except xunlei_dl.CreateComObjError:
         # set UI
+        w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
     # done
 
