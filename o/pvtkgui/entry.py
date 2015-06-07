@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.5.0 test201506071438
+# version 0.0.6.0 test201506071447
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -110,7 +110,17 @@ def write_config_file(conf_obj):
     # write conf file
     with open(CONFIG_FILE, 'w') as f:
         f.write(t)
+    # DEBUG info
+    print('DEBUG: save config file to \"' + CONFIG_FILE + '\"')
     # done
+
+def parse_hd_text(hd_text):
+    try:
+        hd = int(hd_text)
+    except Exception:
+        hd = DEFAULT_HD
+    # done
+    return hd
 
 # functions
 
@@ -156,6 +166,15 @@ def on_main_button():
     url_to = w.get_entry_text()
     # DEBUG info
     print('DEBUG: got input url \"' + url_to + '\"')
+    # get hd
+    hd_text = w.get_hd_text()
+    # DEBUG info
+    print('DEBUG: got hd_text \"' + hd_text + '\"')
+    # update etc conf
+    hd = parse_hd_text(hd_text)
+    etc['conf']['hd'] = hd
+    # DEBUG info
+    print('DEBUG: got hd=' + str(hd))
     # set UI
     
     # set flag
@@ -163,6 +182,8 @@ def on_main_button():
     # disable main button
     w.disable_main_button()
     w.enable_main_text()
+    # set hd
+    w.set_hd_text(str(hd))
     
     # set text
     w.set_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
@@ -170,7 +191,11 @@ def on_main_button():
     # DEBUG info
     print('DEBUG: starting parse_video')
     # just start parse_video
-    run_sub.run_pv_thread(on_sub_finished, url_to)
+    run_sub.run_pv_thread(on_sub_finished, url_to, hd, write_config=write_config)
+
+def write_config():
+    write_config_file(etc['conf'])
+    # done
 
 # on sub finished
 def on_sub_finished(stdout, stderr):

@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.0.7.0 test201506071437
+# version 0.0.8.0 test201506071447
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -52,18 +52,22 @@ def run_pv(url, hd):
     # done
     return stdout, stderr
 
-def sub_thread(callback, url, hd):
+def sub_thread(callback, url, hd, write_config=None):
     # DEBUG info
     print('DEBUG: run parse_video sub_thread start')
+    # write config file first
+    if write_config != None:
+        write_config()
+    # start parsev
     stdout, stderr = run_pv(url, hd)
     # DEBUG info
     print('DEBUG: run parse_video sub_thream end')
     callback(stdout, stderr)
 
 # run parse_video in sub thread
-def run_pv_thread(callback, url, hd):
+def run_pv_thread(callback, url, hd, write_config=None):
     # create thread
-    t = threading.Thread(target=sub_thread, args=(callback, url, hd))
+    t = threading.Thread(target=sub_thread, args=(callback, url, hd, write_config=write_config))
     # just start it
     t.start()
 
