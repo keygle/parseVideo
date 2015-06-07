@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.12.0 test201506072331
+# version 0.0.13.0 test201506072352
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -51,7 +51,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.4.0 test201506071747
+    version 0.0.5.0 test201506072352
 
 
 + hd 值 说明
