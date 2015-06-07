@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.8.0 test201506071738
+# version 0.0.9.0 test201506071747
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,16 +35,23 @@ from . import run_sub
 MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框 中 输入 视频播放页面 的 URL. 
                 点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
 
-    请使用 键盘 快捷键 Ctrl+V 粘贴, Ctrl+C 复制. 暂时不支持 右键 菜单 操作 ! 
-
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.3.0 test201506071503
+    version 0.0.4.0 test201506071747
 
-hd 值 说明
-     左侧上方的文本框, hd= 数字, 用于选择 解析并输出 哪种 清晰度 的视频文件 URL. 
- 这样做可以加快解析速度. 
-     hd 值 请在解析结果 中 查看. 
+
++ hd 值 说明
+       左侧上方的文本框, hd= 数字, 用于选择 解析并输出 哪种 清晰度 的视频文件 URL. 
+   这样做可以加快解析速度. 
+       hd 值 请在解析结果 中 查看. 
+
++ 操作说明
+  
+  鼠标 中键 点击 URL 输入文本框 (上方右侧), 可以直接从剪切板粘贴 URL. 
+  
+  按 F9 键 或 右键菜单, 可以直接复制 解析结果 中的全部 URL 到剪切板. 不复制其它文本. 
+
+
 
 
 
@@ -201,8 +208,8 @@ def write_config():
 
 # on copy URL, to copy urls in main_text to clip board
 def on_copy_url():
-    text = conf['main_text']
-    w = conf['w']
+    text = etc['main_text']
+    w = etc['w']
     to = get_url_list(text)
     # check result
     if to != None:
@@ -245,7 +252,7 @@ def on_sub_finished(stdout, stderr):
     out = stderr + '\n' + stdout + '\n'
     
     # save Text
-    conf['main_text'] = out
+    etc['main_text'] = out
     # set to main Text
     w.enable_main_text()
     w.set_main_text(out)

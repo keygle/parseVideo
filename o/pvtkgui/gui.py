@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.14.0 test201506071731
+# version 0.0.15.0 test201506071749
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -149,7 +149,12 @@ class MainWin(object):
     # copy paste with clip board
     def clip_get(self):
         root = self.root
-        return root.clipboard_get()
+        try:
+            t = root.clipboard_get()
+        except Exception:
+            t = None
+        # done
+        return t
     
     def clip_set(self, text):
         root = self.root
