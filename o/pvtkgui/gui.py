@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.15.0 test201506071749
+# version 0.0.17.0 test201506072234
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,8 @@ MAIN_BUTTON_TEXT = '开始解析'
 MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
 MAIN_FONT_NAME = '微软雅黑'
 MENU_LABEL1 = '粘贴 URL'
-MENU_LABEL2 = '复制 URL'
+MENU_LABEL2 = '复制全部 URL'
+MENU_XUNLEI_DL_TEXT = '使用 迅雷 下载全部文件'
 
 # functions
 
@@ -62,6 +63,7 @@ class MainWin(object):
         
         self.callback_main_button = None	# main button on click calback function
         self.callback_copy_url = None
+        self.callback_xunlei_dl = None
         
         # __init__ done
     
@@ -81,7 +83,16 @@ class MainWin(object):
         # DEBUG info
         print('DEBUG: _on_c_key F9')
         # just callback copy_url
-        self.callback_copy_url()
+        if self.callback_copy_url != None:
+            self.callback_copy_url()
+    
+    # callback xunlei dl
+    def _on_xunlei_dl(self):
+        if self.callback_xunlei_dl != None:
+            # DEBUG info
+            print('DEBUG: try to start xunlei dl')
+            
+            self.callback_xunlei_dl()
     
     # press middle mouse botton, or click on paste menu in url Entry, to paste from clipboard
     def _on_url_entry_paste(self, event=None):
@@ -129,9 +140,11 @@ class MainWin(object):
     
     def get_main_text(self):
         return self.text_main.get(1.0, END)
-        
-    def set_main_text(self, text=''):
+    
+    def clear_main_text(self):
         self.text_main.delete(1.0, END)
+    
+    def append_main_text(self, text=''):
         self.text_main.insert(END, text)
     
     def enable_main_text(self):
@@ -215,6 +228,7 @@ class MainWin(object):
         
         m1.add_command(label=MENU_LABEL1, command=self._on_url_entry_paste)
         m2.add_command(label=MENU_LABEL2, command=self._on_c_key)
+        m2.add_command(label=MENU_XUNLEI_DL_TEXT, command=self._on_xunlei_dl)
         
         # set hide menus
         root.bind('<Button-1>', self._hide_menus)
@@ -260,7 +274,7 @@ def debug1():
     t = w.get_entry_text()
     print('DEBUG: got entry text [' + t + ']')
     w.enable_main_text()
-    w.set_main_text(t)
+    w.append_main_text(t)
     w.disable_main_text()
     print('DEBUG: set main text')
 
