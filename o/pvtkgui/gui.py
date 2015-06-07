@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.11.0 test201506071712
+# version 0.0.12.0 test201506071722
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -84,23 +84,37 @@ class MainWin(object):
         print('DEBUG: _on_c_key')
         pass
     
-    # press mouse right button, to show paste menu in url Entry
-    def _on_url_entry_menu(self, event=None):
-        m = self.menu_url
-        m.post(event.x_root, event.y_root)
-        pass
-    
     # press middle mouse botton, or click on paste menu in url Entry, to paste from clipboard
     def _on_url_entry_paste(self, event=None):
+        # just paste from clipboard
+        t = self.clip_get()
+        # check type and null string
+        if (type(t) == type('')) and (t != ''):
+            self.set_entry_text(t)
         # FIXME debug here
         print('DEBUG: _on_url_entry_paste')
         pass
     
+    # hide menus
+    def _hide_menus(self, event=None):
+        self.menu_url.unpost()
+        self.menu_text.unpost()
+    
+    # press mouse right button, to show paste menu in url Entry
+    def _on_url_entry_menu(self, event=None):
+        # hide menu before show
+        self._hide_menus()
+        # show menu
+        m = self.menu_url
+        m.post(event.x_root, event.y_root)
+    
     # press mouse right button, to show copy urls menu is main Text
     def _on_main_text_menu(self, event=None):
+        # hide menu before show
+        self._hide_menus()
+        # show menu
         m = self.menu_text
         m.post(event.x_root, event.y_root)
-        pass
     
     # operation functions
     def get_entry_text(self):
@@ -195,6 +209,9 @@ class MainWin(object):
         
         m1.add_command(label=MENU_LABEL1, command=self._on_url_entry_paste)
         m2.add_command(label=MENU_LABEL2, command=self._on_c_key)
+        
+        # set hide menus
+        root.bind('<Button-1>', self._hide_menus)
         
         # bind key event for main Entry
         e.bind('<Return>', self._on_return_key)
