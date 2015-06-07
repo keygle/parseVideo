@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.14.0 test201506080108
+# version 0.0.15.0 test201506080112
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -51,7 +51,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.5.0 test201506072352
+    version 0.0.6.0 test201506080112
 
 
 + hd 值 说明
@@ -342,7 +342,7 @@ def auto_retry(evinfo):
     # set auto retry text
     w = etc['w']
     w.enable_main_text()
-    w.insert_main_text(AUTU_RETRY_TEXT[0] + str(hd) + '\n')
+    w.insert_main_text(AUTO_RETRY_TEXT[0] + str(hd) + '\n')
     
     # just start re analyse
     run_sub.run_pv_thread(on_sub_finished, url_to, hd)
