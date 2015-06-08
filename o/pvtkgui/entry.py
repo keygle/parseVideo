@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.15.0 test201506080112
+# version 0.0.17.0 test201506081250
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,6 +27,8 @@
 # import
 
 import json
+import time
+import re
 
 from . import gui
 from . import run_sub
@@ -84,11 +86,17 @@ DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接�
 DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
 DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
 
-AUTO_RETRY_TEXT = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析清晰度 最高的 视频 ... \n    目标 hd=']
+AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
+AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
 # parse_video Tk GUI, pvtkgui config file path
 CONFIG_FILE = './etc/pvtkgui.conf.json'
 DEFAULT_HD = 2
+
+WATCH_CLIP_SLEEP_TIME_S = 0.1	# sleep every 100ms
+CLIP_MATCH_RE = [
+    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+]
 
 etc = {}
 etc['w'] = None	# main window obj
@@ -180,6 +188,8 @@ def init():
     w.set_hd_text(hd)
     # DEBUG info
     print('DEBUG: set hd=' + hd)
+    # start watch clipboard thread
+    run_sub.start_thread(thread_watch_clip)
     
     # start main loop
     w.mainloop()
@@ -216,6 +226,9 @@ def on_main_button():
     w.enable_main_text()
     # set hd
     w.set_hd_text(str(hd))
+    
+    # save last_hd
+    etc['last_hd'] = hd
     
     # set text
     w.clear_main_text()
@@ -317,7 +330,7 @@ def on_sub_finished(stdout, stderr):
                 ulist.append(f)
         if len(ulist) < 1:
             # should start auto retry
-            auto_retry(evinfo)
+            auto_retry(evinfo, etc['last_hd'])
             return
     
     # get result OK, not need retry
@@ -331,21 +344,50 @@ def on_sub_finished(stdout, stderr):
     # done
 
 # auto retry, when analyse not get the hd= video, auto try to get max hd video info
-def auto_retry(evinfo):
+def auto_retry(evinfo, hd_last):
     # get hd
     if len(evinfo['video']) < 1:
         # DEBUG info
         print('DEBUG: no video in evinfo, len 0')
         return
-    hd = evinfo['video'][0]['hd']
+    # get hd list
+    hd_list = []
+    for v in evinfo['video']:
+        hd_list.push(v['hd'])
+    # sort hd
+    hd_list.sort(reverse=True)
+    if len(hd_list) < 1:
+        print('DEBUG: ERROR: hd_list length 0')
+        return
+    if hd_last in hd_list[0]:
+        print('DEBUG: ERROR: hd_last in hd_list')
+        return
+    # check max hd
+    if hd_last > hd_list[0]:
+        # should use max hd
+        hd_new = hd_list[0]
+        type_text = AUTO_RETRY_TEXT2[0]
+    elif hd_last < hd_list[-1]:
+        # should use min hd
+        hd_new = hd_list[-1]
+        type_text = AUTO_RETRY_TEXT2[2]
+    else:	# should select one hd
+        for i in range(len(hd_list):
+            if (hd_last < hd_list[i]) and (hd_last > hd_list[i + 1]):
+                hd_new = hd_list[i + 1]
+                type_text = AUTO_RETRY_TEXT2[1]
+                break
+    # auto select hd, done
+    
+    # get url
     url_to = evinfo['info']['url']
     # set auto retry text
     w = etc['w']
     w.enable_main_text()
-    w.insert_main_text(AUTO_RETRY_TEXT[0] + str(hd) + '\n')
+    w.insert_main_text(AUTO_RETRY_TEXT1[0] + type_text + AUTO_RETRY_TEXT1[1] + str(hd) + '\n')
     
     # just start re analyse
-    run_sub.run_pv_thread(on_sub_finished, url_to, hd)
+    run_sub.run_pv_thread(on_sub_finished, url_to, hd_new)
     # done
 
 # use xunlei do download all files
@@ -377,6 +419,40 @@ def on_xunlei_dl():
         # set UI
         w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
+    # done
+
+# watch clipboard thread
+def thread_watch_clip(arg=True):
+    # DEBUG info
+    print('DEBUG: thread watch_clip start')
+    # init
+    old_clip = ''
+    w = etc['w']
+    # loop check clip content
+    while arg:
+        # sleep before check
+        time.sleep(WATCH_CLIP_SLEEP_TIME_S)
+        # try to get clip content
+        try:
+            t = w.clip_get()
+        except Exception:
+            continue
+        # check changed
+        if t == old_clip:
+            continue
+        else:
+           old_clip = t
+        # check match re
+        rlist = CLIP_MATCH_RE
+        flag_match = False
+        for r in rlist:
+            if re.match(r, t):
+                flag_match = True
+                break
+        # if match, set it
+        if flag_match:
+            w.set_entry_text(t)
+        # set done
     # done
 
 # end entry.py
