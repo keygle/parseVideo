@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/lieying_plugin/run_sub: call and run parsev as sub process. 
-# version 0.0.2.0 test201506081527
+# version 0.0.3.0 test201506081624
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -55,6 +55,10 @@ def run_pv(arg, flag_debug=False):
 
 # use pythonw.exe on windows instead of python.exe
 def try_pythonw_on_win(pybin, check='python.exe', replace='pythonw.exe'):
+    # check just 'python'
+    if pybin == 'python':
+        return 'pythonw'
+    # check bin file path
     pybin_file = os.path.basename(pybin)
     pypath = os.path.dirname(pybin)
     # check python.exe
