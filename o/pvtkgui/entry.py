@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.19.0 test201506081306
+# version 0.0.20.0 test201506081507
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -53,7 +53,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.7.0 test201506081306
+    version 0.0.7.1 test201506081507
 
 
 + hd 值 说明
@@ -448,7 +448,7 @@ def thread_watch_clip(arg=True):
         rlist = CLIP_MATCH_RE
         flag_match = False
         for r in rlist:
-            if re.match(r, t):
+            if re.match(r, str(t)):
                 flag_match = True
                 break
         # if match, set it
