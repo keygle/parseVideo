@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.17.0 test201506081250
+# version 0.0.19.0 test201506081306
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -53,7 +53,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.6.0 test201506080112
+    version 0.0.7.0 test201506081306
 
 
 + hd 值 说明
@@ -193,7 +193,9 @@ def init():
     
     # start main loop
     w.mainloop()
-    # init done
+    # DEBUG info
+    print('DEBUG: mainloop stoped')
+    # init end
 
 # on button click
 def on_main_button():
@@ -353,13 +355,13 @@ def auto_retry(evinfo, hd_last):
     # get hd list
     hd_list = []
     for v in evinfo['video']:
-        hd_list.push(v['hd'])
+        hd_list.append(v['hd'])
     # sort hd
     hd_list.sort(reverse=True)
     if len(hd_list) < 1:
         print('DEBUG: ERROR: hd_list length 0')
         return
-    if hd_last in hd_list[0]:
+    if hd_last in hd_list:
         print('DEBUG: ERROR: hd_last in hd_list')
         return
     # check max hd
@@ -372,7 +374,7 @@ def auto_retry(evinfo, hd_last):
         hd_new = hd_list[-1]
         type_text = AUTO_RETRY_TEXT2[2]
     else:	# should select one hd
-        for i in range(len(hd_list):
+        for i in range(len(hd_list)):
             if (hd_last < hd_list[i]) and (hd_last > hd_list[i + 1]):
                 hd_new = hd_list[i + 1]
                 type_text = AUTO_RETRY_TEXT2[1]
@@ -384,7 +386,7 @@ def auto_retry(evinfo, hd_last):
     # set auto retry text
     w = etc['w']
     w.enable_main_text()
-    w.insert_main_text(AUTO_RETRY_TEXT1[0] + type_text + AUTO_RETRY_TEXT1[1] + str(hd) + '\n')
+    w.insert_main_text(AUTO_RETRY_TEXT1[0] + type_text + AUTO_RETRY_TEXT1[1] + str(hd_new) + '\n')
     
     # just start re analyse
     run_sub.run_pv_thread(on_sub_finished, url_to, hd_new)
