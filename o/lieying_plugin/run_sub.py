@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/lieying_plugin/run_sub: call and run parsev as sub process. 
-# version 0.0.1.1 test201506071112
+# version 0.0.2.0 test201506081527
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -41,15 +41,31 @@ def run_sub(arg, shell=False):
     p = subprocess.Popen(arg, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     return p.communicate()
 
-def run_pv(arg):
+def run_pv(arg, flag_debug=False):
     # get python bin file and parsev path
     pybin = sys.executable
+    if not flag_debug:
+        pybin = try_pythonw_on_win(pybin)
     pvpath = make_bin_parsev_path()
     # make final arg
     farg = [pybin, pvpath]
     farg += arg
     # just run sub process
     return run_sub(farg)
+
+# use pythonw.exe on windows instead of python.exe
+def try_pythonw_on_win(pybin, check='python.exe', replace='pythonw.exe'):
+    pybin_file = os.path.basename(pybin)
+    pypath = os.path.dirname(pybin)
+    # check python.exe
+    if pybin_file == check:
+        pybin_file = replace
+    # make final path
+    out = os.path.join(pypath, pybin_file)
+    # check pythonw.exe exist
+    if os.path.isfile(out):
+        return out	# use pythonw.exe
+    return pybin	# still use python.exe
 
 def make_bin_parsev_path():
     now_file = os.path.abspath(__file__)
@@ -59,7 +75,7 @@ def make_bin_parsev_path():
     # done
     return bin_file
 
-def run_one_pv(url, hd=None):
+def run_one_pv(url, hd=None, flag_debug=False):
     # make args
     if hd == None:
         arg = ['--min', '1', '--max', '0']	# will output null result
@@ -70,7 +86,7 @@ def run_one_pv(url, hd=None):
     # add url
     arg += [url]
     # done, just run it
-    return run_pv(arg)
+    return run_pv(arg, flag_debug=flag_debug)
 
 # end run_sub.py
 
