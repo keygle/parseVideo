@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.20.0 test201506081507
+# version 0.0.21.0 test201506092147
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -85,6 +85,9 @@ DL_XUNLEI_TEXT1 = '1. 正在向 迅雷 添加下载任务, 请稍候 ... '
 DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
 DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
 DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
+
+DL_XUNLEI_AUTO_INSTALL1 = '3. 提示: 正在自动安装 迅雷 下载 支持组件, 请稍候 ... '
+DL_XUNLEI_AUTO_INSTALL2 = '4. 成功: 已经完成安装 comtypes. 再试试吧~~~ 现在 使用 迅雷 下载 应该没有问题了. ^_^ :-)'
 
 AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
 AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
@@ -417,6 +420,9 @@ def on_xunlei_dl():
         # set UI
         w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR1 + '\n')
+        # start auto install comtypes to support xunlei dl
+        run_sub.start_thread(auto_install_comtypes)
+        # process done
     except xunlei_dl.CreateComObjError:
         # set UI
         w.enable_main_text()
@@ -456,6 +462,17 @@ def thread_watch_clip(arg=True):
             w.set_entry_text(t)
         # set done
     # done
+
+# auto install comtypes
+def auto_install_comtypes():
+    # set UI before start install
+    w = etc['w']
+    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL1)
+    # start install
+    xunlei_dl.install_comtypes()
+    # install done, update UI
+    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL2)
+    pass
 
 # end entry.py
 
