@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.0.18.0 test201506072251
+# version 0.1.0.0 test201506100025
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -29,6 +29,8 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.font import Font
+
+from .. import set_key
 
 # global vars
 
@@ -261,7 +263,9 @@ class MainWin(object):
         t.config(yscrollcommand=sy.set)
         
         # bind more event to Text
-        root.bind('<F9>', self._on_c_key)	# copy urls
+        root.bind(set_key.KEY_COPY_URLS, self._on_c_key)	# copy urls
+        root.bind(set_key.KEY_PASTE_URL, self._on_url_entry_paste)
+        root.bind(set_key.KEY_START_PARSE, self._on_return_key)
         t.bind('<Button-3>', self._on_main_text_menu)	# show main Text menu
         
         # create main window done
