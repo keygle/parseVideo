@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.22.0 test201506092212
+# version 0.1.0.0 test201506092223
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -53,7 +53,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.7.1 test201506081507
+    version 0.0.8.0 test201506092223
 
 
 + hd 值 说明
@@ -471,14 +471,14 @@ def auto_install_comtypes():
     print('DEBUG: auto install comtypes thread started ')
     # set UI before start install
     w = etc['w']
-    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL1)
+    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL1 + '\n')
     # start install
     xunlei_dl.install_comtypes()
     # DEBUG info
     print('DEBUG: install comtypes done')
     # install done, update UI
-    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL2)
-    pass
+    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL2 + '\n')
+    # auto install done
 
 # end entry.py
 
