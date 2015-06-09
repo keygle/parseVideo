@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.0.3.1 test201506092212
+# version 0.0.4.0 test201506092339
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -25,6 +25,8 @@
 #
 
 # import
+
+import imp
 
 from . import run_sub
 
@@ -63,6 +65,8 @@ def import_cc():
     global cc
     try:
         import comtypes.client as cc0
+        # auto try to reload
+        imp.reload(cc0)
     except Exception as e:
         raise ComTypesError(e)
     # done
