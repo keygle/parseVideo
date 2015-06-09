@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.0.21.0 test201506092147
+# version 0.0.22.0 test201506092212
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -421,6 +421,8 @@ def on_xunlei_dl():
         w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR1 + '\n')
         # start auto install comtypes to support xunlei dl
+        # DEBUG info
+        print('DEBUG: starting auto install thread ... ')
         run_sub.start_thread(auto_install_comtypes)
         # process done
     except xunlei_dl.CreateComObjError:
@@ -465,11 +467,15 @@ def thread_watch_clip(arg=True):
 
 # auto install comtypes
 def auto_install_comtypes():
+    # DEBUG info
+    print('DEBUG: auto install comtypes thread started ')
     # set UI before start install
     w = etc['w']
     w.insert_main_text(DL_XUNLEI_AUTO_INSTALL1)
     # start install
     xunlei_dl.install_comtypes()
+    # DEBUG info
+    print('DEBUG: install comtypes done')
     # install done, update UI
     w.insert_main_text(DL_XUNLEI_AUTO_INSTALL2)
     pass
