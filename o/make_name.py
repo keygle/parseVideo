@@ -28,16 +28,17 @@ def make(title, title_sub, title_no, title_short, site, part_i, num_len, ext):
     part_i = num_len(part_i, 4)
     
     # 下面一行, name 就是最终 生成的 文件名
-    name = '_' + part_i + '_' + title + '_' + title_sub + '_' + part_i
+    name = '_' + title_no + '_' + title + '_' + title_sub + '_' + part_i
     
     # 下面一行, 为文件名添加扩展名
     name += ext
     
-    # 上面的默认情况如下, 生成的文件名格式类似 
-    # 
+    # 上面的默认情况如下, 生成的文件名格式类似
+    # _0044_少年四大名捕未删减版第44集_决胜归来大团圆_0001.flv
+    # _0002_花千骨第2集_灵虫糖宝初降世_0001.flv
     
     return name
 
-# end make_name.py, 2015-06-10 13:23 GMT+0800 CST
+# end make_name.py, 2015-06-10 13:54 GMT+0800 CST
 
 
