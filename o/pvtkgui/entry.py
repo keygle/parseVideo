@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.4.0 test201506102133
+# version 0.1.5.0 test201506102145
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -325,9 +325,13 @@ def on_sub_finished(stdout, stderr):
     w.append_main_text(out)
     
     # check error
-    if stderr == '':
+    if flag_sub_ok:
+        # DEBUG info
+        print('DEBUG: entry.py: flag_sub_ok, True')
         # no error, not let user change destroy result
         w.disable_main_text()
+    else:
+        print('DEBUG: entry.py: flag_sub_ok, False')
     
     # check result, auto retry
     if evinfo != None:
@@ -337,6 +341,8 @@ def on_sub_finished(stdout, stderr):
             for f in v['file']:
                 ulist.append(f)
         if len(ulist) < 1:
+            # DEBUG info
+            print('DEBUG: entry.py: auto retry, last_hd=' + str(etc['last_hd']))
             # should start auto retry
             auto_retry(evinfo, etc['last_hd'])
             return

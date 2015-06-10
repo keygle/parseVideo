@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.3.0 test201506051626
+# version 0.1.4.0 test201506102136
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -113,6 +113,9 @@ def get_one_info(one_raw):
         print('lib.iqiyi: DEBUG: list_i [' + str(list_i) + '] starting get info ... ')
     # get video meta data
     meta_url = raw['meta_base'] + raw['meta_url']
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: [' + str(list_i) + '] got video meta_data url \"' + meta_url + '\"')
     meta = get_one_video_meta_data(meta_url)
     # add more info
     vinfo['size_byte'] = number(meta['filesize'])
