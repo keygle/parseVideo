@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.4.0 test201506102136
+# version 0.1.5.1 test201506110055
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,6 +35,7 @@ import sys
 
 from .o import exports
 from .. import base
+from .. import error
 
 from . import get_base_info
 
@@ -151,7 +152,11 @@ def get_one_info(one_raw):
     # done
     return vinfo
 
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
+def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url=''):
+    # check video list
+    if info['data']['vp']['tkl'] == '':
+        # not support this URL, may be a VIP video
+        raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list
     raw_list = info['data']['vp']['tkl'][0]['vs']
     video_list = []
