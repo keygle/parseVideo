@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.0.4.1 test201506092355
+# version 0.0.8.0 test201506101323
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -29,6 +29,9 @@
 import imp
 
 from . import run_sub
+from . import xunlei_agent
+
+from .. import make_name
 
 make_rename_list_ = None
 output_text_ = None
@@ -56,7 +59,7 @@ class CreateComObjError(XunleiDlError):
 # global vars
 cc = None	# comtypes.client
 
-INSTALL_COMTYPES_BIN = 'install.bat'
+INSTALL_COMTYPES_BIN = 'o/install.bat'
 
 # functions
 
@@ -78,10 +81,10 @@ def import_cc():
 # create ThunderAgent.Agent com object
 def create_thunder_agent():
     try:
-        ta = cc.CreateObject('ThunderAgent.Agent')
+        ta = cc.CreateObject(xunlei_agent.AGENT1)
     except Exception as e1:
         try:	# try Agent64
-            ta = cc.CreateObject('ThunderAgent.Agent64')
+            ta = cc.CreateObject(xunlei_agent.AGENT2)
         except Exception as e2:
             raise CreateComObjError(e1, e2)
     # done
@@ -112,11 +115,13 @@ def add_task(evinfo):
 # make task list
 def make_task_list(evinfo):
     make_num_len = make_rename_list_.make_num_len
-    # make file name
+    # make file name before
     inf = evinfo['info']
-    fname = inf['title'] + '_' + inf['title_sub'] + '_'
-    if inf['title_no'] > 0:
-        fname = make_num_len(inf['title_no']) + '_' + fname
+    title = inf['title']
+    title_sub = inf['title_sub']
+    title_no = inf['title_no']
+    title_short = inf['title_short']
+    site_name = inf['site_name']
     # get url list
     i = 0
     tlist = []
@@ -126,7 +131,8 @@ def make_task_list(evinfo):
             one = {}
             one['url'] = f['url']
             i += 1
-            one['file'] = fname + make_num_len(i) + ext_name
+            # use make_name_host to make final file name
+            one['file'] = make_name_host(title=title, title_sub=title_sub, title_no=title_no, title_short=title_short, part_i=i, ext=ext_name, site=site_name)
             # add one task done
             tlist.append(one)
     # done
@@ -135,6 +141,18 @@ def make_task_list(evinfo):
 # auto install comtypes support
 def install_comtypes():
     run_sub.run_sub([INSTALL_COMTYPES_BIN], shell=True)
+    # done
+
+# make_name host function
+def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', site=''):
+    return make_name.make(title, title_sub, title_no, title_short, site, part_i, make_name_host_num_len, ext)
+
+def make_name_host_num_len(title_no=-1, num_len=4):
+    make_num_len = make_rename_list_.make_num_len
+    if title_no < 1:
+        return ''
+    else:
+        return make_num_len(title_no, num_len)
     # done
 
 # end xunlei_dl.py
