@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.2.0 test201506101505
+# version 0.1.4.0 test201506102133
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -100,6 +100,9 @@ WATCH_CLIP_SLEEP_TIME_S = 0.1	# sleep every 100ms
 CLIP_MATCH_RE = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
 ]
+
+# NOTE should be set by out
+flag_debug = False
 
 etc = {}
 etc['w'] = None	# main window obj
@@ -240,9 +243,9 @@ def on_main_button():
     w.append_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
     
     # DEBUG info
-    print('DEBUG: starting parse_video')
+    print('DEBUG: starting parse_video, flag_debug = ' + str(flag_debug))
     # just start parse_video
-    run_sub.run_pv_thread(on_sub_finished, url_to, hd, write_config=write_config)
+    run_sub.run_pv_thread(on_sub_finished, url_to, hd, write_config=write_config, flag_debug=flag_debug)
 
 def write_config():
     write_config_file(etc['conf'])
