@@ -41,7 +41,7 @@ THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.0.3.0 test201506111722'
 
 # http://www.letv.com/ptv/vplay/22695165.html
 # http://www.letv.com/ptv/vplay/22699924.html
-RE_SUPPORT_URL = '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html$'
+RE_SUPPORT_URL = '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html'
 
 RE_VID = 'http://www\.letv\.com/ptv/vplay/([0-9]+)\.html'
 
