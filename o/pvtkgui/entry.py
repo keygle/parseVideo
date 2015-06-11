@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.5.0 test201506102145
+# version 0.1.6.0 test201506112233
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -53,7 +53,7 @@ MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框
 
 
  parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.9.0 test201506101504
+    version 0.0.10.0 test201506112233
 
 
 + hd 值 说明
@@ -99,6 +99,12 @@ DEFAULT_HD = 2
 WATCH_CLIP_SLEEP_TIME_S = 0.1	# sleep every 100ms
 CLIP_MATCH_RE = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html', 
+    
+    # support for evparse
+    '^http://tv\.sohu\.com/(19|20)[0-9]{6}/n[0-9]+\.shtml', 
+    '^http://www\.hunantv\.com/v/2/[0-9]+/[a-z]/[0-9]+\.html', 
+    '^http://v\.pptv\.com/show/[A-Za-z0-9]+\.html', 
 ]
 
 # NOTE should be set by out
