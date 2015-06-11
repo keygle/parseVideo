@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.20.0 test201506110100
+# version 0.1.21.0 test201506111043
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -39,6 +39,7 @@ import json
 
 from . import output_text
 from . import make_rename_list
+from . import error_zh_cn
 
 # NOTE should be set
 entry = None
@@ -53,7 +54,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.4.1 test201506110100'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.5.0 test201506111042'
 
 etc = {}
 etc['flag_debug'] = False
@@ -168,11 +169,20 @@ def start_parse():
         # check args length
         if len(err.args) == 2:
             msg, url = err.args
-            print_stdout('parse_video: ERROR: not support this url \"' + url + '\"')
+            print_stdout('parse_video: ' + error_zh_cn.ERR_TEXT_NOT_SUPPORT_URL + ' \"' + url + '\"')
         # check get vid error
         if len(err.args) == 3:
             url = err.args[1]
-            print_stdout('parse_video: ERROR: not support this url (' + str(err.args[2]) + ') \"' + url + '\"')
+            # check error msg
+            err_msg = err.args[2]
+            if err_msg == 'get_vid':
+                err_msg = error_zh_cn.ERR_TEXT_GET_VID
+            elif err_msg == 'may be a VIP video':
+                err_msg = error_zh_cn.ERR_TEXT_MAY_BE_VIP
+            elif err_msg == 'load_page':
+                err_msg = error_zh_cn.ERR_TEXT_LOAD_PAGE
+            # just print it
+            print_stdout('parse_video: ' + error_zh_cn.ERR_TEXT_NOT_SUPPORT_URL + ' (' + err_msg + ') \"' + url + '\"')
         return 2
     # done
 
