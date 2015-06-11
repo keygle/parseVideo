@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.1.2.0 test201506102133
+# version 0.1.3.0 test201506112206
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,6 +30,8 @@ import subprocess
 import threading
 import json
 
+from . import support_evparse
+
 # global vars
 
 BIN_PARSE_VIDEO = 'parsev'
@@ -46,12 +48,22 @@ def run_sub(arg, shell=False):
 def run_pv(url, hd, flag_debug=False):
     # get python bin file
     pybin = sys.executable
-    # make args
-    hd = str(hd)
-    arg = [pybin, BIN_PARSE_VIDEO, '--force-output-utf8', '--min', hd, '--max', hd, url]
-    # check flag_debug
-    if flag_debug:
-        arg.append('--debug')
+    
+    # check support evparse
+    if support_evparse.check_support_evp(url):
+        # make evp args
+        arg = support_evparse.get_evp_arg(url, hd=hd, flag_debug=flag_debug)
+        # add py bin
+        arg = [pybin] + arg
+    else:	# use parse_video
+        # make args
+        hd = str(hd)
+        arg = [pybin, BIN_PARSE_VIDEO, '--force-output-utf8', '--min', hd, '--max', hd, url]
+        # check flag_debug
+        if flag_debug:
+            arg.append('--debug')
+    # make args done
+    
     # DEBUG info
     arg_text = json.dumps(arg)
     print('DEBUG: run_sub: start parsev with args ' + arg_text)
