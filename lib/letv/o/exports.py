@@ -12,6 +12,7 @@ from ... import flash
 from .k import TimeStamp as TimeStamp0
 from .k import transfer as transfer0
 from . import ListNewProxy as ListNewProxy0
+from .youtube_dl import letv as letv0
 
 # set in
 TimeStamp0.set_import(flash)
@@ -20,6 +21,7 @@ TimeStamp0.set_import(flash)
 
 transfer = transfer0
 ListNewProxy = ListNewProxy0.ListNewProxy
+youtube_dl_letv = letv0
 
 # end exports.py
 

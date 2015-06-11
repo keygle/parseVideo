@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # parse_video: lib/letv/get_base_info
-# version 0.0.4.0 test201506111722
+# version 0.0.5.0 test201506111905
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #

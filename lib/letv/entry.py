@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/letv 
-# version 0.0.5.0 test201506111722
+# version 0.0.6.0 test201506111915
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -93,9 +93,9 @@ def parse(url_to):	# this site entry main entry function
     evinfo['info']['title_sub'] = more['sub_title']
     evinfo['info']['title_short'] = more['short_title']
     evinfo['info']['title_no'] = more['no']
-    # TODO FIXME reserved
+    
     # get video info
-    # evinfo['video'] = get_video_info.get_info(info, hd_max=etc['hd_max'], hd_min=etc['hd_min'], flag_debug=etc['flag_debug'])
+    evinfo['video'] = get_video_info.get_info(info, hd_max=etc['hd_max'], hd_min=etc['hd_min'], flag_debug=etc['flag_debug'])
     # done
     return evinfo
 
