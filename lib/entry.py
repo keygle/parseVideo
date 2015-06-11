@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.7.0 test201506061030
+# version 0.1.8.0 test201506111729
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -48,14 +48,20 @@ etc['EV_INFO_SOURCE'] = 'parse_video'
 # lists
 
 LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
+    
+    # 271
     # http://www.iqiyi.com/v_19rrn64t40.html
     # http://www.iqiyi.com/w_19rrp737k5.html
     # http://yule.iqiyi.com/pcb.html?src=focustext_0_20130527_7
     # http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
     # http://www.iqiyi.com/dianshiju/sjll_wjt.html
     # http://www.iqiyi.com/dianshiju/20121108/879eec15c7810d10.html
-    'http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
+    '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
     # NOTE check iqiyi supported url, by get vid and tvid, not by RE to url
+    
+    # letv
+    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html' : 'letv', 
+    
     # TODO
     #
     # '^http://' : 'youku', 
@@ -67,6 +73,7 @@ LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
 
 LIST_SITE = {	# list of site to site_name
     'iqiyi' : '爱奇艺', 
+    'letv' : '乐视网', 
     'youku' : '优酷', 
     'pps' : 'PPS', 
     'tudou' : '土豆', 
@@ -74,6 +81,7 @@ LIST_SITE = {	# list of site to site_name
 
 LIST_EXTRACTOR_NAME = {	# export evinfo extractor_name
     'iqiyi' : 'iqiyi1', 
+    'letv' : 'letv1', 
     'youku' : 'youku1', 
     'pps' : 'pps1', 
     'tudou' : 'tudou1', 
@@ -98,6 +106,11 @@ def extractor_import_iqiyi():
     from .iqiyi import entry as entry0
     return entry0
 
+def extractor_import_letv():
+    from .letv import entry as entry0
+    return entry0
+
+# TODO not finished
 def extractor_import_youku():
     from .youku import entry as entry0
     return entry0
@@ -113,6 +126,8 @@ def extractor_import_tudou():
 # list used for extractor_name to extractor
 EXTRACTOR_IMPORT_LIST = {
     'iqiyi' : extractor_import_iqiyi, 
+    'letv' : extractor_import_letv, 
+    # TODO not finished
     'youku' : extractor_import_youku, 
     'pps' : extractor_import_pps, 
     'tudou' : extractor_import_tudou, 
