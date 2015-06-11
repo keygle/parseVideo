@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/letv
-# version 0.0.1.0 test201506111914
+# version 0.0.2.0 test201506111922
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -26,6 +26,8 @@
 #
 
 # import
+
+import math
 
 from .o import exports
 
@@ -57,8 +59,6 @@ def get_one_info(one_raw):
     # add more video info
     vinfo['format'] = final_info['ext']
     vinfo['file'] = []
-    # read flag_debug
-    flag_debug = one_raw['flag_debug']
     # add more info
     vinfo['size_byte'] = -1	# TODO not support this
     vinfo['time_s'] = raw['time_s']
@@ -68,7 +68,7 @@ def get_one_info(one_raw):
     # check flag_get_file
     if raw['flag_get_file']:
         # add file info
-        onef = []
+        onef = {}
         onef['size'] = -1	# TODO not support this
         onef['time_s'] = raw['time_s']
         # add final url
@@ -111,7 +111,7 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
     vinfo = []
     for one in video_list:
         onev = get_one_info(one)
-        vinfo.append(vinfo)
+        vinfo.append(onev)
     # get video info done
     # done
     return vinfo
