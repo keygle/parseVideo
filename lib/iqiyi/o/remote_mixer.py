@@ -42,7 +42,7 @@ class MixerRemote(object):
         self.vid = ''
         self.tvid = ''
         # to get uuid
-        self.uuid '' # NOTE should be set
+        self.uuid = '' # NOTE should be set
         
         # can only pass null
         self.ugcAuthKey = ''	# password string of the video
