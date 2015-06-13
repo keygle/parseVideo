@@ -25,7 +25,10 @@ def mix0(tvid, tm):
     src = 'hsalf'
     enc.append(str(tm))
     enc.append(tvid)
-    sc = md5_hash(enc)
+    
+    enc_text = ('').join(enc)
+    sc = md5_hash(enc_text)
+    
     return tm, sc, src
 
 # class
