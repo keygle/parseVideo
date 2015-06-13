@@ -9,8 +9,7 @@ import random
 from . import config as Config
 from .key import md5_hash
 
-# TODO now just use node instead
-from . import node_port
+from .DMEmagelzzup import DMEmagelzzup
 
 # import from out
 getTimer = None
@@ -26,7 +25,6 @@ class MixerRemote(object):
     
     def __init__(self, param1=None):
         
-        # TODO just reserved
         # self._holder = param1;
         
         # add some flags
@@ -56,7 +54,6 @@ class MixerRemote(object):
     
     def getRequest(self):
         
-        # TODO
         # just reserved
         # self._requestDuration = getTimer()
         # if self._holder.pingBack:
@@ -67,13 +64,12 @@ class MixerRemote(object):
         else:
             _loc2_ = 0
         
-        # TODO
-        # var _loc3:Object = DMEmagelzzup.mix(this._holder.runtimeData.tvid) TODO
-        # var _loc4:uint = _loc3.tm # TODO
-        _loc4 = getTimer()  # TODO
+        # var _loc3:Object = DMEmagelzzup.mix(this._holder.runtimeData.tvid)
+        # var _loc4:uint = _loc3.tm
+        _loc4 = getTimer()
         
-        # FIXME now use node instead
-        _loc3 = node_port.mix(self.tvid, _loc4)
+        # NOTE use iqiyi new hash function here
+        _loc3 = DMEmagelzzup.mix(self.tvid, _loc4)
         
         # var _loc5:String
         # var _loc6:String
@@ -102,7 +98,7 @@ class MixerRemote(object):
             _ap += '&vid=' + self.vid
             _ap += '&vinfo=' + _loc2
             _ap += '&tm=' + _loc4
-            _ap += '&enc=' + _loc3['sc']    # TODO
+            _ap += '&enc=' + _loc3['sc']
             _ap += '&qyid=' + self.uuid
             _ap += '&puid=' + self.passportID
             _ap += '&authKey=' + _loc5
