@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.23.0 test201506130137
+# version 0.1.24.0 test201506151427
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,18 +27,12 @@
 
 # NOTE support --max --min --debug command line options. 
 # NOTE support --fix-unicode output option. 
-# NOTE support --output-easy output result in easy text. 
-# NOTE support --make-rename-list write rename list json file
-# NOTE support --write-output-file write URLs in txt file
-# NOTE support --force-output-utf8 to write utf-8 encoding text to stdout
 
 # import
 
 import sys
 import json
 
-from . import output_text
-from . import make_rename_list
 from . import error_zh_cn
 
 # NOTE should be set
@@ -54,15 +48,11 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.6.1 test201506130137'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.7.0 test201506151426'
 
 etc = {}
 etc['flag_debug'] = False
 etc['flag_fix_unicode'] = False
-etc['flag_output_easy_text'] = False
-etc['flag_make_rename_list'] = False
-etc['flag_write_output_file'] = False
-etc['flag_force_output_utf8'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
 
@@ -73,13 +63,8 @@ etc['url_to'] = ''	# url to analyse
 # functions
 
 def print_stdout(text):
-    # check flag
-    if etc['flag_force_output_utf8']:
-        t = text.encode('utf-8')
-        sys.stdout.buffer.write(t)
-    else:	# just print it
-        print(text)
-    # done
+    # just print it
+    print(text)
 
 # print functions
 def print_version():
@@ -151,20 +136,10 @@ def start_parse():
     url_to = etc['url_to']
     try:
         evinfo = entry.parse(url_to)
-        # check flag_output_easy_text
-        if etc['flag_output_easy_text']:
-            t = output_text.make_easy_text(evinfo, etc['flag_write_output_file'])
-        else:
-            # just print info as json
-            t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
+        # just print info as json
+        t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
         # just print it
         print_stdout(t)
-        # make rename list file
-        if etc['flag_make_rename_list']:
-            # debug info
-            if etc['flag_debug']:
-                print_stdout('DEBUG: writing rename list ... ')
-            make_rename_list.make_list(evinfo)
     except error.NotSupportURLError as err:
         # check args length
         if len(err.args) == 2:
@@ -209,14 +184,6 @@ def get_args():
             etc['flag_debug'] = True
         elif one == '--fix-unicode':
             etc['flag_fix_unicode'] = True
-        elif one == '--output-easy':
-            etc['flag_output_easy_text'] = True
-        elif one == '--make-rename-list':
-            etc['flag_make_rename_list'] = True
-        elif one == '--write-output-file':
-            etc['flag_write_output_file'] = True
-        elif one == '--force-output-utf8':
-            etc['flag_force_output_utf8'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]
