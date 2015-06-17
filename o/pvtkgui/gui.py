@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.7.0 test201506171852
+# version 0.1.10.0 test201506172011
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,6 +36,7 @@ import tkinter.tix as tix
 
 from . import gui_style as guis
 from ..gui import tk_base
+from . import gui2
 
 # global vars
 
@@ -60,7 +61,56 @@ class MainWin(tk_base.TkBaseObj):
         self.p_m = None	# MenuHost part
     
     # operations
-    # TODO
+    
+    def get_hd_text(self):
+        return self.p_top.get_hd_text()
+    
+    def set_hd_text(self, text=''):
+        self.p_top.set_hd_text(text=text)
+    
+    def get_url_text(self):
+        return self.p_top.get_url_text()
+    
+    def set_url_text(self, text=''):
+        self.p_top.set_url_text(text=text)
+    
+    def set_button_status(self, status='start'):
+        if status == 'stop':
+            self.p_top.set_button_style('Red.TButton')
+            self.p_top.set_button_text(guis.ui_text['stop_analyse'])
+        else:	# set as start
+            self.p_top.set_button_style('Blue.TButton')
+            self.p_top.set_button_text(guis.ui_text['start_analyse'])
+        # set button status done
+    
+    def set_url_status(self, status='none'):
+        if status == 'ok':
+            # set red style
+            self.p_top.set_url_text_style('Red.TEntry')
+        else:	# set as none normal status
+            self.p_top.set_url_text_style('HD.TEntry')
+        # set url status done
+    
+    def disable_main_text(self):
+        self.p_body.disable()
+    
+    def enable_main_text(self):
+        self.p_body.enable()
+    
+    def clear_main_text(self):
+        self.p_body.clear()
+    
+    def get_main_text(self, flag='selected'):
+        return self.p_body.get_text(flag=flag)
+    
+    def add_main_text(self, text='', flag='end', tag=None):
+        self.p_body.add_text(text=text, flag=flag, style_type=tag)
+    
+    def get_xunlei_path_text(self):
+        return self.p_footer.get_text()
+    
+    def set_xunlei_path_text(self, text=''):
+        self.p_footer.set_text(text=text)
     
     # event to send, event list
     #	start_stop	top part, start_stop button
@@ -128,8 +178,6 @@ class MainWin(tk_base.TkBaseObj):
             self._send('xunlei_dl_rest_url', data)
         # process sub event done
     
-    # operations
-    
     # start main loop
     def mainloop(self):
         # just start main loop
@@ -147,11 +195,11 @@ class MainWin(tk_base.TkBaseObj):
         self.root = root
         
         # create sub part
-        top = PartTop()
+        top = gui2.PartTop()
         self.p_top = top
-        body = PartBody()
+        body = gui2.PartBody()
         self.p_body = body
-        footer = PartFooter()
+        footer = gui2.PartFooter()
         self.p_footer = footer
         
         # create main font
@@ -306,260 +354,6 @@ class MenuHost(tk_base.TkBaseObj):
         # create menu done
     
     # end MenuHost class
-
-# top part
-class PartTop(tk_base.TkBaseObj):
-    
-    def __init__(self):
-        super().__init__()
-        
-        # NOTE font and style should be set
-        self.hd_font = None
-        self.hd_entry_font = None
-        self.hd_style = guis.top_conf['hd_style']
-        self.hd_entry_style = guis.top_conf['hd_entry_style']
-        self.button_style = guis.top_conf['button_style']
-        
-        self.entry_font = None
-        self.entry_style = guis.top_conf['entry_style']
-        
-        self.p_hd = None	# hd part
-        self.p_e = None		# main URL entry
-        self.p_b = None		# main button
-        
-        self.tk_f = []	# tkinter frames
-    
-    # operations
-    def get_hd_text(self):
-        return self.p_hd.get_text()
-    
-    def set_hd_text(self, text=''):
-        self.p_hd.set_text(text=text)
-    
-    def get_url_text(self):
-        return self.p_e.get_text()
-    
-    def set_url_text(self, text=''):
-        self.p_e.set_text(text=text)
-    
-    def set_url_text_style(self, style='TEntry'):
-        self.p_e.set_entry_style(style=style)
-    
-    def set_button_text(self, text=''):
-        self.p_b.config(text=text)
-    
-    def set_button_style(self, style='TButton'):
-        self.p_b.config(style=style)
-    
-    # to send event list
-    #	start_stop	start or stop analyse
-    #	show_menu	show top part URL entry menu
-    #	paste		should paste text in URL entry
-    
-    # on sub el
-    def _on_button(self, event=None):
-        self._send('start_stop', event)
-    
-    def _on_hd_entry(self, event, data):
-        if event == 'key_enter':
-            self._send('start_stop', data)
-        # process sub el done
-    
-    def _on_url_entry(self, event, data):
-        if event == 'key_enter':
-            self._send('start_stop', data)
-        elif event == 'mouse_right':
-            self._send('show_menu', data)
-        elif event == 'mouse_middle':
-            self._send('paste', data)
-        # process sub el done
-    
-    def start(self, parent):
-        # save parent
-        self.parent = parent
-        # create UI
-        self._create()
-        self._set_el()
-    
-    def _create(self):
-        hd = tk_base.EntryBox()
-        self.p_hd = hd
-        e = tk_base.EntryBox()
-        self.p_e = e
-        b = Button(self.parent, command=self._on_button, text=guis.ui_text['start_analyse'], style=self.button_style)
-        self.p_b = b
-        # set EntryBox
-        hd.label_text = guis.ui_text['hd']
-        hd.entry_width = guis.HD_ENTRY_WIDTH
-        hd.label_font = self.hd_font
-        hd.entry_font = self.hd_entry_font
-        hd.label_style = self.hd_style
-        hd.entry_style = self.hd_entry_style
-        
-        e.entry_font = self.entry_font
-        e.entry_style = self.entry_style
-        
-        # pack it
-        b.pack(side=RIGHT, fill=Y, expand=False)
-        
-        # create frames
-        f = Frame(self.parent)
-        self.tk_f.append(f)
-        hd.start(f)
-        f.pack(side=LEFT, fill=Y, expand=False)
-        
-        e.start(self.parent)
-        
-        # create UI done
-    
-    def _set_el(self):
-        hd = self.p_hd
-        e = self.p_e
-        
-        hd.callback = self._on_hd_entry
-        e.callback = self._on_url_entry
-    
-    # end PartTop class
-
-# body part
-class PartBody(tk_base.TkBaseObj):
-    
-    def __init__(self):
-        super().__init__()
-        
-        # NOTE font and style should be set
-        self.text_color = guis.main_text_conf['color']
-        self.text_background_color = guis.main_text_conf['background_color']
-        self.text_size = guis.main_text_size
-        self.text_cursor_color = guis.main_text_conf['cursor_color']
-        
-        self.text_font = None
-        
-        self.text = None	# tk_base.TextBox
-    
-    # to send event list
-    #	show_main_menu
-    
-    # operations
-    
-    def enable(self):
-        self.text.enable()
-    
-    def disable(self):
-        self.text.disable()
-    
-    def get_text(self, flag='selected'):
-        return self.text.get_text(flag=flag)
-    
-    def add_text(self, text='', flag='end', style_type=None):
-        # get tag name
-        tag_name = guis.MAIN_TEXT_STYLE_TO_TAG_LIST[style_type]
-        # just add it
-        self.text.add_text(text=text, flag=flag, tag=tag_name)
-    
-    def clear(self):
-        self.text.clear()
-    
-    # on sub el
-    
-    def _on_text(self, event, data):
-        # check event type
-        if event == 'mouse_right':
-            self._send('show_main_menu', data)
-    
-    def start(self, parent):
-        # save parent
-        self.parent = parent
-        # create UI
-        self._create()
-        # set main text tag style
-        guis.set_main_text_tag(self.text)
-        # set el
-        self._set_el()
-        # done
-    
-    def _create(self):
-        t = tk_base.TextBox()
-        self.text = t
-        # set t
-        t.text_color = self.text_color
-        t.text_background_color = self.text_background_color
-        t.text_font = self.text_font
-        t.text_size = self.text_size
-        t.cursor_color = self.text_cursor_color
-        
-        # start pack
-        t.start(self.parent)
-        
-        # create UI done
-    
-    def _set_el(self):
-        t = self.text
-        t.callback = self._on_text
-    
-    # end PartBody class
-
-# footer part
-class PartFooter(tk_base.TkBaseObj):
-    
-    def __init__(self):
-        super().__init__()
-        
-        # NOTE font and style should be set
-        self.label_font = None
-        self.entry_font = None
-        self.label_style = 'TLabel'
-        self.entry_style = 'TEntry'
-        self.button_style = 'TButton'
-        
-        self.entry = None	# tk_base.EntryBox
-        self.button = None	# change Button
-    
-    # operations
-    def get_text(self):
-        return self.entry.get_text()
-    
-    def set_text(self, text=''):
-        self.entry.set_text(text)
-    
-    # to send event list
-    #	change		main button click
-    
-    # on sub el
-    def _on_button(self, event=None):
-        self._send('change', event)
-    
-    def start(self, parent):
-        # save parent
-        self.parent = parent
-        # create UI
-        self._create()
-        # done
-    
-    def _create(self):
-        # create UI
-        e = tk_base.EntryBox()
-        b = Button(self.parent, command=self._on_button, text=guis.ui_text['change'], style=self.button_style)
-        self.entry = e
-        self.button = b
-        # set EntryBox
-        e.label_text = guis.ui_text['xunlei_dl_dir']
-        e.label_font = self.label_font
-        e.entry_font = self.entry_font
-        e.label_style = self.label_style
-        e.entry_style = self.entry_style
-        
-        # pack button
-        b.pack(side=RIGHT, fill=Y, expand=False)
-        # pack entry
-        e.start(self.parent)
-        
-        # create UI done
-    
-    def _set_el(self):
-        pass	# nothing to do
-    
-    # end PartFooter class
 
 # end gui.py
 

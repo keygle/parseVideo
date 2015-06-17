@@ -100,8 +100,8 @@ main_text_size = [
 # main Text style type to tag name
 MAIN_TEXT_STYLE_TO_TAG_LIST = {
     'sel' : {
-        'background_color' : '#33f', 
-        'color' : '#ff0', 
+        'background_color' : '#3f3', 
+        'color' : '#fff', 
     }, 
 }
 
