@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.8.0 test201506171856
+# version 0.0.9.0 test201506172219
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -72,9 +72,10 @@ ui_font_list = [
 ui_main_font_size = 16
 ui_main_big_font_size = 20
 
-ui_main_font = None
-ui_main_font_bold = None
-ui_main_big_font_bold = None
+ui_h2_font_size = 30
+
+# ui_font list
+ui_font = {}
 
 # top part style
 top_conf = {
@@ -99,11 +100,63 @@ main_text_size = [
 
 # main Text style type to tag name
 MAIN_TEXT_STYLE_TO_TAG_LIST = {
-    'sel' : {
-        'background_color' : '#3f3', 
-        'color' : '#fff', 
-    }, 
+    'info' : 'info', 
+    'h2' : 'h2', 
+    'gray' : 'gray', 
+    'red' : 'red', 
+    'red_bold' : 'red_bold', 
+    'blue' : 'blue', 
+    'big_blue' : 'big_blue', 
+    'white_blue' : 'white_blue', 
+    'bold' : 'bold', 
+    'a' : 'a', 
 }
+
+def make_main_text_tag_style():
+    return {
+        'info' : {
+    	    'color': '#00f', 
+        }, 
+        'h2' : {
+            'font' : ui_font['h2'], 
+            'color' : '#000', 
+        }, 
+        'gray' : {
+            'color' : '#666', 
+        }, 
+        'red' : {
+            'color' : '#f00', 
+        }, 
+        'blue' : {
+            'color' : '#00f', 
+        }, 
+        'white_blue' : {
+            'background_color' : '#00f', 
+            'color' : '#fff', 
+        }, 
+        'big_blue' : {
+            'font' : ui_font['big'], 
+            'color' : '#00f', 
+        }, 
+        'bold' : {
+            'font' : ui_font['bold'], 
+            'color' : '#111', 
+        }, 
+        'red_bold' : {
+            'font' : ui_font['bold'], 
+            'color' : '#f00', 
+        }, 
+        'a' : {
+            'font' : ui_font['italic_underline'], 
+            'color' : '#00f', 
+        }, 
+        # NOTE sel should be the last tag
+        'sel' : {
+            'background_color' : '#3f3', 
+            'color' : '#fff', 
+        }, 
+    }
+    # done
 
 # functions
 
@@ -113,13 +166,15 @@ def create_main_font(root):
     main_font_bold = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=True)
     main_big_font_bold = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_big_font_size, bold=True)
     
+    main_h2_font = tk_base.create_font(root, font_family=ui_font_list, size=ui_h2_font_size, bold=True)
+    italic_underline_font = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=False, italic=True, underline=True)
+    
     # save font
-    global ui_main_font
-    global ui_main_font_bold
-    global ui_main_big_font_bold
-    ui_main_font = main_font
-    ui_main_font_bold = main_font_bold
-    ui_main_big_font_bold = main_big_font_bold
+    ui_font['normal'] = main_font
+    ui_font['bold'] = main_font_bold
+    ui_font['big'] = main_big_font_bold
+    ui_font['h2'] = main_h2_font
+    ui_font['italic_underline'] = italic_underline_font
     
     return main_font, main_font_bold, main_big_font_bold
 
@@ -129,7 +184,7 @@ def set_ttk_style():
     # set styles
     
     # set TButton
-    style.configure('TButton', font=ui_main_font)
+    style.configure('TButton', font=ui_font['normal'])
     
     # set HD.TLabel
     style.configure('HD.TLabel', foreground='#fff', background='#00f')
@@ -139,7 +194,7 @@ def set_ttk_style():
         background='#00f', 
         foreground='#fff', 
         relief='flat', 
-        font=ui_main_font_bold, 
+        font=ui_font['bold'], 
         padding=(10, 5))
     style.map('Blue.TButton', 
         background=[('pressed', '#008'), ('active', '#44f')], 
@@ -150,7 +205,7 @@ def set_ttk_style():
         background='#f00', 
         foreground='#fff', 
         relief='flat', 
-        font=ui_main_font_bold, 
+        font=ui_font['bold'], 
         padding=(10, 5))
     style.map('Red.TButton', 
         background=[('pressed', '#800'), ('active', '#f44')], 
@@ -167,7 +222,7 @@ def set_ttk_style():
 
 # set main text style, set Text tag
 def set_main_text_tag(t):
-    tlist = MAIN_TEXT_STYLE_TO_TAG_LIST
+    tlist = make_main_text_tag_style()
     for i in tlist:
         t.set_tag_style(i, tlist[i])
     # set Text tag style, done

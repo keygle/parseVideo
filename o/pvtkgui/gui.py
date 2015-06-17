@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.10.0 test201506172011
+# version 0.1.12.0 test201506172217
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -111,6 +111,24 @@ class MainWin(tk_base.TkBaseObj):
     
     def set_xunlei_path_text(self, text=''):
         self.p_footer.set_text(text=text)
+    
+    # clipboard operations
+    def clip_get(self):
+        root = self.root
+        try:
+            t = root.clipboard_get()
+        except Exception:
+            t = None
+        return t
+    
+    def clip_set(self, text=''):
+        root = self.root
+        root.clipboard_clear()
+        root.clipboard_append(text)
+    
+    # select dir window
+    def select_dir(self, old_path=None):
+        pass	# TODO
     
     # event to send, event list
     #	start_stop	top part, start_stop button
