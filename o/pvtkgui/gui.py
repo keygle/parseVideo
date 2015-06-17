@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.6.0 test201506171837
+# version 0.1.7.0 test201506171852
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -474,6 +474,8 @@ class PartBody(tk_base.TkBaseObj):
         self._create()
         # set main text tag style
         guis.set_main_text_tag(self.text)
+        # set el
+        self._set_el()
         # done
     
     def _create(self):

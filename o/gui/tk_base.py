@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.7.0 test201506171550
+# version 0.0.8.0 test201506171852
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -89,6 +89,8 @@ class TkBaseObj(object):
     def _send(self, event, data):
         if self.callback != None:
             self.callback(event, data)
+        else:
+            return True	# send event failed
     
     # end TkBaseObj class
 
