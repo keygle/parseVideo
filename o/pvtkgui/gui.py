@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.5.0 test201506171550
+# version 0.1.6.0 test201506171837
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -57,14 +57,76 @@ class MainWin(tk_base.TkBaseObj):
         
         self.tk_f = []	# TK frames, used as part parent
         
-        # TODO
-        pass
+        self.p_m = None	# MenuHost part
+    
+    # operations
+    # TODO
     
     # event to send, event list
-    #	TODO
+    #	start_stop	top part, start_stop button
+    #	top_paste	top part, paste URL
+    #
+    #	xunlei_dl_path_change	footer part, change xunlei dl path button
+    #
+    #	top_paste
+    #	top_copy
+    #
+    #	body_copy_selected
+    #	body_copy_all_url
+    #
+    #	xunlei_dl_all_url
+    #	xunlei_dl_rest_url
+    
+    def _send(self, event, data):
+        # DEBUG info
+        print('pvtkgui: gui: MainWin send event [' + str(event) + '] ' + str(data))
+        # use super to send
+        super()._send(event, data)
     
     # on sub el
-    # def _on # TODO
+    
+    def _on_hide_menu(self, event=None):
+        # just hide menu
+        self.p_m.hide()
+    
+    def _on_part_top(self, event, data):
+        if event == 'start_stop':
+            # just send it
+            self._send('start_stop', data)
+        elif event == 'show_menu':
+            # show top menu
+            self.p_m.show('top', data)
+        elif event == 'paste':
+            self._send('top_paste', data)
+        # process sub event done
+    
+    def _on_part_body(self, event, data):
+        if event == 'show_main_menu':
+            # show body part menu
+            self.p_m.show('body', data)
+        # process sub event done
+    
+    def _on_part_footer(self, event, data):
+        if event == 'change':
+            self._send('xunlei_dl_path_change', data)
+        # process sub event done
+    
+    def _on_part_menu(self, event, data):
+        if event == 'paste_url':
+            self._send('top_paste', data)
+        elif event == 'copy_url':
+            self._send('top_copy', data)
+        
+        elif event == 'copy_selected':
+            self._send('body_copy_selected', data)
+        elif event == 'copy_all_url':
+            self._send('body_copy_all_url', data)
+        
+        elif event == 'xunlei_dl_all_url':
+            self._send('xunlei_dl_all_url', data)
+        elif event == 'xunlei_dl_rest_url':
+            self._send('xunlei_dl_rest_url', data)
+        # process sub event done
     
     # operations
     
@@ -75,12 +137,9 @@ class MainWin(tk_base.TkBaseObj):
     
     # create main UI
     def start(self):
-        # create font and set sytles
-        # TODO
         # create UI
         self._create()
         self._set_el()
-        # TODO
     
     def _create(self):
         # create root window
@@ -109,7 +168,6 @@ class MainWin(tk_base.TkBaseObj):
         
         footer.label_font = main_font
         footer.entry_font = main_font
-        # TODO
         
         # create frames, and pack each part
         f = Frame(root)
@@ -125,7 +183,12 @@ class MainWin(tk_base.TkBaseObj):
         f = Frame(root)
         self.tk_f.append(f)
         body.start(f)
-        f.pack(side=TOP, fill=BOTH, expand=True)
+        f.pack(side=TOP, fill=BOTH, expand=True, padx=(0, 0))
+        
+        # create MenuHost
+        m = MenuHost()
+        self.p_m = m
+        m.start(root)
         
         # set main window title
         root.title(guis.ui_text['main_win_title'])
@@ -133,7 +196,20 @@ class MainWin(tk_base.TkBaseObj):
         # create UI done
     
     def _set_el(self):
-        pass
+        root = self.root
+        top = self.p_top
+        body = self.p_body
+        footer = self.p_footer
+        m = self.p_m
+        # add callback for sub part
+        top.callback = self._on_part_top
+        body.callback = self._on_part_body
+        footer.callback = self._on_part_footer
+        m.callback = self._on_part_menu
+        
+        # add callback for hide menu
+        root.bind('<Button-1>', self._on_hide_menu)
+        # set el done
     
     # end MainWin class
 
@@ -142,21 +218,92 @@ class MenuHost(tk_base.TkBaseObj):
     
     def __init__(self):
         super().__init__()
-        # TODO
+        
+        self.m1 = None	# top menu
+        self.m2 = None	# body menu
+    
+    def start(self, parent):
+        # save parent
+        self.parent = parent
+        # create menu
+        self._create()
+        # create UI done
     
     # event to send, event list
-    #	TODO
+    #	paste_url	top entry paste url
+    #	copy_url	top entry copy url
+    #
+    #	copy_selected	body text, copy selected text
+    #	copy_all_url
+    #	xunlei_dl_all_url
+    #	xunlei_dl_rest_url
+    
+    # on sub el
+    
+    def _on_paste_url(self, event=None):
+        # just send event
+        self._send('paste_url', event)
+    
+    def _on_copy_url(self, event=None):
+        self._send('copy_url', event)
+    
+    def _on_copy_selected(self, event=None):
+        self._send('copy_selected', event)
+    
+    def _on_copy_all_url(self, event=None):
+        self._send('copy_all_url', event)
+    
+    def _on_xunlei_dl_all_url(self, event=None):
+        self._send('xunlei_dl_all_url', event)
+    
+    def _on_xunlei_dl_rest_url(self, event=None):
+        self._send('xunlei_dl_rest_url', event)
     
     # hide all menus
     def hide(self):
-        pass
+        self.m1.unpost()
+        self.m2.unpost()
     
     # show one menu
     # supported menu type list
     #	entry	top part entry menu
     #	main	body part, text menu
-    def show(self, menu_type):
-        pass
+    def show(self, menu_type, event):
+        # hide menu first
+        self.hide()
+        # check which menu
+        if menu_type == 'top':
+            # show top menu
+            m = self.m1
+        elif menu_type == 'body':
+            # show body menu
+            m = self.m2
+        else:
+            raise Exception('menu type error')
+        # show menu
+        m.post(event.x_root, event.y_root)
+        # show menu done
+    
+    def _create(self):
+        m1 = Menu(self.parent, tearoff=0)
+        m2 = Menu(self.parent, tearoff=0)
+        self.m1 = m1
+        self.m2 = m2
+        
+        m1t = guis.ui_top_menu	# menu 1 text
+        m2t = guis.ui_body_menu
+        
+        # add command
+        m1.add_command(label=m1t['paste_url'], command=self._on_paste_url)
+        m1.add_command(label=m1t['copy_url'], command=self._on_copy_url)
+        
+        m2.add_command(label=m2t['copy_selected'], command=self._on_copy_selected)
+        m2.add_command(label=m2t['copy_all_url'], command=self._on_copy_all_url)
+        m2.add_separator()
+        m2.add_command(label=m2t['xunlei_dl_all_url'], command=self._on_xunlei_dl_all_url)
+        m2.add_command(label=m2t['xunlei_dl_rest_url'], command=self._on_xunlei_dl_rest_url)
+        
+        # create menu done
     
     # end MenuHost class
 
@@ -181,8 +328,6 @@ class PartTop(tk_base.TkBaseObj):
         self.p_b = None		# main button
         
         self.tk_f = []	# tkinter frames
-        
-        # TODO
     
     # operations
     def get_hd_text(self):
@@ -215,13 +360,26 @@ class PartTop(tk_base.TkBaseObj):
     def _on_button(self, event=None):
         self._send('start_stop', event)
     
+    def _on_hd_entry(self, event, data):
+        if event == 'key_enter':
+            self._send('start_stop', data)
+        # process sub el done
+    
+    def _on_url_entry(self, event, data):
+        if event == 'key_enter':
+            self._send('start_stop', data)
+        elif event == 'mouse_right':
+            self._send('show_menu', data)
+        elif event == 'mouse_middle':
+            self._send('paste', data)
+        # process sub el done
+    
     def start(self, parent):
         # save parent
         self.parent = parent
         # create UI
         self._create()
         self._set_el()
-        # TODO
     
     def _create(self):
         hd = tk_base.EntryBox()
@@ -255,7 +413,11 @@ class PartTop(tk_base.TkBaseObj):
         # create UI done
     
     def _set_el(self):
-        pass	# TODO
+        hd = self.p_hd
+        e = self.p_e
+        
+        hd.callback = self._on_hd_entry
+        e.callback = self._on_url_entry
     
     # end PartTop class
 
