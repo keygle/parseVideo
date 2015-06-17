@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.2.0 test201506171404
+# version 0.0.3.0 test201506171449
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,6 +33,8 @@ import tkinter as TK
 import tkinter.ttk as ttk
 import tkinter.font as TKfont
 
+from ..gui import tk_base
+
 # global vars
 ui_text = {}	# main UI text
 
@@ -51,6 +53,11 @@ ui_font_list = [
     'Ubuntu Mono', 
     '黑体', 
 ]
+
+ui_main_font_size = 16
+
+ui_main_font = None
+ui_main_font_bold = None
 
 # top part style
 top_conf = {
@@ -80,8 +87,17 @@ MAIN_TEXT_STYLE_TO_TAG_LIST = {
 # functions
 
 # create main font
-def create_main_font():
-    pass
+def create_main_font(root):
+    main_font = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=False)
+    main_font_bold = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=True)
+    
+    # save font
+    global ui_main_font
+    global ui_main_font_bold
+    ui_main_font = main_font
+    ui_main_font_bold = main_font_bold
+    
+    return main_font, main_font_bold
 
 # set ttk style
 def set_ttk_style():

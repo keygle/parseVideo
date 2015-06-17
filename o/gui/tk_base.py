@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.5.0 test201506171405
+# version 0.0.6.0 test201506171448
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -50,7 +50,7 @@ def create_font(root, font_family=None, size=16, bold=False, italic=False, under
                 break
     # set default values
     font_weight = TKfont.NORMAL
-    font_slant = TKfont.NORMAL
+    font_slant = TKfont.ROMAN
     font_underline = 0
     # check font flags
     if bold:
