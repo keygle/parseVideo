@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.1.0 test201506171340
+# version 0.1.2.0 test201506171404
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -79,7 +79,7 @@ class MainWin(tk_base.TkBaseObj):
         # TODO
         # create UI
         self._create()
-        self._set_ul()
+        self._set_el()
         # TODO
     
     def _create(self):
@@ -164,6 +164,8 @@ class PartTop(tk_base.TkBaseObj):
         self.p_e = None		# main URL entry
         self.p_b = None		# main button
         
+        self.tk_f = []	# tkinter frames
+        
         # TODO
     
     # operations
@@ -225,7 +227,13 @@ class PartTop(tk_base.TkBaseObj):
         
         # pack it
         b.pack(side=RIGHT, fill=Y, expand=False)
-        hd.start(self.parent)
+        
+        # create frames
+        f = Frame(self.parent)
+        self.tk_f.append(f)
+        hd.start(f)
+        f.pack(side=LEFT, fill=Y, expand=False)
+        
         e.start(self.parent)
         
         # create UI done
@@ -244,6 +252,7 @@ class PartBody(tk_base.TkBaseObj):
         # NOTE font and style should be set
         self.text_color = guis.main_text_conf['color']
         self.text_background_color = guis.main_text_conf['background_color']
+        self.text_size = guis.main_text_size
         
         self.text_font = None
         

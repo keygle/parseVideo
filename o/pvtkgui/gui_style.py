@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.1.0 test201506171340
+# version 0.0.2.0 test201506171404
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -54,20 +54,27 @@ ui_font_list = [
 
 # top part style
 top_conf = {
-    'hd_style' : '', 	# TODO
-    'button_style' : '', 
-    '' : '', 
+    'hd_style' : 'TLabel', 	# TODO
+    'button_style' : 'TButton', 
+    'hd_entry_style' : 'TEntry', 
+    'entry_style' : 'TEntry', 
 }
 
 # main Text style
 main_text_conf = {	# TODO
-    'color' : '', 
-    'background_color' : '', 
+    'color' : '#333', 
+    'background_color' : '#999', 
 }
+
+# main Text default size
+main_text_size = [
+    80, 	# x-size, width
+    20, 	# y-size, height
+]
 
 # main Text style type to tag name
 MAIN_TEXT_STYLE_TO_TAG_LIST = {
-    '' : '', 	# TODO
+    # '' : '', 	# TODO
 }
 
 # functions
