@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.3.0 test201506171448
+# version 0.1.4.0 test201506171523
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -96,13 +96,13 @@ class MainWin(tk_base.TkBaseObj):
         self.p_footer = footer
         
         # create main font
-        main_font, main_font_bold = guis.create_main_font(root)
+        main_font, main_font_bold, main_big_font_bold = guis.create_main_font(root)
         # set main style
-        guis.set_ttk_style()	# TODO
+        guis.set_ttk_style()
         
         # set sub styles
-        top.hd_font = main_font_bold
-        top.hd_entry_font = main_font
+        top.hd_font = main_font
+        top.hd_entry_font = main_big_font_bold
         top.entry_font = main_font_bold
         
         body.text_font = main_font
@@ -126,6 +126,9 @@ class MainWin(tk_base.TkBaseObj):
         self.tk_f.append(f)
         body.start(f)
         f.pack(side=TOP, fill=BOTH, expand=True)
+        
+        # set main window title
+        root.title(guis.ui_text['main_win_title'])
         
         # create UI done
     

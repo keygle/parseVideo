@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.3.0 test201506171449
+# version 0.0.4.0 test201506171523
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -42,7 +42,8 @@ ui_text['xunlei_dl_dir'] = '迅雷 下载目录'
 ui_text['change'] = '更改'
 ui_text['start_analyse'] = '开始解析'
 ui_text['stop_analyse'] = '停止解析'
-ui_text['hd'] = 'hd='
+ui_text['hd'] = ' hd='
+ui_text['main_win_title'] = 'parse_video Tk GUI 2'	# main window title
 
 HD_ENTRY_WIDTH = 3
 
@@ -55,16 +56,18 @@ ui_font_list = [
 ]
 
 ui_main_font_size = 16
+ui_main_big_font_size = 20
 
 ui_main_font = None
 ui_main_font_bold = None
+ui_main_big_font_bold = None
 
 # top part style
 top_conf = {
-    'hd_style' : 'TLabel', 	# TODO
-    'button_style' : 'TButton', 
-    'hd_entry_style' : 'TEntry', 
-    'entry_style' : 'TEntry', 
+    'hd_style' : 'HD.TLabel',
+    'button_style' : 'Blue.TButton', 
+    'hd_entry_style' : 'HD.TEntry', 
+    'entry_style' : 'Main.TEntry', 
 }
 
 # main Text style
@@ -90,18 +93,59 @@ MAIN_TEXT_STYLE_TO_TAG_LIST = {
 def create_main_font(root):
     main_font = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=False)
     main_font_bold = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_font_size, bold=True)
+    main_big_font_bold = tk_base.create_font(root, font_family=ui_font_list, size=ui_main_big_font_size, bold=True)
     
     # save font
     global ui_main_font
     global ui_main_font_bold
+    global ui_main_big_font_bold
     ui_main_font = main_font
     ui_main_font_bold = main_font_bold
+    ui_main_big_font_bold = main_big_font_bold
     
-    return main_font, main_font_bold
+    return main_font, main_font_bold, main_big_font_bold
 
 # set ttk style
 def set_ttk_style():
-    pass
+    style = Style()
+    # set styles
+    
+    # set TButton
+    style.configure('TButton', font=ui_main_font)
+    
+    # set HD.TLabel
+    style.configure('HD.TLabel', foreground='#fff', background='#00f')
+    
+    # Blue.TButton
+    style.configure('Blue.TButton', 
+        background='#00f', 
+        foreground='#fff', 
+        relief='flat', 
+        font=ui_main_font_bold, 
+        padding=(10, 5))
+    style.map('Blue.TButton', 
+        background=[('pressed', '#008'), ('active', '#44f')], 
+        foreground=[('disabled', '#555'), ('pressed', '#0f0'), ('active', '#ff0')])
+    
+    # Red.TButton
+    style.configure('Red.TButton', 
+        background='#f00', 
+        foreground='#fff', 
+        relief='flat', 
+        font=ui_main_font_bold, 
+        padding=(10, 5))
+    style.map('Red.TButton', 
+        background=[('pressed', '#800'), ('active', '#f44')], 
+        foreground=[('disabled', '#555'), ('pressed', '#0f0'), ('active', '#ff0')])
+    
+    # HD.TEntry
+    style.configure('HD.TEntry', foreground='#00f', background='#99c')
+    
+    # Main.TEntry
+    # TODO
+    
+    # Red.TEntry
+    style.configure('Red.TEntry', foreground='#f00')
 
 # set main text style, set Text tag
 def set_main_text_tag(t):
