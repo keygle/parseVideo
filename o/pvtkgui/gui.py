@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
-# gui: o/pvtkgui/gui: parse_video Tk GUI, main gui file. 
-# version 0.1.0.0 test201506100025
+# gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
+# version 0.1.1.0 test201506171340
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -28,276 +28,346 @@
 
 from tkinter import *
 from tkinter.ttk import *
-from tkinter.font import Font
 
-from .. import set_key
+import tkinter as TK
+import tkinter.ttk as ttk
+import tkinter.font as TKfont
+import tkinter.tix as tix
+
+from . import gui_style as guis
+from ..gui import tk_base
 
 # global vars
-
-TEXT_MAIN_FONT_SIZE = 16	# 16px
-MAIN_BUTTON_TEXT = '开始解析'
-MAIN_WIN_TITLE = 'parse_video Tk GUI 1'
-MAIN_FONT_NAME = '微软雅黑'
-MENU_LABEL1 = '粘贴 URL'
-MENU_LABEL2 = '复制全部 URL'
-MENU_XUNLEI_DL_TEXT = '使用 迅雷 下载全部文件'
 
 # functions
 
 # class
 
 # main window
-
-class MainWin(object):
+class MainWin(tk_base.TkBaseObj):
     
     def __init__(self):
+        super().__init__()
+        
         self.root = None	# root window
         
-        self.text_entry = None	# main Entry, input URL
-        self.button = None	# main Button, start parse
-        self.text_main = None	# main Text area, show text
+        self.p_top = None	# top part
+        self.p_body = None	# body part
+        self.p_footer = None	# footer part
         
-        self.text_entry_var = None
-        self.hd_entry_var = None
+        self.tk_f = []	# TK frames, used as part parent
         
-        self.menu_url = None	# top part, url Entry menu
-        self.menu_text = None	# body part, main Text menu
-        
-        self.callback_main_button = None	# main button on click calback function
-        self.callback_copy_url = None
-        self.callback_xunlei_dl = None
-        
-        # __init__ done
+        # TODO
+        pass
     
-    # when main button be clicked, this will be callback
-    def _main_button_on_click(self):
-        # just call callback
-        if self.callback_main_button != None:
-            self.callback_main_button()
+    # event to send, event list
+    #	TODO
     
-    # process main Entry key event
-    def _on_return_key(self, event=None):
-        # just callback as _main_button_on_click
-        self._main_button_on_click()
+    # on sub el
+    # def _on # TODO
     
-    # press C key in main Text, to copy all URLs
-    def _on_c_key(self, event=None):
-        # DEBUG info
-        print('DEBUG: _on_c_key F9')
-        # just callback copy_url
-        if self.callback_copy_url != None:
-            self.callback_copy_url()
-    
-    # callback xunlei dl
-    def _on_xunlei_dl(self):
-        if self.callback_xunlei_dl != None:
-            # DEBUG info
-            print('DEBUG: try to start xunlei dl')
-            
-            self.callback_xunlei_dl()
-    
-    # press middle mouse botton, or click on paste menu in url Entry, to paste from clipboard
-    def _on_url_entry_paste(self, event=None):
-        # just paste from clipboard
-        t = self.clip_get()
-        # check type and null string
-        if (type(t) == type('')) and (t != ''):
-            self.set_entry_text(t)
-        # DEBUG info
-        print('DEBUG: _on_url_entry_paste')
-    
-    # hide menus
-    def _hide_menus(self, event=None):
-        self.menu_url.unpost()
-        self.menu_text.unpost()
-    
-    # press mouse right button, to show paste menu in url Entry
-    def _on_url_entry_menu(self, event=None):
-        # hide menu before show
-        self._hide_menus()
-        # show menu
-        m = self.menu_url
-        m.post(event.x_root, event.y_root)
-    
-    # press mouse right button, to show copy urls menu is main Text
-    def _on_main_text_menu(self, event=None):
-        # hide menu before show
-        self._hide_menus()
-        # show menu
-        m = self.menu_text
-        m.post(event.x_root, event.y_root)
-    
-    # operation functions
-    def get_entry_text(self):
-        return self.text_entry_var.get()
-    
-    def set_entry_text(self, text):
-        self.text_entry_var.set(text)
-    
-    def get_hd_text(self):
-        return self.hd_entry_var.get()
-    
-    def set_hd_text(self, text):
-        self.hd_entry_var.set(text)
-    
-    def get_main_text(self):
-        return self.text_main.get('1.0', END)
-    
-    def clear_main_text(self):
-        self.text_main.delete('1.0', END)
-    
-    def append_main_text(self, text=''):
-        self.text_main.insert(END, text)
-    
-    def insert_main_text(self, text='', pos='1.0'):
-        self.text_main.insert(pos, text)
-    
-    def enable_main_text(self):
-        self.text_main.config(state=NORMAL)
-    
-    def disable_main_text(self):
-        self.text_main.config(state=DISABLED)
-    
-    def enable_main_button(self):
-        self.button.config(state=NORMAL)
-    
-    def disable_main_button(self):
-        self.button.config(state=DISABLED)
-    
-    # copy paste with clip board
-    def clip_get(self):
-        root = self.root
-        try:
-            t = root.clipboard_get()
-        except Exception:
-            t = None
-        # done
-        return t
-    
-    def clip_set(self, text):
-        root = self.root
-        root.clipboard_clear()
-        root.clipboard_append(text)
-    
-    # start create and show main window
-    def start(self):
-        # create root window
-        root = Tk()
-        self.root = root
-        # set main window title
-        root.title(MAIN_WIN_TITLE)
-        
-        # create style for ttk
-        style = Style()
-        # set font
-        style.configure('.', font=(MAIN_FONT_NAME, TEXT_MAIN_FONT_SIZE))
-        style.configure('My.TEntry', padding=5)
-        
-        # create font for main Text and man Entry
-        f = Font(root, size=TEXT_MAIN_FONT_SIZE)
-        
-        # create frame
-        f0 = Frame(root)	# top part, url text Entry and main Button
-        f1 = Frame(root)	# bottom part, main Text and scrollbars
-        f0.pack(side=TOP, fill=X, expand=False)
-        f1.pack(side=BOTTOM, fill=BOTH, expand=True)
-        
-        # create textvar for main Entry, and hd Entry
-        v1 = StringVar()
-        self.text_entry_var = v1
-        v2 = StringVar()
-        self.hd_entry_var = v2
-        
-        # create top part
-        # main button
-        b = Button(f0, command=self._main_button_on_click, text=MAIN_BUTTON_TEXT, style='TButton')
-        # main entry
-        e = Entry(f0, textvariable=v1, font=f, style='My.TEntry')
-        # add Label and hd= support
-        la = Label(f0, text='hd=', font=f)
-        e2 = Entry(f0, textvariable=v2, font=f, style='My.TEntry', width=3)
-        # pack it
-        b.pack(side=RIGHT, fill=Y, expand=False)
-        la.pack(side=LEFT, fill=Y, expand=False)
-        e2.pack(side=LEFT, fill=Y, expand=False)
-        e.pack(side=LEFT, fill=BOTH, expand=True)
-        # save objs
-        self.button = b
-        self.text_entry = e
-        
-        # create menus
-        m1 = Menu(root, tearoff=0)	# url Entry menu
-        m2 = Menu(root, tearoff=0)	# main Text menu
-        self.menu_url = m1
-        self.menu_text = m2
-        
-        m1.add_command(label=MENU_LABEL1, command=self._on_url_entry_paste)
-        m2.add_command(label=MENU_LABEL2, command=self._on_c_key)
-        m2.add_command(label=MENU_XUNLEI_DL_TEXT, command=self._on_xunlei_dl)
-        
-        # set hide menus
-        root.bind('<Button-1>', self._hide_menus)
-        
-        # bind key event for main Entry
-        e.bind('<Return>', self._on_return_key)
-        e2.bind('<Return>', self._on_return_key)
-        # bind more event for main Entry
-        e.bind('<Button-2>', self._on_url_entry_paste)	# mouse middle button, just paste url
-        e.bind('<Button-3>', self._on_url_entry_menu)	# show url Entry menu, mouse right button
-        
-        # create bottom part
-        # create scrollbar
-        sx = Scrollbar(f1, orient=HORIZONTAL)
-        sy = Scrollbar(f1, orient=VERTICAL)
-        # main Text area
-        t = Text(f1, wrap=NONE, font=f, padx=0, pady=0, relief=FLAT, bd=0, bg='#ddd', fg='#333')
-        self.text_main = t
-        # pack it
-        sy.pack(side=RIGHT, fill=Y)
-        sx.pack(side=BOTTOM, fill=X)
-        t.pack(side=TOP, fill=BOTH, expand=True)
-        # config Text and Scrollbar
-        sx.config(command=t.xview)
-        sy.config(command=t.yview)
-        t.config(xscrollcommand=sx.set)
-        t.config(yscrollcommand=sy.set)
-        
-        # bind more event to Text
-        root.bind(set_key.KEY_COPY_URLS, self._on_c_key)	# copy urls
-        root.bind(set_key.KEY_PASTE_URL, self._on_url_entry_paste)
-        root.bind(set_key.KEY_START_PARSE, self._on_return_key)
-        t.bind('<Button-3>', self._on_main_text_menu)	# show main Text menu
-        
-        # create main window done
+    # operations
     
     # start main loop
     def mainloop(self):
         # just start main loop
         mainloop()
     
+    # create main UI
+    def start(self):
+        # create font and set sytles
+        # TODO
+        # create UI
+        self._create()
+        self._set_ul()
+        # TODO
+    
+    def _create(self):
+        # create root window
+        root = tix.Tk()
+        self.root = root
+        
+        # create sub part
+        top = PartTop()
+        self.p_top = top
+        body = PartBody()
+        self.p_body = body
+        footer = PartFooter()
+        self.p_footer = footer
+        
+        # set sub styles
+        # TODO
+        
+        # create frames, and pack each part
+        f = Frame(root)
+        self.tk_f.append(f)
+        top.start(f)
+        f.pack(side=TOP, fill=X, expand=False)
+        
+        f = Frame(root)
+        self.tk_f.append(f)
+        footer.start(f)
+        f.pack(side=BOTTOM, fill=X, expand=False)
+        
+        f = Frame(root)
+        self.tk_f.append(f)
+        body.start(f)
+        f.pack(side=TOP, fill=BOTH, expand=True)
+        
+        # create UI done
+    
+    def _set_el(self):
+        pass
+    
     # end MainWin class
 
-def debug1():
-    t = w.get_entry_text()
-    print('DEBUG: got entry text [' + t + ']')
-    w.enable_main_text()
-    w.append_main_text(t)
-    w.disable_main_text()
-    print('DEBUG: set main text')
-
-def test1():
-    global w
-    w = MainWin()
-    w.start()
-    # set debug
-    w.callback_main_button = debug1
+# menu host, show menus
+class MenuHost(tk_base.TkBaseObj):
     
-    w.mainloop()
-    # test done
+    def __init__(self):
+        super().__init__()
+        # TODO
+    
+    # event to send, event list
+    #	TODO
+    
+    # hide all menus
+    def hide(self):
+        pass
+    
+    # show one menu
+    # supported menu type list
+    #	entry	top part entry menu
+    #	main	body part, text menu
+    def show(self, menu_type):
+        pass
+    
+    # end MenuHost class
 
-# start test
-if __name__ == '__main__':
-    test1()
+# top part
+class PartTop(tk_base.TkBaseObj):
+    
+    def __init__(self):
+        super().__init__()
+        
+        # NOTE font and style should be set
+        self.hd_font = None
+        self.hd_entry_font = None
+        self.hd_style = guis.top_conf['hd_style']
+        self.hd_entry_style = guis.top_conf['hd_entry_style']
+        self.button_style = guis.top_conf['button_style']
+        
+        self.entry_font = None
+        self.entry_style = guis.top_conf['entry_style']
+        
+        self.p_hd = None	# hd part
+        self.p_e = None		# main URL entry
+        self.p_b = None		# main button
+        
+        # TODO
+    
+    # operations
+    def get_hd_text(self):
+        return self.p_hd.get_text()
+    
+    def set_hd_text(self, text=''):
+        self.p_hd.set_text(text=text)
+    
+    def get_url_text(self):
+        return self.p_e.get_text()
+    
+    def set_url_text(self, text=''):
+        self.p_e.set_text(text=text)
+    
+    def set_url_text_style(self, style='TEntry'):
+        self.p_e.set_entry_style(style=style)
+    
+    def set_button_text(self, text=''):
+        self.p_b.config(text=text)
+    
+    def set_button_style(self, style='TButton'):
+        self.p_b.config(style=style)
+    
+    # to send event list
+    #	start_stop	start or stop analyse
+    #	show_menu	show top part URL entry menu
+    #	paste		should paste text in URL entry
+    
+    # on sub el
+    def _on_button(self, event=None):
+        self._send('start_stop', event)
+    
+    def start(self, parent):
+        # save parent
+        self.parent = parent
+        # create UI
+        self._create()
+        self._set_el()
+        # TODO
+    
+    def _create(self):
+        hd = tk_base.EntryBox()
+        self.p_hd = hd
+        e = tk_base.EntryBox()
+        self.p_e = e
+        b = Button(self.parent, command=self._on_button, text=guis.ui_text['start_analyse'], style=self.button_style)
+        self.p_b = b
+        # set EntryBox
+        hd.label_text = guis.ui_text['hd']
+        hd.entry_width = guis.HD_ENTRY_WIDTH
+        hd.label_font = self.hd_font
+        hd.entry_font = self.hd_entry_font
+        hd.label_style = self.hd_style
+        hd.entry_style = self.hd_entry_style
+        
+        e.entry_font = self.entry_font
+        e.entry_style = self.entry_style
+        
+        # pack it
+        b.pack(side=RIGHT, fill=Y, expand=False)
+        hd.start(self.parent)
+        e.start(self.parent)
+        
+        # create UI done
+    
+    def _set_el(self):
+        pass	# TODO
+    
+    # end PartTop class
+
+# body part
+class PartBody(tk_base.TkBaseObj):
+    
+    def __init__(self):
+        super().__init__()
+        
+        # NOTE font and style should be set
+        self.text_color = guis.main_text_conf['color']
+        self.text_background_color = guis.main_text_conf['background_color']
+        
+        self.text_font = None
+        
+        self.text = None	# tk_base.TextBox
+    
+    # to send event list
+    #	show_main_menu
+    
+    # operations
+    
+    def enable(self):
+        self.text.enable()
+    
+    def disable(self):
+        self.text.disable()
+    
+    def get_text(self, flag='selected'):
+        return self.text.get_text(flag=flag)
+    
+    def add_text(self, text='', flag='end', style_type=None):
+        # get tag name
+        tag_name = guis.MAIN_TEXT_STYLE_TO_TAG_LIST[style_type]
+        # just add it
+        self.text.add_text(text=text, flag=flag, tag=tag_name)
+    
+    def clear(self):
+        self.text.clear()
+    
+    # on sub el
+    
+    def _on_text(self, event, data):
+        # check event type
+        if event == 'mouse_right':
+            self._send('show_main_menu', data)
+    
+    def start(self, parent):
+        # save parent
+        self.parent = parent
+        # create UI
+        self._create()
+        # set main text tag style
+        guis.set_main_text_tag(self.text)
+        # done
+    
+    def _create(self):
+        t = tk_base.TextBox()
+        self.text = t
+        # set t
+        t.text_color = self.text_color
+        t.text_background_color = self.text_background_color
+        t.text_font = self.text_font
+        
+        # start pack
+        t.start(self.parent)
+        
+        # create UI done
+    
+    def _set_el(self):
+        t = self.text
+        t.callback = self._on_text
+    
+    # end PartBody class
+
+# footer part
+class PartFooter(tk_base.TkBaseObj):
+    
+    def __init__(self):
+        super().__init__()
+        
+        # NOTE font and style should be set
+        self.label_font = None
+        self.entry_font = None
+        self.label_style = 'TLabel'
+        self.entry_style = 'TEntry'
+        self.button_style = 'TButton'
+        
+        self.entry = None	# tk_base.EntryBox
+        self.button = None	# change Button
+    
+    # operations
+    def get_text(self):
+        return self.entry.get_text()
+    
+    def set_text(self, text=''):
+        self.entry.set_text(text)
+    
+    # to send event list
+    #	change		main button click
+    
+    # on sub el
+    def _on_button(self, event=None):
+        self._send('change', event)
+    
+    def start(self, parent):
+        # save parent
+        self.parent = parent
+        # create UI
+        self._create()
+        # done
+    
+    def _create(self):
+        # create UI
+        e = tk_base.EntryBox()
+        b = Button(self.parent, command=self._on_button, text=guis.ui_text['change'], style=self.button_style)
+        self.entry = e
+        self.button = b
+        # set EntryBox
+        e.label_text = guis.ui_text['xunlei_dl_dir']
+        e.label_font = self.label_font
+        e.entry_font = self.entry_font
+        e.label_style = self.label_style
+        e.entry_style = self.entry_style
+        
+        # pack button
+        b.pack(side=RIGHT, fill=Y, expand=False)
+        # pack entry
+        e.start(self.parent)
+        
+        # create UI done
+    
+    def _set_el(self):
+        pass	# nothing to do
+    
+    # end PartFooter class
 
 # end gui.py
 

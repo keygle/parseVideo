@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.2.0 test201506151916
+# version 0.0.4.0 test201506171340
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -130,6 +130,9 @@ class EntryBox(TkBaseObj):
     
     def set_text(self, text=''):
         self.tk_textvar.set(text)
+    
+    def set_entry_style(self, style='TEntry'):
+        self.tk_entry.config(style=style)
     
     # event to send, event list
     #	key_enter	press Enter Key
