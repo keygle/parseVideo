@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.4.0 test201506171523
+# version 0.0.5.0 test201506171549
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -71,9 +71,10 @@ top_conf = {
 }
 
 # main Text style
-main_text_conf = {	# TODO
+main_text_conf = {
     'color' : '#333', 
-    'background_color' : '#999', 
+    'background_color' : '#bd9', 
+    'cursor_color' : '#f52', 
 }
 
 # main Text default size
@@ -84,7 +85,10 @@ main_text_size = [
 
 # main Text style type to tag name
 MAIN_TEXT_STYLE_TO_TAG_LIST = {
-    # '' : '', 	# TODO
+    'sel' : {
+        'background_color' : '#33f', 
+        'color' : '#ff0', 
+    }, 
 }
 
 # functions
@@ -149,7 +153,10 @@ def set_ttk_style():
 
 # set main text style, set Text tag
 def set_main_text_tag(t):
-    pass	# TODO
+    tlist = MAIN_TEXT_STYLE_TO_TAG_LIST
+    for i in tlist:
+        t.set_tag_style(i, tlist[i])
+    # set Text tag style, done
 
 # end gui_style.py
 

@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.4.0 test201506171523
+# version 0.1.5.0 test201506171550
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -269,6 +269,7 @@ class PartBody(tk_base.TkBaseObj):
         self.text_color = guis.main_text_conf['color']
         self.text_background_color = guis.main_text_conf['background_color']
         self.text_size = guis.main_text_size
+        self.text_cursor_color = guis.main_text_conf['cursor_color']
         
         self.text_font = None
         
@@ -320,6 +321,8 @@ class PartBody(tk_base.TkBaseObj):
         t.text_color = self.text_color
         t.text_background_color = self.text_background_color
         t.text_font = self.text_font
+        t.text_size = self.text_size
+        t.cursor_color = self.text_cursor_color
         
         # start pack
         t.start(self.parent)

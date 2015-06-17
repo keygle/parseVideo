@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.6.0 test201506171448
+# version 0.0.7.0 test201506171550
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -206,6 +206,7 @@ class TextBox(TkBaseObj):
         self.text_color = '#333'
         self.text_background_color = '#999'
         self.text_size = [80, 24]
+        self.cursor_color = '#f00'
         
         # NOTE font should be set
         self.text_font = None
@@ -317,7 +318,8 @@ class TextBox(TkBaseObj):
             bg=self.text_background_color, 
             fg=self.text_color, 
             width=self.text_size[0], 
-            height=self.text_size[1])
+            height=self.text_size[1], 
+            insertbackground=self.cursor_color)
         self.tk_text = t
         
         # pack it
