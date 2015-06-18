@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.3.1 test201506182328
+# version 0.0.4.0 test201506182356
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -76,7 +76,7 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
     
     # update xunlei_dl_path config
     dl_path = w.get_xunlei_path_text()
-    conf.set_dl_path_text(dl_path)
+    conf.set_xunlei_dl_path(dl_path)
     # write config file
     conf.write_config()
     # check dl path
@@ -95,15 +95,15 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
             if os.path.isfile(fpath):
                 # found one file
                 # TODO check file size
-                fount_count += 1
+                found_count += 1
             else:	# should be download
                 flist2.append(f)
         # check found
-        if fount_count > 0:
+        if found_count > 0:
             # update UI
             w.enable_main_text()
             raw_text = confd.ui_text_dl['found_done_file']
-            add_one_msg(raw_text[0] + str(fount_count) + raw_text[1], tag='green')
+            add_one_msg(raw_text[0] + str(found_count) + raw_text[1], tag='green')
             # replace flist
             flist = flist2
     # check dl rest done
@@ -130,7 +130,7 @@ def check_dl_path(dl_path):
     try:
         # DEBUG info
         print('pvtkgui: dl_host: create dir \"' + str(dl_path) + '\"')
-        os.path.mkdir(dl_path)
+        os.mkdir(dl_path)
     except Exception:
         flag_ok = False
     # re-check dir
