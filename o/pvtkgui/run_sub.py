@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.1.3.0 test201506112206
+# version 0.1.4.0 test201506181544
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,13 +36,32 @@ from . import support_evparse
 
 BIN_PARSE_VIDEO = 'parsev'
 
+sub_process_parsev_obj = None
+
 # functions
 
 # run sub process
-def run_sub(arg, shell=False):
+def run_sub(arg, shell=False, save_callback=None):
     PIPE = subprocess.PIPE
     p = subprocess.Popen(arg, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    # check save p callback
+    if save_callback != None:
+        save_callback(p)
+    # just start subprocess
     return p.communicate()
+
+# save parsev p obj, for terminate sub process
+def save_parsev_p(p):
+    global sub_process_parsev_obj
+    sub_process_parsev_obj = p
+
+# terminate parsev
+def terminate_parsev():
+    p = sub_process_parsev_obj
+    if p == None:
+        return True
+    # just terminate it
+    p.terminate()
 
 # run parse_video
 def run_pv(url, hd, flag_debug=False):
@@ -58,7 +77,7 @@ def run_pv(url, hd, flag_debug=False):
     else:	# use parse_video
         # make args
         hd = str(hd)
-        arg = [pybin, BIN_PARSE_VIDEO, '--force-output-utf8', '--min', hd, '--max', hd, url]
+        arg = [pybin, BIN_PARSE_VIDEO, '--fix-unicode', '--min', hd, '--max', hd, url]
         # check flag_debug
         if flag_debug:
             arg.append('--debug')
@@ -66,22 +85,24 @@ def run_pv(url, hd, flag_debug=False):
     
     # DEBUG info
     arg_text = json.dumps(arg)
-    print('DEBUG: run_sub: start parsev with args ' + arg_text)
+    print('pvtkgui: run_sub: start parsev with args ' + arg_text)
     # start parse_video
-    stdout, stderr = run_sub(arg)
+    stdout, stderr = run_sub(arg, save_callback=save_parsev_p)
+    # clean saved p
+    save_parsev_p(None)
     # done
     return stdout, stderr
 
 def sub_thread(callback, url, hd, write_config=None, flag_debug=False):
     # DEBUG info
-    print('DEBUG: run parse_video sub_thread start')
+    print('pvtkgui: run_sub: run parse_video sub_thread start')
     # write config file first
     if write_config != None:
         write_config()
     # start parsev
     stdout, stderr = run_pv(url, hd, flag_debug=flag_debug)
     # DEBUG info
-    print('DEBUG: run parse_video sub_thream end')
+    print('pvtkgui: run_sub: run parse_video sub_thread end')
     callback(stdout, stderr)
 
 # run parse_video in sub thread

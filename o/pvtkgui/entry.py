@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.6.0 test201506112233
+# version 0.1.13.0 test201506181544
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -32,274 +32,202 @@ import re
 
 from . import gui
 from . import run_sub
-from . import xunlei_dl
+# from . import xunlei_dl
+from . import conf
+from . import conf_default as confd
 
-make_rename_list_ = None
-output_text_ = None
-
-# set import
-def set_import(make_rename_list=None, output_text=None):
-    global make_rename_list_
-    global output_text_
-    make_rename_list_ = make_rename_list
-    output_text_ = output_text
-    # set sub import
-    xunlei_dl.set_import(make_rename_list=make_rename_list, output_text=output_text)
-    # set import done
+from ..output import easy_text
 
 # global vars
-MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框 中 输入 视频播放页面 的 URL. 
-                点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
-
-
- parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.10.0 test201506112233
-
-
-+ hd 值 说明
-       左侧上方的文本框, hd= 数字, 用于选择 解析并输出 哪种 清晰度 的视频文件 URL. 
-   这样做可以加快解析速度. 
-       hd 值 请在解析结果 中 查看. 
-
-+ 操作说明
-  
-  鼠标 中键 点击 URL 输入文本框 (上方右侧), 可以直接从剪切板粘贴 URL. 
-  
-  按 F9 键 或 右键菜单, 可以直接复制 解析结果 中的全部 URL 到剪切板. 不复制其它文本. 
-
-
-
-
-
-
-更多帮助信息, 请见
-  https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide
-
-  如有更多问题, 需要讨论, 请
-          加 qq 群 飞驴友视频下载交流群 141712855
-
-copyright 2015 sceext <sceext@foxmail.com> 2015.06
-'''
-
-DL_XUNLEI_TEXT1 = '1. 正在向 迅雷 添加下载任务, 请稍候 ... '
-DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
-DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
-DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. '
-
-DL_XUNLEI_AUTO_INSTALL1 = '3. 提示: 正在自动安装 迅雷 下载 支持组件, 请稍候 ... '
-DL_XUNLEI_AUTO_INSTALL2 = '4. 成功: 已经完成安装 comtypes. 再试试吧~~~ 现在 使用 迅雷 下载 应该没有问题了. ^_^ :-)'
-
-AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
-AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
 # parse_video Tk GUI, pvtkgui config file path
 CONFIG_FILE = './etc/pvtkgui.conf.json'
-DEFAULT_HD = 2
-
-WATCH_CLIP_SLEEP_TIME_S = 0.1	# sleep every 100ms
-CLIP_MATCH_RE = [
-    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
-    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html', 
-    
-    # support for evparse
-    '^http://tv\.sohu\.com/(19|20)[0-9]{6}/n[0-9]+\.shtml', 
-    '^http://www\.hunantv\.com/v/2/[0-9]+/[a-z]/[0-9]+\.html', 
-    '^http://v\.pptv\.com/show/[A-Za-z0-9]+\.html', 
-]
 
 # NOTE should be set by out
 flag_debug = False
 
 etc = {}
 etc['w'] = None	# main window obj
+
+etc['analyse_thread'] = None	# analyse sub thread obj
 etc['flag_doing'] = False	# global doing flag
-etc['conf'] = None	# pvtkgui config obj
-etc['main_text'] = ''	# main text showed in main Text GUI window
 
 # base funciton
-def make_default_config_obj():
-    conf = {}
-    conf['hd'] = DEFAULT_HD
-    # done
-    return conf
 
-def check_config_file(conf):
-    if not 'hd' in conf:
-        raise Exception('config file error, no hd in conf')
-    hd = int(conf['hd'])
-    if hd > 100:
-        raise Exception('config file error, hd value too big')
-    # check done
-    return conf
-
-def load_config_file():
-    # try to read config file
-    t = ''
-    with open(CONFIG_FILE, 'r') as f:
-        t = f.read()
-    # parse as json
-    try:
-        conf = json.loads(t)
-        conf = check_config_file(conf)
-    except Exception as e:
-        # DEBUG info
-        print('DEBUG: load config file \"' + CONFIG_FILE + '\" failed, use default config instead. ')
-        try:
-            print(e)
-        except Exception:
-            pass
-        # use default config instead
-        conf = make_default_config_obj()
-    # done
-    return conf
-
-def write_config_file(conf_obj):
-    # make json text
-    t = json.dumps(conf_obj)
-    # write conf file
-    with open(CONFIG_FILE, 'w') as f:
-        f.write(t)
-    # DEBUG info
-    print('DEBUG: save config file to \"' + CONFIG_FILE + '\"')
-    # done
-
-def parse_hd_text(hd_text):
-    try:
-        hd = int(hd_text)
-    except Exception:
-        hd = DEFAULT_HD
-    # done
-    return hd
+def add_main_text_style(tlist):
+    w = etc['w']
+    # add each part
+    for item in tlist:
+        w.add_main_text(text=item[1], tag=item[0])
+    # add main text style done
 
 # functions
 
-# init
 def init():
+    # init main window
+    init_main_win()
+    # load config
+    init_config()
+    # start watch thread
+    init_watch()
+    
+    # init done, start main loop
+    start_mainloop()
+
+def start_mainloop():
     # DEBUG info
-    print('DEBUG: parse_video Tk GUI start init')
+    print('pvtkgui: entry: starting mainloop')
+    # start main loop
+    w = etc['w']
+    w.mainloop()
+    # DEBUG info
+    print('pvtkgui: entry: mainloop stoped')
+
+# init MainWin
+def init_main_win():
+    # DEBUG info
+    print('pvtkgui: entry: parse_video Tk GUI start init')
     # create main window
     w = gui.MainWin()
     etc['w'] = w
     # set callback
-    w.callback_main_button = on_main_button
-    w.callback_copy_url = on_copy_url
-    w.callback_xunlei_dl = on_xunlei_dl
+    w.callback = on_main_win
     # show main window
     w.start()
-    # set init text
+    # set main window init text
+    w.enable_main_text()
     w.clear_main_text()
-    w.append_main_text(MAIN_TEXT_INIT_TEXT)
+    add_main_text_style(confd.main_win_init_text)
     # DEBUG info
-    print('DEBUG: main window created, starting main loop')
-    # load default config file
-    etc['conf'] = load_config_file()
-    # DEBUG info
-    print('DEBUG: load config file ')
-    # set hd to ui
-    hd = str(etc['conf']['hd'])
-    w.set_hd_text(hd)
-    # DEBUG info
-    print('DEBUG: set hd=' + hd)
-    # start watch clipboard thread
-    run_sub.start_thread(thread_watch_clip)
-    
-    # start main loop
-    w.mainloop()
-    # DEBUG info
-    print('DEBUG: mainloop stoped')
-    # init end
+    print('pvtkgui: entry: main window created')
+    # main win init done
 
-# on button click
-def on_main_button():
-    # DEBUG info
-    print('DEBUG: main button clicked')
-    # check flag_doing
-    if etc['flag_doing']:
-        print('ERROR: doing, can not start parse')
-        return
-    # get url
+# init config
+def init_config():
+    # load config file
+    conf.load_config(confd.CONFIG_FILE)
+    # update UI
     w = etc['w']
-    url_to = w.get_entry_text()
-    # DEBUG info
-    print('DEBUG: got input url \"' + url_to + '\"')
-    # get hd
-    hd_text = w.get_hd_text()
-    # DEBUG info
-    print('DEBUG: got hd_text \"' + hd_text + '\"')
-    # update etc conf
-    hd = parse_hd_text(hd_text)
-    etc['conf']['hd'] = hd
-    # DEBUG info
-    print('DEBUG: got hd=' + str(hd))
-    # set UI
+    w.set_hd_text(str(conf.conf['hd']))
+    w.set_xunlei_path_text(str(conf.conf['xunlei_dl_path']))
+    # done
+
+# start watch sub thread
+def init_watch():
+    # just start watch thread
+    run_sub.start_thread(watch_thread)
+
+# on MainWin event callback
+def on_main_win(event, data):
+    w = etc['w']
+    # check which event
+    if event == 'start_stop':
+        # check flag
+        if etc['flag_doing']:
+            stop_parse()
+        else:
+            start_parse()
+    elif event == 'xunlei_dl_path_change':
+        # just start a thread to select dir
+        start_change_dl_path_thread()
     
+    elif event == 'top_paste':
+        t = w.clip_get()
+        if (t != None) and (t != ''):
+            # just paste first line
+            line = t.split('\n')
+            w.set_url_text(line[0])
+    elif event == 'top_copy':
+        t = w.get_url_text()
+        if t != '':
+            w.clip_set(t)
+    elif event == 'body_copy_selected':
+        t = w.get_main_text()
+        if (type(t) == type('')) and (t != ''):
+            w.clip_set(t)
+    
+    elif event == 'body_copy_all_url':
+        pass
+    
+    elif event == 'xunlei_dl_all_url':
+        pass
+    
+    elif event == 'xunlei_dl_rest_url':
+        pass
+    
+    else:
+        # DEBUG info
+        print('pvtkgui: entry: unknow event [' + str(event) + ']')
+    # process event done
+
+# stop parse
+def stop_parse():
+    # set flag
+    etc['flag_doing'] = False
+    # update UI
+    w = etc['w']
+    w.set_button_status('start')
+    # DEBUG info
+    print('pvtkgui: entry: try to terminate parsev sub process')
+    # just kill parsev subprocess
+    run_sub.terminate_parsev()
+    # set UI text
+    w.enable_main_text()
+    w.add_main_text(confd.ui_text['user_stop_parse'], flag='start', tag='red_bold')
+    # stop parse done
+
+# start parse
+def start_parse():
     # set flag
     etc['flag_doing'] = True
-    # disable main button
-    w.disable_main_button()
+    # update UI
+    w = etc['w']
+    w.set_button_status('stop')
+    
+    # set UI text
     w.enable_main_text()
-    # set hd
+    w.clear_main_text()
+    add_main_text_style(confd.ui_text_doing_parse)
+    
+    # get config hd and url
+    url_to = w.get_url_text()
+    # DEBUG info
+    print('pvtkgui: entry: got input url \"' + url_to + '\"')
+    # get hd
+    hd_text = w.get_hd_text()
+    # set config
+    conf.set_hd(hd_text)
+    # update UI
+    hd = conf.conf['hd']
     w.set_hd_text(str(hd))
     
-    # save last_hd
+    # save last_hd, NOTE
     etc['last_hd'] = hd
     
-    # set text
-    w.clear_main_text()
-    w.append_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
-    
+    # just start sub process
+    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug)
+
+# on parsev subprocess finished
+def on_parsev_done(stdout, stderr):
+    # set flag
+    etc['flag_doing'] = False
     # DEBUG info
-    print('DEBUG: starting parse_video, flag_debug = ' + str(flag_debug))
-    # just start parse_video
-    run_sub.run_pv_thread(on_sub_finished, url_to, hd, write_config=write_config, flag_debug=flag_debug)
-
-def write_config():
-    write_config_file(etc['conf'])
-    # done
-
-# on copy URL, to copy urls in main_text to clip board
-def on_copy_url():
-    text = etc['main_text']
-    w = etc['w']
-    to = get_url_list(text)
-    # check result
-    if to != None:
-        w.clip_set(to)
-    # done
-
-def get_url_list(text):
-    line = text.split('\n')
-    out = []
-    for l in line:
-        if l.find('http://') == 0:
-            out.append(l)
-    out.append('')
-    # output
-    if len(out) > 1:	# found urls
-        return ('\n').join(out)
-    else:	# not found url
-        return None
-
-# on sub finished
-def on_sub_finished(stdout, stderr):
-    # DEBUG info
-    print('DEBUG: sub process parse_video ended')
+    print('pvtkgui: entry: parsev done')
     w = etc['w']
     
-    # decode sub output as utf-8, try to handle errors
+    # decode stdout as utf-8, and parse as json
     try:
-        stdout = str(stdout.decode('utf-8', ))
+        stdout = str(stdout.decode('utf-8'))
     except Exception as e:
         # DEBUG info
-        print('DEBUG: decode stdout as utf-8 failed\n' + str(e))
+        print('pvtkgui: entry: decode stdout as utf-8 failed \n' + str(e))
         stdout = str(stdout.decode('utf-8', 'ignore'))
     try:
-        stderr = str(stderr.decode('utf-8', ))
+        stderr = str(stderr.decode('utf-8'))
     except Exception as e:
-        # DEBUG info
-        print('DEBUG: decode stderr as utf-8 failed\n' + str(e))
+        print('pvtkgui: entry: decode stderr as utf-8 failed \n' + str(e))
         stderr = str(stderr.decode('utf-8', 'ignore'))
-    # try to parse stdout as json
+    # try to parse stdout
     flag_sub_ok = False
     evinfo = None
     try:
@@ -308,10 +236,20 @@ def on_sub_finished(stdout, stderr):
     except Exception:
         # make error output
         out = stderr + '\n' + stdout + '\n'
-    # check sub_ok
+    # check sub ok
     if flag_sub_ok:
-        # make output text
-        out = output_text_.make_easy_text(evinfo)
+        w.enable_main_text()
+        w.clear_main_text()
+        
+        output = easy_text.output_style(evinfo)
+        add_main_text_style(output)
+        
+        w.disable_main_text()
+    else: # NOTE should write error info
+        w.enable_main_text()
+        w.clear_main_text()
+        add_main_text_style(confd.ui_text_parse_failed)
+        w.add_main_text(out, tag='red')
     # write result
     
     # save evinfo
@@ -323,46 +261,110 @@ def on_sub_finished(stdout, stderr):
     else:
         etc['evinfo'] = evinfo
     
-    # save Text
-    etc['main_text'] = out
-    # set to main Text
-    w.enable_main_text()
-    w.clear_main_text()
-    w.append_main_text(out)
+    # TODO check result and auto retry
     
-    # check error
-    if flag_sub_ok:
-        # DEBUG info
-        print('DEBUG: entry.py: flag_sub_ok, True')
-        # no error, not let user change destroy result
-        w.disable_main_text()
-    else:
-        print('DEBUG: entry.py: flag_sub_ok, False')
-    
-    # check result, auto retry
-    if evinfo != None:
-        # check url numbers
-        ulist = []
-        for v in evinfo['video']:
-            for f in v['file']:
-                ulist.append(f)
-        if len(ulist) < 1:
-            # DEBUG info
-            print('DEBUG: entry.py: auto retry, last_hd=' + str(etc['last_hd']))
-            # should start auto retry
-            auto_retry(evinfo, etc['last_hd'])
-            return
-    
-    # get result OK, not need retry
-    
-    # write result OK, set UI
-    
-    # enable main button
-    w.enable_main_button()
-    # set flag_doing
-    etc['flag_doing'] = False
+    # update UI
+    w.set_button_status('start')
     # done
 
+# start xunlei dl path change thread
+def start_change_dl_path_thread():
+    run_sub.start_thread(change_dl_path_thread)
+
+def change_dl_path_thread():
+    w = etc['w']
+    old_dir = w.get_xunlei_path_text()
+    # open select dialog
+    new_dir = w.select_dir(old_path=old_dir, title=confd.ui_text['change_dl_path_title'])
+    # check result
+    if (type(new_dir) == type('')) and (new_dir != ''):
+        # just set it to main UI
+        w.set_xunlei_path_text(new_dir)
+        # TODO write config file
+    # change dl path done
+
+# watch sub thread
+def watch_thread(arg=True):
+    # DEBUG info
+    print('pvtkgui: entry: watch thread start')
+    # init
+    w = etc['w']
+    
+    info = {}
+    info['old_clip'] = ''
+    info['old_url'] = ''
+    
+    # loop watch
+    while arg:
+        # sleep before check
+        time.sleep(confd.watch_thread_sleep_time_s)
+        
+        # watch clip
+        watch_clip(w, info)
+        
+        # watch url
+        watch_url(w, info)
+        # watch done
+    # one loop done
+
+# watch clip
+def watch_clip(w, info):
+    # get clip text
+    t = w.clip_get()
+    if t == None:
+        return
+    
+    # check changed
+    if t == info['old_clip']:
+        return
+    
+    info['old_clip'] = t
+    # check match re
+    rlist = confd.SUPPORT_URL_RE
+    flag_match = False
+    for r in rlist:
+        if re.match(r, t):
+            flag_match = True
+            break
+    # if match, set it
+    if flag_match:
+        w.set_url_text(t)
+    # watch clip done
+
+# watch url
+def watch_url(w, info):
+    # get url text
+    t = w.get_url_text()
+    # check changed
+    if t == info['old_url']:
+        return
+    # check match re
+    rlist = confd.SUPPORT_URL_RE
+    flag_match = False
+    for r in rlist:
+        if re.match(r, t):
+            flag_match = True
+            break
+    # iif match, set status to ok
+    if flag_match:
+        w.set_url_status('ok')
+    else:	# set not ok
+        w.set_url_status('none')
+    # watch url done
+
+# start analyse
+def start_analyse():
+    pass
+
+# stop analyse
+def stop_analyse():
+    pass
+
+# call xunlei to dl
+def xunlei_dl():
+    pass
+
+# TODO
 # auto retry, when analyse not get the hd= video, auto try to get max hd video info
 def auto_retry(evinfo, hd_last):
     # get hd
@@ -410,8 +412,8 @@ def auto_retry(evinfo, hd_last):
     run_sub.run_pv_thread(on_sub_finished, url_to, hd_new)
     # done
 
-# use xunlei do download all files
-def on_xunlei_dl():
+# use xunlei to download all files, or rest files
+def xunlei_dl(flag_rest=False):
     # check evinfo
     if (not 'evinfo' in etc) or (etc['evinfo'] == None):
         # DEBUG info
@@ -446,42 +448,9 @@ def on_xunlei_dl():
         w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
     # done
 
-# watch clipboard thread
-def thread_watch_clip(arg=True):
-    # DEBUG info
-    print('DEBUG: thread watch_clip start')
-    # init
-    old_clip = ''
-    w = etc['w']
-    # loop check clip content
-    while arg:
-        # sleep before check
-        time.sleep(WATCH_CLIP_SLEEP_TIME_S)
-        # try to get clip content
-        try:
-            t = w.clip_get()
-        except Exception:
-            continue
-        # check changed
-        if t == old_clip:
-            continue
-        else:
-           old_clip = t
-        # check match re
-        rlist = CLIP_MATCH_RE
-        flag_match = False
-        for r in rlist:
-            if re.match(r, str(t)):
-                flag_match = True
-                break
-        # if match, set it
-        if flag_match:
-            w.set_entry_text(t)
-        # set done
-    # done
-
 # auto install comtypes
 def auto_install_comtypes():
+    # TODO
     # DEBUG info
     print('DEBUG: auto install comtypes thread started ')
     # set UI before start install
