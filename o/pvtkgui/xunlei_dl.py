@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.0.14.0 test201506181930
+# version 0.0.16.0 test201506182128
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -28,7 +28,7 @@
 
 import imp
 
-from . import run_sub
+from .b import run_sub
 from . import xunlei_agent
 
 from ..output import easy_text
@@ -51,6 +51,8 @@ cc = None	# comtypes.client
 comtypes = None	# comtypes
 
 INSTALL_COMTYPES_BIN = '.\\o\\easy\\install.bat'
+
+xunlei_agent = None
 
 # functions
 
@@ -85,13 +87,16 @@ def create_thunder_agent():
     return ta
 
 # main function
-def add_task(evinfo, xunlei_dl_path=None):
+def create_agent():
     # init
     import_cc()
     ta = create_thunder_agent()	# thunder_agent
-    
-    # make task list
-    tlist = make_task_list(evinfo)
+    global xunlei_agent
+    xunlei_agent = ta
+    # done
+
+def add_task(tlist, xunlei_dl_path=None):
+    ta = xunlei_agent
     # check tlist length
     if len(tlist) < 1:
         return 0	# just return 0
@@ -99,8 +104,11 @@ def add_task(evinfo, xunlei_dl_path=None):
     task_count = 0
     # add each task
     for t in tlist:
-        # TODO support xunlei_dl_path
-        ta.AddTask(t['url'], t['file'])
+        # check xunlei_dl_path
+        if xunlei_dl_path != None:
+            ta.AddTask(t['url'], t['file'], xunlei_dl_path)
+        else:
+            ta.AddTask(t['url'], t['file'])
         task_count += 1
     # add tasks done, commit task
     ta.CommitTasks()
