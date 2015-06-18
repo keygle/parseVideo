@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.14.0 test201506181208
+# version 0.1.15.0 test201506181215
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -89,7 +89,7 @@ class MainWin(tk_base.TkBaseObj):
             # set red style
             self.p_top.set_url_text_style('Red.TEntry')
         else:	# set as none normal status
-            self.p_top.set_url_text_style('HD.TEntry')
+            self.p_top.set_url_text_style('Main.TEntry')
         # set url status done
     
     def disable_main_text(self):
@@ -282,6 +282,8 @@ class MainWin(tk_base.TkBaseObj):
         
         # add callback for hide menu
         root.bind('<Button-1>', self._on_hide_menu)
+        
+        # TODO set keys to bind events
         # set el done
     
     # end MainWin class
