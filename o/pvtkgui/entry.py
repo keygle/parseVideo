@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.8.0 test201506172217
+# version 0.1.9.0 test201506181209
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -49,8 +49,6 @@ etc['w'] = None	# main window obj
 etc['conf'] = None	# pvtkgui config obj
 
 etc['analyse_thread'] = None	# analyse sub thread obj
-
-# TODO
 etc['flag_doing'] = False	# global doing flag
 
 # base funciton
@@ -121,17 +119,81 @@ def init_config():
 
 # start watch sub thread
 def init_watch():
-    pass
-    return
-    run_sub.start_thread(thread_watch_clip)
+    # just start watch thread
+    run_sub.start_thread(watch_thread)
 
 # on MainWin event callback
 def on_main_win(event, data):
     pass
 
 # watch sub thread
-def watch_thread():
-    pass
+def watch_thread(arg=True):
+    # DEBUG info
+    print('pvtkgui: entry: watch thread start')
+    # init
+    w = etc['w']
+    
+    info = {}
+    info['old_clip'] = ''
+    info['old_url'] = ''
+    
+    # loop watch
+    while arg:
+        # sleep before check
+        time.sleep(confd.watch_thread_sleep_time_s)
+        
+        # watch clip
+        watch_clip(w, info)
+        
+        # watch url
+        watch_url(w, info)
+        # watch done
+    # one loop done
+
+# watch clip
+def watch_clip(w, info):
+    # get clip text
+    t = w.clip_get()
+    if t == None:
+        return
+    
+    # check changed
+    if t == info['old_clip']:
+        return
+    
+    info['old_clip'] = t
+    # check match re
+    rlist = confd.SUPPORT_URL_RE
+    flag_match = False
+    for r in rlist:
+        if re.match(r, t):
+            flag_match = True
+            break
+    # if match, set it
+    if flag_match:
+        w.set_url_text(t)
+    # watch clip done
+
+# watch url
+def watch_url(w, info):
+    # get url text
+    t = w.get_url_text()
+    # check changed
+    if t == info['old_url']:
+        return
+    # check match re
+    rlist = confd.SUPPORT_URL_RE
+    flag_match = False
+    for r in rlist:
+        if re.match(r, t):
+            flag_match = True
+            break
+    # iif match, set status to ok
+    if flag_match:
+        w.set_url_status('ok')
+    else:	# set not ok
+        w.set_url_status('none')
+    # watch url done
 
 # start analyse
 def start_analyse():

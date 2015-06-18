@@ -34,53 +34,6 @@ from . import gui
 from . import run_sub
 from . import xunlei_dl
 
-make_rename_list_ = None
-output_text_ = None
-
-# set import
-def set_import(make_rename_list=None, output_text=None):
-    global make_rename_list_
-    global output_text_
-    make_rename_list_ = make_rename_list
-    output_text_ = output_text
-    # set sub import
-    xunlei_dl.set_import(make_rename_list=make_rename_list, output_text=output_text)
-    # set import done
-
-# global vars
-MAIN_TEXT_INIT_TEXT = '''        请在 （ ↗ 上方 ↗ 右侧 的) 文本框 中 输入 视频播放页面 的 URL. 
-                点击 "开始解析" 按钮 或 按 回车 键 开始 解析. 
-
-
- parse_video Tk GUI 1          parse_video 图形界面
-    version 0.0.10.0 test201506112233
-
-
-+ hd 值 说明
-       左侧上方的文本框, hd= 数字, 用于选择 解析并输出 哪种 清晰度 的视频文件 URL. 
-   这样做可以加快解析速度. 
-       hd 值 请在解析结果 中 查看. 
-
-+ 操作说明
-  
-  鼠标 中键 点击 URL 输入文本框 (上方右侧), 可以直接从剪切板粘贴 URL. 
-  
-  按 F9 键 或 右键菜单, 可以直接复制 解析结果 中的全部 URL 到剪切板. 不复制其它文本. 
-
-
-
-
-
-
-更多帮助信息, 请见
-  https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide
-
-  如有更多问题, 需要讨论, 请
-          加 qq 群 飞驴友视频下载交流群 141712855
-
-copyright 2015 sceext <sceext@foxmail.com> 2015.06
-'''
-
 DL_XUNLEI_TEXT1 = '1. 正在向 迅雷 添加下载任务, 请稍候 ... '
 DL_XUNLEI_ERR1 = '2. 错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! '
 DL_XUNLEI_TEXT2 = ['2. 成功: 已经添加 ', ' 个下载任务至 迅雷. ']
@@ -96,22 +49,10 @@ AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 CONFIG_FILE = './etc/pvtkgui.conf.json'
 DEFAULT_HD = 2
 
-WATCH_CLIP_SLEEP_TIME_S = 0.1	# sleep every 100ms
-CLIP_MATCH_RE = [
-    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
-    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html', 
-    
-    # support for evparse
-    '^http://tv\.sohu\.com/(19|20)[0-9]{6}/n[0-9]+\.shtml', 
-    '^http://www\.hunantv\.com/v/2/[0-9]+/[a-z]/[0-9]+\.html', 
-    '^http://v\.pptv\.com/show/[A-Za-z0-9]+\.html', 
-]
-
 # NOTE should be set by out
 flag_debug = False
 
 etc = {}
-etc['w'] = None	# main window obj
 etc['flag_doing'] = False	# global doing flag
 etc['conf'] = None	# pvtkgui config obj
 etc['main_text'] = ''	# main text showed in main Text GUI window
@@ -175,22 +116,6 @@ def parse_hd_text(hd_text):
 
 # init
 def init():
-    # DEBUG info
-    print('DEBUG: parse_video Tk GUI start init')
-    # create main window
-    w = gui.MainWin()
-    etc['w'] = w
-    # set callback
-    w.callback_main_button = on_main_button
-    w.callback_copy_url = on_copy_url
-    w.callback_xunlei_dl = on_xunlei_dl
-    # show main window
-    w.start()
-    # set init text
-    w.clear_main_text()
-    w.append_main_text(MAIN_TEXT_INIT_TEXT)
-    # DEBUG info
-    print('DEBUG: main window created, starting main loop')
     # load default config file
     etc['conf'] = load_config_file()
     # DEBUG info
@@ -200,13 +125,7 @@ def init():
     w.set_hd_text(hd)
     # DEBUG info
     print('DEBUG: set hd=' + hd)
-    # start watch clipboard thread
-    run_sub.start_thread(thread_watch_clip)
     
-    # start main loop
-    w.mainloop()
-    # DEBUG info
-    print('DEBUG: mainloop stoped')
     # init end
 
 # on button click
@@ -444,40 +363,6 @@ def on_xunlei_dl():
         # set UI
         w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
-    # done
-
-# watch clipboard thread
-def thread_watch_clip(arg=True):
-    # DEBUG info
-    print('DEBUG: thread watch_clip start')
-    # init
-    old_clip = ''
-    w = etc['w']
-    # loop check clip content
-    while arg:
-        # sleep before check
-        time.sleep(WATCH_CLIP_SLEEP_TIME_S)
-        # try to get clip content
-        try:
-            t = w.clip_get()
-        except Exception:
-            continue
-        # check changed
-        if t == old_clip:
-            continue
-        else:
-           old_clip = t
-        # check match re
-        rlist = CLIP_MATCH_RE
-        flag_match = False
-        for r in rlist:
-            if re.match(r, str(t)):
-                flag_match = True
-                break
-        # if match, set it
-        if flag_match:
-            w.set_entry_text(t)
-        # set done
     # done
 
 # auto install comtypes

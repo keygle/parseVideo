@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.12.0 test201506172217
+# version 0.1.14.0 test201506181208
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,6 +33,7 @@ import tkinter as TK
 import tkinter.ttk as ttk
 import tkinter.font as TKfont
 import tkinter.tix as tix
+import tkinter.filedialog as TKfile
 
 from . import gui_style as guis
 from ..gui import tk_base
@@ -119,6 +120,9 @@ class MainWin(tk_base.TkBaseObj):
             t = root.clipboard_get()
         except Exception:
             t = None
+        # check t is text
+        if type(t) != type(''):
+            t = None
         return t
     
     def clip_set(self, text=''):
@@ -127,8 +131,11 @@ class MainWin(tk_base.TkBaseObj):
         root.clipboard_append(text)
     
     # select dir window
-    def select_dir(self, old_path=None):
-        pass	# TODO
+    def select_dir(self, old_path=None, title=''):
+        result = TKfile.askdirectory(parent=self.root, title=title, initialdir=old_path)
+        if (type(result) == type('')) and (result != ''):
+            return result
+        return None
     
     # event to send, event list
     #	start_stop	top part, start_stop button

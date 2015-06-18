@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.2.0 test201506172217
+# version 0.0.3.0 test201506181209
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,6 +33,19 @@ default_conf = {
     'hd' : '2', 
     'xunlei_dl_path' : 'c:\\pvtkgui_dl\\', 
 }
+
+# support urls
+SUPPORT_URL_RE = [
+    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html', 
+    
+    # support for evparse
+    '^http://tv\.sohu\.com/(19|20)[0-9]{6}/n[0-9]+\.shtml', 
+    '^http://www\.hunantv\.com/v/2/[0-9]+/[a-z]/[0-9]+\.html', 
+    '^http://v\.pptv\.com/show/[A-Za-z0-9]+\.html', 
+]
+
+watch_thread_sleep_time_s = 0.1	# sleep 100ms
 
 # pvtkgui, UI text
 
