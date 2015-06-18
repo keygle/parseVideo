@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.6.0 test201506181256
+# version 0.0.7.0 test201506181544
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -54,7 +54,22 @@ watch_thread_sleep_time_s = 0.1	# sleep 100ms
 
 ui_text = {
     'change_dl_path_title' : '请选择 迅雷 下载目录', 
+    'user_stop_parse' : '\n 提示: 已终止 解析. \n', 
 }
+
+ui_text_doing_parse = [
+    ['blue_bold', '\n 提示'], 
+    ['gray', ': '], 
+    ['blue', '正在解析 URL'], 
+    ['gray', ', 请稍候 ... \n'], 
+]
+
+ui_text_parse_failed = [
+    ['red_bold', '\n 错误'], 
+    ['gray', ': '], 
+    ['red', '解析失败 ! '], 
+    ['big_red', ' :-( \n\n'], 
+]
 
 main_win_init_text = [
     [None, '       请在 '], 
@@ -78,7 +93,7 @@ main_win_init_text = [
     ['gray', '开始解析. \n\n'], 
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.0.0 test201506172051\n'], 
+    ['gray', '          version 0.2.0.0 test201506181544\n'], 
     [None, '\n'], 
     ['big_blue', '\n+'], 
     ['bold', ' hd 值 说明\n'], 

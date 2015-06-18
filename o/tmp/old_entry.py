@@ -45,58 +45,7 @@ DL_XUNLEI_AUTO_INSTALL2 = '4. 成功: 已经完成安装 comtypes. 再试试吧~
 AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
 AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
-# NOTE should be set by out
-flag_debug = False
-
 # functions
-
-# on button click
-def on_main_button():
-    # DEBUG info
-    print('DEBUG: main button clicked')
-    # check flag_doing
-    if etc['flag_doing']:
-        print('ERROR: doing, can not start parse')
-        return
-    # get url
-    w = etc['w']
-    url_to = w.get_entry_text()
-    # DEBUG info
-    print('DEBUG: got input url \"' + url_to + '\"')
-    # get hd
-    hd_text = w.get_hd_text()
-    # DEBUG info
-    print('DEBUG: got hd_text \"' + hd_text + '\"')
-    # update etc conf
-    hd = parse_hd_text(hd_text)
-    etc['conf']['hd'] = hd
-    # DEBUG info
-    print('DEBUG: got hd=' + str(hd))
-    # set UI
-    
-    # set flag
-    etc['flag_doing'] = True
-    # disable main button
-    w.disable_main_button()
-    w.enable_main_text()
-    # set hd
-    w.set_hd_text(str(hd))
-    
-    # save last_hd
-    etc['last_hd'] = hd
-    
-    # set text
-    w.clear_main_text()
-    w.append_main_text(' 正在解析 URL \"' + url_to + '\" ... \n    请稍等 一小会儿 :-) \n')
-    
-    # DEBUG info
-    print('DEBUG: starting parse_video, flag_debug = ' + str(flag_debug))
-    # just start parse_video
-    run_sub.run_pv_thread(on_sub_finished, url_to, hd, write_config=write_config, flag_debug=flag_debug)
-
-def write_config():
-    write_config_file(etc['conf'])
-    # done
 
 # on copy URL, to copy urls in main_text to clip board
 def on_copy_url():

@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.9.0 test201506172219
+# version 0.0.10.0 test201506181544
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -106,10 +106,19 @@ MAIN_TEXT_STYLE_TO_TAG_LIST = {
     'red' : 'red', 
     'red_bold' : 'red_bold', 
     'blue' : 'blue', 
+    'blue_bold' : 'blue_bold', 
+    'big' : 'big', 
     'big_blue' : 'big_blue', 
+    'big_red' : 'big_red', 
     'white_blue' : 'white_blue', 
     'bold' : 'bold', 
     'a' : 'a', 
+    'green' : 'green', 
+    
+    # for main parse result text
+    'info_title' : 'big_bold', 
+    'info_name' : 'bold', 
+    'info_value' : 'red', 
 }
 
 def make_main_text_tag_style():
@@ -130,13 +139,31 @@ def make_main_text_tag_style():
         'blue' : {
             'color' : '#00f', 
         }, 
+        'green' : {
+            'color' : '#0f0', 
+        }, 
+        'blue_bold' : {
+            'font' : ui_font['bold'], 
+            'color' : '#00f', 
+        }, 
         'white_blue' : {
             'background_color' : '#00f', 
             'color' : '#fff', 
         }, 
+        'big' : {
+            'font' : ui_font['big'], 
+        }, 
         'big_blue' : {
             'font' : ui_font['big'], 
             'color' : '#00f', 
+        }, 
+        'big_red' : {
+            'font' : ui_font['big'], 
+            'color' : '#f00', 
+        }, 
+        'big_bold' : {
+            'font' : ui_font['big'], 
+            'color' : '#111', 
         }, 
         'bold' : {
             'font' : ui_font['bold'], 

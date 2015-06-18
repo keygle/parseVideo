@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.12.0 test201506181300
+# version 0.1.13.0 test201506181544
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,6 +35,8 @@ from . import run_sub
 # from . import xunlei_dl
 from . import conf
 from . import conf_default as confd
+
+from ..output import easy_text
 
 # global vars
 
@@ -120,7 +122,11 @@ def on_main_win(event, data):
     w = etc['w']
     # check which event
     if event == 'start_stop':
-        pass	# TODO
+        # check flag
+        if etc['flag_doing']:
+            stop_parse()
+        else:
+            start_parse()
     elif event == 'xunlei_dl_path_change':
         # just start a thread to select dir
         start_change_dl_path_thread()
@@ -153,6 +159,113 @@ def on_main_win(event, data):
         # DEBUG info
         print('pvtkgui: entry: unknow event [' + str(event) + ']')
     # process event done
+
+# stop parse
+def stop_parse():
+    # set flag
+    etc['flag_doing'] = False
+    # update UI
+    w = etc['w']
+    w.set_button_status('start')
+    # DEBUG info
+    print('pvtkgui: entry: try to terminate parsev sub process')
+    # just kill parsev subprocess
+    run_sub.terminate_parsev()
+    # set UI text
+    w.enable_main_text()
+    w.add_main_text(confd.ui_text['user_stop_parse'], flag='start', tag='red_bold')
+    # stop parse done
+
+# start parse
+def start_parse():
+    # set flag
+    etc['flag_doing'] = True
+    # update UI
+    w = etc['w']
+    w.set_button_status('stop')
+    
+    # set UI text
+    w.enable_main_text()
+    w.clear_main_text()
+    add_main_text_style(confd.ui_text_doing_parse)
+    
+    # get config hd and url
+    url_to = w.get_url_text()
+    # DEBUG info
+    print('pvtkgui: entry: got input url \"' + url_to + '\"')
+    # get hd
+    hd_text = w.get_hd_text()
+    # set config
+    conf.set_hd(hd_text)
+    # update UI
+    hd = conf.conf['hd']
+    w.set_hd_text(str(hd))
+    
+    # save last_hd, NOTE
+    etc['last_hd'] = hd
+    
+    # just start sub process
+    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug)
+
+# on parsev subprocess finished
+def on_parsev_done(stdout, stderr):
+    # set flag
+    etc['flag_doing'] = False
+    # DEBUG info
+    print('pvtkgui: entry: parsev done')
+    w = etc['w']
+    
+    # decode stdout as utf-8, and parse as json
+    try:
+        stdout = str(stdout.decode('utf-8'))
+    except Exception as e:
+        # DEBUG info
+        print('pvtkgui: entry: decode stdout as utf-8 failed \n' + str(e))
+        stdout = str(stdout.decode('utf-8', 'ignore'))
+    try:
+        stderr = str(stderr.decode('utf-8'))
+    except Exception as e:
+        print('pvtkgui: entry: decode stderr as utf-8 failed \n' + str(e))
+        stderr = str(stderr.decode('utf-8', 'ignore'))
+    # try to parse stdout
+    flag_sub_ok = False
+    evinfo = None
+    try:
+        evinfo = json.loads(stdout)
+        flag_sub_ok = True
+    except Exception:
+        # make error output
+        out = stderr + '\n' + stdout + '\n'
+    # check sub ok
+    if flag_sub_ok:
+        w.enable_main_text()
+        w.clear_main_text()
+        
+        output = easy_text.output_style(evinfo)
+        add_main_text_style(output)
+        
+        w.disable_main_text()
+    else: # NOTE should write error info
+        w.enable_main_text()
+        w.clear_main_text()
+        add_main_text_style(confd.ui_text_parse_failed)
+        w.add_main_text(out, tag='red')
+    # write result
+    
+    # save evinfo
+    if not flag_sub_ok:
+        try:
+            etc.pop('evinfo')
+        except Exception:
+            pass
+    else:
+        etc['evinfo'] = evinfo
+    
+    # TODO check result and auto retry
+    
+    # update UI
+    w.set_button_status('start')
+    # done
 
 # start xunlei dl path change thread
 def start_change_dl_path_thread():
