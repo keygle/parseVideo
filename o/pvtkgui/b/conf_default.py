@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.8.0 test201506182211
+# version 0.0.9.0 test201506182307
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -58,6 +58,21 @@ AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 ui_text = {
     'change_dl_path_title' : '请选择 迅雷 下载目录', 
     'user_stop_parse' : '\n 提示: 已终止 解析. \n', 
+}
+
+ui_text_dl = {
+    'add_xunlei_dl_task' : '正在向 迅雷 添加下载任务, 请稍候 ... ', 
+    'err_comtypes' : '错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! ', 
+    'err_create_com' : '错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. ', 
+    
+    'ok_add_task' : ['成功: 已经添加 ', ' 个下载任务至 迅雷. '], 
+    
+    'info_install' : '提示: 正在自动安装 迅雷 下载 支持组件, 请稍候 ... ', 
+    'info_install_ok' : '成功: 已经完成安装 comtypes. 再试试吧~~~ 现在 使用 迅雷 下载 应该没有问题了. ^_^ :-)', 
+    
+    'try_create_dl_path' : '提示: 所指定的下载目录不存在, 正在尝试创建目录 ... ', 
+    'dl_path_error' : '错误: 所指定的下载目录不可用 ! ', 
+    'found_done_file' : ['提示: 发现了 ', ' 个已下载的文件 ! '], 
 }
 
 ui_text_doing_parse = [

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.2.0 test201506182211
+# version 0.0.3.0 test201506182306
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,8 +27,13 @@
 
 # import
 
+import os
+
 from .b import conf
 from .b import conf_default as confd
+from .b import run_sub
+
+from . import xunlei_dl as dl0
 
 # global vars
 w = None	# main window obj
@@ -49,60 +54,111 @@ def add_one_msg(text='', tag=None):
 
 # xunlei_dl main function
 def xunlei_dl(evinfo, flag_dl_rest=False):
-    pass	# TODO
-
-# TODO FIXME reserved old
-# use xunlei to download all files, or rest files
-def xunlei_dl(flag_rest=False):
-    # check evinfo
-    if (not 'evinfo' in etc) or (etc['evinfo'] == None):
-        # DEBUG info
-        print('DEBUG: parse not successful finished. can not add dl tasks to xunlei')
-        return
     # set UI
-    evinfo = etc['evinfo']
-    w = etc['w']
     w.enable_main_text()
-    w.insert_main_text('\n')
-    w.insert_main_text(DL_XUNLEI_TEXT1 + '\n')
-    w.disable_main_text()
+    add_one_msg(confd.ui_text_dl['add_xunlei_dl_task'], tag='blue')
     
-    # try to add tasks to xunlei
+    # try to create agent
     try:
-        task_added_n = xunlei_dl.add_task(evinfo)
-        # set UI
+        dl0.create_agent()
+    except dl0.ComTypesError:
         w.enable_main_text()
-        w.insert_main_text(DL_XUNLEI_TEXT2[0] + str(task_added_n) + DL_XUNLEI_TEXT2[1] + '\n')
-    except xunlei_dl.ComTypesError:
-        # set UI
-        w.enable_main_text()
-        w.insert_main_text(DL_XUNLEI_ERR1 + '\n')
-        # start auto install comtypes to support xunlei dl
-        # DEBUG info
-        print('DEBUG: starting auto install thread ... ')
+        add_one_msg(confd.ui_text_dl['err_comtypes'], tag='red')
+        # auto install comtypes
         run_sub.start_thread(auto_install_comtypes)
-        # process done
-    except xunlei_dl.CreateComObjError:
-        # set UI
+        # done
+        return
+    except dl0.CreateComObjError:
         w.enable_main_text()
-        w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
+        add_one_msg(confd.ui_text_dl['err_create_com'], tag='red')
+        # nothing to do
+        return
+    
+    # update xunlei_dl_path config
+    dl_path = w.get_dl_path_text()
+    conf.set_dl_path_text(dl_path)
+    # write config file
+    conf.write_config()
+    # check dl path
+    dl_path = check_dl_path(conf.conf['xunlei_dl_path'])
+    
+    # make file list
+    flist = dl0.make_task_list(evinfo)
+    
+    # check dl rest
+    if flag_dl_rest and (dl_path != None):
+        flist2 = []
+        found_count = 0
+        for f in flist:
+            # check file exist
+            fpath = os.path.join(dl_path, f['file'])
+            if os.path.isfile(fpath):
+                # found one file
+                # TODO check file size
+                fount_count += 1
+            else:	# should be download
+                flist2.append(f)
+        # check found
+        if fount_count > 0:
+            # update UI
+            w.enable_main_text()
+            raw_text = confd.ui_text_dl['found_done_file']
+            add_one_msg(raw_text[0] + str(fount_count) + raw_text[1], tag='green')
+            # replace flist
+            flist = flist2
+    # check dl rest done
+    
+    # do add task
+    add_count = dl0.add_task(flist, dl_path)
+    # update UI
+    w.enable_main_text()
+    raw_text = confd.ui_text_dl['ok_add_task']
+    add_one_msg(raw_text[0] + str(add_count) + raw_text[1], tag='blue')
+    
+    # call xunlei, done
+
+def check_dl_path(dl_path):
+    # check is dir
+    if os.path.isdir(dl_path):
+        # ok, everything is fine
+        return dl_path
+    # update UI
+    w.enable_main_text()
+    add_one_msg(confd.ui_text_dl['try_create_dl_path'], tag='green')
+    # try to create path
+    flag_ok = True
+    try:
+        # DEBUG info
+        print('pvtkgui: dl_host: create dir \"' + str(dl_path) + '\"')
+        os.path.mkdir(dl_path)
+    except Exception:
+        flag_ok = False
+    # re-check dir
+    if os.path.isdir(dl_path):
+        # ok, everything is fine
+        return dl_path
+    
+    # path error, update UI
+    w.enable_main_text()
+    add_one_msg(confd.ui_text_dl['dl_path_error'], tag='red')
     # done
+    return None
 
 # auto install comtypes
 def auto_install_comtypes():
-    # TODO
     # DEBUG info
-    print('DEBUG: auto install comtypes thread started ')
+    print('pvtkgui: dl_host: auto install comtypes thread started ')
     # set UI before start install
-    w = etc['w']
-    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL1 + '\n')
+    w.enable_main_text()
+    add_one_msg(confd.ui_text_dl['info_install'], tag='blue')
+    
     # start install
-    xunlei_dl.install_comtypes()
+    dl0.install_comtypes()
     # DEBUG info
-    print('DEBUG: install comtypes done')
+    print('pvtkgui: dl_host: install comtypes done')
     # install done, update UI
     w.enable_main_text()
-    w.insert_main_text(DL_XUNLEI_AUTO_INSTALL2 + '\n')
+    add_one_msg(confd.ui_text_dl['info_install_ok'], tag='green')
     # auto install done
 
 # end dl_host.py

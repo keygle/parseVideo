@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.15.0 test201506182212
+# version 0.1.16.0 test201506182307
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,8 +36,6 @@ from .b import conf
 from .b import conf_default as confd
 
 from ..output import easy_text
-
-from . import xunlei_dl
 from . import dl_host
 
 # global vars
