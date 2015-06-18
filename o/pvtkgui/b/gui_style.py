@@ -33,7 +33,7 @@ import tkinter as TK
 import tkinter.ttk as ttk
 import tkinter.font as TKfont
 
-from ..gui import tk_base
+from ...gui import tk_base
 
 # global vars
 ui_text = {}	# main UI text

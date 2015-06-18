@@ -36,7 +36,7 @@ import tkinter.tix as tix
 import tkinter.filedialog as TKfile
 
 from . import gui_style as guis
-from ..gui import tk_base
+from ...gui import tk_base
 from . import gui2
 
 # global vars

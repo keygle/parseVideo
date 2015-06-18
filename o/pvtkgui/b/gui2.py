@@ -35,7 +35,7 @@ import tkinter.font as TKfont
 import tkinter.tix as tix
 
 from . import gui_style as guis
-from ..gui import tk_base
+from ...gui import tk_base
 
 # global vars
 

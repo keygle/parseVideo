@@ -1,6 +1,6 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.2.0 test201506181543
+# version 0.0.3.0 test201506181929
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -99,6 +99,24 @@ def text_align(length, text, right=False):
         while len(text) < length:
             text += ' '
     return text
+
+# make number length
+def make_num_len(n, l=4):
+    t = str(n)
+    while len(t) < l:
+        t = '0' + t
+    return t
+
+def clean_file_name(text, remove_chars='/|\\ ?	*<>:\'\"', replace_char='_'):
+    to = remove_chars
+    out = ''
+    for i in text:
+        if i in to:
+            out += replace_char
+        else:
+            out += i
+    # done
+    return out
 
 # functions
 

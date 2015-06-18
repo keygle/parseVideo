@@ -30,11 +30,11 @@ import json
 import time
 import re
 
-from . import gui
-from . import run_sub
+from .b import gui
+from .b import run_sub
 # from . import xunlei_dl
-from . import conf
-from . import conf_default as confd
+from .b import conf
+from .b import conf_default as confd
 
 from ..output import easy_text
 
