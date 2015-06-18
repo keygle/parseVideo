@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.10.0 test201506181239
+# version 0.1.11.0 test201506181256
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -117,7 +117,56 @@ def init_watch():
 
 # on MainWin event callback
 def on_main_win(event, data):
-    pass
+    w = etc['w']
+    # check which event
+    if event == 'start_stop':
+        pass	# TODO
+    elif event == 'xunlei_dl_path_change':
+        # just start a thread to select dir
+        start_change_dl_path_thread()
+    
+    elif event == 'top_paste':
+        t = w.clip_get()
+        if (t != None) and (t != ''):
+            w.set_url_text(t)
+    elif event == 'top_copy':
+        t = w.get_url_text()
+        if t != '':
+            w.clip_set(t)
+    elif event == 'body_copy_selected':
+        t = w.get_main_text()
+        if (type(t) == type('')) and (t != ''):
+            w.clip_set(t)
+    
+    elif event == 'body_copy_all_url':
+        pass
+    
+    elif event == 'xunlei_dl_all_url':
+        pass
+    
+    elif event == 'xunlei_dl_rest_url':
+        pass
+    
+    else:
+        # DEBUG info
+        print('pvtkgui: entry: unknow event [' + str(event) + ']')
+    # process event done
+
+# start xunlei dl path change thread
+def start_change_dl_path_thread():
+    run_sub.start_thread(change_dl_path_thread)
+
+def change_dl_path_thread():
+    w = etc['w']
+    old_dir = w.get_xunlei_path_text()
+    # open select dialog
+    new_dir = w.select_dir(old_path=old_dir, title=confd.ui_text['change_dl_path_title'])
+    # check result
+    if (type(new_dir) == type('')) and (new_dir != ''):
+        # just set it to main UI
+        w.set_xunlei_path_text(new_dir)
+        # TODO write config file
+    # change dl path done
 
 # watch sub thread
 def watch_thread(arg=True):

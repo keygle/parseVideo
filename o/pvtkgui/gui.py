@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.15.0 test201506181215
+# version 0.1.16.0 test201506181256
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -139,11 +139,10 @@ class MainWin(tk_base.TkBaseObj):
     
     # event to send, event list
     #	start_stop	top part, start_stop button
-    #	top_paste	top part, paste URL
     #
     #	xunlei_dl_path_change	footer part, change xunlei dl path button
     #
-    #	top_paste
+    #	top_paste	top part, paste URL
     #	top_copy
     #
     #	body_copy_selected
