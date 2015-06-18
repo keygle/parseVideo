@@ -72,62 +72,6 @@ def get_url_list(text):
 
 # on sub finished
 def on_sub_finished(stdout, stderr):
-    # DEBUG info
-    print('DEBUG: sub process parse_video ended')
-    w = etc['w']
-    
-    # decode sub output as utf-8, try to handle errors
-    try:
-        stdout = str(stdout.decode('utf-8', ))
-    except Exception as e:
-        # DEBUG info
-        print('DEBUG: decode stdout as utf-8 failed\n' + str(e))
-        stdout = str(stdout.decode('utf-8', 'ignore'))
-    try:
-        stderr = str(stderr.decode('utf-8', ))
-    except Exception as e:
-        # DEBUG info
-        print('DEBUG: decode stderr as utf-8 failed\n' + str(e))
-        stderr = str(stderr.decode('utf-8', 'ignore'))
-    # try to parse stdout as json
-    flag_sub_ok = False
-    evinfo = None
-    try:
-        evinfo = json.loads(stdout)
-        flag_sub_ok = True
-    except Exception:
-        # make error output
-        out = stderr + '\n' + stdout + '\n'
-    # check sub_ok
-    if flag_sub_ok:
-        # make output text
-        out = output_text_.make_easy_text(evinfo)
-    # write result
-    
-    # save evinfo
-    if not flag_sub_ok:
-        try:
-            etc.pop('evinfo')
-        except Exception:
-            pass
-    else:
-        etc['evinfo'] = evinfo
-    
-    # save Text
-    etc['main_text'] = out
-    # set to main Text
-    w.enable_main_text()
-    w.clear_main_text()
-    w.append_main_text(out)
-    
-    # check error
-    if flag_sub_ok:
-        # DEBUG info
-        print('DEBUG: entry.py: flag_sub_ok, True')
-        # no error, not let user change destroy result
-        w.disable_main_text()
-    else:
-        print('DEBUG: entry.py: flag_sub_ok, False')
     
     # check result, auto retry
     if evinfo != None:
