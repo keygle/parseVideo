@@ -45,88 +45,10 @@ DL_XUNLEI_AUTO_INSTALL2 = '4. 成功: 已经完成安装 comtypes. 再试试吧~
 AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
 AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
-# parse_video Tk GUI, pvtkgui config file path
-CONFIG_FILE = './etc/pvtkgui.conf.json'
-DEFAULT_HD = 2
-
 # NOTE should be set by out
 flag_debug = False
 
-etc = {}
-etc['flag_doing'] = False	# global doing flag
-etc['conf'] = None	# pvtkgui config obj
-etc['main_text'] = ''	# main text showed in main Text GUI window
-
-# base funciton
-def make_default_config_obj():
-    conf = {}
-    conf['hd'] = DEFAULT_HD
-    # done
-    return conf
-
-def check_config_file(conf):
-    if not 'hd' in conf:
-        raise Exception('config file error, no hd in conf')
-    hd = int(conf['hd'])
-    if hd > 100:
-        raise Exception('config file error, hd value too big')
-    # check done
-    return conf
-
-def load_config_file():
-    # try to read config file
-    t = ''
-    with open(CONFIG_FILE, 'r') as f:
-        t = f.read()
-    # parse as json
-    try:
-        conf = json.loads(t)
-        conf = check_config_file(conf)
-    except Exception as e:
-        # DEBUG info
-        print('DEBUG: load config file \"' + CONFIG_FILE + '\" failed, use default config instead. ')
-        try:
-            print(e)
-        except Exception:
-            pass
-        # use default config instead
-        conf = make_default_config_obj()
-    # done
-    return conf
-
-def write_config_file(conf_obj):
-    # make json text
-    t = json.dumps(conf_obj)
-    # write conf file
-    with open(CONFIG_FILE, 'w') as f:
-        f.write(t)
-    # DEBUG info
-    print('DEBUG: save config file to \"' + CONFIG_FILE + '\"')
-    # done
-
-def parse_hd_text(hd_text):
-    try:
-        hd = int(hd_text)
-    except Exception:
-        hd = DEFAULT_HD
-    # done
-    return hd
-
 # functions
-
-# init
-def init():
-    # load default config file
-    etc['conf'] = load_config_file()
-    # DEBUG info
-    print('DEBUG: load config file ')
-    # set hd to ui
-    hd = str(etc['conf']['hd'])
-    w.set_hd_text(hd)
-    # DEBUG info
-    print('DEBUG: set hd=' + hd)
-    
-    # init end
 
 # on button click
 def on_main_button():

@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.9.0 test201506181209
+# version 0.1.10.0 test201506181239
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -46,7 +46,6 @@ flag_debug = False
 
 etc = {}
 etc['w'] = None	# main window obj
-etc['conf'] = None	# pvtkgui config obj
 
 etc['analyse_thread'] = None	# analyse sub thread obj
 etc['flag_doing'] = False	# global doing flag
@@ -103,19 +102,13 @@ def init_main_win():
 
 # init config
 def init_config():
-    pass
-    return
-    # TODO
-    # load default config file
-    etc['conf'] = load_config_file()
-    # DEBUG info
-    print('DEBUG: load config file ')
-    # set hd to ui
-    hd = str(etc['conf']['hd'])
-    w.set_hd_text(hd)
-    # DEBUG info
-    print('DEBUG: set hd=' + hd)
-    # start watch clipboard thread
+    # load config file
+    conf.load_config(confd.CONFIG_FILE)
+    # update UI
+    w = etc['w']
+    w.set_hd_text(str(conf.conf['hd']))
+    w.set_xunlei_path_text(str(conf.conf['xunlei_dl_path']))
+    # done
 
 # start watch sub thread
 def init_watch():
@@ -289,40 +282,6 @@ def xunlei_dl(flag_rest=False):
         # set UI
         w.enable_main_text()
         w.insert_main_text(DL_XUNLEI_ERR2 + '\n')
-    # done
-
-# watch clipboard thread
-def thread_watch_clip(arg=True):
-    # DEBUG info
-    print('DEBUG: thread watch_clip start')
-    # init
-    old_clip = ''
-    w = etc['w']
-    # loop check clip content
-    while arg:
-        # sleep before check
-        time.sleep(WATCH_CLIP_SLEEP_TIME_S)
-        # try to get clip content
-        try:
-            t = w.clip_get()
-        except Exception:
-            continue
-        # check changed
-        if t == old_clip:
-            continue
-        else:
-           old_clip = t
-        # check match re
-        rlist = CLIP_MATCH_RE
-        flag_match = False
-        for r in rlist:
-            if re.match(r, str(t)):
-                flag_match = True
-                break
-        # if match, set it
-        if flag_match:
-            w.set_entry_text(t)
-        # set done
     # done
 
 # auto install comtypes
