@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.11.0 test201506181256
+# version 0.1.12.0 test201506181300
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -128,7 +128,9 @@ def on_main_win(event, data):
     elif event == 'top_paste':
         t = w.clip_get()
         if (t != None) and (t != ''):
-            w.set_url_text(t)
+            # just paste first line
+            line = t.split('\n')
+            w.set_url_text(line[0])
     elif event == 'top_copy':
         t = w.get_url_text()
         if t != '':
