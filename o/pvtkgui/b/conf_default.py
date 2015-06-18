@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.7.0 test201506181544
+# version 0.0.8.0 test201506182211
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -51,6 +51,9 @@ SUPPORT_URL_RE = [
 watch_thread_sleep_time_s = 0.1	# sleep 100ms
 
 # pvtkgui, UI text
+
+AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在自动解析 ', '清晰度 的视频 ... \n    目标 hd=']
+AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
 ui_text = {
     'change_dl_path_title' : '请选择 迅雷 下载目录', 

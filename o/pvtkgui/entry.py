@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.1.14.0 test201506182128
+# version 0.1.15.0 test201506182212
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -264,7 +264,7 @@ def on_parsev_done(stdout, stderr):
         etc['evinfo'] = evinfo
         
         # check result and auto retry
-        flag_retry = auto_retry(evinfo, etc['hd_last'])
+        flag_retry = auto_retry(evinfo, etc['last_hd'])
         if flag_retry:
             etc['flag_doing'] = True
             return
@@ -315,6 +315,7 @@ def change_dl_path_thread():
         # just set it to main UI
         w.set_xunlei_path_text(new_dir)
         # NOTE write config file
+        conf.set_xunlei_dl_path(new_dir)
         conf.write_config()
     # change dl path done
 
@@ -403,6 +404,13 @@ def xunlei_dl(flag_dl_rest=False):
 
 # auto retry, when analyse not get the hd= video, auto try to get max hd video info
 def auto_retry(evinfo, hd_last):
+    # check need retry
+    for v in evinfo['video']:
+        for f in v['file']:
+            if 'url' in f:
+                # DEBUG info
+                print('pvtkgui: entry: no need to retry')
+                return False
     # get hd
     if len(evinfo['video']) < 1:
         # DEBUG info

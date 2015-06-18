@@ -42,33 +42,8 @@ DL_XUNLEI_ERR2 = '2. 错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent
 DL_XUNLEI_AUTO_INSTALL1 = '3. 提示: 正在自动安装 迅雷 下载 支持组件, 请稍候 ... '
 DL_XUNLEI_AUTO_INSTALL2 = '4. 成功: 已经完成安装 comtypes. 再试试吧~~~ 现在 使用 迅雷 下载 应该没有问题了. ^_^ :-)'
 
-AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在 自动 解析 ', '清晰度的 视频 ... \n    目标 hd=']
-AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 
 # functions
-
-# on copy URL, to copy urls in main_text to clip board
-def on_copy_url():
-    text = etc['main_text']
-    w = etc['w']
-    to = get_url_list(text)
-    # check result
-    if to != None:
-        w.clip_set(to)
-    # done
-
-def get_url_list(text):
-    line = text.split('\n')
-    out = []
-    for l in line:
-        if l.find('http://') == 0:
-            out.append(l)
-    out.append('')
-    # output
-    if len(out) > 1:	# found urls
-        return ('\n').join(out)
-    else:	# not found url
-        return None
 
 # on sub finished
 def on_sub_finished(stdout, stderr):

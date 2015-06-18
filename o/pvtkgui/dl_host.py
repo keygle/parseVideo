@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.1.0 test201506182128
+# version 0.0.2.0 test201506182211
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -38,7 +38,14 @@ w_count = 0	# insert main window message count
 
 # show one msg before main window text
 def add_one_msg(text='', tag=None):
-    pass	# TODO
+    global w_count
+    w_count += 1
+    # insert text
+    w.add_main_text(text='\n', flag='start', tag=None)
+    w.add_main_text(text=text, flag='start', tag=tag)
+    no_text = str(w_count) + ': '
+    w.add_main_text(text=no_text, flag='start', tag='gray')
+    # add msg done
 
 # xunlei_dl main function
 def xunlei_dl(evinfo, flag_dl_rest=False):
