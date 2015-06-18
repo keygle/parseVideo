@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.0.10.0 test201506181544
+# version 0.0.11.0 test201506181723
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -80,7 +80,7 @@ ui_font = {}
 # top part style
 top_conf = {
     'hd_style' : 'HD.TLabel',
-    'button_style' : 'Blue.TButton', 
+    'button_style' : 'Blue.Button.TLabel', 
     'hd_entry_style' : 'HD.TEntry', 
     'entry_style' : 'Main.TEntry', 
 }
@@ -217,26 +217,26 @@ def set_ttk_style():
     style.configure('HD.TLabel', foreground='#fff', background='#00f')
     
     # Blue.TButton
-    style.configure('Blue.TButton', 
+    style.configure('Blue.Button.TLabel', 
         background='#00f', 
         foreground='#fff', 
         relief='flat', 
         font=ui_font['bold'], 
-        padding=(10, 5))
-    style.map('Blue.TButton', 
+        padding=(25, 6))
+    style.map('Blue.Button.TLabel', 
         background=[('pressed', '#008'), ('active', '#44f')], 
-        foreground=[('disabled', '#555'), ('pressed', '#0f0'), ('active', '#ff0')])
+        foreground=[('pressed', '#0f0'), ('active', '#ff0')])
     
     # Red.TButton
-    style.configure('Red.TButton', 
+    style.configure('Red.Button.TLabel', 
         background='#f00', 
         foreground='#fff', 
         relief='flat', 
         font=ui_font['bold'], 
-        padding=(10, 5))
-    style.map('Red.TButton', 
+        padding=(25, 6))
+    style.map('Red.Button.TLabel', 
         background=[('pressed', '#800'), ('active', '#f44')], 
-        foreground=[('disabled', '#555'), ('pressed', '#0f0'), ('active', '#ff0')])
+        foreground=[('pressed', '#0f0'), ('active', '#ff0')])
     
     # HD.TEntry
     style.configure('HD.TEntry', foreground='#00f', background='#99c')

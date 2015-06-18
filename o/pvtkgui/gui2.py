@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.0.2.0 test201506172218
+# version 0.0.3.0 test201506181723
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -122,7 +122,7 @@ class PartTop(tk_base.TkBaseObj):
         self.p_hd = hd
         e = tk_base.EntryBox()
         self.p_e = e
-        b = Button(self.parent, command=self._on_button, text=guis.ui_text['start_analyse'], style=self.button_style)
+        b = Label(self.parent, text=guis.ui_text['start_analyse'], style=self.button_style)
         self.p_b = b
         # set EntryBox
         hd.label_text = guis.ui_text['hd']
@@ -154,6 +154,9 @@ class PartTop(tk_base.TkBaseObj):
         
         hd.callback = self._on_hd_entry
         e.callback = self._on_url_entry
+        
+        b = self.p_b
+        b.bind('<Button-1>', self._on_button)
     
     # end PartTop class
 
