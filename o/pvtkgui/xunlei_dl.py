@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.0.16.0 test201506182128
+# version 0.0.16.1 test201506182327
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -29,7 +29,7 @@
 import imp
 
 from .b import run_sub
-from . import xunlei_agent
+from . import xunlei_agent as agent0
 
 from ..output import easy_text
 from ..easy import make_name
@@ -77,10 +77,10 @@ def import_cc():
 # create ThunderAgent.Agent com object
 def create_thunder_agent():
     try:
-        ta = cc.CreateObject(xunlei_agent.AGENT1)
+        ta = cc.CreateObject(agent0.AGENT1)
     except Exception as e1:
         try:	# try Agent64
-            ta = cc.CreateObject(xunlei_agent.AGENT2)
+            ta = cc.CreateObject(agent0.AGENT2)
         except Exception as e2:
             raise CreateComObjError(e1, e2)
     # done

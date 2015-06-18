@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.3.0 test201506182306
+# version 0.0.3.1 test201506182328
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -75,7 +75,7 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
         return
     
     # update xunlei_dl_path config
-    dl_path = w.get_dl_path_text()
+    dl_path = w.get_xunlei_path_text()
     conf.set_dl_path_text(dl_path)
     # write config file
     conf.write_config()
