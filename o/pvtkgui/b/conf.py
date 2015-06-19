@@ -1,6 +1,6 @@
 # conf.py, part for parse_video : a fork from parseVideo. 
 # conf: o/pvtkgui/conf: parse_video Tk GUI, config file support. 
-# version 0.0.3.0 test201506181240
+# version 0.1.0.0 test201506191337
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #

@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.7.0 test201506181544
+# version 0.1.0.0 test201506191336
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -52,9 +52,27 @@ watch_thread_sleep_time_s = 0.1	# sleep 100ms
 
 # pvtkgui, UI text
 
+AUTO_RETRY_TEXT1 = ['提示: 当前指定的 视频清晰度 无法达到, 正在自动解析 ', '清晰度 的视频 ... \n    目标 hd=']
+AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
+
 ui_text = {
     'change_dl_path_title' : '请选择 迅雷 下载目录', 
     'user_stop_parse' : '\n 提示: 已终止 解析. \n', 
+}
+
+ui_text_dl = {
+    'add_xunlei_dl_task' : '正在向 迅雷 添加下载任务, 请稍候 ... ', 
+    'err_comtypes' : '错误: 没有安装 comtypes. 无法调用 迅雷 com 接口 ! ', 
+    'err_create_com' : '错误: 无法创建 迅雷 com 接口. (ThunderAgent.Agent, ThunderAgent.Agent64) \n  请确认 迅雷 已经正确安装. ', 
+    
+    'ok_add_task' : ['成功: 已经添加 ', ' 个下载任务至 迅雷. '], 
+    
+    'info_install' : '提示: 正在自动安装 迅雷 下载 支持组件, 请稍候 ... ', 
+    'info_install_ok' : '成功: 已经完成安装 comtypes. 再试试吧~~~ 现在 使用 迅雷 下载 应该没有问题了. ^_^ :-)', 
+    
+    'try_create_dl_path' : '提示: 所指定的下载目录不存在, 正在尝试创建目录 ... ', 
+    'dl_path_error' : '错误: 所指定的下载目录不可用 ! ', 
+    'found_done_file' : ['提示: 发现了 ', ' 个已下载的文件 ! '], 
 }
 
 ui_text_doing_parse = [
@@ -93,7 +111,7 @@ main_win_init_text = [
     ['gray', '开始解析. \n\n'], 
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.0.0 test201506181544\n'], 
+    ['gray', '          version 0.2.0.0 test201506191336\n'], 
     [None, '\n'], 
     ['big_blue', '\n+'], 
     ['bold', ' hd 值 说明\n'], 
@@ -113,8 +131,7 @@ main_win_init_text = [
         + '  按 F9 键或右键菜单, 可以直接复制解析结果中的全部 URL 到剪切板. '
         + '不复制其它文本. \n', 
     ], 
-    ['red', '\n(抱歉, 尚未完成)'], 
-    [None, '\n\n\n\n\n'], 
+    [None, '\n\n\n\n\n\n'], 
     [None, '更多帮助信息, 请见\n  '], 
     ['a', 'https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide'], 
     [None, '\n\n  如有更多问题, 需要讨论, 请\n\n'], 
@@ -123,8 +140,6 @@ main_win_init_text = [
     ['gray', ' 141712855'], 
     ['gray', '\n\ncopyright 2015 sceext <sceext@foxmail.com> 2015.06\n'], 
 ]
-
-# TODO
 
 # functions
 

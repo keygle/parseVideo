@@ -1,6 +1,6 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.2.0 test201506181543
+# version 0.0.5.0 test201506190342
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -100,6 +100,24 @@ def text_align(length, text, right=False):
             text += ' '
     return text
 
+# make number length
+def make_num_len(n, l=4):
+    t = str(n)
+    while len(t) < l:
+        t = '0' + t
+    return t
+
+def clean_file_name(text, remove_chars='/|\\ ?	*<>:\'\"', replace_char='_'):
+    to = remove_chars
+    out = ''
+    for i in text:
+        if i in to:
+            out += replace_char
+        else:
+            out += i
+    # done
+    return out
+
 # functions
 
 # output sample text
@@ -130,7 +148,7 @@ def output_style(evinfo):
         ['bold', str(len(evinfo['video']))], ['gray', ' 个 '], [None, '视频'], ['gray', ' ! \n'], 
         ['gray', '=====================================================================\n'], 
         ['bold', '清晰度	'], 
-        ['blue', '     分辨率'], 
+        [None, '     '], ['blue', '分'], ['gray', '辨'], ['blue', '率'], 
         ['red', '       总大小      '], 
         ['blue', 'hd'], 
         [None, '  '], ['gray', '['], [None, '文件格式'], ['gray', ']'], 
@@ -144,7 +162,11 @@ def output_style(evinfo):
         t += [
             [None, '\n'], 
             ['bold', v['quality'] + '	'], 
-            ['blue', text_align(12, str(v['size_px'][0]) + ' x ' + str(v['size_px'][1]), True)], 
+            
+            ['blue', text_align(5, str(v['size_px'][0]), True)], 
+            ['gray', ' x '], 
+            ['blue', text_align(5, str(v['size_px'][1]))], 
+            
             ['red', text_align(14, byte2unit(v['size_byte']), True)], 
             ['blue', text_align(8, '   hd=' + str(v['hd']))], 
             ['gray', ' ['], [None, v['format']], ['gray', '] '], 

@@ -30,7 +30,7 @@ import subprocess
 import threading
 import json
 
-from . import support_evparse
+from .. import support_evparse
 
 # global vars
 

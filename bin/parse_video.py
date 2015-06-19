@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.24.0 test201506151427
+# version 0.1.25.0 test201506181857
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -63,8 +63,13 @@ etc['url_to'] = ''	# url to analyse
 # functions
 
 def print_stdout(text):
-    # just print it
-    print(text)
+    # check fix_unicode flag
+    if etc['flag_fix_unicode']:
+        t = text.encode('utf-8')
+        sys.stdout.buffer.write(t)
+    else:	# just print it
+        print(text)
+    # done
 
 # print functions
 def print_version():

@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.8.0 test201506171852
+# version 0.0.8.1 test201506181937
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -241,10 +241,13 @@ class TextBox(TkBaseObj):
     #	selected	get selected text
     def get_text(self, flag='all'):
         text = None
-        if flag == 'all':
-            text = self.tk_text.get('1.0', END)
-        elif flag == 'selected':
-            text = self.tk_text.get(SEL_FIRST, SEL_LAST)
+        try:
+            if flag == 'all':
+                text = self.tk_text.get('1.0', END)
+            elif flag == 'selected':
+                text = self.tk_text.get(SEL_FIRST, SEL_LAST)
+        except Exception:
+            pass
         # done
         return text
     

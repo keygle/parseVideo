@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.0.13.0 test201506101457
+# version 0.1.0.0 test201506191339
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -28,21 +28,11 @@
 
 import imp
 
-from . import run_sub
-from . import xunlei_agent
+from .b import run_sub
+from . import xunlei_agent as agent0
 
-from .. import make_name
-
-make_rename_list_ = None
-output_text_ = None
-
-# set import
-def set_import(make_rename_list=None, output_text=None):
-    global make_rename_list_
-    global output_text_
-    make_rename_list_ = make_rename_list
-    output_text_ = output_text
-    # set import done
+from ..output import easy_text
+from ..easy import make_name
 
 # Error definition
 class XunleiDlError(Exception):
@@ -60,7 +50,9 @@ class CreateComObjError(XunleiDlError):
 cc = None	# comtypes.client
 comtypes = None	# comtypes
 
-INSTALL_COMTYPES_BIN = '.\\o\\install.bat'
+INSTALL_COMTYPES_BIN = '.\\o\\easy\\install.bat'
+
+xunlei_agent = None
 
 # functions
 
@@ -85,23 +77,26 @@ def import_cc():
 # create ThunderAgent.Agent com object
 def create_thunder_agent():
     try:
-        ta = cc.CreateObject(xunlei_agent.AGENT1)
+        ta = cc.CreateObject(agent0.AGENT1)
     except Exception as e1:
         try:	# try Agent64
-            ta = cc.CreateObject(xunlei_agent.AGENT2)
+            ta = cc.CreateObject(agent0.AGENT2)
         except Exception as e2:
             raise CreateComObjError(e1, e2)
     # done
     return ta
 
 # main function
-def add_task(evinfo):
+def create_agent():
     # init
     import_cc()
     ta = create_thunder_agent()	# thunder_agent
-    
-    # make task list
-    tlist = make_task_list(evinfo)
+    global xunlei_agent
+    xunlei_agent = ta
+    # done
+
+def add_task(tlist, xunlei_dl_path=None):
+    ta = xunlei_agent
     # check tlist length
     if len(tlist) < 1:
         return 0	# just return 0
@@ -109,7 +104,11 @@ def add_task(evinfo):
     task_count = 0
     # add each task
     for t in tlist:
-        ta.AddTask(t['url'], t['file'])
+        # check xunlei_dl_path
+        if xunlei_dl_path != None:
+            ta.AddTask(t['url'], t['file'], xunlei_dl_path)
+        else:
+            ta.AddTask(t['url'], t['file'])
         task_count += 1
     # add tasks done, commit task
     ta.CommitTasks()
@@ -118,7 +117,7 @@ def add_task(evinfo):
 
 # make task list
 def make_task_list(evinfo):
-    make_num_len = make_rename_list_.make_num_len
+    make_num_len = easy_text.make_num_len
     # make file name before
     inf = evinfo['info']
     title = inf['title']
@@ -157,10 +156,13 @@ def install_comtypes():
 
 # make_name host function
 def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', site=''):
-    return make_name.make(title, title_sub, title_no, title_short, site, part_i, make_name_host_num_len, ext)
+    raw_name = make_name.make(title, title_sub, title_no, title_short, site, part_i, make_name_host_num_len, ext)
+    # clean file name
+    fname = easy_text.clean_file_name(raw_name)
+    return fname
 
 def make_name_host_num_len(title_no=-1, num_len=4):
-    make_num_len = make_rename_list_.make_num_len
+    make_num_len = easy_text.make_num_len
     if title_no < 1:
         return ''
     else:

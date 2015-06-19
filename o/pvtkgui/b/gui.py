@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.1.16.0 test201506181256
+# version 0.2.0.0 test201506191337
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,7 +36,7 @@ import tkinter.tix as tix
 import tkinter.filedialog as TKfile
 
 from . import gui_style as guis
-from ..gui import tk_base
+from ...gui import tk_base
 from . import gui2
 
 # global vars
@@ -77,10 +77,10 @@ class MainWin(tk_base.TkBaseObj):
     
     def set_button_status(self, status='start'):
         if status == 'stop':
-            self.p_top.set_button_style('Red.TButton')
+            self.p_top.set_button_style('Red.Button.TLabel')
             self.p_top.set_button_text(guis.ui_text['stop_analyse'])
         else:	# set as start
-            self.p_top.set_button_style('Blue.TButton')
+            self.p_top.set_button_style('Blue.Button.TLabel')
             self.p_top.set_button_text(guis.ui_text['start_analyse'])
         # set button status done
     
