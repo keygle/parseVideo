@@ -3,9 +3,12 @@
 # node_port: iqiyi, node_port to run javascript. 
 
 # import
+
 import os.path
 
-import execjs
+# import execjs
+
+from .key import md5_hash
 
 # global vars
 
@@ -14,6 +17,9 @@ BIN_JS_FILE = './Z7elzzup.js'
 flag_debug = False
 
 # functions
+
+def mix(tvid, tm):
+    return mix2_host(tvid, tm)
 
 def import_js():
     # make js path
@@ -30,7 +36,7 @@ def import_js():
     # done
     return c
 
-def mix(tvid, tm):
+def mix1(tvid, tm):
     # import js
     c = import_js()
     
@@ -38,6 +44,26 @@ def mix(tvid, tm):
     result = c.call('mix', str(tvid), int(tm))
     # done
     return result
+
+def mix2_host(tvid, tm0):
+    tm, sc, src = mix2(tvid, tm0)
+    
+    result = {}
+    result['tm'] = tm
+    result['sc'] = sc
+    result['src'] = src
+    # done
+    return result
+
+def mix2(tvid, tm0):
+    enc = ''
+    enc += '7b11c5408ff342318da3e7c97b92e890'
+    tm = str(tm0)
+    src = 'hsalf'
+    enc += str(tm)
+    enc += str(tvid)
+    sc = md5_hash(enc)
+    return tm, sc, src
 
 # end node_port.py
 
