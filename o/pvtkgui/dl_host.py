@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.5.0 test201506191310
+# version 0.0.6.0 test201506191318
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -96,9 +96,13 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
     
     # check dl rest
     if flag_dl_rest and (dl_path != None):
-        flist2, found_count = check_file_done(flist, dl_path)
+        flist2, found_list = check_file_done(flist, dl_path)
+        found_count = len(found_list)
         # check found count
         if found_count > 0:
+            # DEBUG info
+            out_flist = ('\n').join(found_list) + '\n'
+            print('pvtkgui: dl_host: found done files \n' + out_flist)
             # update UI
             w.enable_main_text()
             raw_text = confd.ui_text_dl['found_done_file']
@@ -162,7 +166,21 @@ def auto_install_comtypes():
 
 # check file done, check if file has been finished download
 def check_file_done(flist, dl_path):
-    pass
+    # get done file list
+    ed_list = get_file_list(dl_path)
+    ed_list2 = []
+    flist2 = []
+    # check each file
+    for f in flist:
+        fpath = f['file']
+        ext = fpath.rsplit('.', 1)
+        # check exist
+        if ext[0] in flist2:
+            ed_list2.append(fpath)
+        else:
+            flist2.append(f)
+    # done
+    return flist2, ed_list2
 
 # get file list
 def get_file_list(dl_path):
