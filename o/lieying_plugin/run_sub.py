@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/lieying_plugin/run_sub: call and run parsev as sub process. 
-# version 0.0.3.0 test201506081624
+# version 0.0.4.0 test201506191528
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -86,7 +86,7 @@ def run_one_pv(url, hd=None, flag_debug=False):
     else:
         arg = ['--min', str(hd), '--max', str(hd)]	# only output this hd
     # add fix ouput utf8
-    arg += ['--force-output-utf8']
+    arg += ['--fix-unicode']
     # add url
     arg += [url]
     # done, just run it
