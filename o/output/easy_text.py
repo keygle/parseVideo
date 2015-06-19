@@ -1,6 +1,6 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.3.0 test201506181929
+# version 0.0.5.0 test201506190342
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -148,7 +148,7 @@ def output_style(evinfo):
         ['bold', str(len(evinfo['video']))], ['gray', ' 个 '], [None, '视频'], ['gray', ' ! \n'], 
         ['gray', '=====================================================================\n'], 
         ['bold', '清晰度	'], 
-        ['blue', '     分辨率'], 
+        [None, '     '], ['blue', '分'], ['gray', '辨'], ['blue', '率'], 
         ['red', '       总大小      '], 
         ['blue', 'hd'], 
         [None, '  '], ['gray', '['], [None, '文件格式'], ['gray', ']'], 
@@ -162,7 +162,11 @@ def output_style(evinfo):
         t += [
             [None, '\n'], 
             ['bold', v['quality'] + '	'], 
-            ['blue', text_align(12, str(v['size_px'][0]) + ' x ' + str(v['size_px'][1]), True)], 
+            
+            ['blue', text_align(5, str(v['size_px'][0]), True)], 
+            ['gray', ' x '], 
+            ['blue', text_align(5, str(v['size_px'][1]))], 
+            
             ['red', text_align(14, byte2unit(v['size_byte']), True)], 
             ['blue', text_align(8, '   hd=' + str(v['hd']))], 
             ['gray', ' ['], [None, v['format']], ['gray', '] '], 
