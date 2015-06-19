@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.4.0 test201506182356
+# version 0.0.5.0 test201506191310
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -38,6 +38,15 @@ from . import xunlei_dl as dl0
 # global vars
 w = None	# main window obj
 w_count = 0	# insert main window message count
+
+# supported finished video file ext name
+supported_ext = [
+    'mp4', 
+    'flv', 
+    'f4v', 
+    'fhv', 
+    'letv', 
+]
 
 # functions
 
@@ -87,18 +96,8 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
     
     # check dl rest
     if flag_dl_rest and (dl_path != None):
-        flist2 = []
-        found_count = 0
-        for f in flist:
-            # check file exist
-            fpath = os.path.join(dl_path, f['file'])
-            if os.path.isfile(fpath):
-                # found one file
-                # TODO check file size
-                found_count += 1
-            else:	# should be download
-                flist2.append(f)
-        # check found
+        flist2, found_count = check_file_done(flist, dl_path)
+        # check found count
         if found_count > 0:
             # update UI
             w.enable_main_text()
@@ -160,6 +159,46 @@ def auto_install_comtypes():
     w.enable_main_text()
     add_one_msg(confd.ui_text_dl['info_install_ok'], tag='green')
     # auto install done
+
+# check file done, check if file has been finished download
+def check_file_done(flist, dl_path):
+    pass
+
+# get file list
+def get_file_list(dl_path):
+    # check dl_path
+    if not os.path.isdir(dl_path):
+        return []
+    # check first dir
+    ed_list = []
+    
+    flist, dlist = get_flat_file_list(dl_path)
+    ed_list += flist
+    
+    # check sub dir
+    for d in dlist:
+        flist, dlist2 = get_flat_file_list(d)
+        ed_list += flist
+    
+    # check and get file list done
+    return ed_list
+
+# get file list in one dir
+def get_flat_file_list(dpath):
+    raw_list = os.listdir(dpath)
+    dlist = []
+    flist = []
+    for f in raw_list:
+        fpath = os.path.join(dpath, f)
+        if os.path.isdir(fpath):
+            dlist.append(fpath)
+        elif os.path.isfile(fpath):
+            # check ext
+            ext = f.rsplit('.', 1)
+            if ext[1] in supported_ext:
+                flist.append(ext[0])
+    # done
+    return flist, dlist
 
 # end dl_host.py
 
