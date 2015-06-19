@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.0.9.0 test201506182307
+# version 0.1.0.0 test201506191336
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -111,7 +111,7 @@ main_win_init_text = [
     ['gray', '开始解析. \n\n'], 
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.0.0 test201506181544\n'], 
+    ['gray', '          version 0.2.0.0 test201506191336\n'], 
     [None, '\n'], 
     ['big_blue', '\n+'], 
     ['bold', ' hd 值 说明\n'], 
@@ -131,8 +131,7 @@ main_win_init_text = [
         + '  按 F9 键或右键菜单, 可以直接复制解析结果中的全部 URL 到剪切板. '
         + '不复制其它文本. \n', 
     ], 
-    ['red', '\n(抱歉, 尚未完成)'], 
-    [None, '\n\n\n\n\n'], 
+    [None, '\n\n\n\n\n\n'], 
     [None, '更多帮助信息, 请见\n  '], 
     ['a', 'https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide'], 
     [None, '\n\n  如有更多问题, 需要讨论, 请\n\n'], 
@@ -141,8 +140,6 @@ main_win_init_text = [
     ['gray', ' 141712855'], 
     ['gray', '\n\ncopyright 2015 sceext <sceext@foxmail.com> 2015.06\n'], 
 ]
-
-# TODO
 
 # functions
 

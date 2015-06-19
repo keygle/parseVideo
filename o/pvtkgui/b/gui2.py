@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.0.3.0 test201506181723
+# version 0.1.0.0 test201506191337
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
