@@ -1,54 +1,43 @@
 # -*- coding: utf-8 -*-
 # node_port.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# node_port: iqiyi, node_port for DMEmagelzzup 
+# node_port: iqiyi, node_port to run javascript. 
 
 # import
-import subprocess
-import json
 import os.path
 
+import execjs
+
 # global vars
-BIN_NODE = 'node'
-BIN_NODE_PORT = 'node_port.js'
+
+BIN_JS_FILE = './Z7elzzup.js'
 
 flag_debug = False
 
-# base functions1
-def run_sub(arg, shell=False):
-    PIPE = subprocess.PIPE
-    p = subprocess.Popen(arg, shell=shell, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    return p.communicate()
-
-def get_node_port_path(fpath):
-    now_file = os.path.abspath(__file__)
-    now_dir = os.path.dirname(now_file)
-    bin_file = os.path.join(now_dir, fpath)
-    bin_file = os.path.normpath(bin_file)
-    # done
-    return bin_file
-
 # functions
-def mix(tvid, tm):
-    # make args
-    port_bin = get_node_port_path(BIN_NODE_PORT)
-    arg = [BIN_NODE, port_bin, str(tvid), str(tm)]
+
+def import_js():
+    # make js path
+    this_path = __file__
+    base_path = os.path.dirname(this_path)
+    bin_path = os.path.join(base_path, BIN_JS_FILE)
     
-    # NOTE debug info
-    if flag_debug:
-        print('evparse: lib.iqiyi: node_port call args [' + str(arg) + ']')
+    # read js file
+    with open(bin_path) as f:
+        s = f.read()
+    # compile as js
+    c = execjs.compile(s)
     
-    # run node
-    stdout, stderr = run_sub(arg)
-    # parse result as json
-    out = stdout.decode('utf-8')
-    
-    # NOTE debug info
-    if flag_debug:
-        print('evparse: lib.iqiyi: node_port return \"' + out + '\"')
-    
-    info = json.loads(out)
     # done
-    return info
+    return c
+
+def mix(tvid, tm):
+    # import js
+    c = import_js()
+    
+    # just run it
+    result = c.call('mix', str(tvid), int(tm))
+    # done
+    return result
 
 # end node_port.py
 
