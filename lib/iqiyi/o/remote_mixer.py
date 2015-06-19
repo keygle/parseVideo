@@ -9,7 +9,8 @@ import random
 from . import config as Config
 from .key import md5_hash
 
-from .DMEmagelzzup import DMEmagelzzup
+# TODO now just use node instead
+from . import node_port
 
 # import from out
 getTimer = None
@@ -39,8 +40,8 @@ class MixerRemote(object):
         # add some static data
         self.vid = ''
         self.tvid = ''
-        # to get uuid
-        self.uuid = '' # NOTE should be set
+        # NOTE should be set
+        self.uuid = ''
         
         # can only pass null
         self.ugcAuthKey = ''	# password string of the video
@@ -64,12 +65,11 @@ class MixerRemote(object):
         else:
             _loc2_ = 0
         
-        # var _loc3:Object = DMEmagelzzup.mix(this._holder.runtimeData.tvid)
-        # var _loc4:uint = _loc3.tm
+        # var _loc3:Object = DMEmagelzzup.mix(this._holder.runtimeData.tvid) TODO
         _loc4 = getTimer()
         
-        # NOTE use iqiyi new hash function here
-        _loc3 = DMEmagelzzup.mix(self.tvid, _loc4)
+        # FIXME now use node instead
+        _loc3 = node_port.mix(self.tvid, _loc4)
         
         # var _loc5:String
         # var _loc6:String
@@ -98,7 +98,7 @@ class MixerRemote(object):
             _ap += '&vid=' + self.vid
             _ap += '&vinfo=' + _loc2
             _ap += '&tm=' + _loc4
-            _ap += '&enc=' + _loc3['sc']
+            _ap += '&enc=' + _loc3['sc']    # TODO
             _ap += '&qyid=' + self.uuid
             _ap += '&puid=' + self.passportID
             _ap += '&authKey=' + _loc5
@@ -107,15 +107,11 @@ class MixerRemote(object):
             _ap += '&thdt=' + self.thdToken
             _ap += '&tn=' + str(random.random())
             
-            # TODO not reset runtimeData.ugcAuthKey
-            # self.ugcAuthKey = ''
-        # NOTE vip code, TOO old, not been updated
         # NOTE vip video, not support finished now. 
         else:
             pass
         # just return request URL
         return _loc1 + _ap
-    pass
 
 # end remote_mixer.py
 
