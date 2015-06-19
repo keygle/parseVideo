@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.1.0.0 test201506191336
+# version 0.1.1.0 test201506191837
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -32,6 +32,7 @@
 conf = {
     'hd' : '2', 
     'xunlei_dl_path' : 'c:\\pvtkgui_dl\\', 
+    'ui_type' : 'full_ui', 
 }
 
 # pvtkgui main config file
@@ -89,7 +90,7 @@ ui_text_parse_failed = [
     ['big_red', ' :-( \n\n'], 
 ]
 
-main_win_init_text = [
+main_win_init_text0 = [
     [None, '       请在 '], 
     ['gray', '( '], 
     ['big_blue', '↗'], 
@@ -109,10 +110,20 @@ main_win_init_text = [
     ['gray', '或'], 
     [None, '按回车键 '], 
     ['gray', '开始解析. \n\n'], 
+]
+
+main_win_init_text0_1 = [
+    [None, '\n\n\n'], 
+]
+
+main_win_init_text1 = [
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.0.0 test201506191336\n'], 
-    [None, '\n'], 
+    ['gray', '          version 0.2.0.0 test201506191336'], 
+]
+
+main_win_init_text2 = [
+    [None, '\n\n'], 
     ['big_blue', '\n+'], 
     ['bold', ' hd 值 说明\n'], 
     [None, '  左侧上方的文本框, '], 
@@ -131,6 +142,14 @@ main_win_init_text = [
         + '  按 F9 键或右键菜单, 可以直接复制解析结果中的全部 URL 到剪切板. '
         + '不复制其它文本. \n', 
     ], 
+]
+
+main_win_init_text2_1 = [
+    ['blue', '						精简界面'], 
+    [None, '\n\n\n\n\n\n\n\n\n\n\n'], 
+]
+
+main_win_init_text3 = [
     [None, '\n\n\n\n\n\n'], 
     [None, '更多帮助信息, 请见\n  '], 
     ['a', 'https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide'], 
@@ -139,6 +158,21 @@ main_win_init_text = [
     ['bold', '飞驴友视频下载交流群'], 
     ['gray', ' 141712855'], 
     ['gray', '\n\ncopyright 2015 sceext <sceext@foxmail.com> 2015.06\n'], 
+]
+
+# main init text list
+main_win_init_text_full_list = [
+    main_win_init_text0, 
+    main_win_init_text1, 
+    main_win_init_text2, 
+    main_win_init_text3, 
+]
+
+main_win_init_text_simple_list = [
+    main_win_init_text0_1, 
+    main_win_init_text1, 
+    main_win_init_text2_1, 
+    main_win_init_text3, 
 ]
 
 # functions

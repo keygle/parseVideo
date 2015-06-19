@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.7.0 test201506191331
+# version 0.0.8.0 test201506191842
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -39,6 +39,8 @@ from . import xunlei_dl as dl0
 w = None	# main window obj
 w_count = 0	# insert main window message count
 
+flag_ui_hide = False	# ui_type, hide msg
+
 # supported finished video file ext name
 supported_ext = [
     'mp4', 
@@ -63,9 +65,17 @@ def add_one_msg(text='', tag=None):
 
 # xunlei_dl main function
 def xunlei_dl(evinfo, flag_dl_rest=False):
+    # check UI type
+    global flag_ui_hide
+    if conf.conf['ui_type'] == 'simple_ui':
+        flag_ui_hide = True
+    else:
+        flag_ui_hide = False
+    
     # set UI
     w.enable_main_text()
-    add_one_msg(confd.ui_text_dl['add_xunlei_dl_task'], tag='blue')
+    if not flag_ui_hide:
+        add_one_msg(confd.ui_text_dl['add_xunlei_dl_task'], tag='blue')
     
     # try to create agent
     try:
@@ -106,7 +116,8 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
             # update UI
             w.enable_main_text()
             raw_text = confd.ui_text_dl['found_done_file']
-            add_one_msg(raw_text[0] + str(found_count) + raw_text[1], tag='green')
+            if not flag_ui_hide:
+                add_one_msg(raw_text[0] + str(found_count) + raw_text[1], tag='green')
             # replace flist
             flist = flist2
     # check dl rest done
@@ -116,7 +127,8 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
     # update UI
     w.enable_main_text()
     raw_text = confd.ui_text_dl['ok_add_task']
-    add_one_msg(raw_text[0] + str(add_count) + raw_text[1], tag='blue')
+    if not flag_ui_hide:
+        add_one_msg(raw_text[0] + str(add_count) + raw_text[1], tag='blue')
     
     # call xunlei, done
 

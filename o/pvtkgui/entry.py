@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.0.0 test201506191339
+# version 0.2.3.0 test201506191910
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -71,6 +71,9 @@ def init():
     # start watch thread
     init_watch()
     
+    # set main win init text
+    set_main_win_init_text()
+    
     # init done, start main loop
     start_mainloop()
 
@@ -94,13 +97,37 @@ def init_main_win():
     w.callback = on_main_win
     # show main window
     w.start()
-    # set main window init text
-    w.enable_main_text()
-    w.clear_main_text()
-    add_main_text_style(confd.main_win_init_text)
+    
+    # NOTE not set main window init text now
+    
     # DEBUG info
     print('pvtkgui: entry: main window created')
     # main win init done
+
+# set main win init text
+def set_main_win_init_text():
+    w = etc['w']
+    # set main window init text
+    w.enable_main_text()
+    w.clear_main_text()
+    # check flag
+    flag_hide = False
+    if conf.conf['ui_type'] == 'simple_ui':
+        flag_hide = True
+    
+    # init show footer
+    if not flag_hide:
+        w.show_footer()
+    
+    # add main text
+    if flag_hide:	# add less text
+        tlist = confd.main_win_init_text_simple_list
+    else:	# add full text
+        tlist = confd.main_win_init_text_full_list
+    # add each text
+    for t in tlist:
+        add_main_text_style(t)
+    # add main init text done
 
 # init config
 def init_config():
@@ -110,6 +137,10 @@ def init_config():
     w = etc['w']
     w.set_hd_text(str(conf.conf['hd']))
     w.set_xunlei_path_text(str(conf.conf['xunlei_dl_path']))
+    
+    # set ui_type
+    w.set_ui_type(conf.conf['ui_type'])
+    
     # done
 
 # start watch sub thread
@@ -154,6 +185,23 @@ def on_main_win(event, data):
     
     elif event == 'xunlei_dl_rest_url':
         xunlei_dl(flag_dl_rest=True)
+    
+    elif event == 'change_ui_type':
+        # get ui type
+        new_ui_type = w.get_ui_type()
+        # DEBUG info
+        print('pvtkgui: entry: change ui_type to [' + new_ui_type + ']')
+        # set to config and write config file
+        conf.set_ui_type(new_ui_type)
+        conf.write_config()
+        
+        # check hide or show footer part
+        if conf.conf['ui_type'] != 'simple_ui':
+            w.show_footer()
+        else:
+            w.hide_footer()
+    
+    # process known event done
     
     else:
         # DEBUG info
@@ -241,7 +289,13 @@ def on_parsev_done(stdout, stderr):
         w.enable_main_text()
         w.clear_main_text()
         
-        output = easy_text.output_style(evinfo)
+        # check ui type
+        if conf.conf['ui_type'] == 'simple_ui':
+            flag_hide = True
+        else:
+            flag_hide = False
+        
+        output = easy_text.output_style(evinfo, flag_hide)
         add_main_text_style(output)
         
         w.disable_main_text()

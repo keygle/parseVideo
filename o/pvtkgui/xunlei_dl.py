@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.1.0.0 test201506191339
+# version 0.1.1.0 test201506191928
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -130,12 +130,20 @@ def make_task_list(evinfo):
     tlist = []
     for v in evinfo['video']:
         ext_name = '.' + v['format']
+        quailty = v['quality']
         for f in v['file']:
             one = {}
             one['url'] = f['url']
             i += 1
             # use make_name_host to make final file name
-            one['file'] = make_name_host(title=title, title_sub=title_sub, title_no=title_no, title_short=title_short, part_i=i, ext=ext_name, site=site_name)
+            one['file'] = make_name_host(title=title, 
+                title_sub=title_sub, 
+                title_no=title_no, 
+                title_short=title_short, 
+                part_i=i, 
+                ext=ext_name, 
+                site=site_name, 
+                quality=quality)
             # add one task done
             tlist.append(one)
     # done
@@ -155,8 +163,8 @@ def install_comtypes():
     # done
 
 # make_name host function
-def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', site=''):
-    raw_name = make_name.make(title, title_sub, title_no, title_short, site, part_i, make_name_host_num_len, ext)
+def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', quality='', site=''):
+    raw_name = make_name.make(title, title_sub, title_no, title_short, quality, site, part_i, make_name_host_num_len, ext)
     # clean file name
     fname = easy_text.clean_file_name(raw_name)
     return fname

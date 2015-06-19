@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.1.0 test201506191815
+# version 0.2.3.0 test201506191935
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -38,6 +38,7 @@ import tkinter.filedialog as TKfile
 from . import gui_style as guis
 from ...gui import tk_base
 from . import gui2
+from ...easy import set_key
 
 # global vars
 
@@ -60,6 +61,9 @@ class MainWin(tk_base.TkBaseObj):
         self.tk_f = []	# TK frames, used as part parent
         
         self.p_m = None	# MenuHost part
+        
+        # footer show flag
+        self.flag_footer_show = False
     
     # operations
     
@@ -118,6 +122,21 @@ class MainWin(tk_base.TkBaseObj):
     
     def set_ui_type(self, text=''):
         self.p_m.set_ui_type(text)
+    
+    def hide_footer(self):
+        f = self.tk_f[1]
+        f.pack_forget()
+        self.flag_footer_show = False
+    
+    def show_footer(self):
+        # check flag
+        if self.flag_footer_show:
+            return
+        
+        # show footer
+        f = self.tk_f[1]
+        f.pack(side=BOTTOM, fill=X, expand=False)
+        self.flag_footer_show = True
     
     # clipboard operations
     def clip_get(self):
@@ -211,6 +230,15 @@ class MainWin(tk_base.TkBaseObj):
             self._send('change_ui_type', data)
         # process sub event done
     
+    def _on_key_copy(self, event=None):
+        self._send('body_copy_all_url', event)
+    
+    def _on_key_paste(self, event=None):
+        self._send('top_paste', event)
+    
+    def _on_key_start_parse(self, event=None):
+        self._send('start_stop', event)
+    
     # start main loop
     def mainloop(self):
         # just start main loop
@@ -259,7 +287,7 @@ class MainWin(tk_base.TkBaseObj):
         f = Frame(root)
         self.tk_f.append(f)
         footer.start(f)
-        f.pack(side=BOTTOM, fill=X, expand=False)
+        # NOTE not show footer here
         
         f = Frame(root)
         self.tk_f.append(f)
@@ -291,7 +319,14 @@ class MainWin(tk_base.TkBaseObj):
         # add callback for hide menu
         root.bind('<Button-1>', self._on_hide_menu)
         
-        # TODO set keys to bind events
+        # set keys to bind events
+        root.bind(set_key.KEY_COPY_URLS, self._on_key_copy)
+        root.bind(set_key.KEY_PASTE_URL, self._on_key_paste)
+        root.bind(set_key.KEY_START_PARSE, self._on_key_start_parse)
+        
+        # for ESC key to stop parse
+        root.bind('<Escape>', self._on_key_start_parse)
+        
         # set el done
     
     # end MainWin class

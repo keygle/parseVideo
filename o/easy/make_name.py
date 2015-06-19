@@ -11,13 +11,15 @@
 #	title_no	集数, 电视剧的第几集, 比如 44
 #	title_short	视频短标题, 比如 少年四大名捕未删减版
 #
+#	quality		视频质量 (清晰度), 比如 1080p
+#
 #	site		网站名称, 比如 爱奇艺
 #		说明: 以上信息来源网页 http://www.iqiyi.com/v_19rroj1k0g.html
 #
 #	part_i		分段文件序号
 #	ext		文件扩展名
 #
-def make(title, title_sub, title_no, title_short, site, part_i, num_len, ext):
+def make(title, title_sub, title_no, title_short, quality, site, part_i, num_len, ext):
     
     # 以下生成数字, 集数 和 分段文件序号, 可以更改最小数字长度
     
@@ -28,7 +30,7 @@ def make(title, title_sub, title_no, title_short, site, part_i, num_len, ext):
     part_i = num_len(part_i, 4)
     
     # 下面一行, name 就是最终 生成的 文件名
-    name = '_' + title_no + '_' + title + '_' + title_sub + '_' + site + '_' + part_i
+    name = '_' + title_no + '_' + title + '_' + title_sub + '_' + quality + '_' + site + '_' + part_i
     
     # 下面一行, 为文件名添加扩展名
     name += ext
@@ -39,6 +41,6 @@ def make(title, title_sub, title_no, title_short, site, part_i, num_len, ext):
     
     return name
 
-# end make_name.py, 2015-06-19 13:40 GMT+0800 CST
+# end make_name.py, 2015-06-19 19:26 GMT+0800 CST
 
 

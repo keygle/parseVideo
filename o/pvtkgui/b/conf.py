@@ -1,6 +1,6 @@
 # conf.py, part for parse_video : a fork from parseVideo. 
 # conf: o/pvtkgui/conf: parse_video Tk GUI, config file support. 
-# version 0.1.0.0 test201506191337
+# version 0.1.2.0 test201506191938
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,6 +35,12 @@ from . import conf_default as confd
 conf = {}	# main conf obj
 conf['hd'] = 2
 conf['xunlei_dl_path'] = ''
+conf['ui_type'] = ''
+
+support_ui_type = [
+    'full_ui', 
+    'simple_ui', 
+]
 
 # functions
 
@@ -78,6 +84,12 @@ def set_xunlei_dl_path(dl_path, w=None):
     # just set it
     conf['xunlei_dl_path'] = dpath
 
+def set_ui_type(text=''):
+    if not text in support_ui_type:
+        text = confd.conf['ui_type']
+    # set it
+    conf['ui_type'] = text
+
 # base functions
 
 # check and set config info
@@ -95,6 +107,12 @@ def check_config_file(info, w=None):
     else:
         set_xunlei_dl_path(confd.conf['xunlei_dl_path'], w)
     
+    # set ui_type
+    if 'ui_type' in info:
+        set_ui_type(info['ui_type'])
+    else:
+        set_ui_type(confd.conf['ui_type'])
+    
     # check and set done
 
 def parse_hd_text(hd_text):
@@ -106,12 +124,11 @@ def parse_hd_text(hd_text):
 
 def check_xunlei_dl_path(dl_path, w):
     # TODO nothing to do now
-    # FIXME debug here
     return dl_path
 
 def write_config_file(conf_obj, conf_file):
     # make json text
-    t = json.dumps(conf_obj)
+    t = json.dumps(conf_obj, sort_keys=True)
     # write conf file
     with open(conf_file, 'w') as f:
         f.write(t)

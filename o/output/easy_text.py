@@ -1,6 +1,6 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.5.0 test201506190342
+# version 0.0.8.0 test201506191943
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -126,24 +126,50 @@ def clean_file_name(text, remove_chars='/|\\ ?	*<>:\'\"', replace_char='_'):
 ---------------------------------------------------------------------
 '''
 
-def output_style(evinfo):
+def output_style(evinfo, flag_simple=False):
     t = []	# output text
     l = ''	# one line text
     # make video info
     info = evinfo['info']
     
+    if not flag_simple:
+        t += [
+            ['info_title', '\n视频信息'], [None, '\n'], 
+            ['gray', '=====================================================================\n'], 
+        ]
+    else:
+        t += [
+            [None, '\n'], 
+        ]
+    
     t += [
         [None, ''], 
-        ['info_title', '\n视频信息'], [None, '\n'], 
-        ['gray', '=====================================================================\n'], 
         ['info_name', '标题	'], ['gray', ': '], ['bold', info['title']], [None, '\n'], 
         ['info_name', '小标题	'], ['gray', ': '], ['blue', info['title_sub']], [None, '\n'], 
-        ['info_name', '短标题	'], ['gray', ': '], [None, info['title_short']], [None, '\n'], 
-        ['info_name', '集数	'], ['gray', ': '], ['big_blue', str(info['title_no'])], [None, '\n'], 
-        ['info_name', '网站	'], ['gray', ': '], ['red', info['site_name']], [None, '\n'], 
-        ['info_name', '源 URL	'], ['gray', ': '], ['a', info['url']], [None, '\n'], 
+    ]
+    
+    if not flag_simple:
+        t += [
+            ['info_name', '短标题	'], ['gray', ': '], [None, info['title_short']], [None, '\n'], 
+            ['info_name', '集数	'], ['gray', ': '], ['big_blue', str(info['title_no'])], [None, '\n'], 
+            ['info_name', '网站	'], ['gray', ': '], ['red', info['site_name']], [None, '\n'], 
+            ['info_name', '源 URL	'], ['gray', ': '], ['a', info['url']], [None, '\n'], 
+        ]
+    
+    t += [
         [None, ''], 
-        ['info_title', '\n下载信息'], 
+    ]
+    
+    if not flag_simple:
+        t += [
+            ['info_title', '\n\n下载信息'], 
+        ]
+    else:
+        t += [
+            [None, '']
+        ]
+    
+    t += [
         ['gray', '					parse_video 发现 '], 
         ['bold', str(len(evinfo['video']))], ['gray', ' 个 '], [None, '视频'], ['gray', ' ! \n'], 
         ['gray', '=====================================================================\n'], 
@@ -162,12 +188,28 @@ def output_style(evinfo):
         t += [
             [None, '\n'], 
             ['bold', v['quality'] + '	'], 
-            
-            ['blue', text_align(5, str(v['size_px'][0]), True)], 
+        ]
+        
+        # check ok get size_px
+        if (v['size_px'][0] < 0) or (v['size_px'][1] < 0):
+            size_px_style = 'gray'
+        else:
+            size_px_style = 'blue'
+        
+        t += [
+            [size_px_style, text_align(5, str(v['size_px'][0]), True)], 
             ['gray', ' x '], 
-            ['blue', text_align(5, str(v['size_px'][1]))], 
-            
-            ['red', text_align(14, byte2unit(v['size_byte']), True)], 
+            [size_px_style, text_align(5, str(v['size_px'][1]))], 
+        ]
+        
+        # check size_byte
+        if v['size_byte'] < 0:
+            size_byte_style = 'gray'
+        else:
+            size_byte_style = 'red'
+        
+        t += [
+            [size_byte_style, text_align(14, byte2unit(v['size_byte']), True)], 
             ['blue', text_align(8, '   hd=' + str(v['hd']))], 
             ['gray', ' ['], [None, v['format']], ['gray', '] '], 
             ['bold', text_align(4, str(v['count']), True)], 
