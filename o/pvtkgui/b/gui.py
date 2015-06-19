@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.0.0 test201506191337
+# version 0.2.1.0 test201506191815
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -113,6 +113,12 @@ class MainWin(tk_base.TkBaseObj):
     def set_xunlei_path_text(self, text=''):
         self.p_footer.set_text(text=text)
     
+    def get_ui_type(self):
+        return self.p_m.get_ui_type()
+    
+    def set_ui_type(self, text=''):
+        self.p_m.set_ui_type(text)
+    
     # clipboard operations
     def clip_get(self):
         root = self.root
@@ -200,6 +206,9 @@ class MainWin(tk_base.TkBaseObj):
             self._send('xunlei_dl_all_url', data)
         elif event == 'xunlei_dl_rest_url':
             self._send('xunlei_dl_rest_url', data)
+        
+        elif event == 'change_ui_type':
+            self._send('change_ui_type', data)
         # process sub event done
     
     # start main loop
@@ -295,6 +304,8 @@ class MenuHost(tk_base.TkBaseObj):
         
         self.m1 = None	# top menu
         self.m2 = None	# body menu
+        
+        self.v_ui_type = None	# stringvar ui_type
     
     def start(self, parent):
         # save parent
@@ -311,6 +322,8 @@ class MenuHost(tk_base.TkBaseObj):
     #	copy_all_url
     #	xunlei_dl_all_url
     #	xunlei_dl_rest_url
+    #
+    #	change_ui_type
     
     # on sub el
     
@@ -332,6 +345,16 @@ class MenuHost(tk_base.TkBaseObj):
     
     def _on_xunlei_dl_rest_url(self, event=None):
         self._send('xunlei_dl_rest_url', event)
+    
+    def _on_change_ui_type(self, event=None):
+        self._send('change_ui_type', event)
+    
+    # get ui_type
+    def get_ui_type(self):
+        return self.v_ui_type.get()
+    
+    def set_ui_type(self, text=''):
+        self.v_ui_type.set(text)
     
     # hide all menus
     def hide(self):
@@ -376,6 +399,14 @@ class MenuHost(tk_base.TkBaseObj):
         m2.add_separator()
         m2.add_command(label=m2t['xunlei_dl_all_url'], command=self._on_xunlei_dl_all_url)
         m2.add_command(label=m2t['xunlei_dl_rest_url'], command=self._on_xunlei_dl_rest_url)
+        
+        # create StringVar
+        v = StringVar(self.parent)
+        self.v_ui_type = v
+        
+        m2.add_separator()
+        m2.add_radiobutton(label=m2t['full_ui'], variable=v, value='full_ui', command=self._on_change_ui_type)
+        m2.add_radiobutton(label=m2t['simple_ui'], variable=v, value='simple_ui', command=self._on_change_ui_type)
         
         # create menu done
     
