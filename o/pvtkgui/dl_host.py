@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.6.0 test201506191318
+# version 0.0.7.0 test201506191331
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -175,7 +175,7 @@ def check_file_done(flist, dl_path):
         fpath = f['file']
         ext = fpath.rsplit('.', 1)
         # check exist
-        if ext[0] in flist2:
+        if ext[0] in ed_list:
             ed_list2.append(fpath)
         else:
             flist2.append(f)
