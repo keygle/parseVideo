@@ -11,7 +11,7 @@ import os.path
 BIN_NODE = 'node'
 BIN_NODE_PORT = 'node_port.js'
 
-flag_debug = True
+flag_debug = False
 
 # base functions1
 def run_sub(arg, shell=False):
