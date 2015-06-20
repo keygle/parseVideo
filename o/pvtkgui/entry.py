@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.4.2 test201506201133
+# version 0.2.5.0 test201506201155
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -291,6 +291,14 @@ def on_parsev_done(stdout, stderr):
         # try to get size
         evinfo2 = get_size.easy_get_size(evinfo, log_msg='pvtkgui: entry: getting size ...')
         evinfo = evinfo2
+        
+        # check fix size
+        for v in evinfo['video']:
+            if ('flag_fix_size' in v) and v['flag_fix_size']:
+                # reset file for fix size
+                v['file'] = []
+        # check fix size done
+    
     # check sub ok
     if flag_sub_ok:
         w.enable_main_text()
