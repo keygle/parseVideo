@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # base.py, part for info_source of evdh : EisF Video Download Helper, sceext <sceext@foxmail.com> 2009EisF2015, 2015.05 
 # lib/is/base: info_source base support. 
-# version 0.1.5.1 test201505300053
+# version 0.1.5.2 test201506201236
 # copyright 2015 sceext All rights reserved. 
 #
 
@@ -32,7 +32,10 @@ def log(level, text):
     # check level
     if level < log_level:
         print(text)
-        sys.stdout.flush()
+        try:
+            sys.stdout.flush()
+        except Exception:
+            pass	# run in pythonw, no sys.stdout, None
 
 # pretty json print
 def pretty_json_print(obj):
