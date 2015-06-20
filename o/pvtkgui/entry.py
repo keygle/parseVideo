@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.4.0 test201506201123
+# version 0.2.4.2 test201506201133
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -38,7 +38,7 @@ from .b import conf_default as confd
 from ..output import easy_text
 from . import dl_host
 
-from .is import get_size1 as get_size
+from .is0 import get_size1 as get_size
 
 # global vars
 
@@ -286,9 +286,11 @@ def on_parsev_done(stdout, stderr):
     except Exception:
         # make error output
         out = stderr + '\n' + stdout + '\n'
-    # try to get size
-    evinfo2 = get_size.easy_get_size(evinfo, log_msg='pvtkgui: entry: getting size ...')
-    evinfo = evinfo2
+    
+    if flag_sub_ok:
+        # try to get size
+        evinfo2 = get_size.easy_get_size(evinfo, log_msg='pvtkgui: entry: getting size ...')
+        evinfo = evinfo2
     # check sub ok
     if flag_sub_ok:
         w.enable_main_text()

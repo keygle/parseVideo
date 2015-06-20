@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_size1.py, part for info_source of evdh : EisF Video Download Helper, sceext <sceext@foxmail.com> 2009EisF2015, 2015.06 
 # lib/is/half/get_size1: info_source: get_size1. 
-# version 0.1.3.0 test201506011613
+# version 0.1.4.1 test201506201137
 # copyright 2015 sceext All rights reserved. 
 #
 
@@ -87,7 +87,9 @@ def easy_get_size(evinfo, log_msg='(unknow) Getting size ...', ignore_m3u8=True,
         if flag_size_ok and (len(v['file']) > 0):
             v['size_byte'] = size_count
         else:
-            v['size_byte'] = -1
+            pass
+            # NOTE not reset size_byte
+            # v['size_byte'] = -1
     # re-count size done, easy get size done
     return evinfo
 

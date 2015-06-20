@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.26.0 test201506192118
+# version 0.1.27.0 test201506201150
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,6 +27,7 @@
 
 # NOTE support --max --min --debug command line options. 
 # NOTE support --fix-unicode output option. 
+# NOTE support --fix-size option
 
 # import
 
@@ -48,10 +49,11 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.8.0 test201506192118'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.9.0 test201506201150'
 
 etc = {}
 etc['flag_debug'] = False
+etc['flag_fix_size'] = False
 etc['flag_fix_unicode'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
@@ -138,6 +140,8 @@ def start_parse():
         entry.etc['hd_max'] = etc['hd_max']
     # set lib
     entry.etc['flag_debug'] = etc['flag_debug']
+    entry.etc['flag_fix_size'] = etc['flag_fix_size']
+    
     url_to = etc['url_to']
     try:
         evinfo = entry.parse(url_to)
@@ -189,6 +193,8 @@ def get_args():
             etc['flag_debug'] = True
         elif one == '--fix-unicode':
             etc['flag_fix_unicode'] = True
+        elif one == '--fix-size':
+            etc['flag_fix_size'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]

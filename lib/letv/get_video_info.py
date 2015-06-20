@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/letv
-# version 0.0.2.0 test201506111922
+# version 0.0.3.0 test201506201148
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -78,7 +78,7 @@ def get_one_info(one_raw):
     # get video info done
     return vinfo
 
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
+def get_info(info, hd_min=0, hd_max=0, flag_debug=False, flag_fix_size=False):
     # get video list
     playurl = info['playurl']
     domain_list = playurl['domain']
@@ -102,15 +102,24 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
         video_list.append(one)
     # process hd_min and hd_max, set get_file flag
     for one in video_list:
-        one['flag_get_file'] = False
+        one['flag_get_file'] = True
+        one['flag_fix_size'] = True
         if (one['hd'] >= hd_min) and (one['hd'] <= hd_max):
-            one['flag_get_file'] = True
+            one['flag_fix_size'] = False
+        # check fix size
+        elif not flag_fix_size:
+            one['flag_get_file'] = False
+            one['flag_fix_size'] = False
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # get each video info, no need to use map_do()
     vinfo = []
     for one in video_list:
         onev = get_one_info(one)
+        # set flag_fix_size
+        if one['flag_fix_size']:
+            onev['flag_fix_size'] = True
+        
         vinfo.append(onev)
     # get video info done
     # done
