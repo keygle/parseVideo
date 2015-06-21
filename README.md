@@ -1,5 +1,5 @@
 :: README.md for parse_video <br />
-last update at `2015-06-21 12:07 GMT+0800 CST`
+last update at `2015-06-21 12:20 GMT+0800 CST`
 
 
 # parse_video : parseVideo in python3
@@ -23,7 +23,7 @@ You can try this:
 
 <https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide>
 
-![win_pvtkgui_test1](https://github.com/sceext2/parse_video/blob/wiki/img/win_pvtkgui_test1.png)
+![win_pvtkgui_test11](https://github.com/sceext2/parse_video/blob/wiki/img/win_pvtkgui_test11.png)
 
 
 ## version
