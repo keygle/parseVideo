@@ -1,5 +1,5 @@
 :: README.md for parse_video <br />
-last update at `2015-05-06 22:52 GMT+0800 CST`
+last update at `2015-06-21 12:07 GMT+0800 CST`
 
 
 # parse_video : parseVideo in python3
@@ -15,12 +15,20 @@ parse_video is forked on github from <https://github.com/keygle/parseVideo>.
 
 You can try this: 
 
-> `$ ./parsev "http://www.iqiyi.com/v_19rro0mhu0.html"`
+> `$ ./parsev "http://www.letv.com/ptv/vplay/22631122.html"`
+
+**Or**
+
+### parse_video Tk GUI 2
+
+<https://github.com/sceext2/parse_video/wiki/zh_cn-easy-guide>
+
+![win_pvtkgui_test1](https://github.com/sceext2/parse_video/blob/wiki/img/win_pvtkgui_test1.png)
 
 
 ## version
 
-parse_video version 0.2.0.0 test201505062237
+parse_video version 0.2.9.0 test201506201150
 
 
 :: end README.md
