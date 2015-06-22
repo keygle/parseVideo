@@ -26,7 +26,15 @@
 #
 
 # import
-from .o.lieying_plugin import entry as entry0
+
+import os
+import sys
+
+# make now path
+now_path = os.path.dirname(__file__)
+sys.path.insert(0, now_path)
+
+from o.lieying_plugin import entry as entry0
 
 # export functions for lieying plugin
 GetName = entry0.lieying_plugin_get_name	# get_name()
