@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # dl_host.py, part for parse_video : a fork from parseVideo. 
 # dl_host: o/pvtkgui/dl_host: parse_video Tk GUI xunlei_dl function. 
-# version 0.0.8.0 test201506191842
+# version 0.0.9.0 test201506232059
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -64,7 +64,7 @@ def add_one_msg(text='', tag=None):
     # add msg done
 
 # xunlei_dl main function
-def xunlei_dl(evinfo, flag_dl_rest=False):
+def xunlei_dl(evinfo, flag_dl_rest=False, select_list=None):
     # check UI type
     global flag_ui_hide
     if conf.conf['ui_type'] == 'simple_ui':
@@ -120,7 +120,20 @@ def xunlei_dl(evinfo, flag_dl_rest=False):
                 add_one_msg(raw_text[0] + str(found_count) + raw_text[1], tag='green')
             # replace flist
             flist = flist2
-    # check dl rest done
+        # check dl rest done
+    elif select_list != None:	# use xunlei_dl select_each selected items
+        # check list length
+        if len(select_list) != len(flist):
+            # ERROR
+            print('pvtkgui: dl_host: ERROR: select_list len ' + str(len(select_list)) + ' not match flist len ' + str(len(flist)) + ' ')
+        else:	# make select list
+            new_list = []
+            for i in range(len(flist)):
+                if select_list[i]:
+                    new_list.append(flist[i])
+            # make new list done
+            flist = new_list
+    # process flist done
     
     # do add task
     add_count = dl0.add_task(flist, dl_path)

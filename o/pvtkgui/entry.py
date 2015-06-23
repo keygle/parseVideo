@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.9.0 test201506232015
+# version 0.2.11.0 test201506232053
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -221,6 +221,12 @@ def on_main_win(event, data):
         else:
             w.disable_select_each()
     
+    # select_each events
+    elif event == 'copy_select_url':
+        copy_all_url(flag_select_each=True)
+    elif event == 'xunlei_dl_select_url':
+        xunlei_dl(flag_select_each=True)
+    
     # process known event done
     
     else:
@@ -359,7 +365,7 @@ def on_parsev_done(stdout, stderr):
     # done
 
 # copy all url
-def copy_all_url():
+def copy_all_url(flag_select_each=True):
     # check evinfo
     if (not 'evinfo' in etc) or (etc['evinfo'] == None):
         # DEBUG info
@@ -375,6 +381,27 @@ def copy_all_url():
         # DEBUG info
         print('pvtkgui: entry: null url list, can not copy')
         return
+    
+    w = etc['w']
+    # check flag
+    if flag_select_each:
+        # get select list
+        slist = w.sh_get_list()
+        # check slist
+        if len(slist) != len(ulist):
+            # ERROR
+            print('pvtkgui: entry: ERROR: select_each list len ' + str(len(slist)) + ' is not match url_list len ' + str(len(ulist)))
+            return True
+        # make new list
+        new_list = []
+        for i in range(len(ulist)):
+            if slist[i]:
+                new_list.append(ulist[i])
+        # make new list done
+        ulist = rew_list
+        # DEBUG info
+        print('pvtkgui: entry: select_each select ' + str(len(ulist)) + ' url')
+    
     # just copy it
     out_text = ('\n').join(ulist)
     out_text += '\n'
@@ -382,7 +409,6 @@ def copy_all_url():
     # DEUBG info
     print('pvtkgui: entry: copy ' + str(len(ulist)) + ' urls')
     
-    w = etc['w']
     w.clip_set(out_text)
     # copy all url done
 
@@ -474,7 +500,7 @@ def watch_url(w, info):
     # watch url done
 
 # call xunlei to dl
-def xunlei_dl(flag_dl_rest=False):
+def xunlei_dl(flag_dl_rest=False, flag_select_each=False):
     # check evinfo
     if (not 'evinfo' in etc) or (etc['evinfo'] == None):
         # DEUBG info
@@ -482,9 +508,17 @@ def xunlei_dl(flag_dl_rest=False):
         return	# nothing to do
     # just call xunlei_dl in dl_host
     evinfo = etc['evinfo']
+    # check flag_select_each
+    select_list = None
+    if flag_select_each:
+        # get select list
+        w = etc['w']
+        slist = w.sh_get_list()
+        # use slist to dl_host.xunlei_dl
+        select_list = slist
     # set dl_host
     dl_host.w = etc['w']
-    dl_host.xunlei_dl(evinfo, flag_dl_rest=flag_dl_rest)
+    dl_host.xunlei_dl(evinfo, flag_dl_rest=flag_dl_rest, select_list=select_list)
     # done
 
 # auto retry, when analyse not get the hd= video, auto try to get max hd video info
