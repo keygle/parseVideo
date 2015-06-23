@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.7.1 test201506231759
+# version 0.2.8.1 test201506231943
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -143,6 +143,13 @@ class MainWin(tk_base.TkBaseObj):
         f = self.tk_f[1]
         f.pack(side=BOTTOM, fill=X, expand=False)
         self.flag_footer_show = True
+    
+    # select_each menu items
+    def disable_select_each(self):
+        self.p_m.disable_select_each()
+    
+    def enable_select_each(self):
+        self.p_m.enable_select_each()
     
     # clipboard operations
     def clip_get(self):
@@ -359,6 +366,8 @@ class MenuHost(tk_base.TkBaseObj):
         
         self.v_ui_type = None		# stringvar ui_type
         self.v_select_each = None	# stringvar select_each
+        
+        self.select_each_index = []	# menu index of select_each menu items
     
     def start(self, parent):
         # save parent
@@ -435,6 +444,18 @@ class MenuHost(tk_base.TkBaseObj):
             raw = '1'
         self.v_select_each.set(raw)
     
+    def disable_select_each(self):
+        ilist = self.select_each_index
+        m = self.m2
+        for i in ilist:
+            m.entryconfig(i, state=DISABLED)
+    
+    def enable_select_each(self):
+        ilist = self.select_each_index
+        m = self.m2
+        for i in ilist:
+            m.entryconfig(i, state=NORMAL)
+    
     # hide all menus
     def hide(self):
         self.m1.unpost()
@@ -485,6 +506,8 @@ class MenuHost(tk_base.TkBaseObj):
         m2.add_separator()
         m2.add_command(label=m2t['xunlei_dl_select_url'], command=self._on_xunlei_dl_select_url)
         m2.add_command(label=m2t['copy_select_url'], command=self._on_copy_select_url)
+        # NOTE add select_each item index
+        self.select_each_index += [6, 7]	# NOTE fix BUG here
         
         m2.add_separator()
         m2.add_cascade(menu=m3, label=m2t['conf'])
