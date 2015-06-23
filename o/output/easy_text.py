@@ -1,6 +1,6 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.8.0 test201506191943
+# version 0.0.9.0 test201506231745
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -182,6 +182,10 @@ def output_style(evinfo, flag_simple=False):
         #      '1080p    1920 x 1072    1023.61 MB'], ['blue', '   hd=4 [flv]   15 个文件   45:43.12'
         [None, '\n\n'], 
     ]
+    
+    # NOTE url_count here
+    url_count = 0
+    
     # make download info
     for v in evinfo['video']:
         # print each video info
@@ -220,10 +224,15 @@ def output_style(evinfo, flag_simple=False):
         
         # add urls
         for f in v['file']:
-            t += [
-                [None, '\n'], 
-                ['a', f['url']], 
-            ]
+            t += [[None, '\n']]
+            # NOTE add url_count here
+            url_count += 1
+            
+            num_count = make_num_len(url_count)
+            
+            t += [['select_each_url_count', num_count]]
+            
+            t += [['a', f['url']]]
         # add urls done
         t += [[None, '\n']]
     # add one video info done

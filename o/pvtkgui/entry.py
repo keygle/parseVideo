@@ -206,7 +206,7 @@ def on_main_win(event, data):
     elif event == 'change_select_each':
         flag = w.get_select_each()
         # DEBUG info
-        print('pvtkgui: entry: change flag_select_each to [' str(flag) + ']')
+        print('pvtkgui: entry: change flag_select_each to [' + str(flag) + ']')
         
         conf.set_select_each(flag)
         conf.write_config()

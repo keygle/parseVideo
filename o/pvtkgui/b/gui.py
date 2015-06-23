@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.5.0 test201506231600
+# version 0.2.7.1 test201506231759
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -181,6 +181,9 @@ class MainWin(tk_base.TkBaseObj):
     #
     #	xunlei_dl_all_url
     #	xunlei_dl_rest_url
+    #
+    #	xunlei_dl_select_url
+    #	copy_select_url
     
     def _send(self, event, data):
         # DEBUG info
@@ -231,6 +234,11 @@ class MainWin(tk_base.TkBaseObj):
             self._send('xunlei_dl_all_url', data)
         elif event == 'xunlei_dl_rest_url':
             self._send('xunlei_dl_rest_url', data)
+        
+        elif event == 'xunlei_dl_select_url':
+            self._send('xunlei_dl_select_url', data)
+        elif event == 'copy_select_url':
+            self._send('copy_select_url', data)
         
         elif event == 'change_ui_type':
             self._send('change_ui_type', data)
@@ -368,6 +376,9 @@ class MenuHost(tk_base.TkBaseObj):
     #	xunlei_dl_all_url
     #	xunlei_dl_rest_url
     #
+    #	xunlei_dl_select_url
+    #	copy_select_url
+    #
     #	change_ui_type
     #	change_select_each
     
@@ -391,6 +402,12 @@ class MenuHost(tk_base.TkBaseObj):
     
     def _on_xunlei_dl_rest_url(self, event=None):
         self._send('xunlei_dl_rest_url', event)
+    
+    def _on_xunlei_dl_select_url(self, event=None):
+        self._send('xunlei_dl_select_url', event)
+    
+    def _on_copy_select_url(self, event=None):
+        self._send('copy_select_url', event)
     
     def _on_change_ui_type(self, event=None):
         self._send('change_ui_type', event)
@@ -464,6 +481,10 @@ class MenuHost(tk_base.TkBaseObj):
         m2.add_separator()
         m2.add_command(label=m2t['xunlei_dl_all_url'], command=self._on_xunlei_dl_all_url)
         m2.add_command(label=m2t['xunlei_dl_rest_url'], command=self._on_xunlei_dl_rest_url)
+        
+        m2.add_separator()
+        m2.add_command(label=m2t['xunlei_dl_select_url'], command=self._on_xunlei_dl_select_url)
+        m2.add_command(label=m2t['copy_select_url'], command=self._on_copy_select_url)
         
         m2.add_separator()
         m2.add_cascade(menu=m3, label=m2t['conf'])

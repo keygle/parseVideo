@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.1.0.0 test201506191337
+# version 0.1.2.0 test201506231753
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -195,7 +195,14 @@ class PartBody(tk_base.TkBaseObj):
         if style_type == None:
             tag_name = None
         else:
-            tag_name = guis.MAIN_TEXT_STYLE_TO_TAG_LIST[style_type]
+            # NOTE check has style_type
+            style_list = guis.MAIN_TEXT_STYLE_TO_TAG_LIST
+            if style_type in style_list:
+                tag_name = style_list[style_type]
+            else:
+                tag_name = None
+                # DEBUG info
+                print('pvtkgui: gui2: ERROR: no tag_name in tag style list [' + str(style_type) + ']')
         # just add it
         self.text.add_text(text=text, flag=flag, tag=tag_name)
     
