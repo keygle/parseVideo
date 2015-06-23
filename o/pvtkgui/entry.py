@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.11.0 test201506232053
+# version 0.2.12.0 test201506232102
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -398,7 +398,8 @@ def copy_all_url(flag_select_each=True):
             if slist[i]:
                 new_list.append(ulist[i])
         # make new list done
-        ulist = rew_list
+        if len(new_list) > 0:
+            ulist = new_list
         # DEBUG info
         print('pvtkgui: entry: select_each select ' + str(len(ulist)) + ' url')
     
