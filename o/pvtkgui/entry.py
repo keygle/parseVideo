@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.8.0 test201506231945
+# version 0.2.9.0 test201506232015
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -329,7 +329,7 @@ def on_parsev_done(stdout, stderr):
             flag_hide = False
         
         output = easy_text.output_style(evinfo, flag_hide)
-        add_main_text_style(output)
+        add_output_easy_text(output)
         
         w.disable_main_text()
     else: # NOTE should write error info
@@ -542,6 +542,36 @@ def auto_retry(evinfo, hd_last):
     run_sub.run_pv_thread(on_parsev_done, url_to, hd_new)
     return True
     # done
+
+# add output easy_text to main window body part text
+def add_output_easy_text(tlist):
+    w = etc['w']
+    # get select_each flag
+    flag_s = conf.conf['flag_select_each']
+    # reset select_list
+    if flag_s:
+        w.sh_reset()
+    # add each part
+    for item in tlist:
+        # check tag
+        tag = item[0]
+        if tag == 'select_each_url_count':
+            if flag_s:
+                # add count text
+                w.add_main_text(text=item[1], tag=item[0])
+                # add space before checkbutton
+                w.add_main_text(text=' ', tag=None)
+                # add check button
+                w.sh_add_item()
+                # add space after checkbutton
+                w.add_main_text(text=' ', tag=None)
+            else:
+                pass	# nothing todo, not add this
+        else:	# just add as normal
+            w.add_main_text(text=item[1], tag=item[0])
+    # add output easy_text to main text style done
+
+# TODO
 
 # end entry.py
 

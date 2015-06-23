@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.1.2.0 test201506231753
+# version 0.1.4.0 test201506231957
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -209,6 +209,9 @@ class PartBody(tk_base.TkBaseObj):
     def clear(self):
         self.text.clear()
     
+    def add_obj(self, obj):
+        self.text.add_obj(obj)
+    
     # on sub el
     
     def _on_text(self, event, data):
@@ -309,6 +312,45 @@ class PartFooter(tk_base.TkBaseObj):
         pass	# nothing to do
     
     # end PartFooter class
+
+# class SelectHost, list of checkbutton
+class SelectHost(object):
+    
+    def __init__(self):
+        self.parent = None	# NOTE should be set
+        
+        self.b_list = []	# Checkbutton list
+        self.v_list = []	# StringVar list
+    
+    # clear and reset select list
+    def reset(self):
+        # just clear list
+        self.b_list = []
+        self.v_list = []
+    
+    def add_item(self):
+        # create v and b
+        v = StringVar(self.parent)
+        b = Checkbutton(self.parent, variable=v)
+        # add to list
+        self.b_list.append(b)
+        self.v_list.append(v)
+        # done
+        return b
+    
+    def get_list(self):
+        out = []
+        # check each
+        for one in self.v_list:
+            t = one.get()
+            if t == '1':	# this one is selected
+                out.append(True)
+            else:
+                out.append(False)
+        # check done
+        return out
+    
+    # end SelectHost class
 
 # end gui2.py
 

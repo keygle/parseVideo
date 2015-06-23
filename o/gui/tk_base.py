@@ -1,6 +1,6 @@
 # tk_base.py, part for parse_video : a fork from parseVideo. 
 # tk_base: o/gui/tk_base: parse_video Tk GUI, tk base part. 
-# version 0.0.8.1 test201506181937
+# version 0.0.9.0 test201506231956
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -295,6 +295,11 @@ class TextBox(TkBaseObj):
             else:
                 pass
         # done
+    
+    # add obj, insert a Tkinter object, widget
+    def add_obj(self, obj):
+        t = self.tk_text
+        t.window_create(END, window=obj)
     
     # event to send, event list
     #	mouse_right	click right mouse button

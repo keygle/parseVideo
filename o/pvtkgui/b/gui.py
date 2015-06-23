@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.8.1 test201506231943
+# version 0.2.10.0 test201506232012
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -62,6 +62,8 @@ class MainWin(tk_base.TkBaseObj):
         
         self.p_m = None	# MenuHost part
         
+        self.s_h = None	# SelectHost
+        
         # footer show flag
         self.flag_footer_show = False
     
@@ -111,6 +113,19 @@ class MainWin(tk_base.TkBaseObj):
     def add_main_text(self, text='', flag='end', tag=None):
         self.p_body.add_text(text=text, flag=flag, style_type=tag)
     
+    # SelectHost operation
+    def sh_reset(self):
+        self.s_h.reset()
+    
+    def sh_add_item(self):
+        b = self.s_h.add_item()
+        # just add it to Text
+        self.p_body.add_obj(b)
+    
+    def sh_get_list(self):
+        return self.s_h.get_list()
+    
+    # part footer, xunlei dl path
     def get_xunlei_path_text(self):
         return self.p_footer.get_text()
     
@@ -324,6 +339,16 @@ class MainWin(tk_base.TkBaseObj):
         
         # set main window title
         root.title(guis.ui_text['main_win_title'])
+        
+        # create SelectHost
+        s_h = gui2.SelectHost()
+        self.s_h = s_h
+        
+        # set parent, NOTE get Text parent here
+        s_h.parent = self.p_body.text.tk_text
+        # init reset it
+        s_h.reset()
+        # create SelectHost done
         
         # create UI done
     
