@@ -1,6 +1,6 @@
 # conf.py, part for parse_video : a fork from parseVideo. 
 # conf: o/pvtkgui/conf: parse_video Tk GUI, config file support. 
-# version 0.1.2.0 test201506191938
+# version 0.1.3.0 test201506231606
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,6 +36,7 @@ conf = {}	# main conf obj
 conf['hd'] = 2
 conf['xunlei_dl_path'] = ''
 conf['ui_type'] = ''
+conf['flag_select_each'] = False
 
 support_ui_type = [
     'full_ui', 
@@ -90,6 +91,12 @@ def set_ui_type(text=''):
     # set it
     conf['ui_type'] = text
 
+def set_select_each(flag=False):
+    raw = False
+    if flag:
+        raw = True
+    conf['flag_select_each'] = raw
+
 # base functions
 
 # check and set config info
@@ -112,6 +119,11 @@ def check_config_file(info, w=None):
         set_ui_type(info['ui_type'])
     else:
         set_ui_type(confd.conf['ui_type'])
+    # set select_each
+    if 'flag_select_each' in info:
+        set_select_each(info['flag_select_each'])
+    else:
+        set_select_each(confd.conf['flag_select_each'])
     
     # check and set done
 

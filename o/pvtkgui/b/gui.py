@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.4.0 test201506231550
+# version 0.2.5.0 test201506231600
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -123,6 +123,12 @@ class MainWin(tk_base.TkBaseObj):
     def set_ui_type(self, text=''):
         self.p_m.set_ui_type(text)
     
+    def get_select_each(self):
+        return self.p_m.get_select_each()
+    
+    def set_select_each(self, flag=False):
+        self.p_m.set_select_each(flag)
+    
     def hide_footer(self):
         f = self.tk_f[1]
         f.pack_forget()
@@ -228,6 +234,8 @@ class MainWin(tk_base.TkBaseObj):
         
         elif event == 'change_ui_type':
             self._send('change_ui_type', data)
+        elif event == 'change_select_each':
+            self._send('change_select_each', data)
         # process sub event done
     
     def _on_key_copy(self, event=None):
@@ -397,7 +405,18 @@ class MenuHost(tk_base.TkBaseObj):
     def set_ui_type(self, text=''):
         self.v_ui_type.set(text)
     
-    # TODO for select_each
+    def get_select_each(self):
+        raw = self.v_select_each.get()
+        if raw == '1':
+            return True
+        else:
+            return False
+    
+    def set_select_each(self, flag=False):
+        raw = '0'
+        if flag:
+            raw = '1'
+        self.v_select_each.set(raw)
     
     # hide all menus
     def hide(self):
@@ -447,7 +466,7 @@ class MenuHost(tk_base.TkBaseObj):
         m2.add_command(label=m2t['xunlei_dl_rest_url'], command=self._on_xunlei_dl_rest_url)
         
         m2.add_separator()
-        m2.add_cascade(m3, label=m2t['conf'])
+        m2.add_cascade(menu=m3, label=m2t['conf'])
         
         # create StringVar
         v1 = StringVar(self.parent)

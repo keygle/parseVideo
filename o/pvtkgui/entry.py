@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.5.0 test201506201155
+# version 0.2.6.0 test201506231608
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -142,6 +142,7 @@ def init_config():
     
     # set ui_type
     w.set_ui_type(conf.conf['ui_type'])
+    w.set_select_each(conf.conf['flag_select_each'])
     
     # done
 
@@ -202,6 +203,13 @@ def on_main_win(event, data):
             w.show_footer()
         else:
             w.hide_footer()
+    elif event == 'change_select_each':
+        flag = w.get_select_each()
+        # DEBUG info
+        print('pvtkgui: entry: change flag_select_each to [' str(flag) + ']')
+        
+        conf.set_select_each(flag)
+        conf.write_config()
     
     # process known event done
     

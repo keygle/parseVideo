@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.1.3.0 test201506201125
+# version 0.1.4.0 test201506231603
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -33,6 +33,7 @@ conf = {
     'hd' : '2', 
     'xunlei_dl_path' : 'c:\\pvtkgui_dl\\', 
     'ui_type' : 'full_ui', 
+    'flag_select_each' : False, 
 }
 
 # pvtkgui main config file
