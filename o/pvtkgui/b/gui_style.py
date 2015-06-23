@@ -1,6 +1,6 @@
 # gui_style.py, part for parse_video : a fork from parseVideo. 
 # gui_style: o/pvtkgui/gui_style: parse_video Tk GUI, style.  
-# version 0.1.1.0 test201506191807
+# version 0.1.2.0 test201506231550
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -58,8 +58,15 @@ ui_body_menu = {
     'xunlei_dl_all_url'  : '使用 迅雷 下载全部 URL', 
     'xunlei_dl_rest_url' : '使用 迅雷 下载 [剩余] URL', 
     # NOTE there should be a separator
+    'conf' : '配置', 
+}
+
+# sub menu
+ui_body_menu2 = {
     'full_ui' : '完整界面', 
     'simple_ui' : '精简界面', 
+    # NOTE there should be a separator
+    'select_each' : '启用 逐个选择', 
 }
 
 HD_ENTRY_WIDTH = 3

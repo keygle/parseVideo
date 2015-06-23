@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.3.0 test201506191935
+# version 0.2.4.0 test201506231550
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -339,8 +339,10 @@ class MenuHost(tk_base.TkBaseObj):
         
         self.m1 = None	# top menu
         self.m2 = None	# body menu
+        self.m3 = None	# sub menu of body
         
-        self.v_ui_type = None	# stringvar ui_type
+        self.v_ui_type = None		# stringvar ui_type
+        self.v_select_each = None	# stringvar select_each
     
     def start(self, parent):
         # save parent
@@ -359,6 +361,7 @@ class MenuHost(tk_base.TkBaseObj):
     #	xunlei_dl_rest_url
     #
     #	change_ui_type
+    #	change_select_each
     
     # on sub el
     
@@ -384,12 +387,17 @@ class MenuHost(tk_base.TkBaseObj):
     def _on_change_ui_type(self, event=None):
         self._send('change_ui_type', event)
     
+    def _on_change_select_each(self, event=None):
+        self._send('change_select_each', event)
+    
     # get ui_type
     def get_ui_type(self):
         return self.v_ui_type.get()
     
     def set_ui_type(self, text=''):
         self.v_ui_type.set(text)
+    
+    # TODO for select_each
     
     # hide all menus
     def hide(self):
@@ -419,11 +427,14 @@ class MenuHost(tk_base.TkBaseObj):
     def _create(self):
         m1 = Menu(self.parent, tearoff=0)
         m2 = Menu(self.parent, tearoff=0)
+        m3 = Menu(m2, tearoff=0)
         self.m1 = m1
         self.m2 = m2
+        self.m3 = m3
         
         m1t = guis.ui_top_menu	# menu 1 text
         m2t = guis.ui_body_menu
+        m3t = guis.ui_body_menu2
         
         # add command
         m1.add_command(label=m1t['paste_url'], command=self._on_paste_url)
@@ -435,13 +446,20 @@ class MenuHost(tk_base.TkBaseObj):
         m2.add_command(label=m2t['xunlei_dl_all_url'], command=self._on_xunlei_dl_all_url)
         m2.add_command(label=m2t['xunlei_dl_rest_url'], command=self._on_xunlei_dl_rest_url)
         
-        # create StringVar
-        v = StringVar(self.parent)
-        self.v_ui_type = v
-        
         m2.add_separator()
-        m2.add_radiobutton(label=m2t['full_ui'], variable=v, value='full_ui', command=self._on_change_ui_type)
-        m2.add_radiobutton(label=m2t['simple_ui'], variable=v, value='simple_ui', command=self._on_change_ui_type)
+        m2.add_cascade(m3, label=m2t['conf'])
+        
+        # create StringVar
+        v1 = StringVar(self.parent)
+        self.v_ui_type = v1
+        v2 = StringVar(self.parent)
+        self.v_select_each = v2
+        
+        # create sub menu
+        m3.add_radiobutton(label=m3t['full_ui'], variable=v1, value='full_ui', command=self._on_change_ui_type)
+        m3.add_radiobutton(label=m3t['simple_ui'], variable=v1, value='simple_ui', command=self._on_change_ui_type)
+        m3.add_separator()
+        m3.add_checkbutton(label=m3t['select_each'], variable=v2, command=self._on_change_select_each)
         
         # create menu done
     

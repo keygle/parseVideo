@@ -3,11 +3,16 @@
 # 0debug_pvtkgui.py, for parse_video pvtkgui, parse_video Tk GUI
 
 # import
-
+import os
 import sys
-sys.path.append('.')
 
-from o.pvtkgui import gui
+# add root path
+raw_path = os.path.dirname(__file__)
+raw_path = os.path.join(raw_path, '../../')
+
+sys.path.append(raw_path)
+
+from o.pvtkgui.b import gui
 
 # functions
 def test():
