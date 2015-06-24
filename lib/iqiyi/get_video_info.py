@@ -156,7 +156,7 @@ def get_one_info(one_raw):
 
 def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag_v=False):
     # check video list
-    if info['data']['vp']['tkl'] == '':
+    if (not 'vp' in info['data']) or (info['data']['vp']['tkl'] == ''):
         # not support this URL, may be a VIP video
         raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list

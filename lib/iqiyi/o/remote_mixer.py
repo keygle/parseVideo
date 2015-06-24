@@ -71,7 +71,7 @@ class MixerRemote(object):
         # _loc3 = Z7elzzup.cexe(this._holder.runtimeData.tvid)
         _loc3 = node_port.mix(self.tvid, self.tm)
         
-        _loc4 = _loc3.tm
+        _loc4 = _loc3['tm']
         
         # NOTE authKey
         # _loc5 = MD5.calculate(MD5.calculate(this._holder.runtimeData.ugcAuthKey) + String(_loc4) + this._holder.runtimeData.tvid)
@@ -116,7 +116,7 @@ class MixerRemote(object):
         _a += '&vinfo=' + str(_loc2)
         
         _a += '&tm=' + str(_loc4)
-        _a += '&enc=' + _loc3.sc
+        _a += '&enc=' + _loc3['sc']
         
         _a += '&qyid=' + self.qyid
         _a += '&puid=' + self.puid
