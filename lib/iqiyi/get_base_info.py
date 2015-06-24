@@ -37,7 +37,7 @@ user_uuid = ''
 
 # functions
 
-def get_more_info(info):
+def get_more_info(info, vid_info):
     more = {}	# output more info
     data = info['data']
     vi = data['vi']

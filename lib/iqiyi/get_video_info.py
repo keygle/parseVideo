@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.6.0 test201506241545
+# version 0.1.7.0 test201506242343
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -156,13 +156,20 @@ def get_one_info(one_raw):
 
 def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag_v=False):
     # check video list
-    if (not 'vp' in info['data']) or (info['data']['vp']['tkl'] == ''):
+    if (not flag_v) and (not 'vp' in info['data']) or (info['data']['vp']['tkl'] == ''):
         # not support this URL, may be a VIP video
         raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list
     
-    # NOTE get vp here, TODO support 271v
-    meta_vp = info['data']['vp']
+    # check flag_v
+    if flag_v and (not 'np' in info['data']):
+        raise error.NotSupportURLError('not support this url', url, 'no \"np\" in \"data\" ')
+    
+    # NOTE get vp here, NOTE support 271v np
+    if flag_v:
+        meta_vp = info['data']['np']
+    else:
+        meta_vp = info['data']['vp']
     
     raw_list = meta_vp['tkl'][0]['vs']
     # NOTE get du, before url, base part
@@ -202,6 +209,9 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag
         one['flag_get_file'] = False
         if (one['hd'] >= hd_min) and (one['hd'] <= hd_max):
             one['flag_get_file'] = True
+        # FIXME TODO here
+        if flag_v:
+            one['flag_get_file'] = False
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # debug info
