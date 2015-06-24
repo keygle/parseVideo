@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.5.1 test201506110055
+# version 0.1.6.0 test201506241545
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,7 +30,7 @@
 import xml.etree.ElementTree as etree
 import math
 
-# FIXME import for debug
+# NOTE import for debug
 import sys
 
 from .o import exports
@@ -143,6 +143,8 @@ def get_one_info(one_raw):
         for onef in flist:
             # for each url, get once time_now
             more['time_now'] = get_video_url.get_time_now()
+            # NOTE add du
+            more['du'] = raw['du']
             # get one url info
             onef_info = get_one_file_info(onef, more)
             vinfo['file'].append(onef_info)
@@ -158,10 +160,17 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url=''):
         # not support this URL, may be a VIP video
         raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list
-    raw_list = info['data']['vp']['tkl'][0]['vs']
+    
+    # NOTE get vp here, TODO support 271v
+    meta_vp = info['data']['vp']
+    
+    raw_list = meta_vp['tkl'][0]['vs']
+    # NOTE get du, before url, base part
+    before_du = meta_vp['du']
+    
     video_list = []
     # get meta data base url
-    meta_base = info['data']['vp']['dm']
+    meta_base = meta_vp['dm']
     # debug info
     if flag_debug:
         print('lib.iqiyi: DEBUG: getting video info ... ')
@@ -173,6 +182,8 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url=''):
         one['meta_url'] = raw['mu']	# video meta data
         one['meta_base'] = meta_base	# add meta_base
         bid = raw['bid']
+        # NOTE add du
+        one['du'] = before_du
         # add more info to get final url
         one['bid'] = bid
         # get uid

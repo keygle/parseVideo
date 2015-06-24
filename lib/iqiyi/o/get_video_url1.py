@@ -20,8 +20,6 @@ def set_import(base0, flash0):
     flash = flash0
 
 # global vars
-BEFORE_FINAL_URL = 'http://data.video.qiyi.com/'
-
 GET_SERVER_TIME_RETRY = 5
 GET_SERVER_TIME_DEBUG = True
 
@@ -89,7 +87,7 @@ def get_one_final_url(raw_link, more):
     # TODO reserved
     this_link += '&retry=1'
     # make final url
-    final_url = BEFORE_FINAL_URL + this_key + '/videos' + this_link
+    final_url = more['du'] + this_key + '/videos' + this_link
     # done
     return final_url
 
