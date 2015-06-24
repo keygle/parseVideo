@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.3.0 test201506242057
+# version 0.1.4.0 test201506242242
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -113,14 +113,20 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
         print('lib.iqiyi: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
     
     # NOTE use http POST
-    post_recv = base.http_post(raw_data[0], post_data=post_str, fix_header=conf['header'])
+    post_recv = base.http_post(raw_data[0], post_data=post_str, fix_header=conf['header'], flag_debug=flag_debug)
+    
+    # clean json text
+    text = post_recv.split('{', 1)
+    text = '{' + text[1]
+    text = text.rsplit('}', 1)
+    text = text[0] + '}'
     
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got json text [' + post_recv + ']')	# TODO
+        print('lib.iqiyi: DEBUG: got json text [' + text + ']')
     
     # parse as json
-    info = json.loads(post_recv)
+    info = json.loads(text)
     
     # get token
     t = info['data']['t']
