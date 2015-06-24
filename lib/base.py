@@ -99,7 +99,7 @@ def map_do(todo_list, worker, pool_size=4):
     return pool_output
 
 # http post
-def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=None):
+def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=None, fix_header=None):
     # make headers
     header = {}
     header['User-Agent'] = user_agent
@@ -109,6 +109,11 @@ def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=Non
         header['Cookie'] = cookie
     # add connection close
     header['Connection'] = 'close'
+    
+    # fix headers
+    if fix_header != None:
+        for i in fix_header:
+            header[i] = fix_header[i]
     
     # start http request
     data = bytes(post_data, 'utf-8')	# encode as utf-8

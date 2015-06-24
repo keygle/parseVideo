@@ -85,7 +85,7 @@ def get_vid(url):
     vids = re.findall(RE_VID, html_text)
     tvids = re.findall(RE_TVID, html_text)
     albumids = re.findall(RE_ALBUMID, html_text)
-    videoids = re.findall(RE_VIDEOIDS, html_text)
+    videoids = re.findall(RE_VIDEOID, html_text)
     
     # check supported URL by get vid
     if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(videoids) < 1):

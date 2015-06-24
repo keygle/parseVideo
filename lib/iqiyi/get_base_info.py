@@ -113,7 +113,7 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
         print('lib.iqiyi: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
     
     # NOTE use http POST
-    post_recv = base.http_post(raw_data[0], post_data=raw_data[1])
+    post_recv = base.http_post(raw_data[0], post_data=post_str, fix_header=conf['header'])
     
     # DEBUG info
     if flag_debug:
