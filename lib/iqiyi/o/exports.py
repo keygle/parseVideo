@@ -16,8 +16,11 @@ from . import get_video_url1 as get_video_url1_0
 
 # set in
 uuid0.set_import(base)
-remote_mixer.set_import(flash)
 get_video_url1_0.set_import(base, flash)
+
+# functions
+def getTimer():
+    return flash.getTimer()
 
 # exports
 MixerRemote = remote_mixer.MixerRemote

@@ -46,7 +46,7 @@ def get_more_info(info):
     # done
     return more
 
-def get_info(vid_info, flag_debug=False):
+def get_info(vid_info, flag_debug=False, flag_v=False):
     # create MixerRemote
     mixer = exports.MixerRemote()
     # set data

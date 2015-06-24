@@ -154,7 +154,7 @@ def get_one_info(one_raw):
     # done
     return vinfo
 
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url=''):
+def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag_v=False):
     # check video list
     if info['data']['vp']['tkl'] == '':
         # not support this URL, may be a VIP video

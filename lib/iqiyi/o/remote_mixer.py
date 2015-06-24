@@ -10,8 +10,6 @@ from . import node_port
 from .key import md5_hash
 from . import config as Config
 
-# TODO
-
 # NOTE last update 201506241630 GMT+0800
 
 # class
@@ -23,7 +21,7 @@ class MixerRemote(object):
         # some flags
         self.flag_is_vip = False
         self.flag_instance_boss = False
-        self.flag_set_vinfo = False
+        self.flag_set_vinfo = True	# default should be True
         self.flag_set_um = False	# NOTE vip should set this
         
         # NOTE should be set START
@@ -54,7 +52,6 @@ class MixerRemote(object):
         
         # this._requestDuration = getTimer();
         
-        # TODO just reserved
         # if this._holder.pingBack:
         #     this._holder.pingBack.sendStartLoadVrs();
         
@@ -93,71 +90,51 @@ class MixerRemote(object):
         
         # NOTE mix vip and normal together
         
+        _a = ''	# append string
+        
         # if ! this._holder.runtimeData.movieIsMember:
         if not self.flag_is_vip:
             _loc1 = Config.MIXER_VX_URL
-            _a = ''	# append string
-            _a += '?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c'
-            
-            _a += '&tvId=' + self.tvid
-            _a += '&vid=' + self.vid
-            
-            # NOTE here only for VIP add some keys
-            
-            _a += '&vinfo=' + str(_loc2)
-            
-            _a += '&tm=' + _loc4
-            _a += '&enc=' + _loc3.sc
-            
-            _a += '&qyid=' + self.qyid
-            _a += '&puid=' + self.puid
-            _a += '&authKey=' + _loc5
-            _a += '&um=' + _loc7
-            
-            _a += _loc6
-            
-            _a += '&thdk=' + self.thdk
-            _a += '&thdt=' + self.thdt
-            
-            _a += '&tn=' + str(random.random())
-            
-            # add str done
-            # NOTE just reserved
-            # this._holder.runtimeData.ugcAuthKey = ''
-            _loc1 += _a
+            _a += '?key=fvip'
         else:	# NOTE here is VIP
             _loc1 = Config.MIXER_VX_VIP_URL
-            _a = ''	# append string
-            _a += '?key=fvinp&src=1702633101b340d8917a69cf8a4b8c7c'
-            
-            _a += '&tvId=' + self.tvid
-            _a += '&vid=' + self.vid
-            
+            _a += '?key=fvinp'
+        
+        _a += '&src=1702633101b340d8917a69cf8a4b8c7c'
+        
+        _a += '&tvId=' + self.tvid
+        _a += '&vid=' + self.vid
+        
+        if self.flag_is_vip:
             # NOTE only for VIP start
             _a += '&cid=' + self.cid
             _a += '&token=' + self.token
             _a += '&uid=' + self.uid
             _a += '&pf=b6c13e26323c537d'
             # NOTE only for VIP end
-            
-            _a += '&vinfo=' + str(_loc2)
-            
-            _a += '&tm=' + _loc4
-            _a += '&enc=' + _loc3.sc
-            
-            _a += '&qyid=' + self.qyid
-            _a += '&puid=' + self.puid
-            _a += '&authKey=' + _loc5
-            _a += '&um=' + _loc7
-            
-            _a += _loc6
-            
-            _a += '&thdk=' + self.thdk
-            _a += '&thdt=' + self.thdt
-            
-            _a += '&tn=' + str(random.random())
-            # add str done
-            _loc1 += _a
+        
+        _a += '&vinfo=' + str(_loc2)
+        
+        _a += '&tm=' + str(_loc4)
+        _a += '&enc=' + _loc3.sc
+        
+        _a += '&qyid=' + self.qyid
+        _a += '&puid=' + self.puid
+        _a += '&authKey=' + _loc5
+        _a += '&um=' + str(_loc7)
+        
+        _a += _loc6
+        
+        _a += '&thdk=' + self.thdk
+        _a += '&thdt=' + self.thdt
+        
+        _a += '&tn=' + str(random.random())
+        
+        # add str done
+        # NOTE just reserved
+        # this._holder.runtimeData.ugcAuthKey = ''
+        
+        _loc1 += _a
         
         # done
         # return new URLRequest(_loc1);
@@ -166,6 +143,5 @@ class MixerRemote(object):
     # end MixerRemote class
 
 # end remote_mixer.py
-
 
 

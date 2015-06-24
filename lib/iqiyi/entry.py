@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.10.0 test201506192118
+# version 0.1.11.0 test201506241721
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -51,6 +51,7 @@ RE_SUPPORT_URL.append('^http://[a-z]+\.iqiyi\.com/.+\.html')
 # global config obj
 etc = {}	# NOTE should be set
 etc['flag_debug'] = False
+etc['flag_v'] = False
 etc['hd_max'] = 0
 etc['hd_min'] = 0
 
@@ -61,6 +62,7 @@ def set_config(config):
     etc['flag_debug'] = config['flag_debug']
     etc['hd_max'] = config['hd_max']
     etc['hd_min'] = config['hd_min']
+    etc['flag_v'] = config['flag_v']
 
 # get_vid
 RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
@@ -113,7 +115,7 @@ def parse(url_to):	# this site entry main entry function
     # get vid
     vid_info = get_vid(url_to)
     # get base, more info
-    info, more = get_base_info.get_info(vid_info, flag_debug=etc['flag_debug'])
+    info, more = get_base_info.get_info(vid_info, flag_debug=etc['flag_debug'], flag_v=etc['flag_v'])
     # add more info
     evinfo['info']['title'] = more['title']
     evinfo['info']['title_sub'] = more['sub_title']
@@ -123,7 +125,7 @@ def parse(url_to):	# this site entry main entry function
     more_info = {}
     more_info['tvid'] = vid_info['tvid']
     # get video info
-    evinfo['video'] = get_video_info.get_info(info, hd_min=etc['hd_min'], hd_max=etc['hd_max'], flag_debug=etc['flag_debug'], more=more_info, url=url_to)
+    evinfo['video'] = get_video_info.get_info(info, hd_min=etc['hd_min'], hd_max=etc['hd_max'], flag_debug=etc['flag_debug'], more=more_info, url=url_to, flag_v=etc['flag_v'])
     # done
     return evinfo
 
