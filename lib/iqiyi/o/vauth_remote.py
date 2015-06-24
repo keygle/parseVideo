@@ -17,7 +17,7 @@ class AuthRemote(object):
         # NOTE should be set start
         self.album_id = ''	# NOTE may be tvid, this._holder.runtimeData.albumId
         self.cid = ''		# NOTE should be cid, this._holder.runtimeData.communicationlId
-        self.vid = ''		# NOTE should be vid, this._holder.runtimeData.vid, TODO unknow arg
+        self.vid = ''		# NOTE should be vid, this._holder.runtimeData.vid
         self.uuid = ''		# NOTE may be qyid, UUIDManager.instance.uuid
         self.segment_index = 0	# NOTE easy, this._segmentIndex
         # NOTE should be set end
@@ -96,7 +96,8 @@ class AuthRemote(object):
         post_data['aid'] = self.album_id
         post_data['utt'] = utt
         post_data['v'] = vt
-        post_data['version'] = '1.0'
+        # post_data['version'] = '1.0'
+        post_data['version'] = '1%2E0'
         
         post_data['uuid'] = self.uuid
         
@@ -113,6 +114,16 @@ class AuthRemote(object):
         return post_url, post_data
     
     # end AuthRemote class
+
+# function
+def make_post_string(post_data):
+    s = ''
+    for i in post_data:
+        s += '&' + str(i) + '=' + str(post_data[i])
+    # remove first &
+    s = s[1:]
+    # done
+    return s
 
 # end vauth_remote.py
 

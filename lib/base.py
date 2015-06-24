@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # base.py, part for parse_video : a fork from parseVideo. 
 # base: base part. 
-# version 0.1.3.0 test201506041115
+# version 0.1.4.0 test201506242054
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -51,6 +51,9 @@ def simple_http_get(url, user_agent, referer):
     header['User-Agent'] = user_agent
     if referer != None:
         header['Referer'] = referer
+    # add connection close
+    header['Connection'] = 'close'
+    
     # start a http request
     req = request.Request(url, headers=header)
     # res, response
@@ -94,6 +97,30 @@ def map_do(todo_list, worker, pool_size=4):
     pool.join()
     # done
     return pool_output
+
+# http post
+def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=None):
+    # make headers
+    header = {}
+    header['User-Agent'] = user_agent
+    if referer != None:
+        header['Referer'] = referer
+    if cookie != None:
+        header['Cookie'] = cookie
+    # add connection close
+    header['Connection'] = 'close'
+    
+    # start http request
+    data = bytes(post_data, 'utf-8')	# encode as utf-8
+    req = request.Request(url, method='POST', headers=header, data=data)
+    # res, response
+    res = request.urlopen(req)
+    data = res.read()
+    
+    # just decode as utf-8
+    content = data.decode('utf-8', 'ignore')
+    # done
+    return content
 
 # class
 

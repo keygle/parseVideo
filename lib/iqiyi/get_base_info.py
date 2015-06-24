@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.2.0 test201506241741
+# version 0.1.3.0 test201506242057
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -26,6 +26,8 @@
 #
 
 # import
+
+import json
 
 from .o import exports
 from .. import base
@@ -70,7 +72,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     
     # check flag_v
     if flag_v:
-        exports.p271vc.set_remote_mixer(mixer)
+        set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
         # DEBUG info
         print('lib.iqiyi: DEBUG: flag_v, set mixer done')
     
@@ -88,9 +90,51 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     if flag_debug:
         print('lib.iqiyi: DEBUG: got first url data done. ')
     # get more info
-    more = get_more_info(info)
+    more = get_more_info(info, vid_info)
     # done
     return info, more
+
+# 271v, set remote mixer
+def set_remote_mixer(mixer, vid_info, flag_debug=False):
+    # load config
+    conf = exports.p271vc.load_conf()
+    # set auth_remote
+    a = exports.vr.AuthRemote()
+    a.album_id = vid_info['albumid']
+    a.cid = conf['cid']
+    a.vid = vid_info['videoid']
+    a.uuid = conf['qyid']
+    # get token url
+    raw_data = a.getRequest()
+    post_str = exports.vr.make_post_string(raw_data[1])
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
+    
+    # NOTE use http POST
+    post_recv = base.http_post(raw_data[0], post_data=raw_data[1])
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got json text [' + post_recv + ']')	# TODO
+    
+    # parse as json
+    info = json.loads(post_recv)
+    
+    # get token
+    t = info['data']['t']
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got token \"' + t + '\"')
+    
+    # update conf
+    conf['token'] = t
+    # set remote_mixer
+    exports.p271vc.set_remote_mixer(mixer, conf)
+    
+    # done
 
 # end get_base_info.py
 

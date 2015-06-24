@@ -67,6 +67,8 @@ def set_config(config):
 # get_vid
 RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
 RE_TVID = 'data-(player|drama)-tvid="([^"]+)"'
+RE_ALBUMID = 'data-(player|drama)-albumid="([^"]+)"'
+RE_VIDEOID = 'data-(player|drama)-videoid="([^"]+)"'
 
 def get_vid(url):
     html_text = ''
@@ -82,18 +84,27 @@ def get_vid(url):
     # use re to get vid and tvid
     vids = re.findall(RE_VID, html_text)
     tvids = re.findall(RE_TVID, html_text)
+    albumids = re.findall(RE_ALBUMID, html_text)
+    videoids = re.findall(RE_VIDEOIDS, html_text)
+    
     # check supported URL by get vid
-    if (len(vids) < 1) or (len(tvids) < 1):
+    if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(videoids) < 1):
         # get vid and tvid failed, not support this URL
         raise error.NotSupportURLError('not support this url', url, 'get_vid')
     
     # ok, get vid done
     vid = vids[0][1]
     tvid = tvids[0][1]
+    albumid = albumids[0][1]
+    videoid = videoids[0][1]
+    
     # done
     vid_info = {}
     vid_info['vid'] = vid
     vid_info['tvid'] = tvid
+    vid_info['albumid'] = albumid
+    vid_info['videoid'] = videoid
+    
     return vid_info
 
 def parse(url_to):	# this site entry main entry function

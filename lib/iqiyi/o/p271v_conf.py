@@ -28,9 +28,7 @@ def load_conf():
     return conf
 
 # main export method
-def set_remote_mixer(rm):
-    # load config file
-    conf = load_conf()
+def set_remote_mixer(rm, conf):
     
     # set flags
     rm.flag_is_vip = True
