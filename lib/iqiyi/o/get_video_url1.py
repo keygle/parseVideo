@@ -65,7 +65,7 @@ def get_time_now0():
     time_now = flash.getTimer()
     return time_now
 
-def get_one_final_url(raw_link, more):
+def get_one_final_url(raw_link, more, flag_use_raw_du=False):
     # get data from more
     bid = more['bid']
     uid = more['uid']
@@ -86,8 +86,15 @@ def get_one_final_url(raw_link, more):
     this_link += '&qypid=' + tvid + '_11'
     # TODO reserved
     this_link += '&retry=1'
+    
+    # process du
+    raw_du = more['du']
+    du = raw_du.rsplit('/', 1)
     # make final url
-    final_url = more['du'] + this_key + '/videos' + this_link
+    if flag_use_raw_du:
+        final_url = raw_du + this_link
+    else:
+        final_url = du[0] + '/' + this_key + '/' + du[1] + this_link
     # done
     return final_url
 
