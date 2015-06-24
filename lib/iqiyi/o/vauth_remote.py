@@ -19,9 +19,11 @@ class AuthRemote(object):
         self.cid = ''		# NOTE should be cid, this._holder.runtimeData.communicationlId
         self.vid = ''		# NOTE should be vid, this._holder.runtimeData.vid, TODO unknow arg
         self.uuid = ''		# NOTE may be qyid, UUIDManager.instance.uuid
-        self.play_type = 'main'	# NOTE should be 'main', this._holder.runtimeData.playerType.name
         self.segment_index = 0	# NOTE easy, this._segmentIndex
         # NOTE should be set end
+        
+        self.play_type = 'main'	# NOTE should be 'main', this._holder.runtimeData.playerType.name
+        self.ut = None
     
     def getRequest(self):
         
@@ -51,8 +53,13 @@ class AuthRemote(object):
         # NOTE should be '2391461978', use avmshell to run the code
         s = '2391461978'
         
-        # ut = new Date().time
-        ut = int(time.time() * 1e3)
+        # check self.ut
+        if self.ut == None:
+            # ut = new Date().time
+            ut = int(time.time() * 1e3)
+        else:
+            ut = self.ut
+        
         uts = str(ut)
         
         # utt = String(ut % 1000 * int(uts.substr(0,2)) + (100 + this._segmentIndex));
