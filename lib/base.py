@@ -115,8 +115,12 @@ def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=Non
         for i in fix_header:
             header[i] = fix_header[i]
     
-    # start http request
     data = bytes(post_data, 'utf-8')	# encode as utf-8
+    # add content-length
+    content_len = len(data)
+    header['Content-Length'] = str(content_len)
+    
+    # start http request
     req = request.Request(url, method='POST', headers=header, data=data)
     # res, response
     res = request.urlopen(req)
