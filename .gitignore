@@ -2,4 +2,8 @@
 
 *.py[cod]
 
+/__init__.py
+
+private.*
+
 # end .gitignore

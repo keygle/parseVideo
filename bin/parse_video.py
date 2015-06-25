@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.10.0 test201506051627
+# version 0.1.29.0 test201506251705
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,11 +27,14 @@
 
 # NOTE support --max --min --debug command line options. 
 # NOTE support --fix-unicode output option. 
+# NOTE support --fix-size option
 
 # import
 
 import sys
 import json
+
+from . import error_zh_cn
 
 # NOTE should be set
 entry = None
@@ -46,13 +49,15 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.3.1 test201506051626'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.10.0 test201506251705'
 
 etc = {}
 etc['flag_debug'] = False
+etc['flag_fix_size'] = False
 etc['flag_fix_unicode'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
+etc['flag_v'] = False
 
 # default mode, analyse url
 etc['global_mode'] = 'mode_url'
@@ -60,13 +65,22 @@ etc['url_to'] = ''	# url to analyse
 
 # functions
 
+def print_stdout(text):
+    # check fix_unicode flag
+    if etc['flag_fix_unicode']:
+        t = text.encode('utf-8')
+        sys.stdout.buffer.write(t)
+    else:	# just print it
+        print(text)
+    # done
+
 # print functions
 def print_version():
-    print(PARSE_VIDEO_VERSION)
+    print_stdout(PARSE_VIDEO_VERSION)
     print_free()
 
 def print_free():
-    print('''
+    print_stdout('''
     author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05
  copyright 2015 sceext
 
@@ -91,8 +105,8 @@ def print_free():
 ''')
 
 def print_help():
-    print('parse_video: HELP')
-    print('''
+    print_stdout('parse_video: HELP')
+    print_stdout('''
 Usage:
     evp [OPTIONS] <url>
     evp --version
@@ -115,7 +129,7 @@ Options:
 ''')
 
 def print_help_notice():
-    print('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
+    print_stdout('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
     return 1
 
 # start parse
@@ -127,15 +141,34 @@ def start_parse():
         entry.etc['hd_max'] = etc['hd_max']
     # set lib
     entry.etc['flag_debug'] = etc['flag_debug']
+    entry.etc['flag_fix_size'] = etc['flag_fix_size']
+    entry.etc['flag_v'] = etc['flag_v']
+    
     url_to = etc['url_to']
     try:
         evinfo = entry.parse(url_to)
         # just print info as json
         t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
-        print(t)
+        # just print it
+        print_stdout(t)
     except error.NotSupportURLError as err:
-        msg, url = err.args
-        print('parse_video: ERROR: not support this url \"' + url + '\"')
+        # check args length
+        if len(err.args) == 2:
+            msg, url = err.args
+            print_stdout('parse_video: ' + error_zh_cn.ERR_TEXT_NOT_SUPPORT_URL + ' \"' + url + '\"')
+        # check get vid error
+        if len(err.args) == 3:
+            url = err.args[1]
+            # check error msg
+            err_msg = err.args[2]
+            if err_msg == 'get_vid':
+                err_msg = error_zh_cn.ERR_TEXT_GET_VID
+            elif err_msg == 'may be a VIP video':
+                err_msg = error_zh_cn.ERR_TEXT_MAY_BE_VIP
+            elif err_msg == 'load_page':
+                err_msg = error_zh_cn.ERR_TEXT_LOAD_PAGE
+            # just print it
+            print_stdout('parse_video: ' + error_zh_cn.ERR_TEXT_NOT_SUPPORT_URL + ' (' + err_msg + ') \"' + url + '\"')
         return 2
     # done
 
@@ -162,6 +195,8 @@ def get_args():
             etc['flag_debug'] = True
         elif one == '--fix-unicode':
             etc['flag_fix_unicode'] = True
+        elif one == '--fix-size':
+            etc['flag_fix_size'] = True
         elif one == '--min':	# next arg should be hd_min
             next = rest[0]
             rest = rest[1:]
@@ -170,6 +205,8 @@ def get_args():
             next = rest[0]
             rest = rest[1:]
             etc['hd_max'] = int(next)
+        elif one == '--set-flag-v':
+            etc['flag_v'] = True
         else:	# should be url_to
             etc['url_to'] = one
     # done

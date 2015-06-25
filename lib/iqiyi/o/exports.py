@@ -14,10 +14,16 @@ from . import uuid as uuid0
 from . import remote_mixer
 from . import get_video_url1 as get_video_url1_0
 
+from . import p271v_conf as p271v0
+from . import vauth_remote as vr0
+
 # set in
 uuid0.set_import(base)
-remote_mixer.set_import(flash)
 get_video_url1_0.set_import(base, flash)
+
+# functions
+def getTimer():
+    return flash.getTimer()
 
 # exports
 MixerRemote = remote_mixer.MixerRemote
@@ -25,6 +31,9 @@ UUIDManager = uuid0.UUIDManager
 
 key = key0
 get_video_url1 = get_video_url1_0
+
+p271vc = p271v0
+vr = vr0
 
 # end exports.py
 

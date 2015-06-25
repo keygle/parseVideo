@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # base.py, part for parse_video : a fork from parseVideo. 
 # base: base part. 
-# version 0.1.3.0 test201506041115
+# version 0.1.5.0 test201506242244
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -32,6 +32,8 @@ import re
 import json
 import multiprocessing.dummy as multiprocessing
 
+import socket
+
 # global vars
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0'
 # USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0'
@@ -51,6 +53,9 @@ def simple_http_get(url, user_agent, referer):
     header['User-Agent'] = user_agent
     if referer != None:
         header['Referer'] = referer
+    # add connection close
+    header['Connection'] = 'close'
+    
     # start a http request
     req = request.Request(url, headers=header)
     # res, response
@@ -94,6 +99,95 @@ def map_do(todo_list, worker, pool_size=4):
     pool.join()
     # done
     return pool_output
+
+# http post
+def http_post(url, post_data='', user_agent=USER_AGENT, referer=None, cookie=None, fix_header=None, flag_debug=False):
+    # make headers
+    header = {}
+    header['User-Agent'] = user_agent
+    if referer != None:
+        header['Referer'] = referer
+    if cookie != None:
+        header['Cookie'] = cookie
+    # add connection close
+    header['Connection'] = 'close'
+    
+    # fix headers
+    if fix_header != None:
+        for i in fix_header:
+            header[i] = fix_header[i]
+    
+    data = bytes(post_data, 'utf-8')	# encode as utf-8
+    # add content-length
+    content_len = len(data)
+    header['Content-Length'] = str(content_len)
+    
+    # parse url
+    first_p = url.split('://', 1)
+    next_p = first_p[1].split('/', 1)
+    host_p = next_p[0]
+    get_p = next_p[1]
+    if get_p[0] != '/':
+        get_p = '/' + get_p
+    port = 80	# TODO
+    
+    # add Host header
+    header['Host'] = host_p
+    
+    # use socket to send http POST
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host_p, port))
+    
+    # make http head text
+    ht = []
+    ht += ['POST ' + get_p + ' HTTP/1.1']
+    # add headers
+    for h in header:
+        ht += [str(h) + ': ' + str(header[h])]
+    # done
+    ht_text = ('\r\n').join(ht)
+    ht_text += '\r\n\r\n'
+    
+    # DEBUG info
+    if flag_debug:
+        print('base: DEBUG: http text to send [' + ht_text + ']')
+    
+    # send http head
+    s.send(bytes(ht_text, 'utf-8'))
+    # post data
+    s.send(data)
+    
+    recv_size_byte = 1024
+    # recv data
+    recv_data = []
+    while True:
+        d = s.recv(recv_size_byte)
+        if d:
+            recv_data.append(d)
+        else:
+            break
+    # recv done
+    data = (b'').join(recv_data)
+    data = data.decode('utf-8', 'ignore')
+    
+    # remove http head
+    http_part = data.split('\r\n\r\n', 1)
+    
+    # DEBUG info
+    if flag_debug:
+        print('base: DEBUG: got http head [\n' + http_part[0] + ']')
+    
+    return http_part[1]
+    # start http request
+    req = request.Request(url, method='POST', headers=header, data=data)
+    # res, response
+    res = request.urlopen(req)
+    data = res.read()
+    
+    # just decode as utf-8
+    content = data.decode('utf-8', 'ignore')
+    # done
+    return content
 
 # class
 

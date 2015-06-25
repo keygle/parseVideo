@@ -1,124 +1,146 @@
 # -*- coding: utf-8 -*-
-# remote_mixer.py, part for parse_video : a fork from parseVideo. 
-# remote_mixer: iqiyi, evparse:lib/o/iqiyi/o/core/model/remote_mixer.py
+# remote_mixer.py, part for evparse : EisF Video Parse, evdh Video Parse. 
+# remote_mixer: iqiyi, com.qiyi.player.core.model.remote 
 
 # import
 
 import random
 
-from . import config as Config
+from . import node_port
 from .key import md5_hash
+from . import config as Config
 
-# import from out
-getTimer = None
-# NOTE should be set by exports
-def set_import(flash):
-    # just set getTimer
-    global getTimer
-    getTimer = flash.getTimer
+# NOTE last update 201506241630 GMT+0800
 
 # class
 
 class MixerRemote(object):
     
     def __init__(self):
-        # add some flags
+        
+        # some flags
         self.flag_is_vip = False
-        self.flag_show_vinfo = True
-        self.flag_set_um = False
         self.flag_instance_boss = False
+        self.flag_set_vinfo = True	# default should be True
+        self.flag_set_um = False	# NOTE vip should set this
         
-        # add some static config
-        self.passportID = ''	# passportID of the user
+        # NOTE should be set START
+        self.tm = 0	# NOTE should be tm, flash getTimer()
+        self.tvid = ''	# NOTE should be tvid
+        self.vid = ''	# NOTE should be vid, this._holder.runtimeData.originalVid
+        self.qyid = ''	# NOTE should be qyid, this._holder.uuid
         
-        # add some static data
-        self.vid = ''
-        self.tvid = ''
-        self.uuid = ''	# NOTE should be set
+        # NOTE only for VIP
+        self.cid = ''	# NOTE should be cid, this._holder.runtimeData.communicationlId
+        self.token = ''	# NOTE should be token, this._holder.runtimeData.key
+        self.uid = ''	# NOTE should be uid, this._holder.runtimeData.QY00001
         
-        # can only pass null
-        self.ugcAuthKey = ''	# password string of the video
-        self.thdKey = ''
-        self.thdToken = ''
+        # NOTE should be set END
         
-        # data only for vip
-        self.key = ''
-        self.QY00001 = ''
-        self.communicationlId = ''	# .communicationlId
+        # NOTE for VIP, may be empty
+        self.puid = ''	# NOTE should be puid, UserManager.getInstance().user.passportID
+        
+        # NOTE can be null, empty
+        self.ugcAuthKey = ''
+        self.thdk = ''	# NOTE should be thdk, this._holder.runtimeData.thdKey
+        self.thdt = ''	# NOTE should be thdt, this._holder.runtimeData.thdToken
     
     def getRequest(self):
         
-        if self.flag_show_vinfo:
-            _loc2_ = 1
-        else:
-            _loc2_ = 0
+        # var _loc1:String = null;
+        _loc1 = None
         
-        _loc3_ = 'Qakh4T0A'
-        _loc4_ = getTimer()
-        _loc5_ = md5_hash(_loc3_ + str(_loc4_) + self.tvid)
-        _loc6_ = md5_hash(md5_hash(self.ugcAuthKey) + str(_loc4_) + self.tvid)
+        # this._requestDuration = getTimer();
         
+        # if this._holder.pingBack:
+        #     this._holder.pingBack.sendStartLoadVrs();
+        
+        # var _loc2:* = 0;
+        _loc2 = 0
+        # if (this._holder.runtimeData.CDNStatus == -1 && this._holder.runtimeData.playerUseType == PlayerUseTypeEnum.MAIN):
+        if self.flag_set_vinfo:
+            _loc2 = 1
+        
+        # var _loc3:Object
+        # var _loc4:uint = _loc3.tm
+        # var _loc5:String
+        # var _loc6:String = Settings.instance.boss?"&vv=821d3c731e374feaa629dcdaab7c394b":"";
+        # var _loc7:String = (UserManager.getInstance().user) && !(UserManager.getInstance().user.level == UserDef.USER_LEVEL_NORMAL)?"1":"0";
+        
+        # NOTE use node_port to mix
+        # _loc3 = Z7elzzup.cexe(this._holder.runtimeData.tvid)
+        _loc3 = node_port.mix(self.tvid, self.tm)
+        
+        _loc4 = _loc3['tm']
+        
+        # NOTE authKey
+        # _loc5 = MD5.calculate(MD5.calculate(this._holder.runtimeData.ugcAuthKey) + String(_loc4) + this._holder.runtimeData.tvid)
+        _loc5 = md5_hash(md5_hash(self.ugcAuthKey) + str(_loc4) + self.tvid)
+        
+        # _loc6 = Settings.instance.boss?"&vv=821d3c731e374feaa629dcdaab7c394b":""
+        _loc6 = ''
         if self.flag_instance_boss:
-            _loc7_ = '&vv=821d3c731e374feaa629dcdaab7c394b'
-        else:
-            _loc7_ = ''
+            _loc6 = '&vv=821d3c731e374feaa629dcdaab7c394b'
         
+        # NOTE set um, vip flag
+        # _loc7 = (UserManager.getInstance().user) && !(UserManager.getInstance().user.level == UserDef.USER_LEVEL_NORMAL)?"1":"0";
+        _loc7 = '0'
         if self.flag_set_um:
-            _loc8_ = 1
-        else:
-            _loc8_ = 0
+            _loc7 = '1'
         
-        # before generate url, fix local to string
-        _loc2_ = str(_loc2_)
-        _loc4_ = str(_loc4_)
-        _loc8_ = str(_loc8_)
+        # NOTE mix vip and normal together
         
+        _a = ''	# append string
+        
+        # if ! this._holder.runtimeData.movieIsMember:
         if not self.flag_is_vip:
-            _loc1_ = Config.MIXER_VX_URL
-            _ap = ''
-            _ap += '?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c'
-            _ap += '&tvId=' + self.tvid
-            _ap += '&vid=' + self.vid
-            _ap += '&vinfo=' + _loc2_
-            _ap += '&tm=' + _loc4_
-            _ap += '&enc=' + _loc5_
-            _ap += '&qyid=' + self.uuid
-            _ap += '&puid=' + self.passportID
-            _ap += '&authKey=' + _loc6_
-            _ap += '&um=' + _loc8_ + _loc7_
-            _ap += '&thdk=' + self.thdKey
-            _ap += '&thdt=' + self.thdToken
-            _ap += '&tn=' + str(random.random())
-        # NOTE vip video, not support finished now. 
-        else:
-            _loc1_ = Config.MIXER_VX_VIP_URL
-            _ap = ''
-            # FIXME key=fvinp, different from no vip video
-            _ap += '?key=fvinp&src=1702633101b340d8917a69cf8a4b8c7c'
-            
-            _ap += '&tvId=' + self.tvid
-            _ap += '&vid=' + self.vid
-            
-            # TODO only for VIP, start
-            _ap += '&cid=' + self.communicationlId
-            _ap += '&token=' + self.key
-            _ap += '&uid=' + self.QY00001
-            _ap += '&pf=b6c13e26323c537d'
-            # TODO only for vip end
-            
-            _ap += '&vinfo=' + _loc2_
-            _ap += '&tm=' + _loc4_
-            _ap += '&enc=' + _loc5_
-            _ap += '&qyid=' + self.uuid
-            _ap += '&puid=' + self.passportID
-            _ap += '&authKey=' + _loc6_
-            _ap += '&um=' + _loc8_ + _loc7_
-            _ap += '&thdk=' + self.thdKey
-            _ap += '&thdt=' + self.thdToken
-            _ap += '&tn=' + str(random.random())
-        # just return request URL
-        return _loc1_ + _ap
-        # an example for not vip method 'http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7c&tvId=362184200&vid=0e8947a1b4fcbde51e943fe9e21f25a1&vinfo=1&tm=796&enc=afbf5e4414ddfec2155093f953449fe8&qyid=cccaa2d11b684850103b7b2f047114ed&puid=&authKey=bb59cba92736f1a251b6f085b943bc91&um=0&thdk=&thdt=&tn=0.7928885882720351'
+            _loc1 = Config.MIXER_VX_URL
+            _a += '?key=fvip'
+        else:	# NOTE here is VIP
+            _loc1 = Config.MIXER_VX_VIP_URL
+            _a += '?key=fvinp'
+        
+        _a += '&src=1702633101b340d8917a69cf8a4b8c7c'
+        
+        _a += '&tvId=' + self.tvid
+        _a += '&vid=' + self.vid
+        
+        if self.flag_is_vip:
+            # NOTE only for VIP start
+            _a += '&cid=' + self.cid
+            _a += '&token=' + self.token
+            _a += '&uid=' + self.uid
+            _a += '&pf=b6c13e26323c537d'
+            # NOTE only for VIP end
+        
+        _a += '&vinfo=' + str(_loc2)
+        
+        _a += '&tm=' + str(_loc4)
+        _a += '&enc=' + _loc3['sc']
+        
+        _a += '&qyid=' + self.qyid
+        _a += '&puid=' + self.puid
+        _a += '&authKey=' + _loc5
+        _a += '&um=' + str(_loc7)
+        
+        _a += _loc6
+        
+        _a += '&thdk=' + self.thdk
+        _a += '&thdt=' + self.thdt
+        
+        _a += '&tn=' + str(random.random())
+        
+        # add str done
+        # NOTE just reserved
+        # this._holder.runtimeData.ugcAuthKey = ''
+        
+        _loc1 += _a
+        
+        # done
+        # return new URLRequest(_loc1);
+        return _loc1
+    
+    # end MixerRemote class
 
 # end remote_mixer.py
 

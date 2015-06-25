@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.3.0 test201506051626
+# version 0.1.8.1 test201506251630
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -30,11 +30,12 @@
 import xml.etree.ElementTree as etree
 import math
 
-# FIXME import for debug
+# NOTE import for debug
 import sys
 
 from .o import exports
 from .. import base
+from .. import error
 
 from . import get_base_info
 
@@ -43,7 +44,7 @@ get_video_url = exports.get_video_url1
 # global vars
 
 POOL_SIZE_GET_VINFO = 4
-POOL_SIZE_GET_REAL_URL = 20
+POOL_SIZE_GET_REAL_URL = 40
 
 GET_REAL_URL_RETRY = 5
 
@@ -95,7 +96,39 @@ def get_one_file_info(onef, more):
     info['time_s'] = onef['d'] / 1e3
     # get file url
     raw_link = onef['l']
-    info['url'] = get_video_url.get_one_final_url(raw_link, more)
+    
+    # get flag_debug
+    flag_debug = more['flag_debug']
+    
+    # check flag_v
+    if more['flag_v']:
+        # load keys
+        
+        # create a
+        a = get_base_info.create_a2(more['a'])
+        # set segment index
+        a.segment_index = onef['i']
+        # load info
+        ck_info = get_base_info.load_ck_info(a, more['auth_conf'], flag_debug)
+        # get info
+        t_key = ck_info['data']['t']
+        qy00001 = ck_info['data']['u']
+        cid = ck_info['data']['cid']
+        
+        # make key_info
+        key_info = {}
+        key_info['t'] = t_key
+        key_info['cid'] = cid
+        key_info['vid'] = more['videoid']
+        key_info['QY00001'] = qy00001
+        
+        # get final url
+        final_url = get_video_url.p271v_get_one_final_url(raw_link, more, key_info)
+        # done
+        info['url'] = final_url
+    else:	# not flag_v
+        info['url'] = get_video_url.get_one_final_url(raw_link, more)
+    
     # done
     return info
 
@@ -113,6 +146,9 @@ def get_one_info(one_raw):
         print('lib.iqiyi: DEBUG: list_i [' + str(list_i) + '] starting get info ... ')
     # get video meta data
     meta_url = raw['meta_base'] + raw['meta_url']
+    # debug info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: [' + str(list_i) + '] got video meta_data url \"' + meta_url + '\"')
     meta = get_one_video_meta_data(meta_url)
     # add more info
     vinfo['size_byte'] = number(meta['filesize'])
@@ -132,13 +168,26 @@ def get_one_info(one_raw):
         more['bid'] = raw['bid']
         more['uid'] = raw['uid']
         more['tvid'] = raw['tvid']
+        more['videoid'] = raw['videoid']
         # get server_time and now
         more['server_time'] = get_video_url.get_server_time()
+        # add flag_debug
+        more['flag_debug'] = flag_debug
         # get each file info
         flist = raw['fs']
+        # add onef_i
+        onef_i = 0
         for onef in flist:
             # for each url, get once time_now
             more['time_now'] = get_video_url.get_time_now()
+            # NOTE add du
+            more['du'] = raw['du']
+            more['flag_v'] = raw['flag_v']
+            more['a'] = raw['a']
+            more['auth_conf'] = raw['auth_conf']
+            # add onef_i
+            onef['i'] = onef_i
+            onef_i += 1
             # get one url info
             onef_info = get_one_file_info(onef, more)
             vinfo['file'].append(onef_info)
@@ -148,12 +197,31 @@ def get_one_info(one_raw):
     # done
     return vinfo
 
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
+def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag_v=False):
+    # check video list
+    if (not flag_v) and (not 'vp' in info['data']):
+        if info['data']['vp']['tkl'] == '':
+            # not support this URL, may be a VIP video
+            raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list
-    raw_list = info['data']['vp']['tkl'][0]['vs']
+    
+    # check flag_v
+    if flag_v and (not 'np' in info['data']):
+        raise error.NotSupportURLError('not support this url', url, 'no \"np\" in \"data\" ')
+    
+    # NOTE get vp here, NOTE support 271v np
+    if flag_v:
+        meta_vp = info['data']['np']
+    else:
+        meta_vp = info['data']['vp']
+    
+    raw_list = meta_vp['tkl'][0]['vs']
+    # NOTE get du, before url, base part
+    before_du = meta_vp['du']
+    
     video_list = []
     # get meta data base url
-    meta_base = info['data']['vp']['dm']
+    meta_base = meta_vp['dm']
     # debug info
     if flag_debug:
         print('lib.iqiyi: DEBUG: getting video info ... ')
@@ -165,11 +233,14 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
         one['meta_url'] = raw['mu']	# video meta data
         one['meta_base'] = meta_base	# add meta_base
         bid = raw['bid']
+        # NOTE add du
+        one['du'] = before_du
         # add more info to get final url
         one['bid'] = bid
         # get uid
         one['uid'] = get_base_info.user_uuid
         one['tvid'] = more['tvid']
+        one['videoid'] = more['videoid']
         # get video hd number by bid
         one['hd'] = BID_TO_HD[str(bid)]
         # add list_i and flag_debug
@@ -183,6 +254,15 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None):
         one['flag_get_file'] = False
         if (one['hd'] >= hd_min) and (one['hd'] <= hd_max):
             one['flag_get_file'] = True
+        # add flag_v here
+        one['flag_v'] = False
+        one['a'] = None
+        one['auth_conf'] = None
+        if flag_v:
+            # one['flag_get_file'] = False	# TODO reserved now
+            one['flag_v'] = True
+            one['a'] = more['a']
+            one['auth_conf'] = more['auth_conf']
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # debug info
