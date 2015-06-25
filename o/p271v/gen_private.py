@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # gen_private.py, part for parse_video : a fork from parseVideo. 
 # gen_private: e/p271v: generate private config file for 271v. 
-# version 0.1.0.0 test201506251303
+# version 0.1.1.0 test201506251435
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -132,8 +132,8 @@ def gen_private():
     conf = etc['conf']['default_conf'].copy()	# load default conf obj
     # update info
     conf['uid'] = url_info['uid']
-    conf['cid'] = url_info['cid']
     conf['qyid'] = url_info['qyid']
+    # conf['cid'] = url_info['cid']	# NOTE not needed
     
     print('INFO: gen cookie')
     # set cookie
