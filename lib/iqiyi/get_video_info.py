@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.8.1 test201506251630
+# version 0.1.9.0 test201506252001
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -100,6 +100,16 @@ def get_one_file_info(onef, more):
     # get flag_debug
     flag_debug = more['flag_debug']
     
+    info['url'] = ''
+    # check i_min and i_max
+    i_min = more['i_min']
+    i_max = more['i_max']
+    this_i = onef['i']
+    if (i_min != None) and (i_min > this_i):
+        return info
+    if (i_max != None) and (i_max < this_i):
+        return info
+    
     # check flag_v
     if more['flag_v']:
         # load keys
@@ -185,6 +195,11 @@ def get_one_info(one_raw):
             more['flag_v'] = raw['flag_v']
             more['a'] = raw['a']
             more['auth_conf'] = raw['auth_conf']
+            
+            # add i_min and i_max
+            more['i_min'] = raw['i_min']
+            more['i_max'] = raw['i_max']
+            
             # add onef_i
             onef['i'] = onef_i
             onef_i += 1
@@ -197,7 +212,7 @@ def get_one_info(one_raw):
     # done
     return vinfo
 
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag_v=False):
+def get_info(info, hd_min=0, hd_max=0, i_min=None, i_max=None, flag_debug=False, more=None, url='', flag_v=False):
     # check video list
     if (not flag_v) and (not 'vp' in info['data']):
         if info['data']['vp']['tkl'] == '':
@@ -258,8 +273,12 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag
         one['flag_v'] = False
         one['a'] = None
         one['auth_conf'] = None
+        
+        # add i_min and i_max
+        one['i_min'] = i_min
+        one['i_max'] = i_max
+        
         if flag_v:
-            # one['flag_get_file'] = False	# TODO reserved now
             one['flag_v'] = True
             one['a'] = more['a']
             one['auth_conf'] = more['auth_conf']
@@ -283,6 +302,10 @@ def get_real_urls(vinfo, flag_debug=False):
     for v in vinfo:
         for f in v['file']:
             one = {}
+            # check f_url
+            if (not 'url' in f) or (f['url'] == None) or (f['url'] == ''):
+                continue	# skip this url
+            # add this url
             one['url'] = f['url']
             one['i'] = list_i
             list_i += 1
@@ -297,6 +320,10 @@ def get_real_urls(vinfo, flag_debug=False):
     url_i = 0
     for v in vinfo:
         for f in v['file']:
+            # check f_url
+            if (not 'url' in f) or (f['url'] == None) or (f['url'] == ''):
+                continue	# skip this url
+            # set this url
             f['url'] = real[url_i]
             url_i += 1
     # debug info

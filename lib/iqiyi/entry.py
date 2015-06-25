@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.12.1 test201506251629
+# version 0.1.13.0 test201506251954
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -52,17 +52,24 @@ RE_SUPPORT_URL.append('^http://[a-z]+\.iqiyi\.com/.+\.html')
 etc = {}	# NOTE should be set
 etc['flag_debug'] = False
 etc['flag_v'] = False
-etc['hd_max'] = 0
 etc['hd_min'] = 0
+etc['hd_max'] = 0
+
+etc['i_min'] = None
+etc['i_max'] = None
 
 # functions
 
 def set_config(config):
     # just copy it
     etc['flag_debug'] = config['flag_debug']
-    etc['hd_max'] = config['hd_max']
-    etc['hd_min'] = config['hd_min']
     etc['flag_v'] = config['flag_v']
+    
+    etc['hd_min'] = config['hd_min']
+    etc['hd_max'] = config['hd_max']
+    
+    etc['i_min'] = config['i_min']
+    etc['i_max'] = config['i_max']
 
 # get_vid
 RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
@@ -139,7 +146,7 @@ def parse(url_to):	# this site entry main entry function
     more_info['a'] = more['a']
     more_info['auth_conf'] = more['auth_conf']
     # get video info
-    evinfo['video'] = get_video_info.get_info(info, hd_min=etc['hd_min'], hd_max=etc['hd_max'], flag_debug=etc['flag_debug'], more=more_info, url=url_to, flag_v=etc['flag_v'])
+    evinfo['video'] = get_video_info.get_info(info, hd_min=etc['hd_min'], hd_max=etc['hd_max'], i_min=etc['i_min'], i_max=etc['i_max'], flag_debug=etc['flag_debug'], more=more_info, url=url_to, flag_v=etc['flag_v'])
     # done
     return evinfo
 
