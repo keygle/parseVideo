@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.29.0 test201506251705
+# version 0.1.31.0 test201506252017
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -25,7 +25,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# NOTE support --max --min --debug command line options. 
+# supported command line options
+# NOTE support --min --max
+# NOTE support --min-i --max-i
+# NOTE support --debug
 # NOTE support --fix-unicode output option. 
 # NOTE support --fix-size option
 
@@ -49,7 +52,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.10.0 test201506251705'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.11.0 test201506252017'
 
 etc = {}
 etc['flag_debug'] = False
@@ -57,6 +60,8 @@ etc['flag_fix_size'] = False
 etc['flag_fix_unicode'] = False
 etc['hd_min'] = None
 etc['hd_max'] = None
+etc['i_min'] = None
+etc['i_max'] = None
 etc['flag_v'] = False
 
 # default mode, analyse url
@@ -139,6 +144,10 @@ def start_parse():
         entry.etc['hd_min'] = etc['hd_min']
     if etc['hd_max'] != None:
         entry.etc['hd_max'] = etc['hd_max']
+    
+    entry.etc['i_min'] = etc['i_min']
+    entry.etc['i_max'] = etc['i_max']
+    
     # set lib
     entry.etc['flag_debug'] = etc['flag_debug']
     entry.etc['flag_fix_size'] = etc['flag_fix_size']
@@ -205,6 +214,14 @@ def get_args():
             next = rest[0]
             rest = rest[1:]
             etc['hd_max'] = int(next)
+        elif one == '--min-i':
+            next = rest[0]
+            rest = rest[1:]
+            etc['i_min'] = int(next)
+        elif one == '--max-i':
+            next = rest[0]
+            rest = rest[1:]
+            etc['i_max'] = int(next)
         elif one == '--set-flag-v':
             etc['flag_v'] = True
         else:	# should be url_to
