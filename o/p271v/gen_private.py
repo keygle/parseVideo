@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # gen_private.py, part for parse_video : a fork from parseVideo. 
 # gen_private: e/p271v: generate private config file for 271v. 
-# version 0.0.1.0 test201506251233
+# version 0.1.0.0 test201506251303
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -35,7 +35,7 @@ import json
 import datetime
 
 # global vars
-CONFIG_FILE = './get_conf.json'
+CONFIG_FILE = './gen_conf.json'
 
 etc = {}
 etc['conf'] = None	# config obj
@@ -52,8 +52,9 @@ def get_iso_now():
 
 def load_conf():
     # make config file path
-    raw_path = os.path.dirpath(__file__)
+    raw_path = os.path.dirname(__file__)
     conf_path = os.path.join(raw_path, CONFIG_FILE)
+    conf_path = os.path.normpath(conf_path)
     # read config file
     with open(conf_path) as f:
         content = f.read()
@@ -114,8 +115,8 @@ def select_cookie(raw_list):
 
 def gen_private():
     # FIXME debug here
-    print('DEBUG: got vms_url \"' + etc['vms_url'] + '\"')
-    print('DEBUG: got cookie_text \"' + etc['cookie_text' + '\"'])
+    # print('DEBUG: got vms_url \"' + etc['vms_url'] + '\"')
+    # print('DEBUG: got cookie_text \"' + etc['cookie_text'] + '\"')
     
     # load config file
     print('INFO: load config file \"' + CONFIG_FILE + '\"')
@@ -124,11 +125,11 @@ def gen_private():
     print('INFO: parse url and cookie')
     # parse url and cookie
     url_info = parse_url(etc['vms_url'])
-    cookie_info = parse_cookie(etc['cookie_text'])
+    cookie_info = parse_cookie_string(etc['cookie_text'])
     
     print('INFO: make conf info')
     # make conf obj
-    conf = etc['conf'].copy()	# load default conf obj
+    conf = etc['conf']['default_conf'].copy()	# load default conf obj
     # update info
     conf['uid'] = url_info['uid']
     conf['cid'] = url_info['cid']
@@ -140,7 +141,7 @@ def gen_private():
     conf['header']['Cookie'] = cookie_string
     
     # add last_update
-    conf['last_update'] = get_iso_now()
+    conf['_last_update'] = get_iso_now()
     
     # write private conf file
     private_file = etc['conf']['private_file']
