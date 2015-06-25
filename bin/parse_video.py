@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.28.0 test201506241735
+# version 0.1.29.0 test201506251705
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -49,7 +49,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.9.0 test201506201150'
+PARSE_VIDEO_VERSION = 'parse_video version 0.2.10.0 test201506251705'
 
 etc = {}
 etc['flag_debug'] = False
