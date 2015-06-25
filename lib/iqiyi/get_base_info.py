@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.1.0 test201506032304
+# version 0.1.6.2 test201506251634
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -27,6 +27,8 @@
 
 # import
 
+import json
+
 from .o import exports
 from .. import base
 
@@ -35,7 +37,7 @@ user_uuid = ''
 
 # functions
 
-def get_more_info(info):
+def get_more_info(info, vid_info):
     more = {}	# output more info
     data = info['data']
     vi = data['vi']
@@ -46,7 +48,7 @@ def get_more_info(info):
     # done
     return more
 
-def get_info(vid_info, flag_debug=False):
+def get_info(vid_info, flag_debug=False, flag_v=False):
     # create MixerRemote
     mixer = exports.MixerRemote()
     # set data
@@ -59,10 +61,25 @@ def get_info(vid_info, flag_debug=False):
     global user_uuid
     um = exports.UUIDManager()
     user_uuid = um.get_uuid(flag_debug)
-    mixer.uuid = user_uuid
+    mixer.qyid = user_uuid
     # DEBUG info
     if flag_debug:
         print('lib.iqiyi: DEBUG: got uuid \"' + user_uuid + '\"')
+    
+    # set tm
+    tm = exports.getTimer()
+    mixer.tm = tm
+    
+    a = None	# AuthRemote obj
+    auth_conf = None
+    # check flag_v
+    if flag_v:
+        a, uuid, auth_conf = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
+        # NOTE save uuid here
+        user_uuid = uuid
+        # DEBUG info
+        print('lib.iqiyi: DEBUG: flag_v, set mixer done')
+    
     # get request url
     url_to = mixer.getRequest()
     # DEBUG info
@@ -77,9 +94,85 @@ def get_info(vid_info, flag_debug=False):
     if flag_debug:
         print('lib.iqiyi: DEBUG: got first url data done. ')
     # get more info
-    more = get_more_info(info)
+    more = get_more_info(info, vid_info)
+    # add a
+    more['a'] = a
+    more['auth_conf'] = auth_conf
     # done
     return info, more
+
+# 271v, set remote mixer
+def set_remote_mixer(mixer, vid_info, flag_debug=False):
+    # create a
+    a, conf = create_a(vid_info)
+    
+    # load ck info
+    info = load_ck_info(a, conf, flag_debug)
+    
+    # get token
+    t = info['data']['t']
+    uuid = conf['qyid']
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got token \"' + t + '\"')
+    
+    # update conf
+    conf['token'] = t
+    # set remote_mixer
+    exports.p271vc.set_remote_mixer(mixer, conf)
+    
+    # done
+    return a, uuid, conf
+
+def create_a(vid_info):
+    # load config
+    conf = exports.p271vc.load_conf()
+    # set auth_remote
+    a = exports.vr.AuthRemote()
+    a.album_id = vid_info['albumid']
+    a.cid = conf['cid']
+    a.vid = vid_info['videoid']
+    a.uuid = conf['qyid']
+    # done
+    return a, conf
+
+def create_a2(a):
+    a2 = exports.vr.AuthRemote()
+    a2.album_id = a.album_id
+    a2.cid = a.cid
+    a2.vid = a.vid
+    a2.uuid = a.uuid
+    # done
+    return a2
+
+def load_ck_info(a, conf, flag_debug=False):
+    # get token url
+    raw_data = a.getRequest()
+    post_str = exports.vr.make_post_string(raw_data[1])
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
+    
+    # NOTE use http POST
+    post_recv = base.http_post(raw_data[0], post_data=post_str, fix_header=conf['header'], flag_debug=flag_debug)
+    
+    # clean json text
+    text = post_recv.split('{', 1)
+    text = '{' + text[1]
+    text = text.rsplit('}', 1)
+    text = text[0] + '}'
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got json text [' + text + ']')
+    
+    # parse as json
+    info = json.loads(text)
+    
+    # done
+    return info
 
 # end get_base_info.py
 

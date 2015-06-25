@@ -20,8 +20,6 @@ def set_import(base0, flash0):
     flash = flash0
 
 # global vars
-BEFORE_FINAL_URL = 'http://data.video.qiyi.com/'
-
 GET_SERVER_TIME_RETRY = 5
 GET_SERVER_TIME_DEBUG = True
 
@@ -67,7 +65,7 @@ def get_time_now0():
     time_now = flash.getTimer()
     return time_now
 
-def get_one_final_url(raw_link, more):
+def get_one_final_url(raw_link, more, flag_use_raw_du=False):
     # get data from more
     bid = more['bid']
     uid = more['uid']
@@ -88,10 +86,45 @@ def get_one_final_url(raw_link, more):
     this_link += '&qypid=' + tvid + '_11'
     # TODO reserved
     this_link += '&retry=1'
+    
+    # process du
+    raw_du = more['du']
+    du = raw_du.rsplit('/', 1)
     # make final url
-    final_url = BEFORE_FINAL_URL + this_key + '/videos' + this_link
+    if flag_use_raw_du:
+        final_url = raw_du + this_link
+    else:
+        final_url = du[0] + '/' + this_key + '/' + du[1] + this_link
     # done
     return final_url
+
+# 271v get_one_final_url
+def p271v_get_one_final_url(raw_link, more, key_info):
+    
+    bid = more['bid']
+    # make url
+    if bid in [4, 5, 10]:
+        raw_link = key.getVrsEncodeCode(raw_link)
+    this_link = more['du'] + raw_link
+    # replace
+    this_link.replace('.flv', '.hml', 1)
+    
+    # TODO may be not stable
+    
+    # add options
+    _a = ''	# append string
+    _a += '?t=' + key_info['t']
+    _a += '&cid=' + key_info['cid']
+    _a += '&vid=' + key_info['vid']
+    _a += '&QY00001=' + key_info['QY00001']
+    _a += '&qyid=' + more['uid']
+    _a += '&qypid=' + more['tvid'] + '_11'
+    _a += '&ran=' + str(more['time_now'])
+    
+    this_link += _a
+    
+    # done
+    return this_link
 
 # end get_video_url1.py
 

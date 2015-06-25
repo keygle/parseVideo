@@ -4,4 +4,6 @@
 
 /__init__.py
 
+private.*
+
 # end .gitignore
