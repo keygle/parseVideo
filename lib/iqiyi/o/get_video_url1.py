@@ -100,6 +100,8 @@ def get_one_final_url(raw_link, more, flag_use_raw_du=False):
 
 # 271v get_one_final_url
 def p271v_get_one_final_url(raw_link, more, key_info):
+    
+    bid = more['bid']
     # make url
     if bid in [4, 5, 10]:
         raw_link = key.getVrsEncodeCode(raw_link)
@@ -117,7 +119,7 @@ def p271v_get_one_final_url(raw_link, more, key_info):
     _a += '&QY00001=' + key_info['QY00001']
     _a += '&qyid=' + more['uid']
     _a += '&qypid=' + more['tvid'] + '_11'
-    _a += '&ran=' + more['time_now']
+    _a += '&ran=' + str(more['time_now'])
     
     this_link += _a
     

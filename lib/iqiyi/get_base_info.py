@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.6.0 test201506251615
+# version 0.1.6.1 test201506251629
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -71,9 +71,10 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     mixer.tm = tm
     
     a = None	# AuthRemote obj
+    auth_conf = None
     # check flag_v
     if flag_v:
-        a, uuid = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
+        a, uuid, auth_conf = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
         # NOTE save uuid here
         global user_uuid
         user_uuid = uuid
@@ -97,16 +98,17 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     more = get_more_info(info, vid_info)
     # add a
     more['a'] = a
+    more['auth_conf'] = auth_conf
     # done
     return info, more
 
 # 271v, set remote mixer
 def set_remote_mixer(mixer, vid_info, flag_debug=False):
     # create a
-    a, conf = create_a()
+    a, conf = create_a(vid_info)
     
     # load ck info
-    info = load_ck_info(a)
+    info = load_ck_info(a, conf, flag_debug)
     
     # get token
     t = info['data']['t']
@@ -122,9 +124,9 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
     exports.p271vc.set_remote_mixer(mixer, conf)
     
     # done
-    return a, uuid
+    return a, uuid, conf
 
-def create_a():
+def create_a(vid_info):
     # load config
     conf = exports.p271vc.load_conf()
     # set auth_remote
@@ -145,7 +147,7 @@ def create_a2(a):
     # done
     return a2
 
-def load_ck_info(a):
+def load_ck_info(a, conf, flag_debug=False):
     # get token url
     raw_data = a.getRequest()
     post_str = exports.vr.make_post_string(raw_data[1])

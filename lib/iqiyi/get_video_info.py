@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.8.0 test201506251615
+# version 0.1.8.1 test201506251630
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -97,6 +97,9 @@ def get_one_file_info(onef, more):
     # get file url
     raw_link = onef['l']
     
+    # get flag_debug
+    flag_debug = more['flag_debug']
+    
     # check flag_v
     if more['flag_v']:
         # load keys
@@ -106,7 +109,7 @@ def get_one_file_info(onef, more):
         # set segment index
         a.segment_index = onef['i']
         # load info
-        ck_info = get_base_info.load_ck_info(a)
+        ck_info = get_base_info.load_ck_info(a, more['auth_conf'], flag_debug)
         # get info
         t_key = ck_info['data']['t']
         qy00001 = ck_info['data']['u']
@@ -120,7 +123,7 @@ def get_one_file_info(onef, more):
         key_info['QY00001'] = qy00001
         
         # get final url
-        final_url = get_video_url.p271v_get_one_final_url(raw_link, more_key_info)
+        final_url = get_video_url.p271v_get_one_final_url(raw_link, more, key_info)
         # done
         info['url'] = final_url
     else:	# not flag_v
@@ -168,8 +171,11 @@ def get_one_info(one_raw):
         more['videoid'] = raw['videoid']
         # get server_time and now
         more['server_time'] = get_video_url.get_server_time()
+        # add flag_debug
+        more['flag_debug'] = flag_debug
         # get each file info
         flist = raw['fs']
+        # add onef_i
         onef_i = 0
         for onef in flist:
             # for each url, get once time_now
@@ -178,6 +184,7 @@ def get_one_info(one_raw):
             more['du'] = raw['du']
             more['flag_v'] = raw['flag_v']
             more['a'] = raw['a']
+            more['auth_conf'] = raw['auth_conf']
             # add onef_i
             onef['i'] = onef_i
             onef_i += 1
@@ -250,10 +257,12 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag
         # add flag_v here
         one['flag_v'] = False
         one['a'] = None
+        one['auth_conf'] = None
         if flag_v:
             # one['flag_get_file'] = False	# TODO reserved now
             one['flag_v'] = True
             one['a'] = more['a']
+            one['auth_conf'] = more['auth_conf']
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # debug info
