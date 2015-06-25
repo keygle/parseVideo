@@ -44,7 +44,7 @@ get_video_url = exports.get_video_url1
 # global vars
 
 POOL_SIZE_GET_VINFO = 4
-POOL_SIZE_GET_REAL_URL = 20
+POOL_SIZE_GET_REAL_URL = 40
 
 GET_REAL_URL_RETRY = 5
 
