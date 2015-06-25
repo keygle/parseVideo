@@ -98,6 +98,32 @@ def get_one_final_url(raw_link, more, flag_use_raw_du=False):
     # done
     return final_url
 
+# 271v get_one_final_url
+def p271v_get_one_final_url(raw_link, more, key_info):
+    # make url
+    if bid in [4, 5, 10]:
+        raw_link = key.getVrsEncodeCode(raw_link)
+    this_link = more['du'] + raw_link
+    # replace
+    this_link.replace('.flv', '.hml', 1)
+    
+    # TODO may be not stable
+    
+    # add options
+    _a = ''	# append string
+    _a += '?t=' + key_info['t']
+    _a += '&cid=' + key_info['cid']
+    _a += '&vid=' + key_info['vid']
+    _a += '&QY00001=' + key_info['QY00001']
+    _a += '&qyid=' + more['uid']
+    _a += '&qypid=' + more['tvid'] + '_11'
+    _a += '&ran=' + more['time_now']
+    
+    this_link += _a
+    
+    # done
+    return this_link
+
 # end get_video_url1.py
 
 

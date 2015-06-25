@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.4.0 test201506242242
+# version 0.1.6.0 test201506251615
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -70,9 +70,13 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     tm = exports.getTimer()
     mixer.tm = tm
     
+    a = None	# AuthRemote obj
     # check flag_v
     if flag_v:
-        set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
+        a, uuid = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
+        # NOTE save uuid here
+        global user_uuid
+        user_uuid = uuid
         # DEBUG info
         print('lib.iqiyi: DEBUG: flag_v, set mixer done')
     
@@ -91,11 +95,36 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
         print('lib.iqiyi: DEBUG: got first url data done. ')
     # get more info
     more = get_more_info(info, vid_info)
+    # add a
+    more['a'] = a
     # done
     return info, more
 
 # 271v, set remote mixer
 def set_remote_mixer(mixer, vid_info, flag_debug=False):
+    # create a
+    a, conf = create_a()
+    
+    # load ck info
+    info = load_ck_info(a)
+    
+    # get token
+    t = info['data']['t']
+    uuid = conf['qyid']
+    
+    # DEBUG info
+    if flag_debug:
+        print('lib.iqiyi: DEBUG: got token \"' + t + '\"')
+    
+    # update conf
+    conf['token'] = t
+    # set remote_mixer
+    exports.p271vc.set_remote_mixer(mixer, conf)
+    
+    # done
+    return a, uuid
+
+def create_a():
     # load config
     conf = exports.p271vc.load_conf()
     # set auth_remote
@@ -104,6 +133,19 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
     a.cid = conf['cid']
     a.vid = vid_info['videoid']
     a.uuid = conf['qyid']
+    # done
+    return a, conf
+
+def create_a2(a):
+    a2 = exports.vr.AuthRemote()
+    a2.album_id = a.album_id
+    a2.cid = a.cid
+    a2.vid = a.vid
+    a2.uuid = a.uuid
+    # done
+    return a2
+
+def load_ck_info(a):
     # get token url
     raw_data = a.getRequest()
     post_str = exports.vr.make_post_string(raw_data[1])
@@ -128,19 +170,8 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
     # parse as json
     info = json.loads(text)
     
-    # get token
-    t = info['data']['t']
-    
-    # DEBUG info
-    if flag_debug:
-        print('lib.iqiyi: DEBUG: got token \"' + t + '\"')
-    
-    # update conf
-    conf['token'] = t
-    # set remote_mixer
-    exports.p271vc.set_remote_mixer(mixer, conf)
-    
     # done
+    return info
 
 # end get_base_info.py
 

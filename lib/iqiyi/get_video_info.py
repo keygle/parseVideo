@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.7.1 test201506242348
+# version 0.1.8.0 test201506251615
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -96,7 +96,36 @@ def get_one_file_info(onef, more):
     info['time_s'] = onef['d'] / 1e3
     # get file url
     raw_link = onef['l']
-    info['url'] = get_video_url.get_one_final_url(raw_link, more)
+    
+    # check flag_v
+    if more['flag_v']:
+        # load keys
+        
+        # create a
+        a = get_base_info.create_a2(more['a'])
+        # set segment index
+        a.segment_index = onef['i']
+        # load info
+        ck_info = get_base_info.load_ck_info(a)
+        # get info
+        t_key = ck_info['data']['t']
+        qy00001 = ck_info['data']['u']
+        cid = ck_info['data']['cid']
+        
+        # make key_info
+        key_info = {}
+        key_info['t'] = t_key
+        key_info['cid'] = cid
+        key_info['vid'] = more['videoid']
+        key_info['QY00001'] = qy00001
+        
+        # get final url
+        final_url = get_video_url.p271v_get_one_final_url(raw_link, more_key_info)
+        # done
+        info['url'] = final_url
+    else:	# not flag_v
+        info['url'] = get_video_url.get_one_final_url(raw_link, more)
+    
     # done
     return info
 
@@ -136,15 +165,22 @@ def get_one_info(one_raw):
         more['bid'] = raw['bid']
         more['uid'] = raw['uid']
         more['tvid'] = raw['tvid']
+        more['videoid'] = raw['videoid']
         # get server_time and now
         more['server_time'] = get_video_url.get_server_time()
         # get each file info
         flist = raw['fs']
+        onef_i = 0
         for onef in flist:
             # for each url, get once time_now
             more['time_now'] = get_video_url.get_time_now()
             # NOTE add du
             more['du'] = raw['du']
+            more['flag_v'] = raw['flag_v']
+            more['a'] = raw['a']
+            # add onef_i
+            onef['i'] = onef_i
+            onef_i += 1
             # get one url info
             onef_info = get_one_file_info(onef, more)
             vinfo['file'].append(onef_info)
@@ -197,6 +233,7 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag
         # get uid
         one['uid'] = get_base_info.user_uuid
         one['tvid'] = more['tvid']
+        one['videoid'] = more['videoid']
         # get video hd number by bid
         one['hd'] = BID_TO_HD[str(bid)]
         # add list_i and flag_debug
@@ -210,9 +247,13 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, more=None, url='', flag
         one['flag_get_file'] = False
         if (one['hd'] >= hd_min) and (one['hd'] <= hd_max):
             one['flag_get_file'] = True
-        # FIXME TODO here
+        # add flag_v here
+        one['flag_v'] = False
+        one['a'] = None
         if flag_v:
-            one['flag_get_file'] = False
+            # one['flag_get_file'] = False	# TODO reserved now
+            one['flag_v'] = True
+            one['a'] = more['a']
     # sort video by hd
     video_list.sort(key=lambda item:item['hd'], reverse=False)
     # debug info
