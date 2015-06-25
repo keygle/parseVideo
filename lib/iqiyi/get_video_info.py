@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.9.0 test201506252001
+# version 0.1.10.0 test201506252321
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -347,7 +347,7 @@ def get_one_real_url(raw_info):
             real = get_one_real_url0(raw_url)
             # debug info
             if flag_debug:
-                print('lib.iqiyi: DEBUG: got real_url [' + str(list_i) + '] done')
+                print('lib.iqiyi: DEBUG: got real_url [' + str(list_i) + '] done, url = \"' + real + '\"')
             return real
         except Exception as err:
             if retry >= GET_REAL_URL_RETRY:
