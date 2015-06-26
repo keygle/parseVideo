@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.1.4.0 test201506231957
+# version 0.1.5.0 test201506270109
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -351,6 +351,61 @@ class SelectHost(object):
         return out
     
     # end SelectHost class
+
+# button host, for main text button list
+class ButtonHost(object):
+     
+     def __init__(self):
+         self.parent = None
+         self.button_style = 'TButton'
+         
+         self.callback = None
+     
+     def _send(data, event):
+         if self.callback != None:
+             self.callback(data, event)
+     
+     def _on_sub(data, event=None):
+         self._send(data, event)
+     
+     def create_one(self, text='', data=None):
+         # create one button
+         b = OneButton()
+         # set b
+         b.parent = self.parent
+         b.button_style = self.button_style
+         b.data = data
+         b.callback = self._on_sub
+         
+         # do create sub
+         b.create(text=text)
+         
+         # done
+         return b.b
+     
+     # end ButtonHost class
+
+# one button, for button host
+class OneButton(object):
+    
+    def __init__(self):
+        self.parent = None
+        
+        self.button_style = ''
+        self.b = None	# Button
+        
+        self.data = None
+        
+        self.callback = None
+    
+    def _on_click(self, event=None):
+        self.callback(self.data, event)
+    
+    def create(text=''):
+        b = Button(self.parent, text=text, command=self._on_click, style=self.button_style)
+        self.b = b
+    
+    # end OneButton class
 
 # end gui2.py
 
