@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.3.0 test201506261335
+# version 0.1.4.0 test201506261536
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -131,7 +131,13 @@ def lieying_plugin_parse_some_url(url_to, format_text, i_min=None, i_max=None):
     # get hd
     hd = tinfo.get_hd_from_format_text(format_text)
     # run parsev to get info
-    stdout, stderr = run_sub.run_one_pv(url_to, hd=hd, i_min=i_min, i_max=i_max)
+    stdout, stderr = run_sub.run_one_pv(
+    				url_to, 
+    				hd=hd, 
+    				i_min=i_min, 
+    				i_max=i_max, 
+    				flag_min_parse=True)
+    
     # decode output
     stdout, stderr = try_to_decode(stdout, stderr)
     # use json to parse stdout
