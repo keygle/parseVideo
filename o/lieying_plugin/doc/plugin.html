@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>插件定义</title>
+</head>
+<body>
+
+	<p>
+		猎影插件为猎影的一种功能扩展方式，使用 python 语言编写，采用Zip压缩格式压缩为一个压缩包，在根文件夹中 run.py 为插件的启动文件，在该文件中需要定义以下函数，猎影将带有 Python 3.4 的运行环境。</p>
+	<p>
+		def GetName() /* 返回插件的名称，将显示在猎影的插件管理 */</p>
+	<p>
+		def GetType() /* 返回插件的类型，现在支持的有 parse(解析插件) */</p>
+	<p>
+		对于解析插件，还需要定义以下函数</p>
+	<p>
+		def GetFilter() /* 对于解析插件可返回支持解析内容的正则表达式，</p>
+	<p>
+		def ParseFormat( url )
+	</p>
+	<p>
+		本函数主要于解析 url 指定页面包含可供下载内容的分类信息，结果采用 Json 格式方式，以字符串方式返回，具体定义如下</p>
+	<p>
+		{</p>
+	<p style="margin-left: 40px">
+		Name : 名称</p>
+	<p style="margin-left: 40px">
+		Formats [</p>
+	<p style="margin-left: 80px">
+		{</p>
+	<p style="margin-left: 120px">
+		Label: // 分类的名称，字符串格式</p>
+	<p style="margin-left: 120px">
+		Size： // 视频的具体大小，字符串格式</p>
+	<p style="margin-left: 120px">
+		Ext:&nbsp; // 下载后文件的扩展名</p>
+	<p style="margin-left: 80px">
+		}</p>
+	<p style="margin-left: 40px">
+		]</p>
+	<p>
+		}</p>
+	<p>
+		def ParseUrl( url, format ) //&nbsp; format 为 ParseFormat 返回的 Formats 中的 Label 串，返回内容定义如下（注意：这里需要严格标准的Json，即每项的名字需要使用 &quot; 来括起来，并且后面的内容也只支持使用 &quot; 来括起来)</p>
+	<p style="margin-left: 40px">
+		[</p>
+	<p style="margin-left: 80px">
+		{</p>
+	<p style="margin-left: 120px">
+		&quot;Protocol&quot;： // 现在只支持 Http，默认为 Http</p>
+	<p style="margin-left: 120px">
+		&quot;Args&quot;：// 下载时使用的一些信息，因协议不同而不同，对于 Http协议，为下载时使用的Http请求头</p>
+	<p style="margin-left: 120px">
+		&quot;Value&quot;：// 具体的网址</p>
+	<p style="margin-left: 80px">
+		}，</p>
+	<p style="margin-left: 80px">
+		......</p>
+	<p style="margin-left: 40px">
+		]</p>
+
+</body>
+</html>
