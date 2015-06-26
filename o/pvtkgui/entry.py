@@ -606,8 +606,6 @@ def add_output_easy_text(tlist):
             w.add_main_text(text=item[1], tag=item[0])
     # add output easy_text to main text style done
 
-# TODO
-
 # end entry.py
 
 
