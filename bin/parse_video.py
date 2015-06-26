@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.32.0 test201506252343
+# version 0.1.33.0 test201506261505
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -31,6 +31,8 @@
 # NOTE support --debug
 # NOTE support --fix-unicode output option. 
 # NOTE support --fix-size option
+# NOTE support --set-flag-v
+# NOTE support --set-min-parse
 
 # import
 
@@ -65,6 +67,7 @@ etc['hd_max'] = None
 etc['i_min'] = None
 etc['i_max'] = None
 etc['flag_v'] = False
+etc['flag_min_parse'] = False
 
 # default mode, analyse url
 etc['global_mode'] = 'mode_url'
@@ -156,6 +159,7 @@ def start_parse():
     entry.etc['flag_debug'] = etc['flag_debug']
     entry.etc['flag_fix_size'] = etc['flag_fix_size']
     entry.etc['flag_v'] = etc['flag_v']
+    entry.etc['flag_min_parse'] = etc['flag_min_parse']
     
     url_to = etc['url_to']
     try:
@@ -233,6 +237,8 @@ def get_args():
             etc['i_max'] = int(next)
         elif one == '--set-flag-v':
             etc['flag_v'] = True
+        elif one == '--set-min-parse':
+            etc['flag_min_parse'] = True
         else:	# should be url_to
             etc['url_to'] = one
     # done
