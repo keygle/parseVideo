@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.1.1 test201506211246
+# version 0.1.3.0 test201506261335
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,7 @@ from . import tinfo
 from . import version as version0
 
 # global vars
-PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_3lieying_plugin', ' version ']
+PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_4lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
@@ -118,6 +118,11 @@ def lieying_plugin_parse_format(url_to):
     return out_text
 
 def lieying_plugin_parse_url(url_to, format_text):
+    # just use parse_some_url
+    return lieying_plugin_parse_some_url(url_to, format_text)
+
+# parse_some_url(url_to, format_text, i_min, i_max)
+def lieying_plugin_parse_some_url(url_to, format_text, i_min=None, i_max=None):
     # check if url supported
     if check_support_url(url_to):
         # not support
@@ -126,7 +131,7 @@ def lieying_plugin_parse_url(url_to, format_text):
     # get hd
     hd = tinfo.get_hd_from_format_text(format_text)
     # run parsev to get info
-    stdout, stderr = run_sub.run_one_pv(url_to, hd=hd)
+    stdout, stderr = run_sub.run_one_pv(url_to, hd=hd, i_min=i_min, i_max=i_max)
     # decode output
     stdout, stderr = try_to_decode(stdout, stderr)
     # use json to parse stdout

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run, part for parse_video : a fork from parseVideo. 
 # run: lieying-plugin entry file. 
-# version 0.0.2.0 test201506081632
+# version 0.0.3.0 test201506261331
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -42,6 +42,9 @@ GetType = entry0.lieying_plugin_get_type	# get_type()
 GetFilter = entry0.lieying_plugin_get_filter	# get_filter()
 ParseFormat = entry0.lieying_plugin_parse_format	# parse_format(url)
 ParseUrl = entry0.lieying_plugin_parse_url	# parse_url(url, format_text)
+
+# parse_some_url(url, format_text, i_min, i_max)
+ParseSomeUrl = entry0.lieying_plugin_parse_some_url
 
 # end run.py
 

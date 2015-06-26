@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.1.0.0 test201506191529
+# version 0.1.1.0 test201506261340
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -163,6 +163,12 @@ def t2one(evinfo, hd):
     out = ulist
     # add each url
     for f in v['file']:
+        # check f['url']
+        if (not 'url' in f) or (f['url'] == None) or (f['url'] == ''):
+            ulist.append(None)
+            continue	# done, not add more info
+        
+        # add this file info
         one = {}
         one['Protocol'] = LIEYING_PLUGIN_PROTOCOL
         one['Args'] = LIEYING_PLUGIN_ARGS
