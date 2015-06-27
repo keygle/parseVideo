@@ -1,6 +1,6 @@
 # gui2.py, part for parse_video : a fork from parseVideo. 
 # gui2: o/pvtkgui/gui: parse_video Tk GUI, main window sub part. 
-# version 0.1.5.0 test201506270109
+# version 0.1.5.1 test201506271402
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -361,11 +361,11 @@ class ButtonHost(object):
          
          self.callback = None
      
-     def _send(data, event):
+     def _send(self, data, event):
          if self.callback != None:
              self.callback(data, event)
      
-     def _on_sub(data, event=None):
+     def _on_sub(self, data, event=None):
          self._send(data, event)
      
      def create_one(self, text='', data=None):
@@ -401,7 +401,7 @@ class OneButton(object):
     def _on_click(self, event=None):
         self.callback(self.data, event)
     
-    def create(text=''):
+    def create(self, text=''):
         b = Button(self.parent, text=text, command=self._on_click, style=self.button_style)
         self.b = b
     

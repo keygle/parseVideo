@@ -1,6 +1,6 @@
 # make_easy_text.py, part for parse_video : a fork from parseVideo. 
 # make_easy_text: o/pvtkgui/vlist: make easy_text for pvtkgui support video list. 
-# version 0.0.1.0 test201506270123
+# version 0.0.2.0 test201506271406
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -52,10 +52,10 @@ def output_style(info):
         l += [['video_list_item_button', '']]
         
         # add n
-        l += [['big_red', one['n']], [None, '	']]
+        l += [['big_red', one['n']], ['bold', '					']]
         
         # add title
-        l += [['bold', one['title']], [None, '		']]
+        l += [['bold', one['title']], ['bold', '				']]
         
         # add url
         l += [['a', one['url']]]

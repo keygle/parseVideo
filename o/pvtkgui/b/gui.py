@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.11.0 test201506270110
+# version 0.2.11.1 test201506271402
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -369,7 +369,6 @@ class MainWin(tk_base.TkBaseObj):
         self.p_b_host = p_b_host
         # set it
         p_b_host.parent = s_h.parent
-        p_b_host.callback = self._on_button_host
         
         # create UI done
     
@@ -379,11 +378,13 @@ class MainWin(tk_base.TkBaseObj):
         body = self.p_body
         footer = self.p_footer
         m = self.p_m
+        p_b_host = self.p_b_host
         # add callback for sub part
         top.callback = self._on_part_top
         body.callback = self._on_part_body
         footer.callback = self._on_part_footer
         m.callback = self._on_part_menu
+        p_b_host.callback = self._on_button_host
         
         # add callback for hide menu
         root.bind('<Button-1>', self._on_hide_menu)
