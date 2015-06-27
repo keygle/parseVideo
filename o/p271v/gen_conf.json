@@ -1,31 +1,22 @@
 {
 	"__note__" : "get_conf.json, config file for get_private for 271v for parse_video, sceext 2015.06", 
-	"__note__" : "last update 2015-06-27 20:56 GMT+0800 CST", 
+	"__note__" : "last update 2015-06-28 00:05 GMT+0800 CST", 
 	
 	"private_file" : "./private.271v_conf.json", 
 	
 	"cookie_list" : [
-		"P00001", 
-		"QC134"
+		"P00001"
 	], 
 	
 	"cookie_fix_re" : [ ], 
 	
 	"default_conf" : {
 		"cid" : "afbe8fd3d73448c9", 
-		
-		"uid" : "", 
 		"qyid" : "", 
 		
+		"uid" : "", 
 		"header" : {
-			"Accept" : "*/*", 
-			"Accept-Language" : "zh-CN", 
-			"Referer" : "http://www.iqiyi.com/common/flashplayer/20150618/MainPlayer_5_2_24_1_c3_3_2.swf", 
-			"x-flash-version" : "17,0,0,188", 
 			"Content-Type" : "application/x-www-form-urlencoded", 
-			"User-Agent" : "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko", 
-			"DNT" : "1", 
-			"Cache-Control" : "no-cache", 
 			"Cookie" : ""
 		}
 	}, 
