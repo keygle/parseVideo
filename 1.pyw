@@ -12,13 +12,14 @@ from o.pvtkgui import entry
 # global vars
 etc = {}
 etc['flag_debug'] = False
+etc['url'] = ''
 
 # functions
 def get_args():
     arg = sys.argv[:]
     rest = arg
     # DEBUG info
-    print('DEBUG: 1.pyw: got args ' + json.dumps(rest))
+    print('pvtkgui: DEBUG: 1.pyw: got args ' + json.dumps(rest))
     # check each arg
     while len(rest) > 0:
     	one = rest[0]
@@ -26,8 +27,13 @@ def get_args():
     	# check one
     	if one == '--debug':
     	    etc['flag_debug'] = True
-    	else:
-    	    pass
+    	elif one == '--url':
+    	    next = rest[0]
+    	    rest = rest[1:]
+    	    etc['url'] = next
+    	else:	# unknow arg
+    	    # debug info
+    	    print('pvtkgui: DEBUG: 1.pyw: unknow arg \"' + one + '\"')
     # get args done
 
 # main function
@@ -39,10 +45,13 @@ def main():
     # check flag_debug
     if etc['flag_debug']:
         # DEBUG info
-        print('DEBUG: 1.pyw: got --debug flag')
+        print('pvtkgui: DEBUG: 1.pyw: got --debug flag')
+    
+    # set entry
+    entry.etc['url_to'] = etc['url']
+    
     # just start entry
     entry.init()
-    # TODO FIXME debug here
     return 0
 
 # start from main

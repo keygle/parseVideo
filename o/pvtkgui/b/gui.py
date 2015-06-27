@@ -1,6 +1,6 @@
 # gui.py, part for parse_video : a fork from parseVideo. 
 # gui: o/pvtkgui/gui: parse_video Tk GUI, main window gui. 
-# version 0.2.10.0 test201506232012
+# version 0.2.11.1 test201506271402
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -61,6 +61,7 @@ class MainWin(tk_base.TkBaseObj):
         self.tk_f = []	# TK frames, used as part parent
         
         self.p_m = None	# MenuHost part
+        self.p_b_host = None	# ButtonHost part
         
         self.s_h = None	# SelectHost
         
@@ -124,6 +125,14 @@ class MainWin(tk_base.TkBaseObj):
     
     def sh_get_list(self):
         return self.s_h.get_list()
+    
+    # ButtonHost operation
+    def bh_add_item(self, text='', data=None):
+        # create one button
+        b = self.p_b_host.create_one(text=text, data=data)
+        # add it to main text
+        self.p_body.add_obj(b)
+        # done
     
     # part footer, xunlei dl path
     def get_xunlei_path_text(self):
@@ -206,6 +215,8 @@ class MainWin(tk_base.TkBaseObj):
     #
     #	xunlei_dl_select_url
     #	copy_select_url
+    #
+    #	button_host
     
     def _send(self, event, data):
         # DEBUG info
@@ -276,6 +287,9 @@ class MainWin(tk_base.TkBaseObj):
     
     def _on_key_start_parse(self, event=None):
         self._send('start_stop', event)
+    
+    def _on_button_host(self, data=None, event=None):
+        self._send('button_host', data)
     
     # start main loop
     def mainloop(self):
@@ -350,6 +364,12 @@ class MainWin(tk_base.TkBaseObj):
         s_h.reset()
         # create SelectHost done
         
+        # create ButtonHost
+        p_b_host = gui2.ButtonHost()
+        self.p_b_host = p_b_host
+        # set it
+        p_b_host.parent = s_h.parent
+        
         # create UI done
     
     def _set_el(self):
@@ -358,11 +378,13 @@ class MainWin(tk_base.TkBaseObj):
         body = self.p_body
         footer = self.p_footer
         m = self.p_m
+        p_b_host = self.p_b_host
         # add callback for sub part
         top.callback = self._on_part_top
         body.callback = self._on_part_body
         footer.callback = self._on_part_footer
         m.callback = self._on_part_menu
+        p_b_host.callback = self._on_button_host
         
         # add callback for hide menu
         root.bind('<Button-1>', self._on_hide_menu)

@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.1.5.0 test201506201153
+# version 0.1.7.0 test201506271343
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -31,6 +31,8 @@ import threading
 import json
 
 from .. import support_evparse
+
+from ..vlist import entry as vlist
 
 # global vars
 
@@ -93,12 +95,25 @@ def run_pv(url, hd, flag_debug=False):
     # done
     return stdout, stderr
 
-def sub_thread(callback, url, hd, write_config=None, flag_debug=False):
+def sub_thread(callback, url, hd, write_config=None, flag_debug=False, w=None):
     # DEBUG info
     print('pvtkgui: run_sub: run parse_video sub_thread start')
     # write config file first
     if write_config != None:
         write_config()
+    
+    # check vlist
+    if vlist.check_is_list_url(url):
+        # parse as vlist
+        info = vlist.parse_video_list(url)
+        # update main window
+        vlist.update_main_win(info, w)
+        
+        # with flag_only
+        callback(None, None, flag_only=True)
+        # done
+        return
+    
     # start parsev
     stdout, stderr = run_pv(url, hd, flag_debug=flag_debug)
     # DEBUG info
@@ -106,9 +121,9 @@ def sub_thread(callback, url, hd, write_config=None, flag_debug=False):
     callback(stdout, stderr)
 
 # run parse_video in sub thread
-def run_pv_thread(callback, url, hd, write_config=None, flag_debug=False):
+def run_pv_thread(callback, url, hd, write_config=None, flag_debug=False, w=None):
     # just start it
-    start_thread(sub_thread, arg=(callback, url, hd, write_config, flag_debug))
+    start_thread(sub_thread, arg=(callback, url, hd, write_config, flag_debug, w))
 
 # start thread
 def start_thread(target, arg=(), daemon=True):

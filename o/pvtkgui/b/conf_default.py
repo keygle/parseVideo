@@ -1,6 +1,6 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.1.5.0 test201506232107
+# version 0.1.7.0 test201506271514
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -60,6 +60,7 @@ AUTO_RETRY_TEXT2 = ['最高', '下一种', '最低']
 ui_text = {
     'change_dl_path_title' : '请选择 迅雷 下载目录', 
     'user_stop_parse' : '\n 提示: 已终止 解析. \n', 
+    'vlist_button_text' : '解析', 
 }
 
 ui_text_dl = {
@@ -120,7 +121,7 @@ main_win_init_text0_1 = [
 main_win_init_text1 = [
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.2.0 test201506232106'], 
+    ['gray', '          version 0.2.3.0 test201506271514'], 
 ]
 
 main_win_init_text2 = [

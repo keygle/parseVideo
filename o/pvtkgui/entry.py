@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.12.0 test201506232102
+# version 0.2.15.0 test201506271511
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -40,6 +40,8 @@ from . import dl_host
 
 from .is0 import get_size1 as get_size
 
+from .vlist import entry as vlist
+
 # global vars
 
 # parse_video Tk GUI, pvtkgui config file path
@@ -53,6 +55,9 @@ etc['w'] = None	# main window obj
 
 etc['analyse_thread'] = None	# analyse sub thread obj
 etc['flag_doing'] = False	# global doing flag
+
+etc['flag_ignore_clip'] = False	# ignore clip board watch changed, only ignore once
+etc['url_to'] = ''	# url to parse
 
 # base funciton
 
@@ -75,6 +80,9 @@ def init():
     
     # set main win init text
     set_main_win_init_text()
+    
+    # check url_to
+    init_check_url_to()
     
     # init done, start main loop
     start_mainloop()
@@ -227,6 +235,10 @@ def on_main_win(event, data):
     elif event == 'xunlei_dl_select_url':
         xunlei_dl(flag_select_each=True)
     
+    # video list call_sub button
+    elif event == 'button_host':
+        vlist.on_sub_button(data=data)
+    
     # process known event done
     
     else:
@@ -279,15 +291,23 @@ def start_parse():
     etc['last_hd'] = hd
     
     # just start sub process
-    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug)
+    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug, w=etc['w'])
 
 # on parsev subprocess finished
-def on_parsev_done(stdout, stderr):
+def on_parsev_done(stdout, stderr, flag_only=False):
     # set flag
     etc['flag_doing'] = False
     # DEBUG info
     print('pvtkgui: entry: parsev done')
     w = etc['w']
+    
+    # check flag_only
+    if flag_only:
+        # just set main window style
+        w.disable_main_text()
+        w.set_button_status('start')
+        # done
+        return
     
     # decode stdout as utf-8, and parse as json
     try:
@@ -476,7 +496,11 @@ def watch_clip(w, info):
             break
     # if match, set it
     if flag_match:
-        w.set_url_text(t)
+        # check ignore flag
+        if etc['flag_ignore_clip']:
+            etc['flag_ignore_clip'] = False	# only ignore once
+        else:
+            w.set_url_text(t)
     # watch clip done
 
 # watch url
@@ -606,7 +630,19 @@ def add_output_easy_text(tlist):
             w.add_main_text(text=item[1], tag=item[0])
     # add output easy_text to main text style done
 
-# TODO
+# init check url to, for vlist call_sub function
+def init_check_url_to():
+    
+    url_to = etc['url_to']
+    if url_to != '':
+        etc['flag_ignore_clip'] = True	# ignore once
+        # set url entry
+        w = etc['w']
+        w.set_url_text(url_to)
+        
+        # just start parse
+        start_parse()
+    # done
 
 # end entry.py
 
