@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.12.0 test201506232102
+# version 0.2.13.0 test201506271326
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -279,15 +279,23 @@ def start_parse():
     etc['last_hd'] = hd
     
     # just start sub process
-    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug)
+    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug, w=etc['w'])
 
 # on parsev subprocess finished
-def on_parsev_done(stdout, stderr):
+def on_parsev_done(stdout, stderr, flag_only=False):
     # set flag
     etc['flag_doing'] = False
     # DEBUG info
     print('pvtkgui: entry: parsev done')
     w = etc['w']
+    
+    # check flag_only
+    if flag_only:
+        # just set main window style
+        w.disable_main_text()
+        w.set_button_status('start')
+        # done
+        return
     
     # decode stdout as utf-8, and parse as json
     try:
