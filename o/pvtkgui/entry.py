@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.13.0 test201506271326
+# version 0.2.14.0 test201506271443
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -39,6 +39,8 @@ from ..output import easy_text
 from . import dl_host
 
 from .is0 import get_size1 as get_size
+
+from .vlist import entry as vlist
 
 # global vars
 
@@ -226,6 +228,10 @@ def on_main_win(event, data):
         copy_all_url(flag_select_each=True)
     elif event == 'xunlei_dl_select_url':
         xunlei_dl(flag_select_each=True)
+    
+    # video list call_sub button
+    elif event == 'button_host':
+        vlist.on_sub_button(data=data)
     
     # process known event done
     

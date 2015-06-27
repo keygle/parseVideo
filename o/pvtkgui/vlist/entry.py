@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/vlist: support video list for pvtkgui. 
-# version 0.0.1.0 test201506271353
+# version 0.0.2.0 test201506271450
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -48,6 +48,9 @@ SUPPORTED_LIST_URL_RE = [
 URL_TO_SITE_LIST = {
     '^http://www.iqiyi.com/a_.+\.html' : list271, 
 }
+
+etc = {}
+etc['vlist_info'] = None
 
 # base functions
 
@@ -105,6 +108,9 @@ def parse_video_list(url):
     # parse html and get info
     info = list_entry.get_list_info(html_text)
     
+    # NOTE save info
+    etc['vlist_info'] = info
+    
     # done
     return info
 
@@ -144,7 +150,21 @@ def update_main_win(info, w):
 
 # on main text button clicked
 def on_sub_button(data=None):
-    pass
+    # get info
+    info = etc['vlist_info']
+    # check it
+    if info == None:
+        # DEBUG info
+        print('pvtkgui: DEBUG: vlist.entry: vlint_info None')
+        return
+    # get url
+    url_to = info[data]['url']
+    # DEBUG info
+    print('pvtkgui: DEBUG: vlist.entry: call sub with \"' + url_to + '\"')
+    
+    # just call it
+    call_sub.call(url_to)
+    # done
 
 # end entry.py
 
