@@ -1,6 +1,6 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.14.0 test201506271443
+# version 0.2.15.0 test201506271511
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -56,6 +56,9 @@ etc['w'] = None	# main window obj
 etc['analyse_thread'] = None	# analyse sub thread obj
 etc['flag_doing'] = False	# global doing flag
 
+etc['flag_ignore_clip'] = False	# ignore clip board watch changed, only ignore once
+etc['url_to'] = ''	# url to parse
+
 # base funciton
 
 def add_main_text_style(tlist):
@@ -77,6 +80,9 @@ def init():
     
     # set main win init text
     set_main_win_init_text()
+    
+    # check url_to
+    init_check_url_to()
     
     # init done, start main loop
     start_mainloop()
@@ -490,7 +496,11 @@ def watch_clip(w, info):
             break
     # if match, set it
     if flag_match:
-        w.set_url_text(t)
+        # check ignore flag
+        if etc['flag_ignore_clip']:
+            etc['flag_ignore_clip'] = False	# only ignore once
+        else:
+            w.set_url_text(t)
     # watch clip done
 
 # watch url
@@ -619,6 +629,20 @@ def add_output_easy_text(tlist):
         else:	# just add as normal
             w.add_main_text(text=item[1], tag=item[0])
     # add output easy_text to main text style done
+
+# init check url to, for vlist call_sub function
+def init_check_url_to():
+    
+    url_to = etc['url_to']
+    if url_to != '':
+        etc['flag_ignore_clip'] = True	# ignore once
+        # set url entry
+        w = etc['w']
+        w.set_url_text(url_to)
+        
+        # just start parse
+        start_parse()
+    # done
 
 # end entry.py
 
