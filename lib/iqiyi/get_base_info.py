@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.6.2 test201506251634
+# version 0.1.6.3 test201506281314
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -77,8 +77,10 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
         a, uuid, auth_conf = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
         # NOTE save uuid here
         user_uuid = uuid
-        # DEBUG info
-        print('lib.iqiyi: DEBUG: flag_v, set mixer done')
+        
+        if flag_debug:
+            # DEBUG info
+            print('lib.iqiyi: DEBUG: flag_v, set mixer done')
     
     # get request url
     url_to = mixer.getRequest()
