@@ -1,6 +1,6 @@
 {
 	"__note__" : "get_conf.json, config file for get_private for 271v for parse_video, sceext 2015.06", 
-	"__note__" : "last update 2015-06-28 00:05 GMT+0800 CST", 
+	"__note__" : "last update 2015-06-28 13:39 GMT+0800 CST", 
 	
 	"private_file" : "./private.271v_conf.json", 
 	
@@ -8,7 +8,10 @@
 		"P00001"
 	], 
 	
-	"cookie_fix_re" : [ ], 
+	"cookie_info" : {
+		"qyid" : "QC005", 
+		"uid" : "P00PRU"
+	}, 
 	
 	"default_conf" : {
 		"cid" : "afbe8fd3d73448c9", 

@@ -1,6 +1,6 @@
 # conf.py, part for parse_video : a fork from parseVideo. 
 # conf: o/pvtkgui/conf: parse_video Tk GUI, config file support. 
-# version 0.1.3.0 test201506231606
+# version 0.1.4.0 test201506281345
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -140,7 +140,7 @@ def check_xunlei_dl_path(dl_path, w):
 
 def write_config_file(conf_obj, conf_file):
     # make json text
-    t = json.dumps(conf_obj, sort_keys=True)
+    t = json.dumps(conf_obj, indent=4, sort_keys=True)
     # write conf file
     with open(conf_file, 'w') as f:
         f.write(t)

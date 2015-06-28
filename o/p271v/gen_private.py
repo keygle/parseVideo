@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # gen_private.py, part for parse_video : a fork from parseVideo. 
 # gen_private: e/p271v: generate private config file for 271v. 
-# version 0.1.1.0 test201506251435
+# version 0.1.2.1 test201506281352
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -40,7 +40,6 @@ CONFIG_FILE = './gen_conf.json'
 etc = {}
 etc['conf'] = None	# config obj
 
-etc['vms_url'] = ''
 etc['cookie_text'] = ''
 
 # function
@@ -65,20 +64,7 @@ def load_conf():
 
 def get_args():
     args = sys.argv[1:]
-    etc['vms_url'] = args[0]
-    etc['cookie_text'] = args[1]
-
-def parse_url(text):
-    # get url options
-    raw_part = text.split('?', 1)[1]
-    part_list = raw_part.split('&')
-    # gen list
-    uinfo = {}
-    for p in part_list:
-        raw = p.split('=')
-        uinfo[raw[0]] = raw[1]
-    # done
-    return uinfo
+    etc['cookie_text'] = args[0]
 
 def parse_cookie_string(text):
     clist = text.split('; ')
@@ -100,44 +86,49 @@ def gen_cookie_string(clist):
 def select_cookie(raw_list):
     # get config
     cookie_list = etc['conf']['cookie_list']
-    fix_re = etc['conf']['cookie_fix_re']
     # make first cookie list
     clist = {}
     for l in cookie_list:
         clist[l] = raw_list[l]
-    # fix cookie
-    for r in fix_re:
-        for c in raw_list:
-            if re.match(r, c):
-                clist[c] = raw_list[c]
     # done
     return clist
 
+def get_cookie_info(raw_list):
+    ci_name = etc['conf']['cookie_info']	# cookie info name
+    qyid_c = ci_name['qyid']
+    uid_c = ci_name['uid']
+    
+    info = {}
+    info['qyid'] = raw_list[qyid_c]
+    info['uid'] = raw_list[uid_c]
+    # done
+    return info
+
 def gen_private():
     # FIXME debug here
-    # print('DEBUG: got vms_url \"' + etc['vms_url'] + '\"')
     # print('DEBUG: got cookie_text \"' + etc['cookie_text'] + '\"')
     
     # load config file
     print('INFO: load config file \"' + CONFIG_FILE + '\"')
     load_conf()
     
-    print('INFO: parse url and cookie')
+    print('INFO: parse cookie text')
     # parse url and cookie
-    url_info = parse_url(etc['vms_url'])
-    cookie_info = parse_cookie_string(etc['cookie_text'])
+    cookie_list = parse_cookie_string(etc['cookie_text'])
+    
+    # get cookie info
+    cookie_info = get_cookie_info(cookie_list)
     
     print('INFO: make conf info')
     # make conf obj
     conf = etc['conf']['default_conf'].copy()	# load default conf obj
     # update info
-    conf['uid'] = url_info['uid']
-    conf['qyid'] = url_info['qyid']
-    # conf['cid'] = url_info['cid']	# NOTE not needed
+    conf['uid'] = cookie_info['uid']
+    conf['qyid'] = cookie_info['qyid']
     
     print('INFO: gen cookie')
     # set cookie
-    cookie_string = gen_cookie_string(select_cookie(cookie_info))
+    cookie_string = gen_cookie_string(select_cookie(cookie_list))
     conf['header']['Cookie'] = cookie_string
     
     # add last_update
