@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.6.0 test201506291327
+# version 0.1.7.0 test201506291333
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -194,6 +194,12 @@ def lieying_plugin_get_version():
     info['name'] = lieying_plugin_get_name()
     info['type'] = lieying_plugin_get_type()
     info['filter'] = lieying_plugin_get_filter()
+    
+    # add more info
+    info['home'] = 'https://github.com/sceext2/parse_video/tree/output-easy'
+    info['author'] = 'sceext <sceext@foxmail.com>'
+    info['copyright'] = 'copyright 2015 sceext All rights reserved. '
+    info['license'] = 'GNU GPLv3'
     
     # output
     out = json.dumps(info)
