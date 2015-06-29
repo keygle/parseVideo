@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # run, part for parse_video : a fork from parseVideo. 
 # run: lieying-plugin entry file. 
-# version 0.1.0.0 test201506261348
+# version 0.1.1.0 test201506291221
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -40,11 +40,15 @@ from o.lieying_plugin import entry as entry0
 GetName = entry0.lieying_plugin_get_name	# get_name()
 GetType = entry0.lieying_plugin_get_type	# get_type()
 GetFilter = entry0.lieying_plugin_get_filter	# get_filter()
+
 ParseFormat = entry0.lieying_plugin_parse_format	# parse_format(url)
-ParseUrl = entry0.lieying_plugin_parse_url	# parse_url(url, format_text)
+ParseUrl = entry0.lieying_plugin_parse_url		# parse_url(url, format_text)
 
 # parse_some_url(url, format_text, i_min, i_max)
 ParseSomeUrl = entry0.lieying_plugin_parse_some_url
+
+# ParseFormatEx(), support for video_list
+ParseFormatEx = entry0.lieying_plugin_parse_format2	# parse_format2(url)
 
 # end run.py
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.4.0 test201506261536
+# version 0.1.5.0 test201506291226
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -39,6 +39,7 @@ from . import version as version0
 # global vars
 PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_4lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
+
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
 ]
@@ -152,6 +153,30 @@ def lieying_plugin_parse_some_url(url_to, format_text, i_min=None, i_max=None):
     out_text = json.dumps(out)
     # done
     return out_text
+
+# parse_format2(), support for vlist
+def lieying_plugin_parse_format2(url):
+    from ..pvtkgui.vlist import entry as vlist
+    
+    # check is vlist
+    if vlist.check_is_list_url(url):
+        # parse as vlist
+        info = vlist.parse_video_list(url)
+        
+        data_type = 'list'
+    else:	# parse as normal url
+        info = lieying_plugin_parse_format(url)
+        info = json.loads(info)
+        
+        data_type = 'formats'
+    # make output
+    out = {}
+    out['type'] = data_type
+    out['data'] = info
+    
+    outt = json.dumps(out)
+    # done
+    return outt
 
 # end entry.py
 
