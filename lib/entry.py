@@ -33,6 +33,8 @@ from . import hd_quality
 from . import error
 from . import restruct
 
+from .bks1.o import s1
+
 # static data
 
 # global config obj
@@ -61,7 +63,7 @@ LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
     # http://www.bks1.com/dianying/20130217/e72ffd87c2e9c5af.html
     # http://www.bks1.com/dianshiju/sjll_wjt.html
     # http://www.bks1.com/dianshiju/20121108/879eec15c7810d10.html
-    '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'bks1', 
+    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html' : 'bks1', 
     # NOTE check bks1 supported url, by get vid and tvid, not by RE to url
     
     # letv

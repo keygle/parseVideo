@@ -36,12 +36,14 @@ from . import tinfo
 
 from . import version as version0
 
+from ..tool import s1
+
 # global vars
 PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_5lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
-    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html', 
 ]
 
 THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'

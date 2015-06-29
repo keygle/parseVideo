@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # uuid.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# uuid: bks1, com.qiyi.player.base.uuid 
+# uuid: bks1, com.71.player.base.uuid 
 
 # import
 
 import random
 import re
 import json
+
+from . import s1
 
 # import from out
 base = None
@@ -16,7 +18,7 @@ def set_import(base1):
     base = base1
 
 # global static config
-UUID_URL = 'http://data.video.qiyi.com/uid'
+UUID_URL = 'http://data.video.' + s1.get_s1()[1] + '.com/uid'
 
 LOAD_UUID_RETRY = 5
 

@@ -43,7 +43,7 @@ def get_python_bin():
 def call(url_to):
     py_bin = get_python_bin()
     # make args
-    arg = [py_bin + ' ' + PVTKGUI_BIN + ' --url ' + url_to]
+    arg = [py_bin, PVTKGUI_BIN, '--url', url_to]
     # DEBUG info
     print('pvtkgui: DEBUG: vlist.call_sub: start with shell \"' + str(arg) + ' \"')
     

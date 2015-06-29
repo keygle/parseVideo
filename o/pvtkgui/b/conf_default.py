@@ -26,6 +26,8 @@
 
 # import
 
+from ...tool import s1
+
 # global vars
 
 # default config obj
@@ -41,7 +43,7 @@ CONFIG_FILE = './etc/pvtkgui.conf.json'
 
 # support urls
 SUPPORT_URL_RE = [
-    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html', 
     '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html', 
     
     # support for evparse

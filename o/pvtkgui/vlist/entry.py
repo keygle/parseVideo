@@ -38,15 +38,16 @@ from .site import list271
 from ..b import conf_default as confd
 
 from ...tool.parse_html import htmldom
+from ...tool import s1
 
 # global vars
 
 SUPPORTED_LIST_URL_RE = [
-    '^http://www.iqiyi.com/a_.+\.html', 	# for 271
+    '^http://www.' + s1.get_s1()[0] + '.com/a_.+\.html', 	# for 271
 ]
 
 URL_TO_SITE_LIST = {
-    '^http://www.iqiyi.com/a_.+\.html' : list271, 
+    '^http://www.' + s1.get_s1()[0] + '.com/a_.+\.html' : list271, 
 }
 
 etc = {}
