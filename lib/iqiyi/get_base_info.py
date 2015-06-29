@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/iqiyi 
-# version 0.1.6.3 test201506281314
+# version 0.1.7.0 test201506291624
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -69,6 +69,12 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     # set tm
     tm = exports.getTimer()
     mixer.tm = tm
+    
+    # check vvflag
+    vvflag = vid_info['vvflag']
+    # NOTE auto turn off flag_v
+    if flag_v and (not vvflag):
+        flag_v = False
     
     a = None	# AuthRemote obj
     auth_conf = None
