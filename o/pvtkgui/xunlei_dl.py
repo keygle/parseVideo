@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.1.1.1 test201506201124
+# version 0.1.2.0 test201506291215
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -28,7 +28,6 @@
 
 import imp
 
-from .b import run_sub
 from . import xunlei_agent as agent0
 
 from ..output import easy_text
@@ -50,7 +49,7 @@ class CreateComObjError(XunleiDlError):
 cc = None	# comtypes.client
 comtypes = None	# comtypes
 
-INSTALL_COMTYPES_BIN = '.\\o\\easy\\install.bat'
+INSTALL_COMTYPES_NAME = 'comtypes'
 
 xunlei_agent = None
 
@@ -151,8 +150,13 @@ def make_task_list(evinfo):
 
 # auto install comtypes support
 def install_comtypes():
-    # just run install.bat to install comtypes
-    run_sub.run_sub([INSTALL_COMTYPES_BIN], shell=True)
+    import pip
+    # use pip to install comtypes
+    
+    pip.main(['install', INSTALL_COMTYPES_NAME])
+    
+    # install comtypes done
+    
     # auto reload comtypes after install
     global comtypes
     if comtypes == None:
