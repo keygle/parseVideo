@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vauth_remote.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# vauth_remote: iqiyi, com.qiyi.player.core.model.remote.AuthenticationRemote
+# vauth_remote: bks1, com.qiyi.player.core.model.remote.AuthenticationRemote
 
 # import
 

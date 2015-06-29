@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # exports.py, part for parse_video : a fork from parseVideo. 
-# exports: exports and imports for lib/iqiyi/o. 
+# exports: exports and imports for lib/bks1/o. 
 
 # import
 

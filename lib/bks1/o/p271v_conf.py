@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # p271v_conf.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# p271v_conf: parse_video/lib/iqiyi/o
+# p271v_conf: parse_video/lib/bks1/o
 
 # import
 import os

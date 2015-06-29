@@ -13,8 +13,8 @@
 #
 #	quality		视频质量 (清晰度), 比如 1080p
 #
-#	site		网站名称, 比如 爱奇艺
-#		说明: 以上信息来源网页 http://www.iqiyi.com/v_19rroj1k0g.html
+#	site		网站名称, 比如 不可说
+#		说明: 以上信息来源网页 http://www.bks1.com/v_19rroj1k0g.html
 #
 #	part_i		分段文件序号
 #	ext		文件扩展名

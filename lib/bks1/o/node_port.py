@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # node_port.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# node_port: iqiyi, node_port to run javascript. 
+# node_port: bks1, node_port to run javascript. 
 
 # import
 

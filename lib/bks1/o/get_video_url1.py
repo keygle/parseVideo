@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # get_video_url1.py, part for parse_video : a fork from parseVideo. 
-# get_video_url1: from parseVideo, iqiyi.class.php
+# get_video_url1: from parseVideo, bks1.class.php
 
 # import
 
@@ -35,7 +35,7 @@ def get_server_time0():
     try:
         info = base.get_json_info(time_url)
     except Exception as err:
-        raise Exception('DEBUG: iqiyi, get_server_time http error', err)
+        raise Exception('DEBUG: bks1, get_server_time http error', err)
     server_time = info['t']
     return server_time
 

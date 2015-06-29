@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # config.py, part for parse_video : a fork from parseVideo. 
-# config: iqiyi, evparse:lib/iqiyi/o/core/config.py
+# config: bks1, evparse:lib/bks1/o/core/config.py
 
 CHECK_LIMIT_URL = 'http://cache.vip.qiyi.com/ip/'
 CHECK_V_INFO_URL = 'http://data.video.qiyi.com/v.f4v'

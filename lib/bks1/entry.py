@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
-# entry: parse_video/lib/iqiyi 
+# entry: parse_video/lib/bks1
 # version 0.1.19.0 test201506291620
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
@@ -36,16 +36,16 @@ from . import get_base_info, get_video_info
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.2.1.0 test201506291620'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.2.1.0 test201506291620'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []
-# http://www.iqiyi.com/v_19rrn64t40.html
-# http://www.iqiyi.com/w_19rrp737k5.html
-# http://yule.iqiyi.com/pcb.html?src=focustext_0_20130527_7
-# http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
-# http://www.iqiyi.com/dianshiju/sjll_wjt.html
-# http://www.iqiyi.com/dianshiju/20121108/879eec15c7810d10.html
+# http://www.bks1.com/v_19rrn64t40.html
+# http://www.bks1.com/w_19rrp737k5.html
+# http://yule.bks1.com/pcb.html?src=focustext_0_20130527_7
+# http://www.bks1.com/dianying/20130217/e72ffd87c2e9c5af.html
+# http://www.bks1.com/dianshiju/sjll_wjt.html
+# http://www.bks1.com/dianshiju/20121108/879eec15c7810d10.html
 RE_SUPPORT_URL.append('^http://[a-z]+\.iqiyi\.com/.+\.html')
 
 # global config obj
@@ -90,7 +90,7 @@ def get_vid(url):
     except Exception as err:
         # check flag_debug
         if etc['flag_debug']:
-            raise Exception('parse_video: ERROR: iqiyi, DEBUG: get_vid http error', err)
+            raise Exception('parse_video: ERROR: bks1, DEBUG: get_vid http error', err)
         else:
             raise error.NotSupportURLError('not support this url', url, 'load_page')
     # use re to get vid and tvid
@@ -143,7 +143,7 @@ def parse(url_to):	# this site entry main entry function
     evinfo['video'] = []
     # add some base info
     evinfo['info']['url'] = url_to
-    evinfo['info']['site'] = 'iqiyi'
+    evinfo['info']['site'] = 'bks1'
     # get vid
     vid_info = get_vid(url_to)
     # get base, more info

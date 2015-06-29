@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # remote_mixer.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# remote_mixer: iqiyi, com.qiyi.player.core.model.remote 
+# remote_mixer: bks1, com.qiyi.player.core.model.remote 
 
 # import
 
