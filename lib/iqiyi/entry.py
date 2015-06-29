@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/iqiyi 
-# version 0.1.17.0 test201506281320
+# version 0.1.19.0 test201506291620
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -36,7 +36,7 @@ from . import get_base_info, get_video_info
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.2.0.1 test201506281320'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/iqiyi version 0.2.1.0 test201506291620'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []
@@ -80,6 +80,7 @@ RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
 RE_TVID = 'data-(player|drama)-tvid="([^"]+)"'
 RE_ALBUMID = 'data-(player|drama)-albumid="([^"]+)"'
 RE_VIDEOID = 'data-(player|drama)-videoid="([^"]+)"'
+RE_VVFLAG = 'data-(player|drama)-ismember="([^"]+)"'
 
 def get_vid(url):
     html_text = ''
@@ -97,9 +98,10 @@ def get_vid(url):
     tvids = re.findall(RE_TVID, html_text)
     albumids = re.findall(RE_ALBUMID, html_text)
     videoids = re.findall(RE_VIDEOID, html_text)
+    vvflags = re.findall(RE_VVFLAG, html_text)
     
     # check supported URL by get vid
-    if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(videoids) < 1):
+    if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(videoids) < 1) or (len(vvflags) < 1):
         # get vid and tvid failed, not support this URL
         raise error.NotSupportURLError('not support this url', url, 'get_vid')
     
@@ -109,12 +111,20 @@ def get_vid(url):
     albumid = albumids[0][1]
     videoid = videoids[0][1]
     
+    vvflag = vvflags[0][1]
+    # process vvflag
+    if vvflag == 'true':
+        vvflag = True
+    else:
+        vvflag = False
+    
     # done
     vid_info = {}
     vid_info['vid'] = vid
     vid_info['tvid'] = tvid
     vid_info['albumid'] = albumid
     vid_info['videoid'] = videoid
+    vid_info['vvflag'] = vvflag
     
     return vid_info
 
@@ -145,8 +155,7 @@ def parse(url_to):	# this site entry main entry function
     evinfo['info']['title_no'] = more['no']
     # make more info
     more_info = {}
-    more_info['tvid'] = vid_info['tvid']
-    more_info['videoid'] = vid_info['videoid']
+    more_info['vid_info'] = vid_info
     more_info['a'] = more['a']
     more_info['auth_conf'] = more['auth_conf']
     # get video info

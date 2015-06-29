@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/iqiyi 
-# version 0.1.11.3 test201506281312
+# version 0.1.12.0 test201506291619
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -94,11 +94,23 @@ def get_one_video_meta_data(meta_url):
 
 # get_video_info main entry
 def get_info(info, hd_min=0, hd_max=0, i_min=None, i_max=None, flag_debug=False, more=None, url='', flag_v=False, flag_min_parse=False):
+    
+    # check for 271 \/
+    
+    # get vvflag
+    vvflag = more['vid_info']['vvflag']
     # check video list
-    if (not flag_v) and ((not 'vp' in info['data']) or (info['data']['vp']['tkl'] == '')):
+    if (not flag_v) and (vvflag or (not 'vp' in info['data']) or (info['data']['vp']['tkl'] == '')):
         # not support this URL, may be a VIP video
         raise error.NotSupportURLError('not support this url', url, 'may be a VIP video')
     # get video list
+    
+    # NOTE auto turn off flag_v
+    if flag_v and (not vvflag):
+        flag_v = False
+        # DEBUG info
+        if flag_debug:
+            print('lib.iqiyi: DEBUG: auto turn off flag_v')
     
     # check flag_v
     if flag_v and (not 'np' in info['data']):
@@ -134,8 +146,8 @@ def get_info(info, hd_min=0, hd_max=0, i_min=None, i_max=None, flag_debug=False,
         one['bid'] = bid
         # get uid
         one['uid'] = get_base_info.user_uuid
-        one['tvid'] = more['tvid']
-        one['videoid'] = more['videoid']
+        one['tvid'] = more['vid_info']['tvid']
+        one['videoid'] = more['vid_info']['videoid']
         # get video hd number by bid
         one['hd'] = BID_TO_HD[str(bid)]
         # add list_i and flag_debug
