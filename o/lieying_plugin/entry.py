@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.7.0 test201506291333
+# version 0.1.8.0 test201506291339
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,7 @@ from . import tinfo
 from . import version as version0
 
 # global vars
-PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_4lieying_plugin', ' version ']
+PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_5lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
