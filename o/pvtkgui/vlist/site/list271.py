@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # list271.py, part for parse_video : a fork from parseVideo. 
 # list271: o/pvtkgui/vlist/site: support video list for 271 for parse_video Tk GUI. 
-# version 0.0.2.0 test201506270040
+# version 0.0.3.0 test201506291233
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -68,7 +68,7 @@ def get_list_info(raw_html_text):
         
         one['url'] = url_list[i]
         one['title'] = title_list[i]
-        one['n'] = n_list[i]
+        one['no'] = n_list[i]
     
     # done
     return info
