@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.9.0 test201506291633
+# version 0.1.11.0 test201506301345
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -47,7 +47,7 @@ LIEYING_PLUGIN_SUPPORTED_URL_RE = [
 ]
 
 THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
-THIS_PLUGIN_SEM_VERSION = '0.6.0'
+THIS_PLUGIN_SEM_VERSION = '0.7.0'
 
 # base function
 
@@ -171,6 +171,11 @@ def lieying_plugin_parse_format2(url):
         # parse as vlist
         out['data'] = vlist.parse_video_list(url)
         out['type'] = 'list'
+        
+        # process vlist, add sub_title
+        for one in out['data']:
+            one['no'] += '_' + one['title']
+        # fix title, done
         
         # add more info
         out['total'] = -1
