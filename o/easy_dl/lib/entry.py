@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry:o/easy_dl/lib
-# version 0.0.1.0 test201507011621
+# version 0.0.2.0 test201507011632
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -132,7 +132,7 @@ def get_file_info():
     
     n = len(pinfo['list'])
     
-    raw_name = make_name.make_r_name(pinfo)
+    raw_name = make_name.make_raw_name(pinfo)
     
     # done
     return n, raw_name
