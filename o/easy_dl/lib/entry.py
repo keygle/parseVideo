@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry:o/easy_dl/lib
-# version 0.0.2.0 test201507011632
+# version 0.0.2.1 test201507011802
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -67,6 +67,9 @@ def entry():
     
     # save raw_name
     etc['raw_name_info'] = raw_name
+    
+    # NOTE fix n here
+    n -= 1
     
     # process n, with etc.min and etc.max
     if etc['min'] < 0:
