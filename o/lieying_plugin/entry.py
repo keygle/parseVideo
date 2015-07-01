@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.12.0 test201507011240
+# version 0.1.13.0 test201507011245
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -180,6 +180,10 @@ def lieying_plugin_parse_format2(url):
         
         # add album_name title
         out['title'] = vlist_info['title']
+        
+        # fix album_name \n after
+        while out['title'][-1] in '\n\r':
+            out['title'] = out['title'][:-1]
         
         # add more info
         out['total'] = -1
