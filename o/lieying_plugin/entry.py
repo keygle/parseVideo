@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.13.0 test201507011245
+# version 0.1.14.0 test201507020002
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -39,7 +39,7 @@ from . import version as version0
 from ..tool import s1
 
 # global vars
-PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_6lieying_plugin', ' version ']
+PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_7lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
@@ -47,7 +47,7 @@ LIEYING_PLUGIN_SUPPORTED_URL_RE = [
 ]
 
 THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
-THIS_PLUGIN_SEM_VERSION = '0.8.0'
+THIS_PLUGIN_SEM_VERSION = '0.9.0'
 
 # base function
 
@@ -184,6 +184,22 @@ def lieying_plugin_parse_format2(url):
         # fix album_name \n after
         while out['title'][-1] in '\n\r':
             out['title'] = out['title'][:-1]
+        
+        # make tinfo
+        ti = {}
+        ti['title'] = ''
+        ti['title_sub'] = ''
+        ti['title_no'] = -1
+        ti['site_name'] = vlist_info['info']['site_name']
+        
+        # add name
+        for i in range(len(out['data'])):
+            one = out['data'][i]
+            ti['title'] = out['title'] + one['no']
+            ti['title_sub'] = one['title']
+            ti['title_no'] = i + 1
+            
+            one['name'] = tinfo.make_title(ti)
         
         # add more info
         out['total'] = -1
