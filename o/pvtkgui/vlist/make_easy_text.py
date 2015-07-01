@@ -1,6 +1,6 @@
 # make_easy_text.py, part for parse_video : a fork from parseVideo. 
 # make_easy_text: o/pvtkgui/vlist: make easy_text for pvtkgui support video list. 
-# version 0.0.4.1 test201507011236
+# version 0.0.5.0 test201507020009
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -42,7 +42,7 @@ def output_style(info):
     # add album_title
     title = info['title']
     
-    t += [['big_blue', title], [None, '\n\n']]
+    t += [['big_blue', title + '_' + info['site_name']], [None, '\n\n\n']]
     
     # add list item
     item_i = 0

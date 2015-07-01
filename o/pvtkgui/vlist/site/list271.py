@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # list271.py, part for parse_video : a fork from parseVideo. 
 # list271: o/pvtkgui/vlist/site: support video list for 271 for parse_video Tk GUI. 
-# version 0.0.5.0 test201507011314
+# version 0.0.7.0 test201507020008
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -82,7 +82,7 @@ def get_list_info(raw_html_text):
     while info['title'][-1] in '\r\n':
         info['title'] = info['title'][:-1]
     # add site name
-    info['title'] += '_不可说\n'
+    info['site_name'] = '不可说'
     
     # done
     return info

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.14.0 test201507020002
+# version 0.1.16.0 test201507020021
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -173,33 +173,27 @@ def lieying_plugin_parse_format2(url):
         out['data'] = vlist_info['list']
         out['type'] = 'list'
         
-        # process vlist, add sub_title
-        for one in out['data']:
-            one['no'] += '_' + one['title']
-        # fix title, done
-        
-        # add album_name title
-        out['title'] = vlist_info['title']
-        
-        # fix album_name \n after
-        while out['title'][-1] in '\n\r':
-            out['title'] = out['title'][:-1]
+        # add album_name title, and add site_name
+        out['title'] = vlist_info['title'] + '_' + vlist_info['site_name']
         
         # make tinfo
         ti = {}
         ti['title'] = ''
         ti['title_sub'] = ''
         ti['title_no'] = -1
-        ti['site_name'] = vlist_info['info']['site_name']
+        ti['site_name'] = vlist_info['site_name']
         
         # add name
         for i in range(len(out['data'])):
             one = out['data'][i]
-            ti['title'] = out['title'] + one['no']
+            ti['title'] = vlist_info['title'] + one['no']
             ti['title_sub'] = one['title']
             ti['title_no'] = i + 1
             
             one['name'] = tinfo.make_title(ti)
+        # process vlist, add sub_title
+        for one in out['data']:
+            one['no'] += '_' + one['title']
         
         # add more info
         out['total'] = -1
