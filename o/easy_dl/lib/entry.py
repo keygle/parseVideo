@@ -44,6 +44,7 @@ etc['min'] = 0	# min index of files to download, used for parsev --min-i
 etc['max'] = 0	# max index of files to download, used for parsev --max-i
 
 etc['out_dir'] = ''	# output file path
+etc['ext_opt'] = []	# ext_opt for parsev
 
 # function
 

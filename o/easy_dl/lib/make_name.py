@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # make_name.py, part for parse_video : a fork from parseVideo. 
 # make_name:o/easy_dl/lib
-# version 0.0.0.1 test201507011453
+# version 0.0.1.0 test201507011559
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -30,10 +30,28 @@
 # function
 
 def make_raw_name(pinfo):
-    pass
+    pi = pinfo['info']
+    
+    raw = {}
+    
+    raw['title'] = pi['title'] + '_' + pi['quality'] + '_' + pi['site_name']
+    
+    raw['ext'] = '.' + pi['format']
+    
+    # done
+    return raw
 
 def make_i_name(raw_info, i=0):
-    pass
+    n = raw_info['title'] + '_' + make_num_l(i) + raw_info['ext']
+    return n
+
+# base function
+
+def make_num_l(n, l=4):
+    t = str(n)
+    while len(t) < l:
+        t = '0' + t
+    return t
 
 # end make_name.py
 
