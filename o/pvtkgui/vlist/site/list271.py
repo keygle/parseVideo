@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # list271.py, part for parse_video : a fork from parseVideo. 
 # list271: o/pvtkgui/vlist/site: support video list for 271 for parse_video Tk GUI. 
-# version 0.0.3.0 test201506291233
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.0.4.1 test201507011235
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -60,15 +60,23 @@ def get_list_info(raw_html_text):
     for n in ns:
         n_list.append(n.text())
     
+    # get album name
+    album_a = root.find('div.crumb-item a')
+    album_name = album_a[-1].text()
+    
     # make output info obj
-    info = []
+    info = {}
+    info['list'] = []
     for i in range(len(url_list)):
         one = {}
-        info.append(one)
+        info['list'].append(one)
         
         one['url'] = url_list[i]
         one['title'] = title_list[i]
         one['no'] = n_list[i]
+    
+    # add album_name
+    info['title'] = album_name
     
     # done
     return info
