@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.11.0 test201506301345
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.12.0 test201507011240
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -39,7 +39,7 @@ from . import version as version0
 from ..tool import s1
 
 # global vars
-PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_5lieying_plugin', ' version ']
+PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_6lieying_plugin', ' version ']
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
@@ -47,7 +47,7 @@ LIEYING_PLUGIN_SUPPORTED_URL_RE = [
 ]
 
 THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
-THIS_PLUGIN_SEM_VERSION = '0.7.0'
+THIS_PLUGIN_SEM_VERSION = '0.8.0'
 
 # base function
 
@@ -169,13 +169,17 @@ def lieying_plugin_parse_format2(url):
     # check is vlist
     if vlist.check_is_list_url(url):
         # parse as vlist
-        out['data'] = vlist.parse_video_list(url)
+        vlist_info = vlist.parse_video_list(url)
+        out['data'] = vlist_info['list']
         out['type'] = 'list'
         
         # process vlist, add sub_title
         for one in out['data']:
             one['no'] += '_' + one['title']
         # fix title, done
+        
+        # add album_name title
+        out['title'] = vlist_info['title']
         
         # add more info
         out['total'] = -1
