@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.1.3.0 test201507021305
+# version 0.1.3.2 test201507021651
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -130,12 +130,13 @@ def make_title(tinfo):
     		title_no=tinfo['title_no'], 
     		title_short=tinfo['title_short'], 
     		site=tinfo['site_name'], 
-    		quality=tinfo['quality'])
+    		quality='')
     return t
 
 # just output video list, return as json obj
 def t2list(evinfo):
-    video_name = make_title(evinfo['info'])
+    fname, main_name = make_title(evinfo['info'])
+    video_name = main_name
     out = {}
     out['Name'] = video_name
     vlist = []

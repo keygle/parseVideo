@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.18.0 test201507021306
+# version 0.1.18.1 test201507021335
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -190,8 +190,10 @@ def lieying_plugin_parse_format2(url):
             ti['title_sub'] = one['title']
             ti['title_no'] = i + 1
             ti['title_short'] = ''
+            ti['quality'] = ''
             
-            one['name'] = tinfo.make_title(ti)
+            fname, main_name = tinfo.make_title(ti)
+            one['name'] = main_name
         # process vlist, add sub_title
         for one in out['data']:
             one['no'] += '_' + one['title']
