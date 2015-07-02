@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.1.1.0 test201506261340
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.3.0 test201507021305
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -30,6 +30,8 @@
 import math
 
 from . import error
+from ..output import easy_text
+from ..easy import make_name
 
 # global vars
 LIEYING_PLUGIN_PROTOCOL = 'http'
@@ -121,9 +123,14 @@ def get_hd_from_format_text(format_text):
     return int(hd)
 
 def make_title(tinfo):
-    t = '_' + tinfo['title'] + '_' + tinfo['title_sub'] + '_' + tinfo['site_name']
-    if tinfo['title_no'] > 0:
-        t = make_num_len(tinfo['title_no']) + t
+    # just use make_name host to generate name
+    t = make_name_host(
+    		title=tinfo['title'], 
+    		title_sub=tinfo['title_sub'], 
+    		title_no=tinfo['title_no'], 
+    		title_short=tinfo['title_short'], 
+    		site=tinfo['site_name'], 
+    		quality=tinfo['quality'])
     return t
 
 # just output video list, return as json obj
@@ -177,6 +184,22 @@ def t2one(evinfo, hd):
         ulist.append(one)
     # done
     return out
+
+# make_name host function
+def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', quality='', site=''):
+    raw_name, main_name = make_name.make(title, title_sub, title_no, title_short, quality, site, part_i, make_name_host_num_len, ext)
+    # clean file name
+    fname = easy_text.clean_file_name(raw_name)
+    main_name = easy_text.clean_file_name(main_name)
+    return fname, main_name
+
+def make_name_host_num_len(title_no=-1, num_len=4):
+    make_num_len = easy_text.make_num_len
+    if title_no < 1:
+        return ''
+    else:
+        return make_num_len(title_no, num_len)
+    # done
 
 # end tinfo.py
 

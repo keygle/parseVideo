@@ -1,7 +1,7 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.1.2.0 test201506291215
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.3.0 test201507021254
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -168,7 +168,7 @@ def install_comtypes():
 
 # make_name host function
 def make_name_host(title='', title_short='', title_sub='', title_no='', part_i=0, ext='', quality='', site=''):
-    raw_name = make_name.make(title, title_sub, title_no, title_short, quality, site, part_i, make_name_host_num_len, ext)
+    raw_name, main_name = make_name.make(title, title_sub, title_no, title_short, quality, site, part_i, make_name_host_num_len, ext)
     # clean file name
     fname = easy_text.clean_file_name(raw_name)
     return fname
