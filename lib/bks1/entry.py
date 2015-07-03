@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/bks1
-# version 0.2.0.0 test201506292033
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.2.1.0 test201507032026
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -38,7 +38,7 @@ from .o import s1
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.0.0 test201506292032'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.1.0 test201507032026'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []
@@ -55,6 +55,7 @@ etc = {}	# NOTE should be set
 
 etc['flag_debug'] = False
 etc['flag_v'] = False
+etc['flag_v_force'] = False
 etc['flag_min_parse'] = False
 
 etc['hd_min'] = 0
@@ -69,6 +70,7 @@ def set_config(config):
     # just copy it
     etc['flag_debug'] = config['flag_debug']
     etc['flag_v'] = config['flag_v']
+    etc['flag_v_force'] = config['flag_v_force']
     etc['flag_min_parse'] = config['flag_min_parse']
     
     etc['hd_min'] = config['hd_min']
@@ -119,6 +121,9 @@ def get_vid(url):
         vvflag = True
     else:
         vvflag = False
+    # check flag_v_force
+    if etc['flag_v_force']:
+        vvflag = True
     
     # done
     vid_info = {}

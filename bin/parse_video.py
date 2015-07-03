@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.2.0.0 test201506292033
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.2.1.0 test201507032030
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -33,6 +33,7 @@
 # NOTE support --fix-size option
 # NOTE support --set-flag-v
 # NOTE support --set-min-parse
+# NOTE support --force
 
 # import
 
@@ -54,7 +55,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.3.0.0 test201506292033'
+PARSE_VIDEO_VERSION = 'parse_video version 0.3.1.0 test201507032030'
 
 DEBUG_STDOUT_MARK = '<parse_video_debug_stdout_mark>'
 
@@ -67,6 +68,7 @@ etc['hd_max'] = None
 etc['i_min'] = None
 etc['i_max'] = None
 etc['flag_v'] = False
+etc['flag_v_force'] = False
 etc['flag_min_parse'] = False
 
 # default mode, analyse url
@@ -93,7 +95,7 @@ def print_version():
 
 def print_free():
     print_stdout('''
-    author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05
+    author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07
  copyright 2015 sceext
 
  This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -159,6 +161,7 @@ def start_parse():
     entry.etc['flag_debug'] = etc['flag_debug']
     entry.etc['flag_fix_size'] = etc['flag_fix_size']
     entry.etc['flag_v'] = etc['flag_v']
+    entry.etc['flag_v_force'] = etc['flag_v_force']
     entry.etc['flag_min_parse'] = etc['flag_min_parse']
     
     url_to = etc['url_to']
@@ -239,6 +242,9 @@ def get_args():
             etc['flag_v'] = True
         elif one == '--set-min-parse':
             etc['flag_min_parse'] = True
+        elif one == '--force':
+            etc['flag_v_force'] = True
+            # TODO set other force flags
         else:	# should be url_to
             etc['url_to'] = one
     # done
