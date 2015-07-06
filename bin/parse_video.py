@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.2.2.0 test201507061116
+# version 0.2.3.0 test201507061916
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -34,6 +34,7 @@
 # NOTE support --set-flag-v
 # NOTE support --set-min-parse
 # NOTE support --force
+# NOTE support --http-proxy
 
 # import
 
@@ -70,6 +71,7 @@ etc['i_max'] = None
 etc['flag_v'] = False
 etc['flag_v_force'] = False
 etc['flag_min_parse'] = False
+etc['http_proxy'] = None
 
 # default mode, analyse url
 etc['global_mode'] = 'mode_url'
@@ -126,21 +128,35 @@ Usage:
     evp --version
     evp --help
 Options:
-    <url>           URL of the video play page, to be analysed 
-                    and get information from. 
+    <url>            URL of the video play page, to be analysed 
+                     and get information from. 
     
-    --min <hd_min>  set min hd number of video info to get
-    --max <hd_max>  set max hd number of video info to get
+    --min <hd_min>   set min hd number of video info to get
+    --max <hd_max>   set max hd number of video info to get
     
-    --debug         output DEBUG information
-    --fix-unicode   output pure ASCII json text
-                    used on systems not support unicode well
+    --min-i <i_min>  set min index of files to parse
+    --max-i <i_max>  set max index of files to parse
     
-    --version       show version of evparse
-    --help          show this help information of evparse
+    --debug          output DEBUG information
+    
+    --http-proxy <http_proxy_string>
+                     use the http_proxy to parse
+    
+    --set-min-parse  parse as less as possible to get fastest speed
+    --fix-unicode    output pure ASCII json text
+                     used on systems not support unicode well
+    --fix-size       parse all possible size, or give url if possible
+                     and set the fix_size flag at the same time
+    
+    --set-flag-v     reserved option
+    --force          force set
+    
+    --version        show version of parse_video
+    --help           show this help information of parse_video
   
   More help info please see <https://github.com/sceext2/parse_video> 
 ''')
+
 
 def print_help_notice():
     print_stdout('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
@@ -163,6 +179,8 @@ def start_parse():
     entry.etc['flag_v'] = etc['flag_v']
     entry.etc['flag_v_force'] = etc['flag_v_force']
     entry.etc['flag_min_parse'] = etc['flag_min_parse']
+    
+    entry.etc['http_proxy'] = etc['http_proxy']
     
     url_to = etc['url_to']
     try:
@@ -245,6 +263,11 @@ def get_args():
         elif one == '--force':
             etc['flag_v_force'] = True
             # TODO set other force flags
+        elif one == '--http-proxy':
+            next = rest[0]
+            rest = rest[1:]
+            # NOTE set http_proxy here
+            etc['http_proxy'] = str(next)
         else:	# should be url_to
             etc['url_to'] = one
     # done

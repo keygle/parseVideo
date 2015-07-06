@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.13.0 test201507032028
+# version 0.1.14.0 test201507061906
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -32,6 +32,7 @@ import re
 from . import hd_quality
 from . import error
 from . import restruct
+from . import base
 
 from .bks1.o import s1
 
@@ -49,6 +50,8 @@ etc['hd_min'] = hd_quality.HD_MIN
 etc['hd_max'] = hd_quality.HD_MAX
 etc['i_min'] = None
 etc['i_max'] = None
+
+etc['http_proxy'] = None
 
 etc['EV_INFO_VERSION'] = restruct.EV_INFO_VERSION
 etc['EV_INFO_SOURCE'] = 'parse_video'
@@ -175,6 +178,13 @@ def parse(url_to, config=etc, flag_restruct=True):
         raise error.NotSupportURLError('not support this url', url_to)
     # import extractor
     extractor = dy_import_extractor(extractor_name)
+    
+    # NOTE set base with http_proxy
+    base.http_proxy = etc['http_proxy']
+    # DEBUG info
+    if etc['flag_debug']:
+        print('lib.entry: DEBUG: use http_proxy \"' + str(base.http_proxy) + '\"')
+    
     # set it
     extractor.set_config(config)
     # just parse
