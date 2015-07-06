@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.2.3.0 test201507061916
+# version 0.2.4.0 test201507061930
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -56,7 +56,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.3.2.0 test201507061116'
+PARSE_VIDEO_VERSION = 'parse_video version 0.3.3.0 test201507061930'
 
 DEBUG_STDOUT_MARK = '<parse_video_debug_stdout_mark>'
 
@@ -124,9 +124,10 @@ def print_help():
     print_stdout('parse_video: HELP')
     print_stdout('''
 Usage:
-    evp [OPTIONS] <url>
-    evp --version
-    evp --help
+    parsev [OPTIONS] <url>
+    parsev --version
+    parsev --help
+  
 Options:
     <url>            URL of the video play page, to be analysed 
                      and get information from. 
