@@ -56,7 +56,7 @@ def mix2_host(tvid, tm0):
 
 def mix2(tvid, tm0):
     enc = '754f3a28fee047ad9b654420056b400b'
-    enc += str(tm0) + str('tvid')
+    enc += str(tm0) + str(tvid)
     
     sc = md5_hash(enc)
     return sc

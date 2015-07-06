@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.18.1 test201507021335
+# version 0.1.20.0 test201507061630
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -39,7 +39,14 @@ from . import version as version0
 from ..tool import s1
 
 # global vars
-PARSE_VIDEO_LIEYING_PLUGIN_NAME = ['parse_video_7lieying_plugin', ' version ']
+PARSE_VIDEO_LIEYING_PLUGIN_NAME = [
+    'parse_video_' + '7' + 'lieying_plugin', 
+    ' (plugin version ', 
+    ', kernel version ', 
+    ') license ', 
+    ' ', 
+]
+
 LIEYING_PLUGIN_PARSE_TYPE = 'parse'
 
 LIEYING_PLUGIN_SUPPORTED_URL_RE = [
@@ -47,7 +54,8 @@ LIEYING_PLUGIN_SUPPORTED_URL_RE = [
 ]
 
 THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
-THIS_PLUGIN_SEM_VERSION = '0.10.0'
+THIS_LICENSE = 'GNU GPLv3+'
+THIS_PLUGIN_SEM_VERSION = '0.10.1'
 
 # base function
 
@@ -91,7 +99,14 @@ def lieying_plugin_get_name():
     # get now version
     ver = get_version()
     static_name = PARSE_VIDEO_LIEYING_PLUGIN_NAME
-    this_name = static_name[0] + str(version0.VER) + static_name[1] + ver
+    
+    this_name = ''
+    this_name += static_name[0] + str(version0.VER) 
+    this_name += static_name[1] + THIS_PLUGIN_SEM_VERSION 
+    this_name += static_name[2] + ver 
+    this_name += static_name[3] + THIS_LICENSE 
+    this_name += static_name[4]
+    
     return this_name
 
 def lieying_plugin_get_type():
@@ -227,7 +242,7 @@ def lieying_plugin_get_version():
     info['home'] = 'https://github.com/sceext2/parse_video/tree/output-easy'
     info['author'] = 'sceext <sceext@foxmail.com>'
     info['copyright'] = 'copyright 2015 sceext All rights reserved. '
-    info['license'] = 'GNU GPLv3'
+    info['license'] = THIS_LICENSE
     
     # output
     out = json.dumps(info)

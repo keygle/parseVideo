@@ -1,6 +1,6 @@
 {
     "flag_select_each": false,
-    "hd": 40,
+    "hd": 4,
     "ui_type": "simple_ui",
-    "xunlei_dl_path": "/home/d/u/home/sceext/_/data/tmp"
+    "xunlei_dl_path": "c:/pvtkgui_dl/"
 }
