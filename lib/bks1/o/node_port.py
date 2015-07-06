@@ -12,7 +12,7 @@ from .key import md5_hash
 
 # global vars
 
-BIN_JS_FILE = './Z7elzzup.js'
+BIN_JS_FILE = './SingletonClass.js'
 
 flag_debug = False
 
@@ -49,7 +49,7 @@ def mix2_host(tvid, tm0):
     sc = mix2(tvid, tm0)
     
     result = {}
-    result['tm'] = tm
+    result['tm'] = tm0
     result['sc'] = sc
     # done
     return result
