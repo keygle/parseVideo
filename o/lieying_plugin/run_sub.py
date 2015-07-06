@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/lieying_plugin/run_sub: call and run parsev as sub process. 
-# version 0.1.2.0 test201506291631
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.3.0 test201507061955
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -30,6 +30,8 @@
 import sys
 import subprocess
 import os
+
+from .. easy import set_proxy
 
 # global vars
 BIN_PARSEV = '../../parsev'
@@ -99,6 +101,10 @@ def run_one_pv(url, hd=None, i_min=None, i_max=None, flag_debug=False, flag_min_
     # check flag_v
     if check_flag_v():
         arg += ['--set-flag-v']
+    
+    # check http_proxy
+    if set_proxy.http_proxy != None:
+        arg += ['--http-proxy', set_proxy.http_proxy]
     
     # add fix ouput utf8
     arg += ['--fix-unicode']

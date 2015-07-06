@@ -1,7 +1,7 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.1.9.0 test201506291635
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.10.0 test201507061958
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -33,6 +33,8 @@ import json
 from .. import support_evparse
 
 from ..vlist import entry as vlist
+
+from ...easy import set_proxy
 
 # global vars
 
@@ -90,13 +92,20 @@ def run_pv(url, hd, flag_debug=False):
         # make args
         hd = str(hd)
         
-        arg = ['--fix-unicode', '--fix-size', '--min', hd, '--max', hd]
+        arg = ['--min', hd, '--max', hd]
         # check flag_debug
         if flag_debug:
             arg += ['--debug']
         
         if check_flag_v():
             arg += ['--set-flag-v']
+        
+        # check http_proxy
+        if set_proxy.http_proxy != None:
+            arg += ['--http-proxy', set_proxy.http_proxy]
+        
+        # add fix options
+        arg += ['--fix-unicode', '--fix-size']
         
         arg = [pybin, BIN_PARSE_VIDEO] + arg + [url]
     # make args done

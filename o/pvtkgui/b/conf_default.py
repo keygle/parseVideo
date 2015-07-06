@@ -1,7 +1,7 @@
 # conf_default.py, part for parse_video : a fork from parseVideo. 
 # conf_default: o/pvtkgui/conf_default: parse_video Tk GUI, default config, and ui text. 
-# version 0.1.9.0 test201506291635
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.10.0 test201507061959
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -123,7 +123,7 @@ main_win_init_text0_1 = [
 main_win_init_text1 = [
     ['h2', ' parse_video Tk GUI 2'], 
     ['red_bold', '          parse_video 图形界面\n'], 
-    ['gray', '          version 0.2.5.0 test201506291635'], 
+    ['gray', '          version 0.2.6.0 test201507061959'], 
 ]
 
 main_win_init_text2 = [
