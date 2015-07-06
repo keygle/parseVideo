@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/bks1
-# version 0.2.2.0 test201507061115
+# version 0.2.4.0 test201507062202
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -38,7 +38,7 @@ from .o import s1
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.2.0 test201507061115'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.2.2 test201507062202'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []
@@ -82,9 +82,11 @@ def set_config(config):
 # get_vid
 RE_VID = 'data-(player|drama)-videoid="([^"]+)"'
 RE_TVID = 'data-(player|drama)-tvid="([^"]+)"'
-RE_ALBUMID = 'data-(player|drama)-albumid="([^"]+)"'
-RE_VIDEOID = 'data-(player|drama)-videoid="([^"]+)"'
+
 RE_VVFLAG = 'data-(player|drama)-ismember="([^"]+)"'
+
+# NOTE fix get albumid here
+RE_ALBUMID = 'data-(player|drama)-albumid="([^"]*)"'
 
 def get_vid(url):
     html_text = ''
@@ -101,11 +103,10 @@ def get_vid(url):
     vids = re.findall(RE_VID, html_text)
     tvids = re.findall(RE_TVID, html_text)
     albumids = re.findall(RE_ALBUMID, html_text)
-    videoids = re.findall(RE_VIDEOID, html_text)
     vvflags = re.findall(RE_VVFLAG, html_text)
     
     # check supported URL by get vid
-    if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(videoids) < 1) or (len(vvflags) < 1):
+    if (len(vids) < 1) or (len(tvids) < 1) or (len(albumids) < 1) or (len(vvflags) < 1):
         # get vid and tvid failed, not support this URL
         raise error.NotSupportURLError('not support this url', url, 'get_vid')
     
@@ -113,7 +114,7 @@ def get_vid(url):
     vid = vids[0][1]
     tvid = tvids[0][1]
     albumid = albumids[0][1]
-    videoid = videoids[0][1]
+    videoid = vid
     
     vvflag = vvflags[0][1]
     # process vvflag

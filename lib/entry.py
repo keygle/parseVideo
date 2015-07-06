@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.14.0 test201507061906
+# version 0.1.15.0 test201507062159
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -182,7 +182,7 @@ def parse(url_to, config=etc, flag_restruct=True):
     # NOTE set base with http_proxy
     base.http_proxy = etc['http_proxy']
     # DEBUG info
-    if etc['flag_debug']:
+    if etc['flag_debug'] and (base.http_proxy != None):
         print('lib.entry: DEBUG: use http_proxy \"' + str(base.http_proxy) + '\"')
     
     # set it
