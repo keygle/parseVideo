@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/letv 
-# version 0.1.0.0 test201506201143
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
+# version 0.1.2.0 test201507071641
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -37,7 +37,7 @@ from . import get_video_info
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.0.5.0 test201506201143'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.1.0.0 test201507071641'
 
 # http://www.letv.com/ptv/vplay/22695165.html
 # http://www.letv.com/ptv/vplay/22699924.html
@@ -47,8 +47,11 @@ RE_VID = 'http://www\.letv\.com/ptv/vplay/([0-9]+)\.html'
 
 # global config obj
 etc = {}	# NOTE should be set
+
 etc['flag_debug'] = False
 etc['flag_fix_size'] = False
+etc['flag_enable_parse_more'] = False
+
 etc['hd_max'] = 0
 etc['hd_min'] = 0
 
@@ -58,6 +61,8 @@ def set_config(config):
     # just copy it
     etc['flag_debug'] = config['flag_debug']
     etc['flag_fix_size'] = config['flag_fix_size']
+    etc['flag_enable_parse_more'] = config['flag_enable_parse_more_url']
+    
     etc['hd_max'] = config['hd_max']
     etc['hd_min'] = config['hd_min']
 
@@ -101,7 +106,8 @@ def parse(url_to):	# this site entry main entry function
         hd_max=etc['hd_max'], 
         hd_min=etc['hd_min'], 
         flag_debug=etc['flag_debug'], 
-        flag_fix_size=etc['flag_fix_size'])
+        flag_fix_size=etc['flag_fix_size'], 
+        flag_enable_parse_more=etc['flag_enable_parse_more'])
     # done
     return evinfo
 

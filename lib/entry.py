@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.15.0 test201507062159
+# version 0.1.16.0 test201507071312
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -45,6 +45,7 @@ etc['flag_fix_size'] = False
 etc['flag_v'] = False
 etc['flag_v_force'] = False
 etc['flag_min_parse'] = False
+etc['flag_enable_parse_more_url'] = False
 
 etc['hd_min'] = hd_quality.HD_MIN
 etc['hd_max'] = hd_quality.HD_MAX

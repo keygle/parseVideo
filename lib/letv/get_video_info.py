@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/letv
-# version 0.0.3.0 test201506201148
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.0.4.0 test201507071443
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -41,44 +41,15 @@ DISPATCH_TYPE_TO_HD = {	# letv video dispatch type to hd
     '1080p' : 4, 	# 1080p, 	1080p
 }
 
-# functions
+# base functions
 def number(string):	# convert number to string, use int or float
     f = float(string)	# make it float frist
     if math.floor(f) == f:	# check it is int
         return int(f)
     return f
 
-def get_one_info(one_raw):
-    raw = one_raw
-    vinfo = {}
-    vinfo['hd'] = raw['hd']
-    # get info from o.exports
-    domain = raw['domain']
-    dispatch = raw['dispatch']
-    final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
-    # add more video info
-    vinfo['format'] = final_info['ext']
-    vinfo['file'] = []
-    # add more info
-    vinfo['size_byte'] = -1	# TODO not support this
-    vinfo['time_s'] = raw['time_s']
-    vinfo['size_px'] = [-1, -1]	# TODO not support this
-    # add count
-    vinfo['count'] = 1	# for letv, count should be 1
-    # check flag_get_file
-    if raw['flag_get_file']:
-        # add file info
-        onef = {}
-        onef['size'] = -1	# TODO not support this
-        onef['time_s'] = raw['time_s']
-        # add final url
-        onef['url'] = final_info['url']
-        # TODO check set user_agent and referer
-        vinfo['file'].append(onef)
-    # get video info done
-    return vinfo
-
-def get_info(info, hd_min=0, hd_max=0, flag_debug=False, flag_fix_size=False):
+# functions
+def get_info(info, hd_min=0, hd_max=0, flag_debug=False, flag_fix_size=False, flag_enable_parse_more=False):
     # get video list
     playurl = info['playurl']
     domain_list = playurl['domain']
@@ -98,6 +69,13 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, flag_fix_size=False):
         one['dispatch'] = raw_list[i]
         one['domain'] = domain_list
         one['time_s'] = video_time_s
+        
+        # add rateid
+        one['rateid'] = i
+        # add flags
+        one['flag_debug'] = flag_debug
+        one['flag_enable_parse_more'] = flag_enable_parse_more
+        
         # add one info
         video_list.append(one)
     # process hd_min and hd_max, set get_file flag
@@ -123,6 +101,53 @@ def get_info(info, hd_min=0, hd_max=0, flag_debug=False, flag_fix_size=False):
         vinfo.append(onev)
     # get video info done
     # done
+    return vinfo
+
+def get_one_info(one_raw):
+    raw = one_raw
+    vinfo = {}
+    vinfo['hd'] = raw['hd']
+    
+    # get flags
+    flag_debug = raw['flag_debug']
+    flag_enable_parse_more = raw['flag_enable_parse_more']
+    
+    # get info from o.exports
+    domain = raw['domain']
+    dispatch = raw['dispatch']
+    rateid = raw['rateid']
+    
+    # check parse_more flag
+    if flag_enable_parse_more:
+        final_info = exports.letv_more_url.parse_more_url(domain, dispatch, rateid, flag_debug=flag_debug)
+    else:	# use old parse method
+        final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
+    
+    # add more video info
+    vinfo['format'] = final_info['ext']
+    vinfo['file'] = []
+    # add more info
+    vinfo['size_byte'] = -1	# TODO not support this
+    vinfo['time_s'] = raw['time_s']
+    vinfo['size_px'] = [-1, -1]	# TODO not support this
+    # add count
+    vinfo['count'] = 1	# for letv, count should be 1
+    # check flag_get_file
+    if raw['flag_get_file']:
+        # add file info
+        onef = {}
+        onef['size'] = -1	# TODO not support this
+        onef['time_s'] = raw['time_s']
+        # add final url
+        onef['url'] = final_info['url']
+        
+        # check url_more
+        if 'url_more' in final_info:
+            onef['url_more'] = final_info['url_more']
+        
+        # TODO check set user_agent and referer
+        vinfo['file'].append(onef)
+    # get video info done
     return vinfo
 
 # end get_video_info.py

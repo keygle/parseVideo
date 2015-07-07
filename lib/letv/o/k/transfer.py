@@ -46,10 +46,11 @@ class IDTransfer(object):
         _loc2_ += '&splatid='
         if self.splatid != None:
             _loc2_ += self.splatid
-        else:
-            _loc2_ += '101'
+        else:	# NOTE fix parse_more_url here
+            _loc2_ += '1401'
+            # _loc2_ += '101'
         
-        _loc2_ += '&format=1'
+        # _loc2_ += '&format=1'
         
         # add tkey
         tkey = self.timestamp.calcTimeKey()
