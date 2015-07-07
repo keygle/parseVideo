@@ -33,6 +33,7 @@ def get_more_json_url(domain, dispatch_format_id, format_type):
     
     # modify options
     option_a['tss'] = 'no'
+    option_a['splatid'] = '1401'
     
     # concat url
     before = domain + dispatch_s[0] + '?'
@@ -52,7 +53,28 @@ def get_more_json_url(domain, dispatch_format_id, format_type):
     return out
 
 def parse_more_json(raw_url):
-    pass	# TODO
+    
+    # load json
+    raw = base.get_json_info(raw_url, method='POST')
+    
+    out = {}
+    # translate info struct
+    out['ext'] = 'mp4'	# NOTE letv format should be mp4
+    
+    out['url'] = raw['location']
+    
+    # add more url
+    out['url_more'] = []
+    more = out['url_more']
+    
+    for i in raw['nodelist']:
+        one = {}
+        one['name'] = i['name']
+        one['url'] = i['location']
+        more.append(one)
+    
+    # done
+    return out
 
 # end more_url.py
 

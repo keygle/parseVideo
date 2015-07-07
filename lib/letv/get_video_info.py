@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/letv
-# version 0.0.3.0 test201506201148
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.0.4.0 test201507071443
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -119,14 +119,10 @@ def get_one_info(one_raw):
     
     # check parse_more flag
     if flag_enable_parse_more:
-        more_info = exports.letv_more_url.parse_more_url(domain, dispatch, rateid, flag_debug=flag_debug)
-        # TODO
-    else:
-        return
-        pass
-    # TODO
+        final_info = exports.letv_more_url.parse_more_url(domain, dispatch, rateid, flag_debug=flag_debug)
+    else:	# use old parse method
+        final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
     
-    final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
     # add more video info
     vinfo['format'] = final_info['ext']
     vinfo['file'] = []
@@ -144,6 +140,11 @@ def get_one_info(one_raw):
         onef['time_s'] = raw['time_s']
         # add final url
         onef['url'] = final_info['url']
+        
+        # check url_more
+        if 'url_more' in final_info:
+            onef['url_more'] = final_info['url_more']
+        
         # TODO check set user_agent and referer
         vinfo['file'].append(onef)
     # get video info done
