@@ -1,7 +1,7 @@
 # easy_text.py, part for parse_video : a fork from parseVideo. 
 # easy_text: o/output/easy_text: output result in easy text. 
-# version 0.0.9.0 test201506231745
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.0.11.0 test201507071827
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -233,6 +233,18 @@ def output_style(evinfo, flag_simple=False):
             t += [['select_each_url_count', num_count]]
             
             t += [['a', f['url']]]
+            
+            # check to add url_more
+            if 'url_more' in f:
+                more_list = f['url_more']
+                # add each item
+                for m in more_list:
+                    t += [[None, '\n\n']]
+                    # add more name, NOTE there use select_each_url_count to add the select button
+                    t += [['select_each_url_count', m['name'] + '			']]
+                    
+                    t += [['a', m['url']]]
+            # add url_more items done
         # add urls done
         t += [[None, '\n']]
     # add one video info done

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_video_info.py, part for parse_video : a fork from parseVideo. 
 # get_video_info: parse_video/lib/letv
-# version 0.0.4.0 test201507071443
+# version 0.0.5.0 test201507071806
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -118,7 +118,7 @@ def get_one_info(one_raw):
     rateid = raw['rateid']
     
     # check parse_more flag
-    if flag_enable_parse_more:
+    if flag_enable_parse_more and (not raw['flag_fix_size']):
         final_info = exports.letv_more_url.parse_more_url(domain, dispatch, rateid, flag_debug=flag_debug)
     else:	# use old parse method
         final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)

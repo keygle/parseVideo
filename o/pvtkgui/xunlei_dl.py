@@ -1,6 +1,6 @@
 # xunlei_dl.py, part for parse_video : a fork from parseVideo. 
 # xunlei_dl: o/pvtkgui/xunlei_dl: parse_video Tk GUI, add download tasks to xunlei with windows com ThunderAgent. 
-# version 0.1.3.0 test201507021254
+# version 0.1.4.0 test201507071819
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -145,6 +145,19 @@ def make_task_list(evinfo):
                 quality=quality)
             # add one task done
             tlist.append(one)
+            
+            # check to add url_more items
+            if 'url_more' in f:
+                old_one = one
+                
+                more_list = f['url_more']
+                for m in more_list:
+                    one = {}
+                    one['url'] = m['url']
+                    one['file'] = old_one['file']
+                    
+                    tlist.append(one)
+            # add url_more done
     # done
     return tlist
 

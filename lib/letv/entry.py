@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/letv 
-# version 0.1.2.0 test201507071641
+# version 0.1.3.0 test201507071809
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,7 @@ from . import get_video_info
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.1.0.0 test201507071641'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.1.1.0 test201507071809'
 
 # http://www.letv.com/ptv/vplay/22695165.html
 # http://www.letv.com/ptv/vplay/22699924.html
