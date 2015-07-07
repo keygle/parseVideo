@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.2.6.0 test201507071315
+# version 0.2.7.0 test201507071644
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -61,7 +61,7 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.3.3.1 test201507062205'
+PARSE_VIDEO_VERSION = 'parse_video version 0.3.4.0 test201507071644'
 
 DEBUG_STDOUT_MARK = '<parse_video_debug_stdout_mark>'
 
@@ -158,6 +158,8 @@ Options:
                      used on systems not support unicode well
     --fix-size       parse all possible size, or give url if possible
                      and set the fix_size flag at the same time
+    --enable-parse-more-url
+                     parse more url of one file if possible
     
     --set-flag-v     reserved option
     --force          force set

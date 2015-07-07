@@ -54,14 +54,8 @@ def get_more_json_url(domain, dispatch_format_id, format_type):
 
 def parse_more_json(raw_url):
     
-    # add headers
-    header = {}
-    header['Content-Type'] = 'application/x-www-form-urlencoded'
-    header['Accept'] = 'application/json'
-    user_agent0 = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.2; .NET CLR 1.1.4322; .NET CLR 2.0.50727; InfoPath.1) Web-Sniffer/1.0.24'
-    
     # load json
-    raw = base.get_json_info(raw_url, header=header, user_agent=user_agent0, method='POST')
+    raw = base.get_json_info(raw_url)
     
     out = {}
     # translate info struct
