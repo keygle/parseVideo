@@ -33,7 +33,6 @@ def get_more_json_url(domain, dispatch_format_id, format_type):
     
     # modify options
     option_a['tss'] = 'no'
-    option_a['splatid'] = '1401'
     
     # concat url
     before = domain + dispatch_s[0] + '?'

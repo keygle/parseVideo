@@ -1,7 +1,7 @@
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/pvtkgui/entry: parse_video Tk GUI main entry. 
-# version 0.2.15.0 test201506271511
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.2.16.0 test201507071803
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -290,8 +290,21 @@ def start_parse():
     # save last_hd, NOTE
     etc['last_hd'] = hd
     
+    # check flag_select_each, if enabled, will enable parse_more_url
+    flag_parse_more = False
+    if conf.conf['flag_select_each']:
+        flag_parse_more = True
+    
     # just start sub process
-    run_sub.run_pv_thread(on_parsev_done, url_to, hd, write_config=conf.write_config, flag_debug=flag_debug, w=etc['w'])
+    run_sub.run_pv_thread(
+    		on_parsev_done, 
+    		url_to, 
+    		hd, 
+    		write_config=conf.write_config, 
+    		flag_debug=flag_debug, 
+    		w=etc['w'], 
+    		flag_enable_parse_more=flag_parse_more)
+    # start parse done
 
 # on parsev subprocess finished
 def on_parsev_done(stdout, stderr, flag_only=False):

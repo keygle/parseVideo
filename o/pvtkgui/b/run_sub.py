@@ -1,6 +1,6 @@
 # run_sub.py, part for parse_video : a fork from parseVideo. 
 # run_sub: o/pvtkgui/run_sub: for parse_video Tk GUI, call and run parse_video. 
-# version 0.1.10.0 test201507061958
+# version 0.1.11.0 test201507071800
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -78,7 +78,7 @@ def check_flag_v():
     return False
 
 # run parse_video
-def run_pv(url, hd, flag_debug=False):
+def run_pv(url, hd, flag_debug=False, flag_enable_parse_more=False):
     # get python bin file
     pybin = sys.executable
     
@@ -104,6 +104,10 @@ def run_pv(url, hd, flag_debug=False):
         if set_proxy.http_proxy != None:
             arg += ['--http-proxy', set_proxy.http_proxy]
         
+        # check parse_more flag
+        if flag_enable_parse_more:
+            arg += ['--enable-parse-more-url']
+        
         # add fix options
         arg += ['--fix-unicode', '--fix-size']
         
@@ -120,7 +124,7 @@ def run_pv(url, hd, flag_debug=False):
     # done
     return stdout, stderr
 
-def sub_thread(callback, url, hd, write_config=None, flag_debug=False, w=None):
+def sub_thread(callback, url, hd, write_config=None, flag_debug=False, w=None, flag_enable_parse_more=False):
     # DEBUG info
     print('pvtkgui: run_sub: run parse_video sub_thread start')
     # write config file first
@@ -140,15 +144,15 @@ def sub_thread(callback, url, hd, write_config=None, flag_debug=False, w=None):
         return
     
     # start parsev
-    stdout, stderr = run_pv(url, hd, flag_debug=flag_debug)
+    stdout, stderr = run_pv(url, hd, flag_debug=flag_debug, flag_enable_parse_more=flag_enable_parse_more)
     # DEBUG info
     print('pvtkgui: run_sub: run parse_video sub_thread end')
     callback(stdout, stderr)
 
 # run parse_video in sub thread
-def run_pv_thread(callback, url, hd, write_config=None, flag_debug=False, w=None):
+def run_pv_thread(callback, url, hd, write_config=None, flag_debug=False, w=None, flag_enable_parse_more=False):
     # just start it
-    start_thread(sub_thread, arg=(callback, url, hd, write_config, flag_debug, w))
+    start_thread(sub_thread, arg=(callback, url, hd, write_config, flag_debug, w, flag_enable_parse_more))
 
 # start thread
 def start_thread(target, arg=(), daemon=True):
