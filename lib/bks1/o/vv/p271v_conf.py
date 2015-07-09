@@ -7,7 +7,7 @@ import os
 import json
 
 # global vars
-CONFIG_FILE = '../private.271v_conf.json'
+CONFIG_FILE = '../../private.271v_conf.json'
 
 # function
 

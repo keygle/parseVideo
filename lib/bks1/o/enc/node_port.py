@@ -8,11 +8,11 @@ import os.path
 
 # import execjs
 
-from .key import md5_hash
+from ..raw.key import md5_hash
 
 # global vars
 
-BIN_JS_FILE = './SingletonClass.js'
+BIN_JS_FILE = './Zziagg.js'
 
 flag_debug = False
 
@@ -55,7 +55,8 @@ def mix2_host(tvid, tm0):
     return result
 
 def mix2(tvid, tm0):
-    enc = '754f3a28fee047ad9b654420056b400b'
+    # enc = '754f3a28fee047ad9b654420056b400b'	# NOTE old salt for SingletonClass
+    enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE new salt for Zziagg
     enc += str(tm0) + str(tvid)
     
     sc = md5_hash(enc)

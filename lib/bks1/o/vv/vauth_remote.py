@@ -6,8 +6,8 @@
 
 import time
 
-from .key import md5_hash
-from . import config as Config
+from ..raw.key import md5_hash
+from ..raw import config as Config
 
 # class
 

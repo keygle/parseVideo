@@ -7,8 +7,8 @@
 import random
 import sys
 
-from . import config
-from . import key
+from .raw import config
+from .raw import key
 
 # NOTE should be set
 base = None

@@ -6,7 +6,7 @@
 
 import random
 
-from . import node_port
+from ..enc import node_port
 from .key import md5_hash
 from . import config as Config
 

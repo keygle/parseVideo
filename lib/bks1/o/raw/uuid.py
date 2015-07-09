@@ -8,7 +8,7 @@ import random
 import re
 import json
 
-from . import s1
+from .. import s1
 
 # import from out
 base = None
