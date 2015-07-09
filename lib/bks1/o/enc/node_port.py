@@ -8,7 +8,7 @@ import os.path
 
 # import execjs
 
-from .key import md5_hash
+from ..raw.key import md5_hash
 
 # global vars
 
