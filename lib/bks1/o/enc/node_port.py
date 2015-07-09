@@ -12,7 +12,7 @@ from ..raw.key import md5_hash
 
 # global vars
 
-BIN_JS_FILE = './SingletonClass.js'
+BIN_JS_FILE = './Zziagg.js'
 
 flag_debug = False
 
