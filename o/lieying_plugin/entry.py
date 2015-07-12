@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.25.0 test201507121453
+# version 0.1.25.1 test201507121515
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -175,6 +175,10 @@ def parse_more(url):
     # process vlist, add sub_title
     for one in out['data']:
         one['no'] += '_' + one['title']
+        
+        # NOTE fix one['title'] to subtitle
+        one['subtitle'] = one['title']
+        one.pop('title')
     
     # add more info
     out['total'] = -1
