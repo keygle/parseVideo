@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.23.0 test201507092224
+# version 0.1.24.0 test201507121447
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -38,24 +38,35 @@ from . import version as version0
 
 from ..tool import s1
 
+from ..pvtkgui.vlist import entry as vlist
+
 # global vars
+
+# for lieying_plugin port version 0.2.0-test.2
+
+LIEYING_PLUGIN_PORT_VERSION = '0.2.0-test.2'
+LIEYING_PLUGIN_TYPE = 'parse'
+LIEYING_PLUGIN_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
+
+THIS_PLUGIN_SEM_VERSION = '0.12.0'
+
+LIEYING_PLUGIN_FILTER = [
+    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html', 
+]
+
 PARSE_VIDEO_LIEYING_PLUGIN_NAME = [
-    'parse_video_' + '7' + 'lieying_plugin', 
+    'parse_video_' + '8' + 'lieying_plugin', 
     ' (plugin version ', 
     ', kernel version ', 
     ') license ', 
     ' ', 
 ]
 
-LIEYING_PLUGIN_PARSE_TYPE = 'parse'
-
-LIEYING_PLUGIN_SUPPORTED_URL_RE = [
-    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html', 
-]
-
-THIS_PLUGIN_MARK_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
 THIS_LICENSE = 'GNU GPLv3+'
-THIS_PLUGIN_SEM_VERSION = '0.11.2'
+THIS_AUTHOR = 'sceext <sceext@foxmail.com>'
+THIS_COPYRIGHT = 'copyright 2015 sceext'
+THIS_HOME = 'https://github.com/sceext2/parse_video/tree/output-easy'
+THIS_NOTE = 'A parse plugin for lieying with parse support of parse_video. '
 
 # base function
 
@@ -82,7 +93,7 @@ def try_to_decode(stdout, stderr):
     return stdout, stderr
 
 # get parse_video version
-def get_version():
+def get_parse_video_version():
     # run ./parsev --version
     arg = ['--version', '--force-output-utf8']
     stdout, stderr = run_sub.run_pv(arg)
@@ -93,11 +104,12 @@ def get_version():
     # done
     return version
 
-# export functions
-
-def lieying_plugin_get_name():
-    # get now version
-    ver = get_version()
+# make plugin name string
+def make_plugin_name():
+    
+    # get parse_video version
+    ver = get_parse_video_version()
+    
     static_name = PARSE_VIDEO_LIEYING_PLUGIN_NAME
     
     this_name = ''
@@ -109,20 +121,11 @@ def lieying_plugin_get_name():
     
     return this_name
 
-def lieying_plugin_get_type():
-    return LIEYING_PLUGIN_PARSE_TYPE
-
-def lieying_plugin_get_filter():
-    return LIEYING_PLUGIN_SUPPORTED_URL_RE
-
-def lieying_plugin_parse_format(url_to):
-    # check if url supported
-    if check_support_url(url_to):
-        # not support
-        raise error.NotSupportURLError('check_re_list', url_to)
-        return
+# parse one video
+def parse_one(url):
     # run parsev to get info
-    stdout, stderr = run_sub.run_one_pv(url_to)
+    stdout, stderr = run_sub.run_one_pv(url)
+    
     # decode output
     stdout, stderr = try_to_decode(stdout, stderr)
     # use json to parse stdout
@@ -134,26 +137,109 @@ def lieying_plugin_parse_format(url_to):
         return
     # try to translate info
     out = tinfo.t2list(evinfo)
-    out_text = json.dumps(out)
+    
     # done
-    return out_text
+    return out
 
-def lieying_plugin_parse_url(url_to, format_text):
-    # just use parse_some_url
-    return lieying_plugin_parse_some_url(url_to, format_text)
+# parse more video
+def parse_more(url):
+    
+    # output data
+    out = {}
+    
+    vlist_info = vlist.parse_video_list(url)
+    out['data'] = vlist_info['list']
+    out['type'] = 'list'
+    
+    # add album_name title, and add site_name
+    out['title'] = vlist_info['title'] + '_' + vlist_info['site_name']
+    
+    # make tinfo
+    ti = {}
+    ti['title'] = ''
+    ti['title_sub'] = ''
+    ti['title_no'] = -1
+    ti['site_name'] = vlist_info['site_name']
+    
+    # add name
+    for i in range(len(out['data'])):
+        one = out['data'][i]
+        ti['title'] = vlist_info['title'] + one['no']
+        ti['title_sub'] = one['title']
+        ti['title_no'] = i + 1
+        ti['title_short'] = ''
+        ti['quality'] = ''
+        
+        fname, main_name = tinfo.make_title(ti)
+        one['name'] = main_name
+    # process vlist, add sub_title
+    for one in out['data']:
+        one['no'] += '_' + one['title']
+    
+    # add more info
+    out['total'] = -1
+    out['total'] = len(out['data'])
+    out['more'] = False
+    
+    # done
+    return out
 
-# parse_some_url(url_to, format_text, i_min, i_max)
-def lieying_plugin_parse_some_url(url_to, format_text, i_min=None, i_max=None):
+
+# export functions
+
+# GetVersion()
+def lieying_plugin_get_version():
+    out = {}	# output info
+    
+    out['port_version'] = LIEYING_PLUGIN_PORT_VERSION
+    out['type'] = LIEYING_PLUGIN_TYPE
+    out['uuid'] = LIEYING_PLUGIN_UUID
+    out['version'] = THIS_PLUGIN_SEM_VERSION
+    out['name'] = make_plugin_name()
+    
+    out['filter'] = LIEYING_PLUGIN_FILTER
+    
+    out['author'] = THIS_AUTHOR
+    out['copyright'] = THIS_COPYRIGHT
+    out['license'] = THIS_LICENSE
+    out['home'] = THIS_HOME
+    out['note'] = THIS_NOTE
+    
+    text = json.dumps(out)
+    return text
+
+# Parse()
+def lieying_plugin_parse(input_text):
     # check if url supported
-    if check_support_url(url_to):
+    if check_support_url(input_text):
         # not support
-        raise error.NotSupportURLError('check_re_list', url_to)
+        raise error.NotSupportURLError('check_re_list', input_text)
+        return
+    
+    # check for parse_one and parse_more
+    
+    # check is vlist
+    if vlist.check_is_list_url(input_text):
+        out = parse_more(input_text)
+    else:
+        out = parse_one(input_text)
+    
+    # done
+    text = json.dumps(out)
+    return text
+
+# ParseURL()
+def lieying_plugin_parse_url(url, label, i_min=None, i_max=None):
+    # check if url supported
+    if check_support_url(url):
+        # not support
+        raise error.NotSupportURLError('check_re_list', url)
         return
     # get hd
-    hd = tinfo.get_hd_from_format_text(format_text)
+    hd = tinfo.get_hd_from_format_text(label)
     # run parsev to get info
     stdout, stderr = run_sub.run_one_pv(
-    				url_to, 
+    				url, 
     				hd=hd, 
     				i_min=i_min, 
     				i_max=i_max, 
@@ -170,83 +256,10 @@ def lieying_plugin_parse_some_url(url_to, format_text, i_min=None, i_max=None):
         return
     # try to translate info
     out = tinfo.t2one(evinfo, hd)
-    out_text = json.dumps(out)
+    
+    text = json.dumps(out)
     # done
-    return out_text
-
-# parse_format2(), support for vlist
-def lieying_plugin_parse_format2(url):
-    from ..pvtkgui.vlist import entry as vlist
-    
-    # output data
-    out = {}
-    
-    # check is vlist
-    if vlist.check_is_list_url(url):
-        # parse as vlist
-        vlist_info = vlist.parse_video_list(url)
-        out['data'] = vlist_info['list']
-        out['type'] = 'list'
-        
-        # add album_name title, and add site_name
-        out['title'] = vlist_info['title'] + '_' + vlist_info['site_name']
-        
-        # make tinfo
-        ti = {}
-        ti['title'] = ''
-        ti['title_sub'] = ''
-        ti['title_no'] = -1
-        ti['site_name'] = vlist_info['site_name']
-        
-        # add name
-        for i in range(len(out['data'])):
-            one = out['data'][i]
-            ti['title'] = vlist_info['title'] + one['no']
-            ti['title_sub'] = one['title']
-            ti['title_no'] = i + 1
-            ti['title_short'] = ''
-            ti['quality'] = ''
-            
-            fname, main_name = tinfo.make_title(ti)
-            one['name'] = main_name
-        # process vlist, add sub_title
-        for one in out['data']:
-            one['no'] += '_' + one['title']
-        
-        # add more info
-        out['total'] = -1
-        out['total'] = len(out['data'])
-        out['more'] = False
-    else:	# parse as normal url
-        info = lieying_plugin_parse_format(url)
-        out['data'] = json.loads(info)
-        out['type'] = 'formats'
-    
-    outt = json.dumps(out)
-    # done
-    return outt
-
-# get_version
-def lieying_plugin_get_version():
-    # make version info obj
-    info = {}
-    
-    info['uuid'] = THIS_PLUGIN_MARK_UUID
-    info['version'] = THIS_PLUGIN_SEM_VERSION
-    
-    info['name'] = lieying_plugin_get_name()
-    info['type'] = lieying_plugin_get_type()
-    info['filter'] = lieying_plugin_get_filter()
-    
-    # add more info
-    info['home'] = 'https://github.com/sceext2/parse_video/tree/output-easy'
-    info['author'] = 'sceext <sceext@foxmail.com>'
-    info['copyright'] = 'copyright 2015 sceext All rights reserved. '
-    info['license'] = THIS_LICENSE
-    
-    # output
-    out = json.dumps(info)
-    return out
+    return text
 
 # end entry.py
 

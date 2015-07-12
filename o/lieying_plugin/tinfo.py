@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # tinfo.py, part for parse_video : a fork from parseVideo. 
 # tinfo: o/lieying_plugin/tinfo: translate info from parse_video to lieying_plugin. 
-# version 0.1.3.2 test201507021651
+# version 0.2.0.0 test201507121451
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -137,18 +137,24 @@ def make_title(tinfo):
 def t2list(evinfo):
     fname, main_name = make_title(evinfo['info'])
     video_name = main_name
+    
     out = {}
-    out['Name'] = video_name
+    
+    out['type'] = 'formats'
+    
+    out['name'] = video_name
     vlist = []
-    out['Formats'] = vlist
+    out['data'] = vlist
     # add each video item
     for v in evinfo['video']:
         one = {}
         video_format = make_format_text(v)
         video_size = byte2unit(v['size_byte'])
-        one['Label'] = video_format
-        one['Size'] = video_size
-        one['Ext'] = v['format']
+        
+        one['label'] = video_format
+        one['ext'] = v['format']
+        one['size'] = video_size
+        
         # add one info done
         vlist.append(one)
     # done
@@ -178,9 +184,9 @@ def t2one(evinfo, hd):
         
         # add this file info
         one = {}
-        one['Protocol'] = LIEYING_PLUGIN_PROTOCOL
-        one['Args'] = LIEYING_PLUGIN_ARGS
-        one['Value'] = f['url']
+        one['protocol'] = LIEYING_PLUGIN_PROTOCOL
+        one['args'] = LIEYING_PLUGIN_ARGS
+        one['value'] = f['url']
         # add one done
         ulist.append(one)
     # done
