@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.25.1 test201507121515
+# version 0.1.26.0 test201507122115
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -42,20 +42,20 @@ from ..pvtkgui.vlist import entry as vlist
 
 # global vars
 
-# for lieying_plugin port version 0.2.0-test.2
+# for lieying_plugin port version 0.2.0-test.3
 
-LIEYING_PLUGIN_PORT_VERSION = '0.2.0-test.2'
+LIEYING_PLUGIN_PORT_VERSION = '0.2.0-test.3'
 LIEYING_PLUGIN_TYPE = 'parse'
 LIEYING_PLUGIN_UUID = 'ebd9ac19-dec6-49bb-b96f-9a127dc4d0c3'
 
-THIS_PLUGIN_SEM_VERSION = '0.12.0'
+THIS_PLUGIN_SEM_VERSION = '0.13.0'
 
 LIEYING_PLUGIN_FILTER = [
     '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html', 
 ]
 
 PARSE_VIDEO_LIEYING_PLUGIN_NAME = [
-    'parse_video_' + '8' + 'lieying_plugin', 
+    'parse_video_' + '9' + 'lieying_plugin', 
     ' (plugin version ', 
     ', kernel version ', 
     ') license ', 
