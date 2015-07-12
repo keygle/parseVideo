@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # key.py, part for parse_video : a fork from parseVideo. 
-# key: iqiyi, evparse:lib/iqiyi/o/base/utils_key.py
+# key: bks1, evparse:lib/bks1/o/base/utils_key.py
 
 # import
 import hashlib

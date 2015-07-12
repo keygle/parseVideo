@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # def.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# def: iqiyi, com.qiyi.player.core.model.def 
+# def: bks1, com.71.player.core.model.def 
 
 # import
 

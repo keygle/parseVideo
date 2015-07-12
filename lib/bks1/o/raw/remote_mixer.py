@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # remote_mixer.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# remote_mixer: iqiyi, com.qiyi.player.core.model.remote 
+# remote_mixer: bks1, com.71.player.core.model.remote 
 
 # import
 
 import random
 
-from . import node_port
+from ..enc import node_port
 from .key import md5_hash
 from . import config as Config
 

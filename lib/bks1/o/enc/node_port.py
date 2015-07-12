@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # node_port.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# node_port: iqiyi, node_port to run javascript. 
+# node_port: bks1, node_port to run javascript. 
 
 # import
 
@@ -8,11 +8,11 @@ import os.path
 
 # import execjs
 
-from .key import md5_hash
+from ..raw.key import md5_hash
 
 # global vars
 
-BIN_JS_FILE = './Z7elzzup.js'
+BIN_JS_FILE = './Zziagg.js'
 
 flag_debug = False
 
@@ -46,24 +46,21 @@ def mix1(tvid, tm):
     return result
 
 def mix2_host(tvid, tm0):
-    tm, sc, src = mix2(tvid, tm0)
+    sc = mix2(tvid, tm0)
     
     result = {}
-    result['tm'] = tm
+    result['tm'] = tm0
     result['sc'] = sc
-    result['src'] = src
     # done
     return result
 
 def mix2(tvid, tm0):
-    enc = ''
-    enc += '7b11c5408ff342318da3e7c97b92e890'
-    tm = str(tm0)
-    src = 'hsalf'
-    enc += str(tm)
-    enc += str(tvid)
+    # enc = '754f3a28fee047ad9b654420056b400b'	# NOTE old salt for SingletonClass
+    enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE new salt for Zziagg
+    enc += str(tm0) + str(tvid)
+    
     sc = md5_hash(enc)
-    return tm, sc, src
+    return sc
 
 # end node_port.py
 

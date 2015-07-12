@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # vauth_remote.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# vauth_remote: iqiyi, com.qiyi.player.core.model.remote.AuthenticationRemote
+# vauth_remote: bks1, com.71.player.core.model.remote.AuthenticationRemote
 
 # import
 
 import time
 
-from .key import md5_hash
-from . import config as Config
+from ..raw.key import md5_hash
+from ..raw import config as Config
 
 # class
 

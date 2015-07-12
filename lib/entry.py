@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.11.0 test201506251952
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.16.0 test201507071312
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -32,6 +32,9 @@ import re
 from . import hd_quality
 from . import error
 from . import restruct
+from . import base
+
+from .bks1.o import s1
 
 # static data
 
@@ -40,11 +43,16 @@ etc = {}
 etc['flag_debug'] = False
 etc['flag_fix_size'] = False
 etc['flag_v'] = False
+etc['flag_v_force'] = False
+etc['flag_min_parse'] = False
+etc['flag_enable_parse_more_url'] = False
 
 etc['hd_min'] = hd_quality.HD_MIN
 etc['hd_max'] = hd_quality.HD_MAX
 etc['i_min'] = None
 etc['i_max'] = None
+
+etc['http_proxy'] = None
 
 etc['EV_INFO_VERSION'] = restruct.EV_INFO_VERSION
 etc['EV_INFO_SOURCE'] = 'parse_video'
@@ -54,14 +62,14 @@ etc['EV_INFO_SOURCE'] = 'parse_video'
 LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
     
     # 271
-    # http://www.iqiyi.com/v_19rrn64t40.html
-    # http://www.iqiyi.com/w_19rrp737k5.html
-    # http://yule.iqiyi.com/pcb.html?src=focustext_0_20130527_7
-    # http://www.iqiyi.com/dianying/20130217/e72ffd87c2e9c5af.html
-    # http://www.iqiyi.com/dianshiju/sjll_wjt.html
-    # http://www.iqiyi.com/dianshiju/20121108/879eec15c7810d10.html
-    '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
-    # NOTE check iqiyi supported url, by get vid and tvid, not by RE to url
+    # http://www.bks1.com/v_19rrn64t40.html
+    # http://www.bks1.com/w_19rrp737k5.html
+    # http://yule.bks1.com/pcb.html?src=focustext_0_20130527_7
+    # http://www.bks1.com/dianying/20130217/e72ffd87c2e9c5af.html
+    # http://www.bks1.com/dianshiju/sjll_wjt.html
+    # http://www.bks1.com/dianshiju/20121108/879eec15c7810d10.html
+    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html' : 'bks1', 
+    # NOTE check bks1 supported url, by get vid and tvid, not by RE to url
     
     # letv
     '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html' : 'letv', 
@@ -76,19 +84,13 @@ LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
 }
 
 LIST_SITE = {	# list of site to site_name
-    'iqiyi' : '爱奇艺', 
+    'bks1' : '不可说', 
     'letv' : '乐视网', 
-    'youku' : '优酷', 
-    'pps' : 'PPS', 
-    'tudou' : '土豆', 
 }
 
 LIST_EXTRACTOR_NAME = {	# export evinfo extractor_name
-    'iqiyi' : 'iqiyi1', 
+    'bks1' : 'bks1_1', 
     'letv' : 'letv1', 
-    'youku' : 'youku1', 
-    'pps' : 'pps1', 
-    'tudou' : 'tudou1', 
 }
 
 # functions
@@ -106,35 +108,18 @@ def url_to_extractor(url_to):	# url to extractor_name
     return en
 
 # import extractor functions
-def extractor_import_iqiyi():
-    from .iqiyi import entry as entry0
+def extractor_import_bks1():
+    from .bks1 import entry as entry0
     return entry0
 
 def extractor_import_letv():
     from .letv import entry as entry0
     return entry0
 
-# TODO not finished
-def extractor_import_youku():
-    from .youku import entry as entry0
-    return entry0
-
-def extractor_import_pps():
-    from .pps import entry as entry0
-    return entry0
-
-def extractor_import_tudou():
-    from .tudou import entry as entry0
-    return entry0
-
 # list used for extractor_name to extractor
 EXTRACTOR_IMPORT_LIST = {
-    'iqiyi' : extractor_import_iqiyi, 
+    'bks1' : extractor_import_bks1, 
     'letv' : extractor_import_letv, 
-    # TODO not finished
-    'youku' : extractor_import_youku, 
-    'pps' : extractor_import_pps, 
-    'tudou' : extractor_import_tudou, 
 }
 
 def dy_import_extractor(extractor_name):
@@ -194,6 +179,13 @@ def parse(url_to, config=etc, flag_restruct=True):
         raise error.NotSupportURLError('not support this url', url_to)
     # import extractor
     extractor = dy_import_extractor(extractor_name)
+    
+    # NOTE set base with http_proxy
+    base.http_proxy = etc['http_proxy']
+    # DEBUG info
+    if etc['flag_debug'] and (base.http_proxy != None):
+        print('lib.entry: DEBUG: use http_proxy \"' + str(base.http_proxy) + '\"')
+    
     # set it
     extractor.set_config(config)
     # just parse

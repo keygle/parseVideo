@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # base.py, part for parse_video : a fork from parseVideo. 
 # base: base part. 
-# version 0.1.5.0 test201506242244
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.8.0 test201507071615
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -39,15 +39,41 @@ import socket
 # USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0'
 
+# base global http_proxy setting
+http_proxy = None
+
 # functions
 
 def re1(re0, text):
     result = re.findall(re0, text)
     return result[0]
 
+# http_get with http_proxy
+def http_proxy_http_get(url, proxy=None, header={}):
+    
+    # create proxy
+    proxy_handler = request.ProxyHandler({'http' : proxy})
+    opener = request.build_opener(proxy_handler)
+    
+    # make headers
+    header_list = []
+    for i in header:
+        header_list.append((i, header[i]))
+    # add headers
+    opener.addheaders = header_list
+    
+    # just start http_get request and return raw data
+    raw = None
+    with opener.open(url) as f:
+        raw = f.read()
+    
+    # done
+    return raw
+
 # just return the content of the url as raw string
 # TODO this may be not stable
-def simple_http_get(url, user_agent, referer):
+def simple_http_get(url, user_agent, referer, header={}, method='GET'):
+    more_header = header
     # make headers
     header = {}
     header['User-Agent'] = user_agent
@@ -56,8 +82,21 @@ def simple_http_get(url, user_agent, referer):
     # add connection close
     header['Connection'] = 'close'
     
+    # add more headers
+    for h in more_header:
+        header[h] = more_header[h]
+    
+    # check http_proxy
+    if http_proxy != None:
+        raw = http_proxy_http_get(url, proxy=http_proxy, header=header)
+        # TODO now just spport utf-8
+        content = raw.decode('utf-8', 'ignore')
+        # done
+        return content
+    # NOT use http_proxy
+    
     # start a http request
-    req = request.Request(url, headers=header)
+    req = request.Request(url, headers=header, method=method)
     # res, response
     res = request.urlopen(req)
     data = res.read()
@@ -76,14 +115,14 @@ def simple_http_get(url, user_agent, referer):
     return content
 
 # return the html content of url as string
-def get_html_content(url, user_agent=USER_AGENT, referer=None):
+def get_html_content(url, user_agent=USER_AGENT, referer=None, header={}, method='GET'):
     # just use simple_http_get
-    return simple_http_get(url, user_agent=user_agent, referer=referer)
+    return simple_http_get(url, user_agent=user_agent, referer=referer, header=header, method=method)
 
 # return object, the text of the url is json format
-def get_json_info(url, user_agent=USER_AGENT, referer=None):
+def get_json_info(url, user_agent=USER_AGENT, referer=None, header={}, method='GET'):
     # get text
-    text = simple_http_get(url, user_agent=user_agent, referer=referer)
+    text = simple_http_get(url, user_agent=user_agent, referer=referer, header=header, method=method)
     # use json to decode it
     info = json.loads(text)
     # done

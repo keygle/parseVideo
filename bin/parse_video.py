@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, part for parse_video : a fork from parseVideo. 
 # parse_video:bin/parse_video: parse_video main bin file. 
-# version 0.1.31.0 test201506252017
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.2.9.0 test201507092219
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -26,11 +26,20 @@
 #
 
 # supported command line options
+
 # NOTE support --min --max
 # NOTE support --min-i --max-i
+
+# NOTE support --http-proxy
+
 # NOTE support --debug
 # NOTE support --fix-unicode output option. 
 # NOTE support --fix-size option
+# NOTE support --set-min-parse
+# NOTE support --enable-parse-more-url
+
+# NOTE support --set-flag-v
+# NOTE support --force
 
 # import
 
@@ -52,17 +61,27 @@ def set_import(entry0, error0):
 
 # global config obj
 
-PARSE_VIDEO_VERSION = 'parse_video version 0.2.11.0 test201506252017'
+PARSE_VIDEO_VERSION = 'parse_video version 0.3.5.1 test201507092219'
+
+DEBUG_STDOUT_MARK = '<parse_video_debug_stdout_mark>'
 
 etc = {}
 etc['flag_debug'] = False
-etc['flag_fix_size'] = False
-etc['flag_fix_unicode'] = False
+
 etc['hd_min'] = None
 etc['hd_max'] = None
 etc['i_min'] = None
 etc['i_max'] = None
+
+etc['http_proxy'] = None
+
+etc['flag_fix_size'] = False
+etc['flag_fix_unicode'] = False
+etc['flag_min_parse'] = False
+etc['flag_enable_parse_more_url'] = False
+
 etc['flag_v'] = False
+etc['flag_v_force'] = False
 
 # default mode, analyse url
 etc['global_mode'] = 'mode_url'
@@ -75,6 +94,8 @@ def print_stdout(text):
     if etc['flag_fix_unicode']:
         t = text.encode('utf-8')
         sys.stdout.buffer.write(t)
+        
+        sys.stdout.flush()	# NOTE flush here
     else:	# just print it
         print(text)
     # done
@@ -86,7 +107,7 @@ def print_version():
 
 def print_free():
     print_stdout('''
-    author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05
+    author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07
  copyright 2015 sceext
 
  This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -113,25 +134,42 @@ def print_help():
     print_stdout('parse_video: HELP')
     print_stdout('''
 Usage:
-    evp [OPTIONS] <url>
-    evp --version
-    evp --help
+    parsev [OPTIONS] <url>
+    parsev --version
+    parsev --help
+  
 Options:
-    <url>           URL of the video play page, to be analysed 
-                    and get information from. 
+    <url>            URL of the video play page, to be analysed 
+                     and get information from. 
     
-    --min <hd_min>  set min hd number of video info to get
-    --max <hd_max>  set max hd number of video info to get
+    --min <hd_min>   set min hd number of video info to get
+    --max <hd_max>   set max hd number of video info to get
     
-    --debug         output DEBUG information
-    --fix-unicode   output pure ASCII json text
-                    used on systems not support unicode well
+    --min-i <i_min>  set min index of files to parse
+    --max-i <i_max>  set max index of files to parse
     
-    --version       show version of evparse
-    --help          show this help information of evparse
+    --debug          output DEBUG information
+    
+    --http-proxy <http_proxy_string>
+                     use the http_proxy to parse
+    
+    --set-min-parse  parse as less as possible to get fastest speed
+    --fix-unicode    output pure ASCII json text
+                     used on systems not support unicode well
+    --fix-size       parse all possible size, or give url if possible
+                     and set the fix_size flag at the same time
+    --enable-parse-more-url
+                     parse more url of one file if possible
+    
+    --set-flag-v     reserved option
+    --force          force set
+    
+    --version        show version of parse_video
+    --help           show this help information of parse_video
   
   More help info please see <https://github.com/sceext2/parse_video> 
 ''')
+
 
 def print_help_notice():
     print_stdout('parse_video: ERROR: command line format error. Please try \"' + sys.argv[0] + ' --help\" ')
@@ -152,12 +190,22 @@ def start_parse():
     entry.etc['flag_debug'] = etc['flag_debug']
     entry.etc['flag_fix_size'] = etc['flag_fix_size']
     entry.etc['flag_v'] = etc['flag_v']
+    entry.etc['flag_v_force'] = etc['flag_v_force']
+    entry.etc['flag_min_parse'] = etc['flag_min_parse']
+    entry.etc['flag_enable_parse_more_url'] = etc['flag_enable_parse_more_url']
+    
+    entry.etc['http_proxy'] = etc['http_proxy']
     
     url_to = etc['url_to']
     try:
         evinfo = entry.parse(url_to)
         # just print info as json
         t = json.dumps(evinfo, indent=4, sort_keys=False, ensure_ascii=etc['flag_fix_unicode'])
+        
+        # check debug
+        if etc['flag_debug']:
+            print_stdout(DEBUG_STDOUT_MARK)
+        
         # just print it
         print_stdout(t)
     except error.NotSupportURLError as err:
@@ -224,6 +272,18 @@ def get_args():
             etc['i_max'] = int(next)
         elif one == '--set-flag-v':
             etc['flag_v'] = True
+        elif one == '--set-min-parse':
+            etc['flag_min_parse'] = True
+        elif one == '--enable-parse-more-url':
+            etc['flag_enable_parse_more_url'] = True
+        elif one == '--force':
+            etc['flag_v_force'] = True
+            # TODO set other force flags
+        elif one == '--http-proxy':
+            next = rest[0]
+            rest = rest[1:]
+            # NOTE set http_proxy here
+            etc['http_proxy'] = str(next)
         else:	# should be url_to
             etc['url_to'] = one
     # done

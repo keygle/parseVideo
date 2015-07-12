@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # uuid.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# uuid: iqiyi, com.qiyi.player.base.uuid 
+# uuid: bks1, com.71.player.base.uuid 
 
 # import
 
 import random
 import re
 import json
+
+from .. import s1
 
 # import from out
 base = None
@@ -16,7 +18,7 @@ def set_import(base1):
     base = base1
 
 # global static config
-UUID_URL = 'http://data.video.qiyi.com/uid'
+UUID_URL = 'http://data.video.' + s1.get_s1()[1] + '.com/uid'
 
 LOAD_UUID_RETRY = 5
 
@@ -47,18 +49,18 @@ class UUIDManager(object):
                     raise Exception('DEBUG: load uuid retry' + str(retry) + ' failed', err)
         # done
     
-    # load a user uuid from iqiyi server
+    # load a user uuid from bks1 server
     def _load_from_server0(self, flag_debug):
         # make a url to request
         url_to = UUID_URL + '?tn=' + str(random.random())
         # DEBUG info
         if flag_debug:
-            print('lib/iqiyi/o/uuid: DEBUG: request \"' + url_to + '\"')
+            print('lib/bks1/o/uuid: DEBUG: request \"' + url_to + '\"')
         try:
             # get uuid by http request
             info = base.get_html_content(url_to)
         except Exception as err:
-            raise Exception('DEBUG: iqiyi, load uuid http error', err)
+            raise Exception('DEBUG: bks1, load uuid http error', err)
         # an example of info
         # 'var uid={"uid":"f21e1ae1c44f6c40f0674316ba7cf55b"};'
         # analyse received text

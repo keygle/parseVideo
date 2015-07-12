@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # restruct.py, part for parse_video : a fork from parseVideo. 
 # parse_video:lib/restruct: restruct output evinfo, key sort. 
-# version 0.1.4.0 test201506201152
+# version 0.1.5.0 test201507071335
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.05. 
 # copyright 2015 sceext
 #
@@ -30,7 +30,7 @@
 import collections
 
 # global vars
-EV_INFO_VERSION = 'evdh info_source info_version 0.2.1.0 test201505251439'
+EV_INFO_VERSION = 'evdh info_source info_version 0.2.2.0 test201507071335'
 
 # functions
 
@@ -93,6 +93,7 @@ def restruct_one_file(old):
         'size', 
         'time_s', 
         'url', 
+        'url_more', 
     ]
     return restruct_key(old, key_list)
 

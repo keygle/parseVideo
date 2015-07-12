@@ -26,7 +26,7 @@
 #
 
 # description								sites
-# hd	quality		english			note			iqiyi				
+# hd	quality		english			note			bks1				
 #
 # -8			(reserved)									
 # -7	无语渣		very very bad		清晰度 (分辨率) 太低

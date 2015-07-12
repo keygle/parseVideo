@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
-# get_base_info: parse_video/lib/iqiyi 
-# version 0.1.6.2 test201506251634
+# get_base_info: parse_video/lib/bks1
+# version 0.1.7.0 test201506291624
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
 # copyright 2015 sceext
 #
@@ -56,7 +56,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     mixer.tvid = vid_info['tvid']
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got vid:tvid \"' + vid_info['vid'] + ':' + vid_info['tvid'] + '\"')
+        print('lib.bks1: DEBUG: got vid:tvid \"' + vid_info['vid'] + ':' + vid_info['tvid'] + '\"')
     # load uuid and set it
     global user_uuid
     um = exports.UUIDManager()
@@ -64,11 +64,17 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     mixer.qyid = user_uuid
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got uuid \"' + user_uuid + '\"')
+        print('lib.bks1: DEBUG: got uuid \"' + user_uuid + '\"')
     
     # set tm
     tm = exports.getTimer()
     mixer.tm = tm
+    
+    # check vvflag
+    vvflag = vid_info['vvflag']
+    # NOTE auto turn off flag_v
+    if flag_v and (not vvflag):
+        flag_v = False
     
     a = None	# AuthRemote obj
     auth_conf = None
@@ -77,22 +83,24 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
         a, uuid, auth_conf = set_remote_mixer(mixer, vid_info, flag_debug=flag_debug)
         # NOTE save uuid here
         user_uuid = uuid
-        # DEBUG info
-        print('lib.iqiyi: DEBUG: flag_v, set mixer done')
+        
+        if flag_debug:
+            # DEBUG info
+            print('lib.bks1: DEBUG: flag_v, set mixer done')
     
     # get request url
     url_to = mixer.getRequest()
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: first url \"' + url_to + '\"')
+        print('lib.bks1: DEBUG: first url \"' + url_to + '\"')
     try:
         # load it
         info = base.get_json_info(url_to)
     except Exception as err:
-        raise Exception('parse_video: ERROR: iqiyi, load first url http error', err)
+        raise Exception('parse_video: ERROR: bks1, load first url http error', err)
     # debug info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got first url data done. ')
+        print('lib.bks1: DEBUG: got first url data done. ')
     # get more info
     more = get_more_info(info, vid_info)
     # add a
@@ -115,7 +123,7 @@ def set_remote_mixer(mixer, vid_info, flag_debug=False):
     
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got token \"' + t + '\"')
+        print('lib.bks1: DEBUG: got token \"' + t + '\"')
     
     # update conf
     conf['token'] = t
@@ -153,7 +161,7 @@ def load_ck_info(a, conf, flag_debug=False):
     
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
+        print('lib.bks1: DEBUG: post to \"' + raw_data[0] + '\" with data \"' + post_str + '\"')
     
     # NOTE use http POST
     post_recv = base.http_post(raw_data[0], post_data=post_str, fix_header=conf['header'], flag_debug=flag_debug)
@@ -166,7 +174,7 @@ def load_ck_info(a, conf, flag_debug=False):
     
     # DEBUG info
     if flag_debug:
-        print('lib.iqiyi: DEBUG: got json text [' + text + ']')
+        print('lib.bks1: DEBUG: got json text [' + text + ']')
     
     # parse as json
     info = json.loads(text)
