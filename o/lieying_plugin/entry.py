@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: o/lieying_plugin/entry: parse_video lieying_plugin main entry. 
-# version 0.1.24.0 test201507121447
+# version 0.1.25.0 test201507121453
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -73,7 +73,7 @@ THIS_NOTE = 'A parse plugin for lieying with parse support of parse_video. '
 # function
 
 def check_support_url(url_to):
-    slist = LIEYING_PLUGIN_SUPPORTED_URL_RE
+    slist = LIEYING_PLUGIN_FILTER
     for i in slist:
         if re.match(i, url_to):
             return False	# support
@@ -207,6 +207,10 @@ def lieying_plugin_get_version():
     
     text = json.dumps(out)
     return text
+
+# StartConfig()
+def lieying_plugin_start_config():
+    raise Exception('parse_video_lieying_plugin: ERROR: not support config now ! ')
 
 # Parse()
 def lieying_plugin_parse(input_text):

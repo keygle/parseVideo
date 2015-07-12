@@ -1,8 +1,8 @@
 # version.py, for parse_video
 # version: o/lieying_plugin/
-# last-update 2015-07-09 22:23 GMT+0800 (CST)
+# last-update 2015-07-12 14:54 GMT+0800 (CST)
 
-VER = 57
+VER = 58
 
 # end version.py
 
