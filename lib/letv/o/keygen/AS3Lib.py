@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # AS3Lib.py, part for parse_video : a fork from parseVideo. 
 # letv/o/keygen: timestamp_flascc, com.letv.keygen
-# last_update 2015-07-15 13:48 GMT+0800 CST
+# last_update 2015-07-15 13:57 GMT+0800 CST
 
 # import
 import hashlib
@@ -36,7 +36,7 @@ def calcURLKey(param1, param2, param3):
 
 # function calcLiveKey(param1 :String, param2 :int): String
 def calcLiveKey(param1, param2):
-    var _loc3 = 'a2915e518ba60169f77'
+    _loc3 = 'a2915e518ba60169f77'
     return md5_hash(param1 + ',' + param2 + ',' + _loc3)
 
 # end AS3Lib.py

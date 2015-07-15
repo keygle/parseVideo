@@ -38,7 +38,7 @@ class IDTransfer(object):
         _loc2_ = self.base_url + str(vid)
         
         # NOTE fix splatid from piaopiao
-        _loc2_ += '&platid=3&splatid=301'
+        _loc2_ += '&platid=1&splatid=301'
         
         # NOTE reserved old code here
         # NOTE fix platid and splatid here, for o/tscn2 method
@@ -62,6 +62,7 @@ class IDTransfer(object):
         # add tkey
         tkey = self.timestamp.calcTimeKey()
         _loc2_ += '&tkey=' + str(tkey)
+        
         _loc2_ += '&domain=' + self.domain
         # done
         return _loc2_
