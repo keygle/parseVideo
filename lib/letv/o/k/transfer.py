@@ -37,10 +37,13 @@ class IDTransfer(object):
     def getURL(self, vid):
         _loc2_ = self.base_url + str(vid)
         
-        # NOTE fix platid and splatid here, for o/tscn2 method
-        _loc2_ += '&platid=5&splatid=503'
+        # NOTE fix splatid from piaopiao
+        _loc2_ += '&platid=3&splatid=301'
         
         # NOTE reserved old code here
+        # NOTE fix platid and splatid here, for o/tscn2 method
+        # _loc2_ += '&platid=5&splatid=503'
+        #
         # _loc2_ += '&platid='
         # if self.platid != None:
         #     _loc2_ += self.platid
