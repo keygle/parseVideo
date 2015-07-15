@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# AS3Lib.py, part for evparse : EisF Video Parse, evdh Video Parse. 
-# AS3Lib: letv/timestamp_flascc, com.letv.keygen
+# AS3Lib.py, part for parse_video : a fork from parseVideo. 
+# letv/o/keygen: timestamp_flascc, com.letv.keygen
+# last_update 2015-07-15 13:57 GMT+0800 CST
 
 # import
 import hashlib
@@ -11,32 +12,32 @@ def md5_hash(string):
 
 # functions
 
-# def ror(param1:int, param2:int): int
-def ror(param1, param2):	# TODO may be not stable
-    _loc3_ = 0
-    while _loc3_ < param2:
+# function ror(param1 :int, param2 :int): int
+def ror(param1, param2):
+    _loc3 = 0
+    while _loc3 < param2:
         # param1 = (param1 >>> 1) + ((param1 & 1) << 31)
         param1 = (param1 >> 1) + ((param1 & 1) << 31)
-        _loc3_ += 1
+        _loc3 += 1
     return param1
 
-# def calcTimeKey(param1:int): int
+# function calcTimeKey(param1 :int): int
 def calcTimeKey(param1):
-    _loc2_ = 773625421
-    _loc3_ = ror(param1, _loc2_ % 13)
-    _loc3_ = _loc3_ ^ _loc2_
-    _loc3_ = ror(_loc3_, _loc2_ % 17)
-    return _loc3_
+    _loc2 = 773625421
+    _loc3 = ror(param1, _loc2 % 13)
+    _loc3 = _loc3 ^ _loc2
+    _loc3 = ror(_loc3, _loc2 % 17)
+    return _loc3
 
-# def calcURLKey(param1:String, param2:String, param3:int): String
+# function calcURLKey(param1 :String, param2 :String, param3 :int): String
 def calcURLKey(param1, param2, param3):
-    _loc4_ = 'drwfad012b0580d706'
-    return md5_hash(param1 + param2 + str(param3) + _loc4_)
+    _loc4 = 'drwfad012b0580d706'
+    return md5_hash(param1 + param2 + param3 + _loc4)
 
-# def calcLiveKey(param1:String, param2:int): String
+# function calcLiveKey(param1 :String, param2 :int): String
 def calcLiveKey(param1, param2):
-    _loc3_ = 'a2915e518ba60169f77'
-    return md5_hash(param1 + ',' + str(param2) + ',' + _loc3_)
+    _loc3 = 'a2915e518ba60169f77'
+    return md5_hash(param1 + ',' + param2 + ',' + _loc3)
 
 # end AS3Lib.py
 

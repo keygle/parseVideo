@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/letv 
-# version 0.1.3.0 test201507071809
+# version 0.2.1.0 test201507151510
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -37,7 +37,7 @@ from . import get_video_info
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.1.1.0 test201507071809'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/letv version 0.2.0.1 test201507151510'
 
 # http://www.letv.com/ptv/vplay/22695165.html
 # http://www.letv.com/ptv/vplay/22699924.html
@@ -80,6 +80,10 @@ def parse(url_to):	# this site entry main entry function
     # frist re-check url, if supported by this
     if not re.match(RE_SUPPORT_URL, url_to):
         raise error.NotSupportURLError('not support this url', url_to)
+    
+    # NOTE default enable parse_more
+    etc['flag_enable_parse_more'] = True
+    
     # create evinfo
     evinfo = {}
     evinfo['info'] = {}
