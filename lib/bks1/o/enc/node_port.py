@@ -55,7 +55,7 @@ def mix2_host(tvid, tm0):
     return result
 
 def mix2(tvid, tm0):
-    # enc = '754f3a28fee047ad9b654420056b400b'	# NOTE old salt for SingletonClass
+    # enc = '754f 3a28 fee0 47ad 9b65 4420 056b 400b'	# NOTE old salt for SingletonClass
     enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE new salt for Zziagg
     enc += str(tm0) + str(tvid)
     
