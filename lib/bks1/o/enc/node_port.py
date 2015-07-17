@@ -55,8 +55,8 @@ def mix2_host(tvid, tm0):
     return result
 
 def mix2(tvid, tm0):
-    # enc = '754f 3a28 fee0 47ad 9b65 4420 056b 400b'	# NOTE old salt for SingletonClass
-    enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE new salt for Zziagg
+    # enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE old salt for Zziagg
+    enc   = '8e29ab5666d041c3a1ea76e06dabdffb'	# NOTE new salt for Vampire
     enc += str(tm0) + str(tvid)
     
     sc = md5_hash(enc)
