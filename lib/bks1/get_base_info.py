@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/bks1
-# version 0.1.7.0 test201506291624
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.8.0 test201507181711
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -54,9 +54,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     # set data
     mixer.vid = vid_info['vid']
     mixer.tvid = vid_info['tvid']
-    # DEBUG info
-    if flag_debug:
-        print('lib.bks1: DEBUG: got vid:tvid \"' + vid_info['vid'] + ':' + vid_info['tvid'] + '\"')
+    
     # load uuid and set it
     global user_uuid
     um = exports.UUIDManager()
