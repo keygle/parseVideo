@@ -35,6 +35,11 @@ from .. import base
 # global vars
 user_uuid = ''
 
+# FIXME debug here
+FIX_FIRST_HTTP_HEADER = {
+#    'Accept-Encoding' : 'gzip', 
+}
+
 # functions
 
 def get_more_info(info, vid_info):
@@ -93,7 +98,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
         print('lib.bks1: DEBUG: first url \"' + url_to + '\"')
     try:
         # load it
-        info = base.get_json_info(url_to)
+        info = base.get_json_info(url_to, header=FIX_FIRST_HTTP_HEADER)
     except Exception as err:
         raise Exception('parse_video: ERROR: bks1, load first url http error', err)
     # debug info

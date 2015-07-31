@@ -29,14 +29,16 @@
 
 from urllib import request
 import re
+import io
 import json
+import gzip
 import multiprocessing.dummy as multiprocessing
 
 import socket
 
 # global vars
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0'
-# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0'
+# USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:39.0) Gecko/20100101 Firefox/39.0'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0'
 
 # base global http_proxy setting
@@ -100,7 +102,15 @@ def simple_http_get(url, user_agent, referer, header={}, method='GET'):
     # res, response
     res = request.urlopen(req)
     data = res.read()
-    # check 'Content-Encoding'
+    
+    # check 'Content-Encoding', now support gzip http compress
+    # TODO FIXME may be un-stable
+    en = res.getheader('Content-Encoding')
+    if en == 'gzip':
+        # decompress gzip
+        data = gzip.GzipFile(fileobj=io.BytesIO(data), mode='rb').read()
+    
+    # check 'Content-Type'
     try:
         ch = re1(r'charset=([\w-]+)', res.getheader('Content-Type'))
     except BaseException as err:
