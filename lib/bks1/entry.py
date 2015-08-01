@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/bks1
-# version 0.2.5.0 test201507092218
+# version 0.2.6.0 test201507181715
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
@@ -38,7 +38,7 @@ from .o import s1
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.2.3 test201507092218'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.3.0 test201507181714'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []
@@ -88,7 +88,7 @@ RE_VVFLAG = 'data-(player|drama)-ismember="([^"]+)"'
 # NOTE fix get albumid here
 RE_ALBUMID = 'data-(player|drama)-albumid="([^"]*)"'
 
-def get_vid(url):
+def get_vid(url, flag_debug=False):
     html_text = ''
     try:
         # get html text
@@ -134,6 +134,14 @@ def get_vid(url):
     vid_info['videoid'] = videoid
     vid_info['vvflag'] = vvflag
     
+    # DEBUG info
+    if flag_debug:
+        _debug_info = 'lib.bks1: DEBUG: got '
+        _debug_info += 'vid:tvid, albumid:vvflag \"'
+        _debug_info += vid_info['vid'] + ':' + vid_info['tvid'] + ', '
+        _debug_info += vid_info['albumid'] + ':' + str(vid_info['vvflag']) + '\" '
+        print(_debug_info)
+    
     return vid_info
 
 def parse(url_to):	# this site entry main entry function
@@ -153,7 +161,7 @@ def parse(url_to):	# this site entry main entry function
     evinfo['info']['url'] = url_to
     evinfo['info']['site'] = 'bks1'
     # get vid
-    vid_info = get_vid(url_to)
+    vid_info = get_vid(url_to, flag_debug=etc['flag_debug'])
     # get base, more info
     info, more = get_base_info.get_info(vid_info, flag_debug=etc['flag_debug'], flag_v=etc['flag_v'])
     # add more info

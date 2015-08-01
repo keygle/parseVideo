@@ -12,7 +12,7 @@ from ..raw.key import md5_hash
 
 # global vars
 
-BIN_JS_FILE = './Zziagg.js'
+BIN_JS_FILE = './node_utils.js'
 
 flag_debug = False
 
@@ -55,8 +55,8 @@ def mix2_host(tvid, tm0):
     return result
 
 def mix2(tvid, tm0):
-    # enc = '754f3a28fee047ad9b654420056b400b'	# NOTE old salt for SingletonClass
-    enc = '341c0055ad1d4e798c2b784d9dbed29f'	# NOTE new salt for Zziagg
+    # enc = '8e29ab5666d041c3a1ea76e06dabdffb'	# NOTE old salt for Vampire	# 2015-07-17
+    enc   = '7c4d2505ad0544b88c7679c65d6748a1'	# NOTE new salt for Zombie	# 2015-07-30
     enc += str(tm0) + str(tvid)
     
     sc = md5_hash(enc)

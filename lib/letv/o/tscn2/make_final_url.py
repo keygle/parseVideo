@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # make_final_url.py, part for parse_video : a fork from parseVideo. 
 # lib/letv/o/tscn2: make letv final url, use the method from flvsp
-# last_update 2015-07-15 12:07 GMT+0800 CST
+# last_update 2015-07-15 16:15 GMT+0800 CST
 
 # import
 import random
@@ -19,8 +19,8 @@ def make(raw):
     # NOTE can not just replace platid splatid here, its in letv key
     # url args value replace list
     replace_list = {
-        # 'platid' : '5', 
         # 'splatid' : '503', 
+        'platid' : '5', 
         'tss' : 'no', 
     }
     

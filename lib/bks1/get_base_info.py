@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # get_base_info.py, part for parse_video : a fork from parseVideo. 
 # get_base_info: parse_video/lib/bks1
-# version 0.1.7.0 test201506291624
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.06. 
+# version 0.1.8.0 test201507181711
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -35,6 +35,11 @@ from .. import base
 # global vars
 user_uuid = ''
 
+# FIXME debug here
+FIX_FIRST_HTTP_HEADER = {
+#    'Accept-Encoding' : 'gzip', 
+}
+
 # functions
 
 def get_more_info(info, vid_info):
@@ -54,9 +59,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
     # set data
     mixer.vid = vid_info['vid']
     mixer.tvid = vid_info['tvid']
-    # DEBUG info
-    if flag_debug:
-        print('lib.bks1: DEBUG: got vid:tvid \"' + vid_info['vid'] + ':' + vid_info['tvid'] + '\"')
+    
     # load uuid and set it
     global user_uuid
     um = exports.UUIDManager()
@@ -95,7 +98,7 @@ def get_info(vid_info, flag_debug=False, flag_v=False):
         print('lib.bks1: DEBUG: first url \"' + url_to + '\"')
     try:
         # load it
-        info = base.get_json_info(url_to)
+        info = base.get_json_info(url_to, header=FIX_FIRST_HTTP_HEADER)
     except Exception as err:
         raise Exception('parse_video: ERROR: bks1, load first url http error', err)
     # debug info
