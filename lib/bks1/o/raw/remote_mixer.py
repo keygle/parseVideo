@@ -10,7 +10,7 @@ from ..enc import node_port
 from .key import md5_hash
 from . import config as Config
 
-# NOTE last update 201506241630 GMT+0800
+# NOTE last_update 2015-08-10 22:50 GMT+0800 CST
 
 # class
 
@@ -127,6 +127,9 @@ class MixerRemote(object):
         
         _a += '&thdk=' + self.thdk
         _a += '&thdt=' + self.thdt
+        
+        # NOTE add &rs=1 args from 2015-08-10
+        _a += '&rs=1'
         
         _a += '&tn=' + str(random.random())
         
