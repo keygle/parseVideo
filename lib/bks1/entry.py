@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # entry.py, part for parse_video : a fork from parseVideo. 
 # entry: parse_video/lib/bks1
-# version 0.2.6.0 test201507181715
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
+# version 0.2.7.0 test201508102304
+# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.08. 
 # copyright 2015 sceext
 #
 # This is FREE SOFTWARE, released under GNU GPLv3+ 
@@ -38,7 +38,7 @@ from .o import s1
 # global vars
 
 # version of this extractor
-THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.3.0 test201507181714'
+THIS_EXTRACTOR_VERSION = 'parse_video lib/bks1 version 0.3.4.0 test201508102304'
 
 # check supported, week check, not strong check
 RE_SUPPORT_URL = []

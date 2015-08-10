@@ -55,13 +55,21 @@ def mix2_host(tvid, tm0):
     return result
 
 def mix2(tvid, tm0):
-    # enc = '8e29ab5666d041c3a1ea76e06dabdffb'	# NOTE old salt for Vampire	# 2015-07-17
-    # enc = '7c4d2505ad0544b88c7679c65d6748a1'	# NOTE old salt for Zombie	# 2015-07-30
-    enc   = '65096542539c4e529c8ee97511cd979f'	# NOTE new salt for Zombie	# 2015-08-05
-    enc += str(tm0) + str(tvid)
     
+    enc = get_enc_raw()
+    enc += str(tm0) + str(tvid)
+    # now enc is raw str before md5_hash
     sc = md5_hash(enc)
     return sc
+
+# NOTE just return the enc key
+def get_enc_raw():
+    # enc = '8e29ab5666d041c3a1ea76e06dabdffb'	# NOTE old salt for Vampire	# 2015-07-17
+    # enc = '7c4d2505ad0544b88c7679c65d6748a1'	# NOTE old salt for Zombie	# 2015-07-30
+    # enc = '65096542539c4e529c8ee97511cd979f'	# NOTE old salt for Zombie	# 2015-08-05
+    enc   = '3601ba290e4f4662848c710e2122007e'	# NOTE new salt for Zombie	# 2015-08-10
+    # done
+    return enc
 
 # end node_port.py
 
