@@ -6,4 +6,7 @@
 
 private.*
 
+# you see
+salt.py
+
 # end .gitignore

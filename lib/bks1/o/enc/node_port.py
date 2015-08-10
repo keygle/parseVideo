@@ -6,13 +6,11 @@
 
 import os.path
 
-# import execjs
-
 from ..raw.key import md5_hash
 
-# global vars
+from . import salt
 
-BIN_JS_FILE = './node_utils.js'
+# global vars
 
 flag_debug = False
 
@@ -20,30 +18,6 @@ flag_debug = False
 
 def mix(tvid, tm):
     return mix2_host(tvid, tm)
-
-def import_js():
-    # make js path
-    this_path = __file__
-    base_path = os.path.dirname(this_path)
-    bin_path = os.path.join(base_path, BIN_JS_FILE)
-    
-    # read js file
-    with open(bin_path) as f:
-        s = f.read()
-    # compile as js
-    c = execjs.compile(s)
-    
-    # done
-    return c
-
-def mix1(tvid, tm):
-    # import js
-    c = import_js()
-    
-    # just run it
-    result = c.call('mix', str(tvid), int(tm))
-    # done
-    return result
 
 def mix2_host(tvid, tm0):
     sc = mix2(tvid, tm0)
@@ -64,12 +38,39 @@ def mix2(tvid, tm0):
 
 # NOTE just return the enc key
 def get_enc_raw():
-    # enc = '8e29ab5666d041c3a1ea76e06dabdffb'	# NOTE old salt for Vampire	# 2015-07-17
-    # enc = '7c4d2505ad0544b88c7679c65d6748a1'	# NOTE old salt for Zombie	# 2015-07-30
-    # enc = '65096542539c4e529c8ee97511cd979f'	# NOTE old salt for Zombie	# 2015-08-05
-    enc   = '3601ba290e4f4662848c710e2122007e'	# NOTE new salt for Zombie	# 2015-08-10
+    enc = salt.enc
     # done
     return enc
+
+# NOTE just reserved code
+
+# import execjs
+# 
+# BIN_JS_FILE = './node_utils.js'
+# 
+# def import_js():
+#     # make js path
+#     this_path = __file__
+#     base_path = os.path.dirname(this_path)
+#     bin_path = os.path.join(base_path, BIN_JS_FILE)
+#     
+#     # read js file
+#     with open(bin_path) as f:
+#         s = f.read()
+#     # compile as js
+#     c = execjs.compile(s)
+#     
+#     # done
+#     return c
+# 
+# def mix1(tvid, tm):
+#     # import js
+#     c = import_js()
+#     
+#     # just run it
+#     result = c.call('mix', str(tvid), int(tm))
+#     # done
+#     return result
 
 # end node_port.py
 
