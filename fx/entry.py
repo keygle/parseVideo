@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # entry.py for lyp-FX-mkbag tool, sceext <sceext@foxmail.com> 
-# version 0.0.1.0 test201509100058
+# version 0.0.2.0 test201509100107
 
 import json
 
@@ -15,7 +15,7 @@ def main(etc = {}):
     bag_info = make_bag.make_bag(raw_info)
     
     # save as json file
-    text = json.dumps(bag_info)
+    text = json.dumps(bag_info, indent=4, sort_keys=True, ensure_ascii=False)
     with open(output, 'w') as f:
         f.write(text)
     

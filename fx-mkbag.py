@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # fx-mkbag.py for lyp-FX-mkbag tool, sceext <sceext@foxmail.com> 
 # main bin entry file
-# version 0.0.1.0 test201509092308
+# version 0.0.2.0 test201509100105
 #
 # supported command line options
 #	--fx-output <file>	write bag file result to the output file
@@ -28,8 +28,7 @@ def main(arg):
             etc['output'] = rest[0]
             rest = rest[1:]
         else:	# unknow option, pass it to parse_video
-            etc['pv_arg'].append(rest[0])
-            rest = rest[1:]
+            etc['pv_arg'].append(one)
     # start from main entry
     entry.main(etc = etc)
 
