@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # make_bag.py for lyp-FX-mkbag
 # gen bag file content, make info format and do some translate
-# version 0.0.2.0 test201509100052
+# version 0.0.4.0 test201509101352
 
 import datetime
 
@@ -64,6 +64,8 @@ def translate_one_video_info(raw):
     
     for k in key_list:
         info[k] = raw['info'][k]
+    # NOTE add site_uuid
+    info['site_uuid'] = bagdef.site['bks1']
     
     # add videos info
     out['video'] = []
@@ -107,6 +109,11 @@ def translate_one_video_info(raw):
     return out
 
 def translate_one_final_url(raw_url):
+    # check empty url
+    if raw_url == '':
+        return '', ''
+    
+    # process normal url
     before, m = raw_url.split('/videos/', 1)
     m = '/' + m
     
