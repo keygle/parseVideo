@@ -28,7 +28,7 @@
 # import
 
 import xml.etree.ElementTree as etree
-import math
+import math, time
 
 # NOTE import for debug
 import sys
@@ -293,8 +293,22 @@ def get_one_file_info(onef, more):
         a = get_base_info.create_a2(more['a'])
         # set segment index
         a.segment_index = onef['i']
+        
+        # FIXME debug here
+        # sleep before get key to fix BUG
+        # NOTE retry and sleep
+        
         # load info
-        ck_info = get_base_info.load_ck_info(a, more['auth_conf'], flag_debug)
+        while True:
+            try:
+                ck_info = get_base_info.load_ck_info(a, more['auth_conf'], flag_debug)
+                break
+            except Exception as e:
+                # print('DEBUG: ERROR: load_ck_info failed ' + str(e))
+                pass
+            # print('DEBUG: INFO: will sleep to retry')
+            time.sleep(5)
+        
         # get info
         t_key = ck_info['data']['t']
         qy00001 = ck_info['data']['u']
