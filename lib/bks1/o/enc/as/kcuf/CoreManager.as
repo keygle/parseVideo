@@ -1,5 +1,4 @@
-package com.qiyi.player.core
-{
+package com.qiyi.player.core {
 	import flash.events.EventDispatcher;
 	import com.qiyi.player.base.pub.EnumItem;
 	import com.qiyi.player.core.player.IPlayer;
@@ -15,8 +14,7 @@ package com.qiyi.player.core
 	import com.qiyi.player.core.player.coreplayer.CorePlayer;
 	import com.qiyi.player.base.logging.Log;
 	
-	public class CoreManager extends EventDispatcher
-	{
+	public class CoreManager extends EventDispatcher {
 		
 		public static const Evt_InitComplete:String = "evtInitComplete";
 		
@@ -34,29 +32,24 @@ package com.qiyi.player.core
 		
 		private var _log:ILogger;
 		
-		public function CoreManager(param1:SingletonClass)
-		{
+		public function CoreManager(param1:SingletonClass) {
 			this._log = Log.getLogger("com.qiyi.player.core.CoreManager");
 			super();
 			this._playerVec = new Vector.<IPlayer>();
 		}
 		
-		public static function getInstance() : CoreManager
-		{
-			if(_instance == null)
-			{
+		public static function getInstance() : CoreManager {
+			if(_instance == null) {
 				_instance = new CoreManager(new SingletonClass());
-				Zombie.kcuf.push(_instance.f2838023a778dfaecdc212708f721b788);
-				Zombie.kcuf.push(_instance.f9a1158154dfa42caddbd0694a4e9bdc8);
-				Zombie.kcuf.push(_instance.fd82c8d1619ad8176d665453cfb2e55f0);
+				Zombie.kcuf.push(_instance.ll_lll______lllll_____ll_____ll___lll__l___lll__lll___ll_llll_ll_l_l_l_ll_l_lll___l____ll_____lll________llll_l__lllll___l_____lll__lll___ll___ll);
+				Zombie.kcuf.push(_instance.ll_l____ll_l____l____lllll___lll____lllllllll__llll_ll_llll_ll____l_ll__ll_ll_lll_ll______llll____lllll_l_llll_l____l_lll_ll_l_l___ll);
+				Zombie.kcuf.push(_instance.ll_l_ll___llll____l_l___ll_lll_____lllll________ll__ll___lll______lll_llll_ll_llll_lllllllllllll_llllllll___l_lll_l_lllll___lllllllllllll_l_____);
 			}
 			return _instance;
 		}
 		
-		public function initialize(param1:Stage, param2:EnumItem, param3:EnumItem, param4:String) : Boolean
-		{
-			if(this._inited)
-			{
+		public function initialize(param1:Stage, param2:EnumItem, param3:EnumItem, param4:String) : Boolean {
+			if(this._inited) {
 				return true;
 			}
 			this._log.info("flash kernel(version: " + Version.VERSION + "." + Version.VERSION_DEV + ") initializing... ");
@@ -74,8 +67,7 @@ package com.qiyi.player.core
 			this._platform = param2;
 			this._playerType = param3;
 			this._flashP2PCoreURL = param4;
-			if(param1)
-			{
+			if(param1) {
 				GlobalStage.initStage(param1);
 			}
 			Settings.loadFromCookies();
@@ -86,11 +78,9 @@ package com.qiyi.player.core
 			return true;
 		}
 		
-		public function createPlayer(param1:EnumItem) : IPlayer
-		{
+		public function createPlayer(param1:EnumItem) : IPlayer {
 			var _loc2:ICorePlayer = null;
-			if(this._inited)
-			{
+			if(this._inited) {
 				this._log.info("Core Create Player");
 				_loc2 = new CorePlayer();
 				_loc2.runtimeData.playerUseType = param1;
@@ -103,22 +93,18 @@ package com.qiyi.player.core
 			return null;
 		}
 		
-		public function deletePlayer(param1:IPlayer) : void
-		{
+		public function deletePlayer(param1:IPlayer) : void {
 			var _loc2:* = 0;
 			var _loc3:IPlayer = null;
 			var _loc4:* = 0;
-			if(param1)
-			{
+			if(param1) {
 				this._log.info("Core Delete Player");
 				_loc2 = this._playerVec.length;
 				_loc3 = null;
 				_loc4 = 0;
-				while(_loc4 < _loc2)
-				{
+				while(_loc4 < _loc2) {
 					_loc3 = this._playerVec[_loc4];
-					if(_loc3 == param1)
-					{
+					if(_loc3 == param1) {
 						this._playerVec.splice(_loc4,1);
 						break;
 					}
@@ -128,16 +114,13 @@ package com.qiyi.player.core
 			}
 		}
 		
-		public function findPlayer(param1:String) : IPlayer
-		{
+		public function findPlayer(param1:String) : IPlayer {
 			var _loc2:int = this._playerVec.length;
 			var _loc3:IPlayer = null;
 			var _loc4:* = 0;
-			while(_loc4 < _loc2)
-			{
+			while(_loc4 < _loc2) {
 				_loc3 = this._playerVec[_loc4];
-				if(_loc3 && _loc3.movieModel && _loc3.movieModel.tvid == param1)
-				{
+				if(_loc3 && _loc3.movieModel && _loc3.movieModel.tvid == param1) {
 					return _loc3;
 				}
 				_loc4++;
@@ -145,28 +128,23 @@ package com.qiyi.player.core
 			return null;
 		}
 		
-		private function f2838023a778dfaecdc212708f721b788() : int
-		{
-			return 13;
+		private function ll_lll______lllll_____ll_____ll___lll__l___lll__lll___ll_llll_ll_l_l_l_ll_l_lll___l____ll_____lll________llll_l__lllll___l_____lll__lll___ll___ll() : int {
+			return 1;
 		}
 		
-		private function fd82c8d1619ad8176d665453cfb2e55f0() : int
-		{
-			return 10;
-		}
-		
-		private function f9a1158154dfa42caddbd0694a4e9bdc8() : int
-		{
+		private function ll_l____ll_l____l____lllll___lll____lllllllll__llll_ll_llll_ll____l_ll__ll_ll_lll_ll______llll____lllll_l_llll_l____l_lll_ll_l_l___ll() : int {
 			return 3;
+		}
+		
+		private function ll_l_ll___llll____l_l___ll_lll_____lllll________ll__ll___lll______lll_llll_ll_llll_lllllllllllll_llllllll___l_lll_l_lllll___lllllllllllll_l_____() : int {
+			return 15;
 		}
 	}
 }
 
-class SingletonClass extends Object
-{
+class SingletonClass extends Object {
 	 
-	function SingletonClass()
-	{
+	function SingletonClass() {
 		super();
 	}
 }
