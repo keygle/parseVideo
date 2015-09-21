@@ -9,4 +9,6 @@ private.*
 # you see
 salt.py
 
+/tmp/
+
 # end .gitignore
