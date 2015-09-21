@@ -13,6 +13,7 @@ from .k import TimeStamp as TimeStamp0
 from .k import transfer as transfer0
 from . import ListNewProxy as ListNewProxy0
 from .youtube_dl import letv as letv0
+from .tscn2 import make_final_url as letv1
 
 from . import more_url as more_url0
 
@@ -24,6 +25,7 @@ TimeStamp0.set_import(flash)
 transfer = transfer0
 ListNewProxy = ListNewProxy0.ListNewProxy
 youtube_dl_letv = letv0
+tscn2_letv = letv1
 
 letv_more_url = more_url0
 

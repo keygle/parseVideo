@@ -121,7 +121,15 @@ def get_one_info(one_raw):
     if flag_enable_parse_more and (not raw['flag_fix_size']):
         final_info = exports.letv_more_url.parse_more_url(domain, dispatch, rateid, flag_debug=flag_debug)
     else:	# use old parse method
-        final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
+        # FIXME debug here
+        #final_info = exports.youtube_dl_letv.get_real_url(domain, dispatch)
+        # FIXME TODO hack for tscn2
+        raw_url = domain[0] + dispatch[0]
+        final_url = exports.tscn2_letv.make(raw_url)
+        final_info = {}
+        final_info['url'] = final_url
+        final_info['ext'] = 'mp4'
+        # TODO hack done
     
     # add more video info
     vinfo['format'] = final_info['ext']

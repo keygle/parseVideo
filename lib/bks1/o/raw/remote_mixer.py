@@ -22,7 +22,8 @@ class MixerRemote(object):
         self.flag_is_vip = False
         self.flag_instance_boss = False
         self.flag_set_vinfo = True	# default should be True
-        self.flag_set_um = False	# NOTE vip should set this
+        # FIXME just set um to True
+        self.flag_set_um = True	# NOTE vip should set this
         
         # NOTE should be set START
         self.tm = 0	# NOTE should be tm, flash getTimer()

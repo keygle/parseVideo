@@ -82,7 +82,7 @@ def parse(url_to):	# this site entry main entry function
         raise error.NotSupportURLError('not support this url', url_to)
     
     # NOTE default enable parse_more
-    etc['flag_enable_parse_more'] = True
+    etc['flag_enable_parse_more'] = False
     
     # create evinfo
     evinfo = {}
