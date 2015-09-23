@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e/bks1/o
-# LICENSE GNU GPLv3+ sceext 
-# version 0.0.0.1 test201509231952
+# version 0.0.0.1 test201509240138
 
 # end __init__.py
 
