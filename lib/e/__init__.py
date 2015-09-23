@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e :: extractors' entry
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509232045
+# version 0.0.2.0 test201509240149
 
 '''
-extractors' entry for parse_video
+lib/e
+    extractors of parse_video
+lib/e/__init__.py
+    extractors' entry for parse_video
 '''
 
 from . import e_list
