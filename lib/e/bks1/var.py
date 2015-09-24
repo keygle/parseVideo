@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.6.0 test201509242045
+# version 0.0.7.0 test201509242341
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -12,6 +12,8 @@ part of standard port for parse_video extractor
 RE_SUPPORT_URL = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
 ]
+
+CONF_FILE = 'e_bks1.conf.json'
 
 RE_VID_LIST = {
     'vid' : 'data-(player|drama)-videoid="([^"]+)"', 
