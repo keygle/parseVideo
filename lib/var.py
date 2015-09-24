@@ -1,6 +1,6 @@
 # var.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509241148
+# version 0.0.5.0 test201509241444
 
 '''
 parse_video/lib/var.py
@@ -11,6 +11,8 @@ parse_video/lib/var.py
 
 # NOTE user_agent update at 2015-09-24 11:43 GMT+0800 CST from firefox on windows 10
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
+
+PV_DEBUG_PREFIX = 'pv ::'
 
 # var data
 _ = {}
