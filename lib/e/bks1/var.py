@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.2.0 test201509241140
+# version 0.0.3.0 test201509241303
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -8,6 +8,18 @@ part of standard port for parse_video extractor
 '''
 
 # static data
+
+RE_SUPPORT_URL = [
+    '^http://[a-z]+\.iqiyi\.com/.+\.html', 
+]
+
+RE_VID_LIST = {
+    'vid' : 'data-(player|drama)-videoid="([^"]+)"', 
+    'tvid' : 'data-(player|drama)-tvid="([^"]+)"', 
+    'aid' : 'data-(player|drama)-albumid="([^"]*)"', 
+    'flag_vv' : 'data-(player|drama)-ismember="([^"]+)"', 
+}
+RE_VID_LIST_FIX = 1
 
 # var data
 _ = {}
@@ -21,6 +33,9 @@ def init():
     # set default values
     out['raw_arg'] = ''		# this is used to pass raw_arg to extractor
     out['raw_method'] = ''	# this is used to pass raw_method to extractor
+    
+    out['flag_v'] = False
+    out['flag_v_force'] = False
     
     # private data
     out['_raw_url'] = ''

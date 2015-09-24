@@ -1,6 +1,6 @@
 # _net.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509241156
+# version 0.0.2.1 test201509241259
 
 '''
 network operations
@@ -16,12 +16,14 @@ from .. import err, var
 
 # easy download functions
 
-def dl_blob(url, user_agent=var._['user_agent'], referer=None):
+def dl_blob(url, user_agent='__default__', referer=None):
     '''
     download the URL with http GET method without decoding
     support User-Agent and Referer http headers
     return just the raw blob data
     '''
+    if user_agent == '__default__':
+        user_agent = var._['user_agent']
     header = {}	# make headers
     header['User-Agent'] = user_agent
     if referer != None:
@@ -35,7 +37,7 @@ def dl_blob(url, user_agent=var._['user_agent'], referer=None):
         raise err.NetworkError('can not download with http GET on this url', url) from e
 
 # TODO just support 'utf-8' encoding now
-def dl_html(url, encoding='utf-8', user_agent=var._['user_agent'], referer=None):
+def dl_html(url, encoding='utf-8', user_agent='__default__', referer=None):
     '''
     download the URL and 
     return the raw html text
@@ -49,7 +51,7 @@ def dl_html(url, encoding='utf-8', user_agent=var._['user_agent'], referer=None)
         er.raw_blob = blob
         raise er from e
 
-def dl_json(url, user_agent=var._['user_agent'], referer=None):
+def dl_json(url, user_agent='__default__', referer=None):
     '''
     download the URL and 
     return info from the json text
@@ -70,7 +72,7 @@ def dl_json(url, user_agent=var._['user_agent'], referer=None):
         raise er from e
 
 # TODO just support 'utf-8' encoding now
-def dl_xml(url, encoding='utf-8', user_agent=var._['user_agent'], referer=None):
+def dl_xml(url, encoding='utf-8', user_agent='__default__', referer=None):
     '''
     download the URL and 
     return info from the xml text
