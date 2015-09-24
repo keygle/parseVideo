@@ -88,6 +88,7 @@ def init():
     out['_vms_json'] = None
     out['_vp'] = None
     out['_qyid'] = ''
+    out['_vv_conf'] = None
     # TODO add more data here
     
     return out

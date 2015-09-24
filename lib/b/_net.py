@@ -1,6 +1,6 @@
 # _net.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.1 test201509241259
+# version 0.0.4.0 test201509242242
 
 '''
 network operations
@@ -9,7 +9,7 @@ network operations
 # TODO support proxy
 
 import json
-import urllib
+import urllib.request
 import xml.etree.ElementTree as ET
 
 from .. import err, var
@@ -94,7 +94,23 @@ def dl_xml(url, encoding='utf-8', user_agent='__default__', referer=None):
 
 # rich POST function
 def post(url, method='POST', post_data=None, header={}):
-    pass	# TODO
+    try:
+        req = urllib.request.Request(url, headers=header, method=method, data=post_data)
+        res = urllib.request.urlopen(req)
+        blob = res.read()
+        return blob	# without decode
+    except Exception as e:
+        er = err.NetworkError(method + ' to the url failed', url)
+        er.post_data = post_data
+        er.req_header = header
+        raise er from e
+
+# make post string for application/x-www-form-urlencoded
+def make_post_str(post_data):
+    s = ''
+    for key, value in post_data.items():
+        s += '&' + str(key) + '=' + str(value)
+    return s[1:]	# remove first &
 
 # end _net.py
 
