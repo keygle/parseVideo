@@ -3,6 +3,8 @@
 	
 	"salt" : "< !!! NOTE !!! you should write the right salt here >", 
 	
+	"vv_conf_file" : "e_bks1_vv1.conf.json", 
+	
 	"__note__" : "__end__"
 }
 
