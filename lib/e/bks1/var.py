@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.3.0 test201509241303
+# version 0.0.4.0 test201509241328
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -34,6 +34,7 @@ def init():
     out['raw_arg'] = ''		# this is used to pass raw_arg to extractor
     out['raw_method'] = ''	# this is used to pass raw_method to extractor
     
+    # config items
     out['flag_v'] = False
     out['flag_v_force'] = False
     
