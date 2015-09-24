@@ -1,38 +1,46 @@
 # _net.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509232327
+# version 0.0.2.0 test201509241156
 
 '''
 network operations
 '''
 
+# TODO support proxy
+
 import json
 import urllib
 import xml.etree.ElementTree as ET
 
-from .. import err
+from .. import err, var
 
 # easy download functions
 
-def dl_blob(url):
+def dl_blob(url, user_agent=var._['user_agent'], referer=None):
     '''
     download the URL with http GET method without decoding
+    support User-Agent and Referer http headers
     return just the raw blob data
     '''
+    header = {}	# make headers
+    header['User-Agent'] = user_agent
+    if referer != None:
+        header['Referer'] = referer
     try:
-        r = urllib.request.urlopen(url)
-        blob = r.read()
-        return r
+        req = urllib.request.Request(url, headers=header, method='GET')
+        res = urllib.request.urlopen(req)
+        blob = res.read()
+        return blob
     except Exception as e:
         raise err.NetworkError('can not download with http GET on this url', url) from e
 
 # TODO just support 'utf-8' encoding now
-def dl_html(url, encoding='utf-8'):
+def dl_html(url, encoding='utf-8', user_agent=var._['user_agent'], referer=None):
     '''
     download the URL and 
     return the raw html text
     '''
-    blob = dl_blob(url)
+    blob = dl_blob(url, user_agent=user_agent, referer=referer)
     try:
         html_text = blob.decode(encoding)
         return html_text
@@ -41,12 +49,12 @@ def dl_html(url, encoding='utf-8'):
         er.raw_blob = blob
         raise er from e
 
-def dl_json(url):
+def dl_json(url, user_agent=var._['user_agent'], referer=None):
     '''
     download the URL and 
     return info from the json text
     '''
-    blob = dl_blob(url)
+    blob = dl_blob(url, user_agent=user_agent, referer=referer)
     try:
         raw_text = blob.decode('utf-8')
     except Exception as e:
@@ -62,12 +70,12 @@ def dl_json(url):
         raise er from e
 
 # TODO just support 'utf-8' encoding now
-def dl_xml(url, encoding='utf-8'):
+def dl_xml(url, encoding='utf-8', user_agent=var._['user_agent'], referer=None):
     '''
     download the URL and 
     return info from the xml text
     '''
-    blob = dl_blob(url)
+    blob = dl_blob(url, user_agent=user_agent, referer=referer)
     try:
         raw_text = blob.decode(encoding)
     except Exception as e:
