@@ -1,11 +1,15 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509251751
+# version 0.0.4.0 test201509260055
+
+'''
+base parse functions for extractor bks1
+'''
 
 from ... import b, err
 from ...b import log
 
-from . import var
+from . import var, o
 
 def get_vid_info(raw_url):
     # DEBUG log here
@@ -37,11 +41,67 @@ def pre_parse(raw_vms):
     pre-parse of this extractor, will get video info and raw file info
     input raw vms json info
     the later parse process will base on this function's output
+    
+    NOTE should try: to run this function, and raise err.MethodError() if this failed. 
     '''
-    pass
+    data = raw_vms['data']
+    vi = data['vi']
+    try:
+        vp = get_vp(data)
+    except Exception as e:
+        er = err.MethodError('not support this video, may be a VIP video ')
+        er.raw_info = data
+        raise er from e
+    # output info, standard parse_video video_info format struct
+    evinfo = {}
+    evinfo['info'] = {}
+    evinfo['video'] = []
+    info = evinfo['info']
+    video = evinfo['video']
+    # add base video info
+    info['title'] = vi['vn']
+    info['title_sub'] = vi['subt']
+    info['title_short'] = vi['an']
+    info['title_no'] = vi['pd']
+    # get base info, and save it
+    du = vp['du']
+    var._['_du'] = du
+    # get raw video list info
+    tkl = vp['tkl']
+    vs = tkl[0]['vs']
+    # make raw video list and get info
+    for raw in vs:
+        one = {}	# one raw video info
+        bid = int(raw['bid'])
+        one['hd'] = var.BID_TO_HD[bid]
+        # get size_px
+        raw_s = raw['scrsz']	# NOTE now there is no need to make a request to get video size_px
+        raw_x, raw_y = raw_s.split('x', 1)
+        one['size_px'] = [int(raw_x), int(raw_y)]
+        one['format'] = 'flv'	# NOTE now the video file format should be .flv
+        # get raw file info
+        fs = raw['fs']
+        one['file'] = []
+        for rawf in fs:
+            onef = {}
+            onef['size'] = rawf['b']
+            onef['time_s'] = rawf['d'] / 1e3	# raw data is in ms
+            rawl = rawf['l']	# NOTE try to decode raw l
+            if not rawl.startswith('/'):
+                rawl = o.getVrsEncodeCode(rawl)
+            onef['url'] = rawl
+            one['file'].append(onef)
+        video.append(one)
+    # sort raw video list by hd
+    video.sort(key=lambda x:x['hd'], reverse=True)
+    return evinfo	# raw pre-parse done
 
-def get_vp():
-    pass	# TODO
+def get_vp(data):
+    if var._['flag_v']:
+        vp = data['np']
+    else:
+        vp = data['vp']
+    return vp
 
 # end parse.py
 

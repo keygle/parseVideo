@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.10.0 test201509251712
+# version 0.0.11.0 test201509260051
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -56,14 +56,14 @@ DEFAULT_CID = 'afbe8fd3d73448c9'
 
 # translate video bid to parse_video hd quality
 BID_TO_HD = {	# video bid to video hd
-    '10' : 7, 	# 4k, 		4K
-    '5' : 4, 	# fullhd, 	1080p
-    '4' : 2, 	# super-high, 	720p
-    '3' : 1, 	# super, 	高清
-    '2' : 0, 	# high, 	普清
-    '1' : -1, 	# standard, 	低清
-    '0' : -2, 	# none, 	超低清
-    '96' : -3, 	# topspeed, 	渣清
+    10 : 7, 	# 4k, 		4K
+    5 : 4, 	# fullhd, 	1080p
+    4 : 2, 	# super-high, 	720p
+    3 : 1, 	# super, 	高清
+    2 : 0, 	# high, 	普清
+    1 : -1, 	# standard, 	低清
+    0 : -2, 	# none, 	超低清
+    96 : -3, 	# topspeed, 	渣清
 }
 
 '''
