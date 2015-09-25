@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.7.0 test201509242341
+# version 0.0.10.0 test201509251712
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -9,11 +9,27 @@ part of standard port for parse_video extractor
 
 # static data
 
+EXTRACTOR_ID = 'bks1'
+EXTRACTOR_NAME = '不可说'
+
 RE_SUPPORT_URL = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
 ]
 
 CONF_FILE = 'e_bks1.conf.json'
+
+# available methods of this extractor
+METHOD_LIST = [
+    # TODO normal method, use the big gate from PC web page flash player
+    # this method will request before_final_url to get final_url
+    'pc_flash_gate', 		# NOTE only support flv video format
+    # TODO use inter cdn server with given key
+    # this method will process normal final_url to get key
+    'cdn_inter', 		# NOTE only support flv video format
+    # TODO only use dispatch key, not send a request to get key; 
+    # only works with normal F videos
+    'only_dispatch_key', 	# NOTE only support flv video format
+]
 
 RE_VID_LIST = {
     'vid' : 'data-(player|drama)-videoid="([^"]+)"', 
@@ -37,6 +53,18 @@ FIRST_DISPATCH_URL = 'http://data.video.qiyi.com/t'
 UUID_URL = 'http://data.video.qiyi.com/uid'
 # cid for first_url
 DEFAULT_CID = 'afbe8fd3d73448c9'
+
+# translate video bid to parse_video hd quality
+BID_TO_HD = {	# video bid to video hd
+    '10' : 7, 	# 4k, 		4K
+    '5' : 4, 	# fullhd, 	1080p
+    '4' : 2, 	# super-high, 	720p
+    '3' : 1, 	# super, 	高清
+    '2' : 0, 	# high, 	普清
+    '1' : -1, 	# standard, 	低清
+    '0' : -2, 	# none, 	超低清
+    '96' : -3, 	# topspeed, 	渣清
+}
 
 '''
 video quality define
@@ -89,8 +117,11 @@ def init():
     out['_raw_vms_json'] = ''
     out['_vms_json'] = None
     out['_vp'] = None
-    out['_qyid'] = ''
+    out['_qyid'] = ''	# user's uuid
     out['_vv_conf'] = None
+    # data used when parse video info
+    out['_du'] = None	# base url part of before_final_url
+    out['_ck_info'] = None	# used with ck token for vv
     # TODO add more data here
     
     return out

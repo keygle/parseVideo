@@ -3,6 +3,7 @@
 	
 	"salt" : "< !!! NOTE !!! you should write the right salt here >", 
 	
+	"cdn_server" : "http://wdgcdn.inter.qiyi.com", 
 	"vv_conf_file" : "e_bks1_vv1.conf.json", 
 	
 	"__note__" : "__end__"

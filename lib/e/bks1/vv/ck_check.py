@@ -86,12 +86,31 @@ def get_ck_token(index=0):
         raise er from e
     # get token
     try:
+        # save ck_info
+        var._['_ck_info'] = info['data']
         token = info['data']['t']
         return token
     except Exception as e:
         er = err.MethodError('get token from ck port failed')
         er.raw_info = info
         raise er from e
+
+def get_token_list(raw_list_len=0):
+    '''
+    will get token with index from 0 to raw_list_len - 1
+        just get each token one by one, not get many at the same time to prevent more ERRORs
+    return got token list
+    '''
+    # TODO support re-try and sleep before re-try
+    # DEBUG log here
+    log.d('start get token_list of length ' + str(raw_list_len) + ' ')
+    out = []
+    for i in range(raw_list_len):
+        one = get_ck_token(i)
+        out.append(one)
+    # DEBUG log here
+    log.d('got ' + str(raw_list_len) + ' tokens done. ')
+    return out
 
 # end ck_check.py
 

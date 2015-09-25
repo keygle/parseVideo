@@ -2,6 +2,7 @@
 # NOTE get this code from com.qiyi.player.base.utils.KeyUtils
 
 import math
+from ....b import md5_hash
 
 def rotateRight(param1, param2):
     _loc3_ = 0

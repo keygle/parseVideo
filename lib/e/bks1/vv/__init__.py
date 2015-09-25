@@ -1,10 +1,10 @@
 # __init__.py, parse_video/lib/e/bks1/vv
-# version 0.0.1.0 test201509250000
+# version 0.0.2.0 test201509251733
 
 from .... import b
 from .. import var
 
-from . ck_check import get_ck_token
+from . ck_check import get_ck_token, get_token_list
 
 def load_conf():
     '''

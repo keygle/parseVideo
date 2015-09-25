@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509232046
+# version 0.0.3.0 test201509251712
 
 '''
 entry of parse_video/lib's base part, the utils
@@ -14,6 +14,15 @@ from ._parse import *
 from ._path import *
 from ._re import *
 from ._thread import *
+
+def number(i):
+    '''
+    convert i to number, prefer int than float
+    '''
+    f = float(i)
+    if f == int(f):
+        return int(f)
+    return f
 
 # end __init__.py
 
