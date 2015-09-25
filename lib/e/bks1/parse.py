@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509241328
+# version 0.0.2.0 test201509251751
 
 from ... import b, err
 from ...b import log
@@ -31,6 +31,17 @@ def get_vid_info(raw_url):
     var._['_raw_page_html'] = html_text
     var._['_vid_info'] = vid_info
     return vid_info
+
+def pre_parse(raw_vms):
+    '''
+    pre-parse of this extractor, will get video info and raw file info
+    input raw vms json info
+    the later parse process will base on this function's output
+    '''
+    pass
+
+def get_vp():
+    pass	# TODO
 
 # end parse.py
 
