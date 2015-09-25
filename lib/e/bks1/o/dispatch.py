@@ -56,6 +56,9 @@ def make_before_urls(raw_part_url_list, token_list=None):
         out = []
         for i in range(len(raw_part_url_list)):
             raw = raw_part_url_list[i]
+            if not raw:	# check to skip not needed urls
+                out.append('')
+                continue
             key = dispatch_keys[i]
             one = du1 + '/' + key + '/' + du2 + raw
             # NOTE there is no need to add many args to before_final_url
@@ -71,6 +74,9 @@ def make_before_urls(raw_part_url_list, token_list=None):
         out = []
         for i in range(len(raw_part_url_list)):
             raw = raw_part_url_list[i]
+            if not raw:	# check to skip not needed urls
+                out.append('')
+                continue
             token = token_list[i]
             url = du + raw.replace('.flv', '.hml', 1)
             # add more args

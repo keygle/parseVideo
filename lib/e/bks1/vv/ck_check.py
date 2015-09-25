@@ -95,21 +95,28 @@ def get_ck_token(index=0):
         er.raw_info = info
         raise er from e
 
-def get_token_list(raw_list_len=0):
+def get_token_list(flag_list=[]):
     '''
-    will get token with index from 0 to raw_list_len - 1
-        just get each token one by one, not get many at the same time to prevent more ERRORs
+    will get ck token for each item in flag_list
+        if the flag is True, will get the token
+        if the flag is False, will just skip the token
+    just get each token one by one, not get many at the same time to prevent more ERRORs
     return got token list
     '''
-    # TODO support re-try and sleep before re-try
+    # TODO support auto re-try and sleep before re-try
     # DEBUG log here
-    log.d('start get token_list of length ' + str(raw_list_len) + ' ')
+    log.d('start get token_list of max length ' + str(len(flag_list)) + ' ')
+    count_token = 0
     out = []
-    for i in range(raw_list_len):
-        one = get_ck_token(i)
+    for f in flag_list:
+        if f:
+            one = get_ck_token(i)
+            count_token += 1
+        else:
+            one = None
         out.append(one)
     # DEBUG log here
-    log.d('got ' + str(raw_list_len) + ' tokens done. ')
+    log.d('got ' + str(count_token) + ' tokens done. ')
     return out
 
 # end ck_check.py
