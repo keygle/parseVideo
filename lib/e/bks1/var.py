@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.16.0 test201509261951
+# version 0.1.0.0 test201509262057
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -117,8 +117,13 @@ def init():
     # config items
     out['flag_v'] = False
     out['flag_v_force'] = False
+    out['flag_set_um'] = False
+    out['flag_set_vv'] = False
+    
     out['pool_size_get_final_url'] = 16
+    
     out['cdn_server'] = None
+    
     out['chrome_bin'] = None
     out['node_bin'] = None
     out['enhp_bin'] = None
@@ -127,9 +132,11 @@ def init():
     out['_raw_url'] = ''
     out['_raw_page_html'] = ''
     out['_vid_info'] = None
+    
     out['_first_url'] = ''
     out['_raw_vms_json'] = ''
     out['_vms_json'] = None
+    
     out['_vp'] = None
     out['_qyid'] = ''	# user's uuid
     out['_vv_conf'] = None

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.7.0 test201509262050
+# version 0.0.8.0 test201509262057
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -77,6 +77,10 @@ def parse(raw_url):
                 var._['flag_v'] = True
             elif a == 'force':
                 var._['flag_v_force'] = True
+            elif a == 'set_um':
+                var._['flag_set_um'] = True
+            elif a == 'set_vv':
+                var._['flag_set_vv'] = True
             else:	# not support this arg
                 log.w('not support this method arg \"' + a + '\" ')
         # use normal parse function

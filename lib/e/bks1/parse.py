@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.8.0 test201509262051
+# version 0.0.9.0 test201509262055
 
 '''
 base parse functions for extractor bks1
@@ -114,6 +114,8 @@ def normal_get_first_url(vid_info):
             vid = vid_info['vid'], 
             tvid = vid_info['tvid'], 
             enc = _enc, 
+            flag_set_um = var._['flag_set_um'], 
+            flag_set_vv = var._['flag_set_vv'], 
             tm = tm)
     else:	# load vv config
         vvc = vv.load_conf()
