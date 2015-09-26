@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e :: extractors' entry
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509261938
+# version 0.0.5.0 test201509262019
 
 '''
 lib/e
@@ -10,8 +10,11 @@ lib/e/__init__.py
     extractors' entry for parse_video
 '''
 
-from .. import err
-from . import e_list
+_flag_not_imported = True
+if _flag_not_imported:
+    _flag_not_imported = False
+    from .. import err
+    from . import e_list
 
 def call(extractor_id, raw_url, raw_arg='', raw_method=''):
     '''

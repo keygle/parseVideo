@@ -1,11 +1,14 @@
 # __init__.py, parse_video/lib/e/bks1/o
-# version 0.0.3.0 test201509261724
+# version 0.0.4.0 test201509262021
 
 import random
 
-from .first_url import make as make_first_url
-from .key import getVrsEncodeCode
-from .dispatch import get_server_time, make_before_urls, get_one_final_url
+_flag_not_imported = True
+if _flag_not_imported:
+    _flag_not_imported = False
+    from .first_url import make as make_first_url
+    from .key import getVrsEncodeCode
+    from .dispatch import get_server_time, make_before_urls, get_one_final_url
 
 def gen_tm():
     '''

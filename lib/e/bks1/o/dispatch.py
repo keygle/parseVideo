@@ -63,7 +63,7 @@ def make_before_urls(raw_part_url_list, token_list=None, server_time=None):
             one = du1 + '/' + key + '/' + du2 + raw
             # NOTE there is no need to add many args to before_final_url
             out.append(one)
-         return out
+        return out
     else:	# if set flag_v, should give token_list
         du = var._['_du']
         ck_info = var._['_ck_info']

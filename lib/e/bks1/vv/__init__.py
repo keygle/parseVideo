@@ -1,10 +1,13 @@
 # __init__.py, parse_video/lib/e/bks1/vv
-# version 0.0.3.0 test201509261713
+# version 0.0.4.0 test201509262022
 
-from .... import b
-from .. import var
-
-from . ck_check import get_ck_token, get_token_list
+_flag_not_imported = True
+if _flag_not_imported:
+    _flag_not_imported = False
+    from .... import b
+    from .. import var
+    
+    from . ck_check import get_ck_token, get_token_list
 
 def load_conf():
     '''

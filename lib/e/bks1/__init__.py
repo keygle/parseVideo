@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.3.0 test201509261956
+# version 0.0.4.0 test201509262020
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -31,12 +31,15 @@ parse_video/lib/e/bks1
     standard port and main entry for extractor bks1
 '''
 
-from ... import b, err
-from ... import var as var0
-from ...b import log
-
-from . import var, about, parse, fx_key
-from . import enc, nosalt, o, vv
+_flag_not_imported = True
+if _flag_not_imported:
+    _flag_not_imported = False
+    from ... import b, err
+    from ... import var as var0
+    from ...b import log
+    
+    from . import var, about, parse, fx_key
+    from . import enc, nosalt, o, vv
 
 # load this extractor's config file
 def load_config():

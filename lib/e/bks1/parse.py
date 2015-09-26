@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.7.0 test201509261801
+# version 0.0.7.1 test201509262023
 
 '''
 base parse functions for extractor bks1
@@ -24,7 +24,7 @@ def get_vid_info(raw_url):
         er.html_text = html_text
         raise er
     # check flag_vv
-    if (vid_info['flag_vv'] = 'true') and var._['flag_v']:
+    if (vid_info['flag_vv'] == 'true') and var._['flag_v']:
         var._['flag_v'] = True
     else:	# will auto turn off flag_v
         var._['flag_v'] = False
