@@ -1,6 +1,6 @@
 # log.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.3.0 test201509241447
+# version 0.0.4.0 test201509262050
 
 # TODO support set log level
 
@@ -30,7 +30,7 @@ def _pd(raw_text, depth=3, prefix=var.PV_DEBUG_PREFIX, debug_type=''):
     # get caller's info
     mn, fn = get_caller_info(depth=depth)
     # TODO may add time info
-    debug_prefix = prefix + ' ' + mn + ':' + fn + ': ' + debug_type + ' '
+    debug_prefix = prefix + ' ' + mn + ':' + fn + '(): ' + debug_type + ' '
     debug_text = debug_prefix + raw_text
     # just print it
     _p(debug_text)

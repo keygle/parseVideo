@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.7.1 test201509262023
+# version 0.0.8.0 test201509262051
 
 '''
 base parse functions for extractor bks1
@@ -172,7 +172,12 @@ def normal_parse(raw_page_url):
     raw_vms = b.dl_json(first_url)
     var._['_vms_json'] = raw_vms
     # pre-parse
-    evinfo = pre_parse(raw_vms)
+    try:
+        evinfo = pre_parse(raw_vms)
+    except Exception as e:
+        er = err.MethodError('this parse method may be out-of-date ')
+        er.raw_info = raw_vms
+        raise er from e
     # select by hd and index
     raw = b.select_hd(evinfo['video'])
     raw = b.select_file_index(raw)

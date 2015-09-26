@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509262020
+# version 0.0.7.0 test201509262050
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -38,8 +38,9 @@ if _flag_not_imported:
     from ... import var as var0
     from ...b import log
     
-    from . import var, about, parse, fx_key
+    from . import var, about, fx_key
     from . import enc, nosalt, o, vv
+    from . import parse as _parse
 
 # load this extractor's config file
 def load_config():
@@ -60,21 +61,26 @@ def parse(raw_url):
     load_config()
     # check method and process method args
     raw_method = var._['raw_method']
-    method_name, raw_args = raw_method.split(';', 1)
+    raw_parts = raw_method.split(';', 1)
+    if len(raw_parts) < 2:
+        raw_parts.append('')
+    method_name, raw_args = raw_parts
     if method_name == 'pc_flash_gate':
         # DEBUG log here
         log.d('use method \"' + method_name + '\" ')
         # process args
         args = raw_args.split(',')
         for a in args:
-            if a == 'set_flag_v':
+            if a == '':
+                pass	# just ignore this null arg
+            elif a == 'set_flag_v':
                 var._['flag_v'] = True
             elif a == 'force':
                 var._['flag_v_force'] = True
             else:	# not support this arg
                 log.w('not support this method arg \"' + a + '\" ')
         # use normal parse function
-        raw_evinfo = parse.normal_parse(raw_url)
+        raw_evinfo = _parse.normal_parse(raw_url)
     # TODO to support more method
     else:	# not support this method
         raise err.ConfigError('not support this method \"' + method_name + '\" ')

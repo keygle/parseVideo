@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e :: extractors' entry
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.5.0 test201509262019
+# version 0.0.6.0 test201509262032
 
 '''
 lib/e
@@ -41,7 +41,7 @@ def call(extractor_id, raw_url, raw_arg='', raw_method=''):
     try:
         result = ex.parse(raw_url)
         return result
-    except err.ParseError as e:
+    except err.PVError as e:
         # just raise it
         raise
     except Exception as e:
