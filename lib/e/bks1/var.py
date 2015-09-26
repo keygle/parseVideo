@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.12.0 test201509261751
+# version 0.0.14.0 test201509261818
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -10,7 +10,9 @@ part of standard port for parse_video extractor
 # static data
 
 EXTRACTOR_ID = 'bks1'
-EXTRACTOR_NAME = '不可说'
+EXTRACTOR_NAME = 'bks1_1'
+SITE = 'bks1'
+SITE_NAME = '不可说'
 
 RE_SUPPORT_URL = [
     '^http://[a-z]+\.iqiyi\.com/.+\.html', 
@@ -29,6 +31,13 @@ METHOD_LIST = [
     # TODO only use dispatch key, not send a request to get key; 
     # only works with normal F videos
     'only_dispatch_key', 	# NOTE only support flv video format
+    
+    # NOTE nosalt methods
+    # TODO use enhp and google-chrome http_proxy
+    # only no enc salt, other process is the same as pc_flash_gate
+    'nosalt_chrome_proxy', 	# NOTE only support flv video format
+    
+    # TODO add more mix functions
 ]
 
 RE_VID_LIST = {

@@ -1,6 +1,6 @@
 # err.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509232256
+# version 0.0.3.0 test201509261820
 
 '''
 ERRORs define and process of parse_video
@@ -12,6 +12,7 @@ ERROR class defined by parse_video
             UnknowError
             NotSupportURLError		# not support the input raw_url
             LoadConfigError		# read and load config file failed
+            ConfigError			# config item or user input error
             
             ParseError			# parse video info failed
                 NetworkError		# network Error when loading web resources
@@ -35,6 +36,8 @@ class UnknowError(PVError):
 class NotSupportURLError(PVError):
     pass
 class LoadConfigError(PVError):
+    pass
+class ConfigError(PVError):
     pass
 class ParseError(PVError):
     pass

@@ -7,6 +7,12 @@
 	"cdn_server" : "http://wdgcdn.inter.qiyi.com", 
 	"vv_conf_file" : "e_bks1_vv1.conf.json", 
 	
+	"__note__" : "for no-salt methods", 
+	"chrome_bin" : "google-chrome-stable", 
+	"node_bin" : "node", 
+	"__note__" : "path from extractor root_path", 
+	"enhp_bin" : "./nosalt/enhp/enhp.js", 
+	
 	"__note__" : "__end__"
 }
 
