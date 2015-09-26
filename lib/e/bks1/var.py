@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.14.0 test201509261818
+# version 0.0.16.0 test201509261951
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -118,6 +118,10 @@ def init():
     out['flag_v'] = False
     out['flag_v_force'] = False
     out['pool_size_get_final_url'] = 16
+    out['cdn_server'] = None
+    out['chrome_bin'] = None
+    out['node_bin'] = None
+    out['enhp_bin'] = None
     
     # private data
     out['_raw_url'] = ''
@@ -132,7 +136,7 @@ def init():
     # data used when parse video info
     out['_du'] = None	# base url part of before_final_url
     out['_ck_info'] = None	# used with ck token for vv
-    # TODO add more data here
+    # add data done
     
     return out
 

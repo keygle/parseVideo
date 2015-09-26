@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e :: extractors' entry
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.3.0 test201509240200
+# version 0.0.4.0 test201509261938
 
 '''
 lib/e
@@ -26,7 +26,7 @@ def call(extractor_id, raw_url, raw_arg='', raw_method=''):
         		default value is '', means use the default method
     return what the extractor's parse() function return
     '''
-    # TODO import the extractor
+    # import the extractor
     ex = e_list.import_extractor(extractor_id)
     
     # init extractor's global var data
@@ -43,7 +43,7 @@ def call(extractor_id, raw_url, raw_arg='', raw_method=''):
         raise
     except Exception as e:
         # TODO
-        raise err.UnknowError() from e
+        raise err.UnknowError('[TODO] unknow ERROR ') from e
     finally:	# recovery var data
         ex.var._ = ex.var.pop()
 
