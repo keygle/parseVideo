@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509260055
+# version 0.0.5.0 test201509261528
 
 '''
 base parse functions for extractor bks1
@@ -9,7 +9,7 @@ base parse functions for extractor bks1
 from ... import b, err
 from ...b import log
 
-from . import var, o
+from . import var, o, enc, vv
 
 def get_vid_info(raw_url):
     # DEBUG log here
@@ -52,6 +52,7 @@ def pre_parse(raw_vms):
         er = err.MethodError('not support this video, may be a VIP video ')
         er.raw_info = data
         raise er from e
+    var._['_vp'] = vp	# save it
     # output info, standard parse_video video_info format struct
     evinfo = {}
     evinfo['info'] = {}
@@ -102,6 +103,54 @@ def get_vp(data):
     else:
         vp = data['vp']
     return vp
+
+# normal method to get first_url for normal parse
+def normal_get_first_url(vid_info):
+    # gen tm and enc for first_url
+    tm = o.gen_tm()
+    _enc = enc.gen(vid_info['tvid'], tm)
+    if not var._['flag_v']:	# normal make first url
+        first_url = o.make_first_url(
+            vid = vid_info['vid'], 
+            tvid = vid_info['tvid'], 
+            enc = _enc, 
+            tm = tm)
+    else:	# load vv config
+        vvc = vv.load_conf()
+        token = vv.get_ck_token()	# load a token for first_url
+        # make first_url
+        first_url = o.make_first_url(
+            vid = vid_info['vid'], 
+            tvid = vid_info['tvid'], 
+            enc = _enc, 
+            qyid = var._['_qyid'], 
+            flag_v = var._['flag_v'], 
+            cid = var.DEFAULT_CID, 
+            token = token, 
+            uid = vvc['uid'], 
+            puid = vvc['uid'], 
+            tm = tm)
+    var._['_first_url'] = first_url
+    return first_url
+
+# TODO normal parse process, used by method pc_flash_gate
+# TODO this process may should be split in sub-process
+def normal_parse(raw_page_url):
+    vid_info = get_vid_info(raw_page_url)
+    first_url = normal_get_first_url(vid_info)
+    # DEBUG log here
+    log.d('got first_url \"' + first_url + '\" ')
+    # load raw vms
+    raw_vms = b.dl_json(first_url)
+    var._['_vms_json'] = raw_vms
+    # pre-parse
+    raw_evinfo = pre_parse(raw_vms)
+    # select by hd and index
+    raw = b.select_hd(raw_evinfo)
+    raw = b.select_file_index(raw)
+    # get key list
+    # TODO
+    pass
 
 # end parse.py
 
