@@ -1,10 +1,11 @@
 # __init__.py, parse_video/lib/e/bks1/o
-# version 0.0.2.0 test201509261443
+# version 0.0.3.0 test201509261724
 
 import random
 
 from .first_url import make as make_first_url
-from .key import getVrsEncodeCode, getDispatchKey
+from .key import getVrsEncodeCode
+from .dispatch import get_server_time, make_before_urls, get_one_final_url
 
 def gen_tm():
     '''

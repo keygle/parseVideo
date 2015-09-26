@@ -1,5 +1,5 @@
 # var.py, parse_video/lib/e/bks1
-# version 0.0.11.0 test201509260051
+# version 0.0.12.0 test201509261751
 
 '''
 parse_video/lib/e/bks1/var.py
@@ -108,6 +108,7 @@ def init():
     # config items
     out['flag_v'] = False
     out['flag_v_force'] = False
+    out['pool_size_get_final_url'] = 16
     
     # private data
     out['_raw_url'] = ''

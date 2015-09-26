@@ -45,11 +45,11 @@ def get_dispatch_key_list(raw_link_list, server_time=None):
     return out
 
 # gen before_final_url list
-def make_before_urls(raw_part_url_list, token_list=None):
+def make_before_urls(raw_part_url_list, token_list=None, server_time=None):
     # NOTE part_url in raw_list has already been decoded by getVrsEncodeCode()
     if not var._['flag_v']:	# normal F video
         # get dispatch_key list
-        dispatch_keys = get_dispatch_key_list(raw_part_url_list)
+        dispatch_keys = get_dispatch_key_list(raw_part_url_list, server_time=server_time)
         # process du here
         du1, du2 = var._['_du'].rsplit('/', 1)
         # make before_final_url list

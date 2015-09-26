@@ -1,5 +1,5 @@
 # __init__.py, parse_video/lib/e/bks1/vv
-# version 0.0.2.0 test201509251733
+# version 0.0.3.0 test201509261713
 
 from .... import b
 from .. import var
@@ -20,6 +20,24 @@ def load_conf():
     var._['_qyid'] = vvc['qyid']
     
     return vvc
+
+def gen_token_flag_list(video_info):
+    max_len = 0
+    for v in video_info:
+        l = len(v['file'])
+        if l > max_len:
+            max_len = l
+    # create a long enough flag list and put default flag to False
+    out = []
+    for i in range(max_len):
+        out.append(False)
+    # check file url to set flag to True
+    for v in video_info:
+        for i in range(len(v['file'])):
+            f = v['file'][i]
+            if f['url']:
+                out[i] = True
+    return out
 
 # end __init__.py
 

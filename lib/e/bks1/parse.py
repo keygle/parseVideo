@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.5.0 test201509261528
+# version 0.0.7.0 test201509261801
 
 '''
 base parse functions for extractor bks1
@@ -133,8 +133,36 @@ def normal_get_first_url(vid_info):
     var._['_first_url'] = first_url
     return first_url
 
-# TODO normal parse process, used by method pc_flash_gate
-# TODO this process may should be split in sub-process
+# normal method to make before_final_url
+def normal_make_before_urls(video_info):
+    raw = video_info
+    # get key info
+    if not var._['flag_v']:
+        server_time = o.get_server_time()
+        # DEBUG log here
+        log.d('got server_time ' + str(server_time) + ' ')
+    else:	# get token list
+        token_flag_list = vv.gen_token_flag_list(raw)
+        token_list = vv.get_token_list(token_flag_list)
+    # gen before_final_url, process each video
+    for v in raw:
+        # make raw url list
+        raw_url = []
+        for f in v['file']:
+            raw_url.append(f['url'])
+        # get before_final_url
+        if not var._['flag_v']:
+            before_urls = o.make_before_urls(raw_url, server_time=server_time)
+        else:
+            before_urls = o.make_before_urls(raw_url, token_list=token_list)
+        # update urls
+        i = 0
+        for f in v['file']:
+            f['url'] = before_urls[i]
+            i += 1
+    return raw
+
+# NOTE normal parse process, used by method pc_flash_gate
 def normal_parse(raw_page_url):
     vid_info = get_vid_info(raw_page_url)
     first_url = normal_get_first_url(vid_info)
@@ -144,13 +172,58 @@ def normal_parse(raw_page_url):
     raw_vms = b.dl_json(first_url)
     var._['_vms_json'] = raw_vms
     # pre-parse
-    raw_evinfo = pre_parse(raw_vms)
+    evinfo = pre_parse(raw_vms)
     # select by hd and index
-    raw = b.select_hd(raw_evinfo)
+    raw = b.select_hd(evinfo['video'])
     raw = b.select_file_index(raw)
-    # get key list
-    # TODO
-    pass
+    # make before final urls
+    raw = normal_make_before_urls(raw)
+    evinfo['video'] = raw
+    # make a list of before urls
+    before_urls = []
+    for v in evinfo['video']:
+        for f in v['file']:
+            if f['url']:	# check to ignore no-need urls
+                before_urls.append(f['url'])
+    # get final_urls
+    final_urls = normal_get_final_urls(before_urls)
+    # update final urls
+    i = 0
+    for v in evinfo['video']:
+        for f in v['file']:
+            if f['url']:	# check to skip no-need urls
+                f['url'] = final_urls[i]
+                i += 1
+    return evinfo
+
+# get final urls from before urls
+def normal_get_final_urls(before_urls):
+    # make raw list for normal_get_one_final_url
+    raw = []
+    for i in range(len(before_urls)):
+        raw.append({
+            'i' : i, 
+            'url' : before_urls[i], 
+        })
+    pool_size = var._['pool_size_get_final_url']
+    # DEBUG log here
+    log.d('start get ' + str(len(before_urls)) + ' final_urls with pool_size ' + str(pool_size) + ' ')
+    # use map_do to get many final_urls at the same time
+    final_urls = b.map_do(raw, normal_get_one_final_url, pool_size=pool_size)
+    # DEBUG log here
+    log.d('done got ' + str(len(before_urls)) + ' final_urls')
+    return final_urls
+
+# used by normal_get_final_urls to support DEBUG log
+# TODO to support auto-retry if get failed
+def normal_get_one_final_url(raw):
+    i = raw['i']
+    url = raw['url']
+    # DEBUG log here
+    log.d('get ' + str(i) + ' from \"' + url + '\" ')
+    final = o.get_one_final_url(url)
+    log.d('got ' + str(i) + ' final \"' + final + '\"')
+    return final
 
 # end parse.py
 

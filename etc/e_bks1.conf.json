@@ -2,6 +2,7 @@
 	"__note__" : "config file for parse_video/e/bks1 extractor", 
 	
 	"salt" : "< !!! NOTE !!! you should write the right salt here >", 
+	"pool_size_get_final_url" : 32, 
 	
 	"cdn_server" : "http://wdgcdn.inter.qiyi.com", 
 	"vv_conf_file" : "e_bks1_vv1.conf.json", 
