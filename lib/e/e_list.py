@@ -1,6 +1,6 @@
 # e_list.py, parse_video/lib/e :: extractor list
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509262022
+# version 0.0.3.0 test201509271555
 
 import importlib
 
@@ -13,7 +13,10 @@ def import_extractor(extractor_id):
     except Exception as e:
         raise err.ConfigError('can not import extractor \"' + extractor_id + '\" ') from e
 
-# TODO
+# useable extractor list, just include extractor_id
+EXTRACTOR_LIST = [
+    'bks1', 
+]
 
 # end e_list.py
 

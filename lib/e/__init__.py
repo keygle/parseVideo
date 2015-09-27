@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e :: extractors' entry
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.6.0 test201509262032
+# version 0.0.8.0 test201509271608
 
 '''
 lib/e
@@ -14,7 +14,7 @@ _flag_not_imported = True
 if _flag_not_imported:
     _flag_not_imported = False
     from .. import err
-    from . import e_list
+    from . import e_list, url_to_e
 
 def call(extractor_id, raw_url, raw_arg='', raw_method=''):
     '''
@@ -45,24 +45,28 @@ def call(extractor_id, raw_url, raw_arg='', raw_method=''):
         # just raise it
         raise
     except Exception as e:
-        # TODO
-        raise err.UnknowError('[TODO] unknow ERROR ') from e
+        raise err.UnknowError('unknow parse() ERROR ') from e
     finally:	# recovery var data
         ex.var._ = ex.var.pop()
 
-def get_list():
+def get_list(url=None):
     '''
-    return the list of extractors, with extractor_id and more info
-    '''
+    if url is None, will return all extractors
+    if url is not None, will return avaliable extractors to process this URL
     
-    pass
+    return the list of extractors, only with extractor_id
+    '''
+    if url:
+        return url_to_e.get_list(url=url)
+    else:
+        return e_list.EXTRACTOR_LIST
 
 def get_about_info(extractor_id):
     '''
     return the extractor's info (include help info, extractor version, etc. )
     '''
-    
-    pass
+    ex = e_list.import_extractor(extractor_id)
+    return ex.get_about_info()
 
 # end __init__.py
 

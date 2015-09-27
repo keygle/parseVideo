@@ -11,6 +11,9 @@
 		"bks1" : "pc_flash_gate", 
 	}, 
 	
+	"__note__" : "default user-agent", 
+	"user_agent" : "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0", 
+	
 	"__note__" : "__end__ pv_main.conf.json"
 }
 

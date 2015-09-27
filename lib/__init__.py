@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.0.1 test201509231945
+# version 0.0.1.0 test201509271551
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -25,6 +25,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+'''
+'''
+
+_flag_not_imported = True
+if _flag_not_imported:
+    _flag_not_imported = False
+    from . import var
+
+def load_config():
+    pass
 
 # end __init__.py
 

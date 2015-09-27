@@ -1,8 +1,8 @@
 # log.py, parse_video/lib/b
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509262050
+# version 0.0.4.0 test201509271542
 
-# TODO support set log level
+# TODO output color support
 
 '''
 log functions for parse_video, and support DEBUG log file (such as vms.json file)
@@ -32,8 +32,15 @@ def _pd(raw_text, depth=3, prefix=var.PV_DEBUG_PREFIX, debug_type=''):
     # TODO may add time info
     debug_prefix = prefix + ' ' + mn + ':' + fn + '(): ' + debug_type + ' '
     debug_text = debug_prefix + raw_text
+    # check log output filter
+    _lf = var.log_filter
+    if not debug_type in _lf:
+        flag_print = _lf['']	# use default value
+    else:
+        flag_print = _lf[debug_type]
     # just print it
-    _p(debug_text)
+    if flag_print:
+        _p(debug_text)
 
 # export functions
 
