@@ -104,8 +104,8 @@ def get_token_list(flag_list=[]):
     return got token list
     '''
     # TODO support auto re-try and sleep before re-try
-    # DEBUG log here
-    log.d('start get token_list of max length ' + str(len(flag_list)) + ' ')
+    # INFO log here
+    log.i('start get token_list of max length ' + str(len(flag_list)) + ' ')
     count_token = 0
     out = []
     for f in flag_list:
@@ -115,8 +115,8 @@ def get_token_list(flag_list=[]):
         else:
             one = None
         out.append(one)
-    # DEBUG log here
-    log.d('got ' + str(count_token) + ' tokens done. ')
+    # [ OK ] log here
+    log.o('got ' + str(count_token) + ' tokens done. ')
     return out
 
 # end ck_check.py
