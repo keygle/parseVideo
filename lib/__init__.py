@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.3.0 test201509271704
+# version 0.0.4.0 test201509272013
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -46,6 +46,8 @@ def _load_config():
 # exports functions
 
 def parse(raw_url, raw_extractor='', raw_method=''):
+    # NOTE load config first
+    _load_config()
     # NOTE just call _parse function now
     return _parse.parse(raw_url=raw_url, raw_extractor=raw_extractor, raw_method=raw_method)
 
