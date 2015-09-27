@@ -66,7 +66,7 @@ def get_ck_token(index=0):
     post_header = vvc['header']
     post_url = var.VIP_AUTH_URL
     # DEBUG log here
-    log.d('POST to url \"' + post_url + '\" with str \"' + post_str + '\" ')
+    log.d('[' + str(index) + '] POST to url \"' + post_url + '\" with str \"' + post_str + '\" ')
     # do post
     blob = b.post(post_url, post_data=post_blob, header=post_header)
     # parse got data
@@ -103,14 +103,33 @@ def get_token_list(flag_list=[]):
     just get each token one by one, not get many at the same time to prevent more ERRORs
     return got token list
     '''
-    # TODO support auto re-try and sleep before re-try
     # INFO log here
     log.i('start get token_list of max length ' + str(len(flag_list)) + ' ')
     count_token = 0
+    # NOTE limit and config value for auto retry
+    auto_retry_count = var._['_vv_conf']['auto_retry_count']
+    sleep_time_s = var._['_vv_conf']['sleep_time_s']
+    # start get tokens
     out = []
-    for f in flag_list:
-        if f:
-            one = get_ck_token(i)
+    for i in range(len(flag_list)):
+        if flag_list[i]:
+            # NOTE support auto retry and sleep before retry
+            for j in range(auto_retry_count):
+                try:
+                    one = get_ck_token(i)
+                    break	# get token OK
+                except err.NetworkError as e:
+                    # WARNING log here
+                    log.w('POST to get token failed ' + str(j + 1) + ' ')
+                    # check retry
+                    if j < (auto_retry_count - 1):
+                        # sleep first
+                        log.d('sleep ' + str(sleep_time_s) + 's before retry ')
+                        time.sleep(sleep_time_s)
+                        # just retry
+                        continue
+                    else:	# no more retry
+                        raise
             count_token += 1
         else:
             one = None
