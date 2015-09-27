@@ -1,6 +1,6 @@
 # var.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.7.0 test201509271608
+# version 0.0.8.0 test201509271702
 
 '''
 parse_video/lib/var.py
@@ -36,7 +36,7 @@ __old = []
 def init():
     out = {}
     # set default values
-    out['_flag_output_no_restruct'] = False	# for --output-no-restruct
+    out['flag_output_no_restruct'] = False	# for --output-no-restruct
     
     # for --min --max --min-i --max-i
     out['hd_min'] = None

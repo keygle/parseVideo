@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509271551
+# version 0.0.2.0 test201509271701
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -27,6 +27,7 @@
 #
 
 '''
+parse_video lib main entry
 '''
 
 _flag_not_imported = True
@@ -35,17 +36,28 @@ if _flag_not_imported:
     from . import var, err, b, e
     from .b import log
     from . import hd_quality, restruct
-    from . import parse
+    from . import parse as _parse
 
 def _load_config():
-    pass
+    conf = b.load_conf_file(var.CONF_FILE)
+    # set config items
+    var._['user_agent'] = conf['user_agent']
+    var._['url_to_e_filter'] = conf['filter_re']
+    var._['default_method'] = conf['default_method']
 
 # exports functions
-def parse():
-    pass	# TODO
+
+def parse(raw_url, raw_extractor='', raw_method=''):
+    # NOTE just call _parse function now
+    return _parse.parse(raw_url=raw_url, raw_extractor=raw_extractor, raw_method=raw_method)
 
 def get_extractor_info():
-    pass
+    id_list = e.get_list()
+    out = []
+    for i in id_list:
+        one = e.get_about_info(i)
+        out.append(one)
+    return out
 
 # end __init__.py
 
