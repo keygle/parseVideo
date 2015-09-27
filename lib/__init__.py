@@ -32,9 +32,19 @@
 _flag_not_imported = True
 if _flag_not_imported:
     _flag_not_imported = False
-    from . import var
+    from . import var, err, b, e
+    from .b import log
+    from . import hd_quality, restruct
+    from . import parse
 
-def load_config():
+def _load_config():
+    pass
+
+# exports functions
+def parse():
+    pass	# TODO
+
+def get_extractor_info():
     pass
 
 # end __init__.py

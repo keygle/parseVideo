@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.9.0 test201509262055
+# version 0.0.10.0 test201509271628
 
 '''
 base parse functions for extractor bks1
@@ -12,8 +12,8 @@ from ...b import log
 from . import var, o, enc, vv
 
 def get_vid_info(raw_url):
-    # DEBUG log here
-    log.d('loading page \"' + raw_url + '\" ')
+    # INFO log here
+    log.i('loading page \"' + raw_url + '\" ')
     html_text = b.dl_html(raw_url)
     vid_info = b.re_get_list(var.RE_VID_LIST, text=html_text, re_fix=var.RE_VID_LIST_FIX)
     # DEBUG log here
@@ -168,8 +168,8 @@ def normal_make_before_urls(video_info):
 def normal_parse(raw_page_url):
     vid_info = get_vid_info(raw_page_url)
     first_url = normal_get_first_url(vid_info)
-    # DEBUG log here
-    log.d('got first_url \"' + first_url + '\" ')
+    # [ OK ] log here
+    log.o('got first_url \"' + first_url + '\" ')
     # load raw vms
     raw_vms = b.dl_json(first_url)
     var._['_vms_json'] = raw_vms
@@ -213,12 +213,12 @@ def normal_get_final_urls(before_urls):
             'url' : before_urls[i], 
         })
     pool_size = var._['pool_size_get_final_url']
-    # DEBUG log here
-    log.d('start get ' + str(len(before_urls)) + ' final_urls with pool_size ' + str(pool_size) + ' ')
+    # INFO log here
+    log.i('start get ' + str(len(before_urls)) + ' final_urls with pool_size ' + str(pool_size) + ' ')
     # use map_do to get many final_urls at the same time
     final_urls = b.map_do(raw, normal_get_one_final_url, pool_size=pool_size)
-    # DEBUG log here
-    log.d('done got ' + str(len(before_urls)) + ' final_urls')
+    # [ OK ] log here
+    log.o('got ' + str(len(before_urls)) + ' final_urls')
     return final_urls
 
 # used by normal_get_final_urls to support DEBUG log
