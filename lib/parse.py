@@ -1,14 +1,14 @@
 # parse.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509271744
+# version 0.0.2.0 test201509272011
 
 '''
 parse_video lib/ main parse entry
 '''
 
-from . import b
 from .b import log
 from . import var, err, e
+from . import hd_quality, restruct
 
 def parse(raw_url='', raw_extractor='', raw_method=''):
     # check to auto-select extractor
@@ -51,17 +51,25 @@ def parse(raw_url='', raw_extractor='', raw_method=''):
     # just call the extractor's parse() function
     raw_evinfo = e.call(e_id, raw_url, raw_arg=e_arg, raw_method=e_method)
     # more process to raw_evinfo
-    evinfo = _process_raw_evinfo(raw_evinfo)
+    evinfo = _process_raw_evinfo(raw_evinfo, extractor_id=e_id, raw_url=raw_url)
     return evinfo	# process done
 
-def _process_raw_evinfo(raw):
+def _process_raw_evinfo(raw, extractor_id='', raw_url=''):
     # add info
-    # TODO
+    raw['info']['error'] = ''
+    raw['info']['info_version'] = restruct.EVINFO_VERSION
+    raw['info']['info_source'] = 'parse_video'
+    raw['info']['extractor'] = extractor_id
+    raw['info']['url'] = raw_url
     # add quality to video
-    # TODO
+    for v in raw['video']:
+        hd = v['hd']
+        v['quality'] = hd_quality.get(hd)
     # check and use restruct
-    # TODO
-    pass
+    if var._['flag_output_no_restruct']:
+        return raw
+    evinfo = restruct.restruct_evinfo(raw)
+    return evinfo
 
 # end parse.py
 
