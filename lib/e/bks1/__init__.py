@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.8.0 test201509262057
+# version 0.0.9.0 test201509271518
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -54,7 +54,7 @@ def load_config():
 
 # export functions
 def get_about_info():
-    pass
+    return about.get_info()
 
 def parse(raw_url):
     # load config file
