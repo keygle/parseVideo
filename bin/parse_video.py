@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # parse_video.py, parse_video/bin
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.1.0 test201509272230
+# version 0.0.2.0 test201509272241
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -189,6 +189,7 @@ def _pargs(argv):
             # check already set flag
             if etc['flag_start_help']:
                 log.w('already set ' + one + ' ')
+            etc['flag_start_help'] = True
             # check extractor_id
             if extractor_id:
                 if etc['help_extractor_id']:

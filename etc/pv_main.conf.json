@@ -3,12 +3,12 @@
 	
 	"__note__" : "RE filters for extractors, used for url_to_e", 
 	"filter_re" : [
-		["^http://[a-z]+\\.iqiyi\\.com/.+\\.html", "bks1"], 
+		["^http://[a-z]+\\.iqiyi\\.com/.+\\.html", "bks1"]
 	], 
 	
 	"__note__" : "default method of extractors", 
 	"default_method" : {
-		"bks1" : "pc_flash_gate", 
+		"bks1" : "pc_flash_gate"
 	}, 
 	
 	"__note__" : "default user-agent", 

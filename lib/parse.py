@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509272011
+# version 0.0.2.1 test201509272240
 
 '''
 parse_video lib/ main parse entry
@@ -23,6 +23,7 @@ def parse(raw_url='', raw_extractor='', raw_method=''):
             raise er
         # auto select first extractor
         e_id = e_list[0]
+        e_arg = ''	# NOTE now set e_arg to null
         # check extractor exist
         e_full_list = e.get_list()
         if not e_id in e_full_list:
