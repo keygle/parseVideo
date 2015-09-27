@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.0 test201509271701
+# version 0.0.3.0 test201509271704
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -33,9 +33,7 @@ parse_video lib main entry
 _flag_not_imported = True
 if _flag_not_imported:
     _flag_not_imported = False
-    from . import var, err, b, e
-    from .b import log
-    from . import hd_quality, restruct
+    from . import var, b, e
     from . import parse as _parse
 
 def _load_config():
