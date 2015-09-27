@@ -7,7 +7,7 @@
 	"pool_size_get_final_url" : 32, 
 	
 	"cdn_server" : "http://wdgcdn.inter.qiyi.com", 
-	"vv_conf_file" : "e_bks1_vv1.conf.json", 
+	"vv_conf_file" : "private.e_bks1_vv1.conf.json", 
 	
 	"__note__" : "for no-salt methods", 
 	"chrome_bin" : "google-chrome-stable", 

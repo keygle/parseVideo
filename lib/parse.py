@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.2.1 test201509272240
+# version 0.0.3.0 test201509272246
 
 '''
 parse_video lib/ main parse entry
@@ -59,7 +59,7 @@ def _process_raw_evinfo(raw, extractor_id='', raw_url=''):
     # add info
     raw['info']['error'] = ''
     raw['info']['info_version'] = restruct.EVINFO_VERSION
-    raw['info']['info_source'] = 'parse_video'
+    raw['info']['info_source'] = 'parse_video 0.4'	# NOTE mark parse_video version 0.4.x.x
     raw['info']['extractor'] = extractor_id
     raw['info']['url'] = raw_url
     # add quality to video
