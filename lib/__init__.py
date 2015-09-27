@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # __init__.py, parse_video/lib
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.4.0 test201509272013
+# version 0.0.6.0 test201509272041
 #
 # author sceext <sceext@foxmail.com> 2009EisF2015, 2015.09. 
 # copyright 2015 sceext
@@ -33,7 +33,8 @@ parse_video lib main entry
 _flag_not_imported = True
 if _flag_not_imported:
     _flag_not_imported = False
-    from . import var, b, e
+    from . import var, err, b, e
+    from .b import log
     from . import parse as _parse
 
 def _load_config():
@@ -51,8 +52,21 @@ def parse(raw_url, raw_extractor='', raw_method=''):
     # NOTE just call _parse function now
     return _parse.parse(raw_url=raw_url, raw_extractor=raw_extractor, raw_method=raw_method)
 
-def get_extractor_info():
+def get_extractor_info(extractor_id=None):
+    '''
+    return extractor's about info
+    if not give extractor_id, will return all info
+    '''
     id_list = e.get_list()
+    # check extractor_id
+    if extractor_id:	# just get one extractor's info
+        if not extractor_id in id_list:
+            er = err.ConfigError('extractor \"' + extractor_id + '\" not exist ')
+            er.raw_info = id_list
+            raise er
+        info = e.get_about_info(extractor_id)
+        return info
+    # get all extractor's info
     out = []
     for i in id_list:
         one = e.get_about_info(i)
