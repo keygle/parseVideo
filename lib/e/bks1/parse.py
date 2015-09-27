@@ -1,6 +1,6 @@
 # parse.py, parse_video/lib/e/bks1
 # LICENSE GNU GPLv3+ sceext 
-# version 0.0.11.0 test201509271633
+# version 0.0.12.0 test201509272303
 
 '''
 base parse functions for extractor bks1
@@ -53,6 +53,8 @@ def pre_parse(raw_vms):
     vi = data['vi']
     try:
         vp = get_vp(data)
+        # check tkl
+        assert vp['tkl'] != ''
     except Exception as e:
         er = err.MethodError('not support this video, may be a VIP video ')
         er.raw_info = data
@@ -73,8 +75,7 @@ def pre_parse(raw_vms):
     du = vp['du']
     var._['_du'] = du
     # get raw video list info
-    tkl = vp['tkl']
-    vs = tkl[0]['vs']
+    vs = vp['tkl'][0]['vs']
     # make raw video list and get info
     for raw in vs:
         one = {}	# one raw video info
@@ -181,7 +182,9 @@ def normal_parse(raw_page_url):
     # pre-parse
     try:
         evinfo = pre_parse(raw_vms)
-    except Exception as e:
+    except err.PVError as e:
+        raise	# just raise it
+    except Exception as e:	# unknow ERROR
         er = err.MethodError('this parse method may be out-of-date ')
         er.raw_info = raw_vms
         raise er from e
