@@ -3,8 +3,8 @@
 	
 class Iqiyi {
 	
-	static public $deadpara = 1000;
-	static public $enc_key =  "ts56gh";
+	static public $deadpara = 832;
+	static public $enc_key =  "a6f2a01ab9ad4510be0449fab528b82c";
 
 	public static function parse($url){
 		$html = Base::_cget($url);
