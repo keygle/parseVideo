@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # gen_wget_sh.py, gen wget .sh script for parse_video
-# version 0.0.2.0 test201510222117
+# version 0.0.3.0 test201510222146
 
 import os, sys
 import json
@@ -16,6 +16,7 @@ etc['pre_args'] = [
     '--min', 
     '3', 
 ]
+etc['fix_url_before'] = 'http://wgdcdn.inter.qiyi.com/'
 
 # num len
 def num_len(n, l=2):
@@ -23,6 +24,18 @@ def num_len(n, l=2):
     while len(t) < l:
         t = '0' + t
     return t
+
+# fix one url
+def fix_url(raw):
+    before, after = raw.split('://', 1)[1].split('/', 1)[1].split('?', 1)
+    parts = after.split('&')
+    info = {}
+    for p in parts:
+        key, value = p.split('=', 1)
+        info[key] = value
+    # gen final url
+    url = etc['fix_url_before'] + before + '?key=' + info['key']
+    return url
 
 # main function
 def main(argv):
@@ -52,9 +65,9 @@ def main(argv):
         # make file name
         file_name = title + '_' + num_len(i) + '_.mp4'
         
-        one = 'wget -O ' + file_name + ' \"' + url_list[i] + '\" '
+        one = 'wget -c -O ' + file_name + ' \"' + fix_url(url_list[i]) + '\" '
         line.append(one)
-    line.append('')
+    line += ['', '']
     text = ('\n').join(line)
     # make sh name
     sh_name = title + '_pv_wget.sh'
