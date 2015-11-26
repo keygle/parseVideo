@@ -2,7 +2,8 @@
 	"__note__" : "config file for parse_video/e/bks1 extractor", 
 	
 	"__note__" : " NOTE new salt for Zombie, 2015-10-21 ", 
-	"salt" : "2c76de15dcb44bd28ff0927d50d31620", 
+	"_salt" : "2c76de15dcb44bd28ff0927d50d31620", 
+	"salt" : "6967d2088d8843eea0ee38ad1a6f9173", 
 	
 	"pool_size_get_final_url" : 32, 
 	

@@ -63,7 +63,7 @@ def main(argv):
     line = []
     for i in range(len(url_list)):
         # make file name
-        file_name = title + '_' + num_len(i) + '_.mp4'
+        file_name = title + '_' + num_len(i) + '_.flv'
         
         one = 'wget -c -O ' + file_name + ' \"' + fix_url(url_list[i]) + '\" '
         line.append(one)
