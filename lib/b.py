@@ -1,6 +1,8 @@
 # b.py, parse_video/lib/
 
 import hashlib
+import threading
+import multiprocessing.dummy as multiprocessing
 
 from ._b import log
 
@@ -19,7 +21,11 @@ def md5_hash(raw):
 
 # use many threads to do many tasks at the same time
 def map_do(task_list, worker=lambda x:x, pool_size=1):
-    pass	# TODO
+    pool = multiprocessing.Pool(processes=pool_size)
+    result = pool.map(worker, task_list)
+    pool.close()
+    pool.join()
+    return result
 
 # end b.py
 
