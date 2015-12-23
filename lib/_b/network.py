@@ -95,7 +95,7 @@ def post(url, method='POST', post_data=None, header={}):
 def post_form(url, header={}, post_data={}):
     post_data = make_post_str(post_data).encode('utf-8')
     header['Content-Type'] = 'application/x-www-form-urlencoded'
-    return post(url, header=header, post_data)
+    return post(url, header=header, post_data=post_data)
 
 # make post text for form
 def make_post_str(post_data):

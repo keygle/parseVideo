@@ -133,7 +133,7 @@ def _parse_one_file_info(raw, du):
 # select by hd_min, hd_max, i_min, i_max. count sum data, and sort info
 def _select_and_count(pvinfo):
     # sort videos by hd
-    pvinfo['video'] = pvinfo['video'].sort(key = lambda x: x['hd'], reverse=True)
+    pvinfo['video'].sort(key = lambda x: x['hd'], reverse=True)
     # count video info
     for v in pvinfo['video']:
         v['size_byte'] = 0
@@ -174,7 +174,7 @@ def _get_file_urls(pvinfo):
     # use map_do() to get many file_urls at the same time
     pool_size = var._['pool_size_get_file_url']
     # INFO log
-    lod.i('get ' + str(len(raw)) + ' file URLs, pool_size = ' + str(pool_size) + ' ')
+    log.i('get ' + str(len(raw)) + ' file URLs, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(raw, worker = _get_one_file_url, pool_size=pool_size)
     # DEBUG log
     log.d('got file URLs done. ')
@@ -189,7 +189,7 @@ def _get_file_urls(pvinfo):
     return pvinfo
 
 def _get_one_file_url(raw):
-    i = raw[i]
+    i = raw['i']
     # DEBUG log
     log.d('start get index ' + str(i) + ' ')
     

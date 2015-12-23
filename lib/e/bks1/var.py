@@ -48,11 +48,11 @@ _var_init_flag = False
 __old = []
 
 # var functions
-def init(arg = '', method = ''):
+def init():
     out = {}
     # set default values
-    out['raw_arg'] = arg
-    out['raw_method'] = method
+    out['raw_arg'] = ''
+    out['raw_method'] = ''
     
     # config items
     out['hd_min'] = None

@@ -4,13 +4,13 @@
 from ... import err
 from ...b import log
 
-from . import var, conf
+from . import var
 from . import method_pc_flash_gate
 
 # init var data
 def init():
     var.push()
-    var._ = var.init(arg=raw_arg, method=raw_method)
+    var._ = var.init()
     var._var_init_flag = True
 
 # extractor parse entry function, return lyyc_parsev struct
@@ -18,7 +18,9 @@ def parse(raw_url, raw_arg='', raw_method=''):
     if not var._var_init_flag:
         init()
     # set var data
-    var._['_raw_url'] raw_url
+    var._['raw_arg'] = raw_arg
+    var._['raw_method'] = raw_method
+    var._['_raw_url'] = raw_url
     # DEBUG log here
     log.d('parse, raw_url = \"' + raw_url + '\", raw_arg = \"' + raw_arg + '\", raw_method = \"' + raw_method + '\" ')
     try:
@@ -50,12 +52,12 @@ def _do_parse(raw_method):
     # add more info to pvinfo
     pvinfo['extractor_name'] = var.EXTRACTOR_NAME
     # NOTE use raw extractor args
-    pvinfo['extractor'] = raw_arg
-    pvinfo['method'] = raw_method
+    pvinfo['extractor'] = var._['raw_arg']
+    pvinfo['method'] = var._['raw_method']
     
     pvinfo['info']['site'] = var.SITE
     pvinfo['info']['site_name'] = var.SITE_NAME
-    pvinfo['info']['url'] = raw_url
+    pvinfo['info']['url'] = var._['_raw_url']
     
     return pvinfo
 
