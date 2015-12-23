@@ -16,6 +16,7 @@ def get_request(
         tm = None, 
         qyid = '', 	# TODO
         puid = '', 
+        flag_set_um = False, 
         flag_set_vv = False, 
         
         flag_set_vinfo = True, 
