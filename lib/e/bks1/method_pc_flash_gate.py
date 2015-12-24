@@ -11,7 +11,18 @@ from .o import mixer_remote
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    # TODO parse method args
+    # parse method args
+    if method_arg_text != None:
+        args = method_arg_text.split(',')
+        for r in args:
+            if r == 'set_um':
+                var._['set_um'] = True
+            elif r == 'set_vv':
+                var._['set_vv'] = True
+            elif r == 'set_flag_v':
+                var._['flag_v'] = True
+            else:	# unknow arg
+                log.w('unknow method arg \"' + r + '\" ')
     
     raw_url = var._['_raw_url']
     # INFO log, loading html page

@@ -64,6 +64,8 @@ def init():
     
     out['set_um'] = False
     out['set_vv'] = False
+    
+    out['flag_v'] = False	# NOTE for vv
     # TODO
     
     # private data
