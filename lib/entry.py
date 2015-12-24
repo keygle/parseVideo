@@ -40,17 +40,16 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     if raw_extractor == '':
         raw_extractor = _url_to_extractor(raw_url)
     if ';' in raw_extractor:
-        extractor_id, raw_arg = raw_extractor.split(';', 1)
+        extractor_id = raw_extractor.split(';', 1)[0]
     else:
         extractor_id = raw_extractor
-        raw_arg = ''
     var._['_extractor_id'] = extractor_id
     # import extractor
     e = _import_extractor(extractor_id)
     # DEBUG log
-    log.d('use extractor \"' + extractor_id + '\", raw_arg = \"' + raw_arg + '\" ')
+    log.d('use extractor \"' + extractor_id + '\", raw_extractor = \"' + raw_extractor + '\" ')
     # call extractor to parse
-    pvinfo = _call_extractor_parse(e, raw_url, raw_arg=raw_arg, raw_method=raw_method)
+    pvinfo = _call_extractor_parse(e, raw_url, raw_arg=raw_extractor, raw_method=raw_method)
     
     # add more data and info to pvinfo struct data
     out = _add_more_pvinfo(pvinfo)
@@ -70,7 +69,8 @@ def _url_to_extractor(raw_url):
 
 def _import_extractor(extractor_id):
     try:
-        e = importlib.import_module('.e.' + extractor_id + '.entry', __name__)
+        to = '..e.' + extractor_id + '.entry'
+        e = importlib.import_module(to, __name__)
         return e
     except Exception as e:
         er = err.ConfigError('can not import extractor \"' + extractor_id + '\" ')
@@ -124,7 +124,7 @@ def _gen_last_update():
     return last_update
 
 def _restruct_pvinfo(pvinfo):
-    return _do_restruct_info(pvinfo)
+    return _do_restruct_pvinfo(pvinfo)
 
 # base restruct function
 def _restruct_key(old, key_list=[], rest_sort_reverse=False):
@@ -179,7 +179,7 @@ def _do_restruct_pvinfo(pvinfo):
         'quality', 
         'size_px', 
         'size_byte', 
-        'time_s'
+        'time_s', 
         'format', 
         'count', 
         'file', 
