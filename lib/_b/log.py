@@ -4,7 +4,7 @@
 
 import sys
 
-from .. import conf
+from .. import conf, err
 
 # log output filter
 log_filter = {
@@ -15,6 +15,17 @@ log_filter = {
     ' [ OK ]' : True, 
     None : True, 	# default value
 }
+
+# set log level functions
+def set_log_level(level):
+    if level == 'debug':
+        log_filter[' DEBUG:'] = True
+    elif level == 'quiet':
+        log_filter[' INFO:'] = False
+        log_filter[' [ OK ]'] = False
+        log_filter[None] = False
+    else:
+        raise err.ConfigError('can not set log level to', level)
 
 # get caller's info for log and DEBUG
 def get_caller_info(depth=2):

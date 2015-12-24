@@ -64,7 +64,7 @@ def _get_vid_info(raw_html_text):
 def _get_video_info(vid_info):
     first_url = _make_first_url(vid_info)
     # info log, load first video info json
-    log.i('got first URL \"' + first_url + '\" ')
+    log.o('got first URL \"' + first_url + '\" ')
     vms = b.dl_json(first_url)
     var._['raw_vms_json'] = vms
     
