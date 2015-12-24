@@ -6,6 +6,11 @@ DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate', 
 }
 
+# URL (RE) to extractor_id
+URL_TO_EXTRACTOR = {
+    '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'bks1', 
+}
+
 
 PV_LOG_PREFIX = 'pv::'
 

@@ -1,6 +1,5 @@
 # var.py, parse_video/lib/e/bks1/
 
-
 # static data
 
 EXTRACTOR_ID = 'bks1'
@@ -54,6 +53,7 @@ def init():
     out['raw_arg'] = ''
     out['raw_method'] = ''
     
+    out['more'] = None
     # config items
     out['hd_min'] = None
     out['hd_max'] = None
