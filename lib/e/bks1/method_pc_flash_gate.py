@@ -153,6 +153,7 @@ def _select_and_count(pvinfo):
         for f in v['file']:
             v['size_byte'] += f['size']
             v['time_s'] += f['time_s']
+        v['time_s'] = round(v['time_s'], 3)	# NOTE round time to ms
     # select hd_min, hd_max
     hd_min = var._['hd_min']
     hd_max = var._['hd_max']

@@ -46,6 +46,9 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     var._['_extractor_id'] = extractor_id
     # import extractor
     e = _import_extractor(extractor_id)
+    # check default method
+    if raw_method == '':
+        raw_method = conf.DEFAULT_METHOD[extractor_id]
     # DEBUG log
     log.d('use extractor \"' + extractor_id + '\", raw_extractor = \"' + raw_extractor + '\" ')
     # call extractor to parse
