@@ -3,6 +3,7 @@
 
 # package com.qiyi.player.core.Config
 VIP_AUTH_URL = 'http://api.vip.iqiyi.com/services/ckn.action'
+OK_CODE = 'A00000'
 
 # AuthenticationRemote.getRequest()
 def get_request(

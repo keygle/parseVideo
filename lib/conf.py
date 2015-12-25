@@ -2,7 +2,7 @@
 
 
 # config file path
-e_bks1_vv_conf = 'private.bks1_vv_conf.json'
+e_bks1_vv_conf = 'private.e_bks1_vv.conf.json'
 
 # default method for extractors
 DEFAULT_METHOD = {

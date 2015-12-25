@@ -6,7 +6,11 @@ from .... import b, err, conf
 from ....b import log
 
 from .. import var
-from ..o import mixer_remote, authentication_remote
+from ..o import (
+    mixer_remote, 
+    authentication_remote, 
+    member_dispatch_remote, 
+)
 
 # global data
 etc = {}
@@ -48,7 +52,14 @@ def add_tokens(pvinfo, vid_info):
             if f['url'] != '':
                 one = result[i]
                 i += 1
-                # TODO
+                # get needed info
+                raw_url = f['url']
+                vid = vid_info['vid']
+                key = one['t']	# token
+                uid = config['uid']
+                qyid = config['qyid']
+                # update url
+                f['url'] = member_dispatch_remote.get_request(raw_url, vid, key, uid=uid, qyid=qyid)
     # update raw_url done
     return pvinfo
 
@@ -97,7 +108,9 @@ def _do_get_one_token(raw_url, vid_info, config, index):
         er.text = text
         raise er from e
     # check token
-    # TODO
+    ok_code = authentication_remote.OK_CODE
+    if info['code'] != ok_code:
+        raise err.MethodError('token code \"' + info['code'] + '\" is not ' + ok_code + ' ')
     return info
 
 def _load_vv_conf(reload=False):
