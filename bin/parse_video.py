@@ -37,7 +37,7 @@ OPTIONS:
       --license
       
   -o, --output FILE
-      --more <file>	# TODO not support now
+      --more FILE
 
 '''
 
@@ -91,6 +91,7 @@ parse_video: get video info from some web sites.
   -m, --method METHOD        set method (and method arguments)
   
   -o, --output FILE  write result (video info) to file (default to stdout)
+      --more FILE    input more info from file to enable more mode
   
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet
@@ -150,6 +151,14 @@ def main(args):
             do_parse()
     # end main
 
+# NOTE more info file must be json file
+def load_more_file(fpath):
+    with open(fpath, 'rb') as f:
+        blob = f.read()
+    text = blob.decode('utf-8')
+    more_info = json.loads(text)
+    return more_info
+
 def do_parse():
     if etc['log_level'] != None:
         log.set_log_level(etc['log_level'])
@@ -163,7 +172,15 @@ def do_parse():
     ]
     for key in set_list:
         entry.var._[key] = etc[key]
-    # TODO support --more option
+    # TODO support '-', read more info from stdin
+    # check load more file
+    if etc['more'] != None:
+        try:
+            more_info = load_more_file(etc['more'])
+        except Exception as e:
+            p('ERROR: can not load more info file \"' + etc['more'] + '\" ')
+            raise
+        entry.var._['more'] = more_info	# do set more
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
     # print result, check --output option
@@ -174,7 +191,7 @@ def do_parse():
             with open(etc['output'], 'wb') as f:
                 p_result(pvinfo, file=f, blob=True)
         except Exception as e:
-            print('ERROR: can not write to output file \"' + etc['output'] + '\" ')
+            p('ERROR: can not write to output file \"' + etc['output'] + '\" ')
             raise
     # done
 
