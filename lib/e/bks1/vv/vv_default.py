@@ -55,7 +55,7 @@ def add_tokens(pvinfo, vid_info):
                 # get needed info
                 raw_url = f['url']
                 vid = vid_info['vid']
-                key = one['t']	# token
+                key = one['data']['t']	# token
                 uid = config['uid']
                 qyid = config['qyid']
                 # update url

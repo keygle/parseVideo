@@ -29,7 +29,7 @@ def get_request(
     out += '&cid=' + cid
     out += '&vid=' + vid
     out += '&QY00001=' + uid
-    # TODO may be not needed args
+    # NOTE not needed args
     #if start != None:
     #    out += '&start=' + str(start)
     #if retry > 0:
