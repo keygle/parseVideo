@@ -186,7 +186,7 @@ def _get_file_urls(pvinfo):
     # use map_do() to get many file_urls at the same time
     pool_size = var._['pool_size_get_file_url']
     # INFO log
-    log.i('get ' + str(len(raw)) + ' file URLs, pool_size = ' + str(pool_size) + ' ')
+    log.i('getting ' + str(len(raw)) + ' part file URLs, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(raw, worker = _get_one_file_url, pool_size=pool_size)
     # DEBUG log
     log.d('got file URLs done. ')
