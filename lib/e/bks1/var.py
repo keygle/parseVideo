@@ -67,7 +67,9 @@ def init():
     out['set_vv'] = False
     
     out['flag_v'] = False	# NOTE for vv
+    out['enable_more'] = False	# add more info in output pvinfo
     
+    out['_use_more'] = False	# use --more mode flag
     # private data
     out['_raw_url'] = ''
     out['_raw_page_html'] = ''
