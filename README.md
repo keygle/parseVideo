@@ -1,36 +1,85 @@
-:: README.md for parse_video <br />
-*last update* `2015-07-12 23:57 GMT+0800 CST`
+<!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
+   -
+  -->
+
+# parse_video -> version 0.5.0.0
+
+started at 2015-11-26 14:20 GMT+0800 CST
+
+!!! WARNING !!! 
+    This version has not been finished now. 
+    So it may not work. 
 
 
-# parse_video : parseVideo in python3
+## Description
 
-parse_video can parse videos from many websites. 
+`parse_video` is used to get video information (video file download URL) 
+from some web sites. 
 
-(but now only support a few sites, not fully finished)
+**Supported**
 
-parse_video is forked on github from <https://github.com/keygle/parseVideo>. 
++ *271* [ 4K ] [ flv ] 
+
+**TODO**
+
++ TODO
+
+
+## Install
+
+`parse_video` runs under `python 3.5`. 
+<https://www.python.org/>
 
 
 ## Usage
 
-You can try this: 
-
-```
-$ ./parsev "http://www.letv.com/ptv/vplay/22631122.html"
-```
-
-**Or**
-
 ```
 $ ./parsev --help
+Usage: parsev [OPTION]... URL
+parse_video: get video info from some web sites. 
+
+  -i, --min HD       set min hd number for video formats
+  -M, --max HD       set max hd
+      --i-min INDEX  set min index number for part video files
+      --i-max INDEX  set max index
+  
+  -e, --extractor EXTRACTOR  set extractor (and extractor arguments)
+  -m, --method METHOD        set method (and method arguments)
+  
+  -d, --debug  set log level to debug
+  -q, --quiet  set log level to quiet
+      
+      --help     display this help and exit
+      --version  output version information and exit
+      --license  show license information and exit
+
+More information online: <https://github.com/sceext2/parse_video> 
+$ 
+```
+
+## LICENSE
+
+```
+$ ./parsev --license
+    parse_video : get video info from some web sites. 
+    Copyright (C) 2015 sceext <sceext@foxmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+$ 
 ```
 
 
-## version
-
-parse_video version 0.3.5.1 test201507092219
-
-
-:: end README.md
+<!-- end README.md -->
 
 

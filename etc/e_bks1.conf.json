@@ -1,0 +1,22 @@
+{
+	"__note__" : "config file for parse_video/e/bks1 extractor", 
+	
+	"__note__" : " NOTE new salt for Zombie, 2015-10-21 ", 
+	"_salt" : "2c76de15dcb44bd28ff0927d50d31620", 
+	"salt" : "6967d2088d8843eea0ee38ad1a6f9173", 
+	
+	"pool_size_get_final_url" : 32, 
+	
+	"cdn_server" : "http://wdgcdn.inter.qiyi.com", 
+	"vv_conf_file" : "private.e_bks1_vv1.conf.json", 
+	
+	"__note__" : "for no-salt methods", 
+	"chrome_bin" : "google-chrome-stable", 
+	"node_bin" : "node", 
+	"__note__" : "path from extractor root_path", 
+	"enhp_bin" : "./nosalt/enhp/enhp.js", 
+	
+	"__note__" : "__end__"
+}
+
+

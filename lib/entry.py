@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-# entry.py, part for parse_video : a fork from parseVideo. 
-# parse_video:lib/entry: parse_video main lib entry. 
-# version 0.1.16.0 test201507071312
-# author sceext <sceext@foxmail.com> 2009EisF2015, 2015.07. 
-# copyright 2015 sceext
+# entry.py, parse_video/lib/, entry for parse_video.lib
 #
-# This is FREE SOFTWARE, released under GNU GPLv3+ 
-# please see README.md and LICENSE for more information. 
-#
-#    parse_video : a fork from parseVideo. 
-#    Copyright (C) 2015 sceext <sceext@foxmail.com> 
+#    parse_video : get video info from some web sites. 
+#    Copyright (C) 2015 sceext <sceext@foxmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,178 +18,211 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# import
-
 import re
+import datetime
+from collections import OrderedDict
+import importlib
 
-from . import hd_quality
-from . import error
-from . import restruct
-from . import base
+from . import err
+from .b import log
 
-from .bks1.o import s1
+from . import var, conf
 
-# static data
+# init var data
+def init():
+    var.push()
+    var._ = var.init()
+    var._var_init_flag = True
 
-# global config obj
-etc = {}
-etc['flag_debug'] = False
-etc['flag_fix_size'] = False
-etc['flag_v'] = False
-etc['flag_v_force'] = False
-etc['flag_min_parse'] = False
-etc['flag_enable_parse_more_url'] = False
+# parse_video.lib parse entry function, return lyyc_parsev struct
+def parse(url, extractor='', method=''):
+    if not var._var_init_flag:
+        init()
+    # DEBUG log here
+    log.d('parse, url = \"' + url + '\", extractor = \"' + extractor + '\", method = \"' + method + '\" ')
+    try:
+        pvinfo = _do_parse(url, raw_extractor=extractor, raw_method=method)
+    except err.PVError:
+        raise
+    except Exception as e:
+        er = err.UnknowError('unknow parse_video.lib Error')
+        raise er from e
+    finally:	# clean var data
+        var.pop()
+        var._var_init_flag = False
+    return pvinfo
 
-etc['hd_min'] = hd_quality.HD_MIN
-etc['hd_max'] = hd_quality.HD_MAX
-etc['i_min'] = None
-etc['i_max'] = None
-
-etc['http_proxy'] = None
-
-etc['EV_INFO_VERSION'] = restruct.EV_INFO_VERSION
-etc['EV_INFO_SOURCE'] = 'parse_video'
-
-# lists
-
-LIST_URL_TO_EXTRACTOR = {	# re of url to extractor_name
-    
-    # 271
-    # http://www.bks1.com/v_19rrn64t40.html
-    # http://www.bks1.com/w_19rrp737k5.html
-    # http://yule.bks1.com/pcb.html?src=focustext_0_20130527_7
-    # http://www.bks1.com/dianying/20130217/e72ffd87c2e9c5af.html
-    # http://www.bks1.com/dianshiju/sjll_wjt.html
-    # http://www.bks1.com/dianshiju/20121108/879eec15c7810d10.html
-    '^http://[a-z]+\.' + s1.get_s1()[0] + '\.com/.+\.html' : 'bks1', 
-    # NOTE check bks1 supported url, by get vid and tvid, not by RE to url
-    
-    # letv
-    '^http://www\.letv\.com/ptv/vplay/[0-9]+\.html' : 'letv', 
-    
-    # TODO
-    #
-    # '^http://' : 'youku', 
-    #
-    # '^http://' : 'pps', 
-    #
-    # '^http://' : 'tudou', 
-}
-
-LIST_SITE = {	# list of site to site_name
-    'bks1' : '不可说', 
-    'letv' : '乐视网', 
-}
-
-LIST_EXTRACTOR_NAME = {	# export evinfo extractor_name
-    'bks1' : 'bks1_1', 
-    'letv' : 'letv1', 
-}
-
-# functions
-
-def url_to_extractor(url_to):	# url to extractor_name
-    re_list = LIST_URL_TO_EXTRACTOR
-    en = None	# extractor_name
-    for i in re_list:
-        # check if match
-        ma = re.match(i, url_to)
-        if ma:
-            # done
-            en = re_list[i]
-            break
-    return en
-
-# import extractor functions
-def extractor_import_bks1():
-    from .bks1 import entry as entry0
-    return entry0
-
-def extractor_import_letv():
-    from .letv import entry as entry0
-    return entry0
-
-# list used for extractor_name to extractor
-EXTRACTOR_IMPORT_LIST = {
-    'bks1' : extractor_import_bks1, 
-    'letv' : extractor_import_letv, 
-}
-
-def dy_import_extractor(extractor_name):
-    '''
-    dynamic import a extractor by name
-    '''
-    fun_import = EXTRACTOR_IMPORT_LIST[extractor_name]
-    extractor0 = fun_import()
-    return extractor0
-
-# add more info to evinfo
-def add_more_info(evinfo):
-    # add info for evinfo.info part
-    info = evinfo['info']
-    info['info_version'] = etc['EV_INFO_VERSION']
-    info['info_source'] = etc['EV_INFO_SOURCE']
-    if not 'error' in info:	# no error
-        info['error'] = ''
-    info['extractor_name'] = LIST_EXTRACTOR_NAME[info['extractor']]
-    info['site_name'] = LIST_SITE[info['site']]
-    # add info for evinfo.video part
-    video = evinfo['video']
-    for i in range(len(video)):
-        video[i] = add_more_info_one_video(video[i])
-    # done
-    return evinfo
-
-def add_more_info_one_video(one):
-    # add quality
-    quality = hd_quality.get(one['hd'])
-    if 'quality' in one:
-        one['quality'] = quality + '_' + one['quality']
+def _do_parse(raw_url, raw_extractor='', raw_method=''):
+    # get extractor_id
+    if raw_extractor == '':
+        raw_extractor = _url_to_extractor(raw_url)
+    if ';' in raw_extractor:
+        extractor_id = raw_extractor.split(';', 1)[0]
     else:
-        one['quality'] = quality
-    # check size_px
-    if not 'size_px' in one:
-        one['size_px'] = [0, 0]
-    # count
-    size_byte = 0
-    time_s = 0
-    for i in one['file']:
-        size_byte += i['size']
-        time_s += i['time_s']
-    # add count
-    if not(('size_byte' in one) and (size_byte == 0)):
-        one['size_byte'] = size_byte
-    if not(('time_s' in one) and (time_s == 0)):
-        one['time_s'] = time_s
-    # done
-    return one
-
-# entry main function
-def parse(url_to, config=etc, flag_restruct=True):
-    # check input url
-    extractor_name = url_to_extractor(url_to)
-    if extractor_name == None:	# not support this url
-        raise error.NotSupportURLError('not support this url', url_to)
+        extractor_id = raw_extractor
+    var._['_extractor_id'] = extractor_id
     # import extractor
-    extractor = dy_import_extractor(extractor_name)
+    e = _import_extractor(extractor_id)
+    # check default method
+    if raw_method == '':
+        raw_method = conf.DEFAULT_METHOD[extractor_id]
+    # DEBUG log
+    log.d('use extractor \"' + extractor_id + '\", raw_extractor = \"' + raw_extractor + '\" ')
+    # call extractor to parse
+    pvinfo = _call_extractor_parse(e, raw_url, raw_arg=raw_extractor, raw_method=raw_method)
     
-    # NOTE set base with http_proxy
-    base.http_proxy = etc['http_proxy']
-    # DEBUG info
-    if etc['flag_debug'] and (base.http_proxy != None):
-        print('lib.entry: DEBUG: use http_proxy \"' + str(base.http_proxy) + '\"')
+    # add more data and info to pvinfo struct data
+    out = _add_more_pvinfo(pvinfo)
+    # check restruct
+    if not var._['flag_no_restruct']:
+        out = _restruct_pvinfo(out)
+    return out
+
+# NOTE get first useable extractor
+def _url_to_extractor(raw_url):
+    raw_list = conf.URL_TO_EXTRACTOR
+    for re_text, extractor_id in raw_list.items():
+        if len(re.findall(re_text, raw_url)) > 0:
+            return extractor_id
+    # not found
+    raise err.NotSupportURLError('no extractor can parse this url', raw_url)
+
+def _import_extractor(extractor_id):
+    try:
+        to = '..e.' + extractor_id + '.entry'
+        e = importlib.import_module(to, __name__)
+        return e
+    except Exception as e:
+        er = err.ConfigError('can not import extractor \"' + extractor_id + '\" ')
+        raise er from e
+
+def _call_extractor_parse(extractor, raw_url, raw_arg='', raw_method=''):
+    # set extractor data
+    extractor.init()
+    set_list = [
+        'hd_min', 
+        'hd_max', 
+        'i_min', 
+        'i_max', 
+        'more', 
+    ]
+    for key in set_list:
+        extractor.var._[key] = var._[key]
+    # call it
+    try:
+        pvinfo = extractor.parse(raw_url, raw_arg=raw_arg, raw_method=raw_method)
+    except err.PVError:
+        raise
+    except Exception as e:
+        er = err.UnknowError('unknow extractor Error', var._['_extractor_id'])
+        raise er from e
+    return pvinfo
+
+def _add_more_pvinfo(pvinfo, add_mark_uuid=False):
+    out = pvinfo
+    # add main info
+    if add_mark_uuid:
+        out['mark_uuid'] = var.PVINFO_MARK_UUID
+    out['port_version'] = var.PVINFO_PORT_VERSION
     
-    # set it
-    extractor.set_config(config)
-    # just parse
-    evinfo0 = extractor.parse(url_to)
-    # add more info
-    evinfo0['info']['extractor'] = extractor_name	# set in extractor_name
-    evinfo = add_more_info(evinfo0)
-    # done
-    if flag_restruct:
-        return restruct.restruct_evinfo(evinfo)
-    return evinfo
+    out['info_source'] = var.PVINFO_INFO_SOURCE
+    # add video quality
+    for v in out['video']:
+        q = var.HD_TO_QUALITY.get(v['hd'], '')
+        # keep old quality
+        if 'quality' in v:
+            v['quality'] = q + '_' + v['quality']
+        else:
+            v['quality'] = q
+    # add last_update
+    out['last_update'] = _gen_last_update()
+    return out
+
+def _gen_last_update():
+    now = datetime.datetime.today().utcnow().isoformat()
+    last_update = now + 'Z'
+    return last_update
+
+def _restruct_pvinfo(pvinfo):
+    return _do_restruct_pvinfo(pvinfo)
+
+# base restruct function
+def _restruct_key(old, key_list=[], rest_sort_reverse=False):
+    '''
+    restruct a dict to OrderedDict
+    order is in key_list
+    
+    rest keys is keys in old but not in key_list
+    rest keys is sort by rest_sort_reverse
+    if rest_sort_reverse == None, rest keys will not be sort
+    '''
+    raw = old.copy()	# not modify old dict
+    out = OrderedDict()
+    for key in key_list:
+        if key in raw:	# ignore not exist keys
+            out[key] = raw.pop(key)
+    # get rest key list and sort keys by key name
+    rest_key = [i for i in raw]
+    if rest_sort_reverse != None:
+        rest_key.sort(reverse=rest_sort_reverse)
+    # add rest keys
+    for key in rest_key:
+        out[key] = raw.pop(key)
+    return out
+
+# main restruct function
+def _do_restruct_pvinfo(pvinfo):
+    # key orders list
+    pvinfo_list = [	# pvinfo
+        'mark_uuid', 
+        'port_version', 
+        'error', 
+        'info_source', 
+        'extractor', 
+        'extractor_name', 
+        'method', 
+        'info', 
+        'video', 
+        'last_update', 
+    ]
+    info_list = [	# pvinfo.info
+        'title', 
+        'title_sub', 
+        'title_short', 
+        'title_no', 
+        'site', 
+        'site_name', 
+        'url', 
+    ]
+    video_list = [	# pvinfo.video[]
+        'hd', 
+        'quality', 
+        'size_px', 
+        'size_byte', 
+        'time_s', 
+        'format', 
+        'count', 
+        'file', 
+    ]
+    file_list = [	# pvinfo.video[].file[]
+        'type', 
+        'size', 
+        'time_s', 
+        'url', 
+        'header', 
+        'expire', 
+    ]
+    # restruct pvinfo
+    out = _restruct_key(pvinfo, pvinfo_list)
+    out['info'] = _restruct_key(out['info'], info_list)	# restruct info
+    for i in range(len(out['video'])):	# restruct videos
+        out['video'][i] = _restruct_key(out['video'][i], video_list)
+        v = out['video'][i]
+        for j in range(len(v['file'])):	# restruct files
+            v['file'][j] = _restruct_key(v['file'][j], file_list)
+    # sort videos by hd
+    out['video'].sort(key=lambda x:x['hd'], reverse=True)
+    return out	# restruct pvinfo done
 
 # end entry.py
 

@@ -1,14 +1,11 @@
-# ignore python files
 
-*.py[cod]
-
-/__init__.py
+__pycache__/
+*.py[cd]
 
 private.*
-
-# you see
-salt.py
 
 /tmp/
 
 # end .gitignore
+
+
