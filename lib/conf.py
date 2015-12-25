@@ -1,6 +1,9 @@
 # conf.py, parse_video/lib/
 
 
+# config file path
+e_bks1_vv_conf = 'private.bks1_vv_conf.json'
+
 # default method for extractors
 DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate', 

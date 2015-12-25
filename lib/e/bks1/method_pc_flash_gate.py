@@ -8,6 +8,7 @@ from ...b import log
 from . import var
 
 from .o import mixer_remote
+from .vv import vv_default
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
@@ -24,6 +25,7 @@ def parse(method_arg_text):
             else:	# unknow arg
                 log.w('unknow method arg \"' + r + '\" ')
     
+    # TODO support --more option
     raw_url = var._['_raw_url']
     # INFO log, loading html page
     log.i('loading page \"' + raw_url + '\" ')
@@ -36,6 +38,9 @@ def parse(method_arg_text):
     log.d('got vid_info ' + str(vid_info))
     
     pvinfo = _get_video_info(vid_info)
+    # check flag_v mode
+    if var._['flag_v']:
+        pvinfo = vv_default.add_tokens(pvinfo, vid_info)
     out = _get_file_urls(pvinfo)
     return out
 
@@ -62,9 +67,15 @@ def _get_vid_info(raw_html_text):
         raise er from e
 
 def _get_video_info(vid_info):
-    first_url = _make_first_url(vid_info)
-    # info log, load first video info json
-    log.o('got first URL \"' + first_url + '\" ')
+    # check flag_v mode
+    if var._['flag_v']:
+        first_url = vv_default.make_first_url(vid_info)
+        # [ OK ] log
+        log.o('flag_v, got first URL \"' + first_url + '\" ')
+    else:
+        first_url = _make_first_url(vid_info)
+        # [ OK ] log, load first video info json
+        log.o('got first URL \"' + first_url + '\" ')
     vms = b.dl_json(first_url)
     var._['raw_vms_json'] = vms
     

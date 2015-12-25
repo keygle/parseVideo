@@ -17,7 +17,7 @@ log_filter = {
     '__show_log_pos' : False, 	# show log package and function name
 }
 
-# set log level functions
+# set log level function
 def set_log_level(level):
     if level == 'debug':
         log_filter['DEBUG:'] = True
