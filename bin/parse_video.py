@@ -24,19 +24,19 @@ OPTIONS:
   -d, --debug
   -q, --quiet
       
-  -i, --min <hd>
-  -M, --max <hd>
-      --i-min <index>
-      --i-max <index>
+  -i, --min HD
+  -M, --max HD
+      --i-min INDEX
+      --i-max INDEX
       
-  -e, --extractor <raw_extractor_str>
-  -m, --method <raw_method_str>
+  -e, --extractor EXTRACTOR
+  -m, --method METHOD
       
       --help
       --version
       --license
       
-  -o, --output <file>	# TODO not support now
+  -o, --output FILE
       --more <file>	# TODO not support now
 
 '''
@@ -89,6 +89,8 @@ parse_video: get video info from some web sites.
   
   -e, --extractor EXTRACTOR  set extractor (and extractor arguments)
   -m, --method METHOD        set method (and method arguments)
+  
+  -o, --output FILE  write result (video info) to file (default to stdout)
   
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet
@@ -164,12 +166,26 @@ def do_parse():
     # TODO support --more option
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
-    # TODO support --output option
-    p_result(pvinfo)	# print result
+    # print result, check --output option
+    if etc['output'] == '-':	# stdout
+        p_result(pvinfo, file=sys.stdout)
+    else:	# open output file
+        try:
+            with open(etc['output'], 'wb') as f:
+                p_result(pvinfo, file=f, blob=True)
+        except Exception as e:
+            print('ERROR: can not write to output file \"' + etc['output'] + '\" ')
+            raise
+    # done
 
-def p_result(pvinfo, sort_keys=False, ensure_ascii=False, file=sys.stdout):
+def p_result(pvinfo, sort_keys=False, ensure_ascii=False, file=sys.stdout, blob=False):
     text = json.dumps(pvinfo, indent=4, sort_keys=sort_keys, ensure_ascii=ensure_ascii)
-    print(text, file=file, flush=True)
+    if blob:
+        text += '\n'
+        blob = text.encode('utf-8')
+        file.write(blob)
+    else:
+        print(text, file=file, flush=True)
 
 # process command line args
 def p_args(args):
