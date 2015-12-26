@@ -8,9 +8,34 @@ from ...b import log
 from . import var
 
 from .o import mixer_remote
+from .vv import vv_default
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
+    # check --more mode
+    if _check_use_more():
+        var._['_use_more'] = True
+        raw_more = var._['more']
+        # [ OK ] log
+        log.o('--more mode enabled ')
+        # TODO check method match
+        # check method args match
+        raw_method = raw_more['method']
+        if ';' in raw_method:
+            raw_method_arg = raw_method.split(';', 1)[1]
+        else:
+            raw_method_arg=None
+        if raw_method_arg != method_arg_text:
+            if raw_method_arg == None:	# old method arg
+                method_text_1 = 'None'
+            else:
+                method_text_1 = '\"' + raw_method_arg + '\"'
+            if method_arg_text == None:	# new method arg
+                method_text_2 = 'None'
+            else:
+                method_text_2 = '\"' + method_arg_text + '\"'
+            # WARNING log
+            log.w('now method args ' + method_text_2 + ' is different from old method args ' + method_text_1 + ' in more info ')
     # parse method args
     if method_arg_text != None:
         args = method_arg_text.split(',')
@@ -21,23 +46,79 @@ def parse(method_arg_text):
                 var._['set_vv'] = True
             elif r == 'set_flag_v':
                 var._['flag_v'] = True
+            elif r == 'enable_more':
+                var._['enable_more'] = True
             else:	# unknow arg
                 log.w('unknow method arg \"' + r + '\" ')
-    
     raw_url = var._['_raw_url']
-    # INFO log, loading html page
-    log.i('loading page \"' + raw_url + '\" ')
-    raw_html_text = b.dl_html(raw_url)
-    var._['_raw_page_html'] = raw_html_text
-    
-    vid_info = _get_vid_info(raw_html_text)
-    var._['_vid_info'] = vid_info
-    # DEBUG log
-    log.d('got vid_info ' + str(vid_info))
-    
-    pvinfo = _get_video_info(vid_info)
+    # check use more mode
+    if not var._['_use_more']:
+        # INFO log, loading html page
+        log.i('loading page \"' + raw_url + '\" ')
+        raw_html_text = b.dl_html(raw_url)
+        var._['_raw_page_html'] = raw_html_text
+        
+        vid_info = _get_vid_info(raw_html_text)
+        var._['_vid_info'] = vid_info
+        # DEBUG log
+        log.d('got vid_info ' + str(vid_info))
+        
+        pvinfo = _get_video_info(vid_info)
+    else:
+        raw_data = raw_more['_data']
+        vid_info = raw_data['vid_info']
+        raw_vms_json = raw_data['raw_vms_json']
+        # set var._
+        var._['_vid_info'] = vid_info
+        var._['_raw_vms_json'] = raw_vms_json
+        # just parse vms_json
+        pvinfo = _get_video_info_2(raw_vms_json)
+    # check flag_v mode
+    if var._['flag_v']:
+        pvinfo = vv_default.add_tokens(pvinfo, vid_info)
     out = _get_file_urls(pvinfo)
+    # check enable_more
+    if var._['enable_more']:	# add more info
+        out['_data'] = {}
+        out['_data']['vid_info'] = vid_info
+        out['_data']['raw_vms_json'] = var._['_raw_vms_json']
     return out
+
+# return True to use more mode
+def _check_use_more():
+    try:
+        return _do_check_use_more()
+    except Exception as e:
+        # TODO more Error process
+        return False
+
+def _do_check_use_more():
+    # check more data exist
+    if var._['more'] == None:
+        return False	# no more data
+    raw_more = var._['more']
+    if not '_data' in raw_more:
+        return False
+    # check extractor match
+    raw_extractor = raw_more['extractor']
+    if ';' in raw_extractor:
+        extractor_id = raw_extractor.split(';', 1)[0]
+    else:
+        extractor_id = raw_extractor
+    if extractor_id != var.EXTRACTOR_ID:
+        return False	# not this extractor
+    # check url match
+    raw_url = var._['_raw_url']
+    if raw_url != raw_more['info']['url']:
+        return False
+    # check needed data exist
+    raw_data = raw_more['_data']
+    if not 'vid_info' in raw_data:
+        return False
+    if not 'raw_vms_json' in raw_data:
+        return False
+    # check pass, use more mode
+    return True
 
 def _get_vid_info(raw_html_text):
     re_list = var.RE_VID_LIST
@@ -62,22 +143,29 @@ def _get_vid_info(raw_html_text):
         raise er from e
 
 def _get_video_info(vid_info):
-    first_url = _make_first_url(vid_info)
-    # info log, load first video info json
-    log.o('got first URL \"' + first_url + '\" ')
+    # check flag_v mode
+    if var._['flag_v']:
+        first_url = vv_default.make_first_url(vid_info)
+        # [ OK ] log
+        log.o('flag_v, got first URL \"' + first_url + '\" ')
+    else:
+        first_url = _make_first_url(vid_info)
+        # [ OK ] log, load first video info json
+        log.o('got first URL \"' + first_url + '\" ')
     vms = b.dl_json(first_url)
-    var._['raw_vms_json'] = vms
-    
+    var._['_raw_vms_json'] = vms
     # check code
     if vms['code'] != var.VMS_OK_CODE:
         raise err.MethodError('vms_json info code \"' + vms['code'] + '\" is not ' + var.VMS_OK_CODE + ' ')
-    
+    # parse raw_vms json
+    return _get_video_info_2(vms)
+
+def _get_video_info_2(vms):
     try:
         pvinfo = _parse_raw_vms_info(vms)
     except Exception as e:
         er = err.MethodError('parse raw vms info failed')
         raise er from e
-    
     out = _select_and_count(pvinfo)
     return out
 

@@ -1,14 +1,11 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
-   -
+   - author sceext <sceext@foxmail.com>
+   - test201512261630
   -->
 
-# parse_video -> version 0.5.0.0
+# parse_video version 0.5.0.0
 
-started at 2015-11-26 14:20 GMT+0800 CST
-
-!!! WARNING !!! 
-    This version has not been finished now. 
-    So it may not work. 
+NOTE: now only support a few web sites. A lot works not been done. 
 
 
 ## Description
@@ -45,6 +42,9 @@ parse_video: get video info from some web sites.
   
   -e, --extractor EXTRACTOR  set extractor (and extractor arguments)
   -m, --method METHOD        set method (and method arguments)
+  
+  -o, --output FILE  write result (video info) to file (default to stdout)
+      --more FILE    input more info from file to enable more mode
   
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet

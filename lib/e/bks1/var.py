@@ -61,21 +61,21 @@ def init():
     out['i_max'] = None
     
     out['pool_size_get_file_url'] = 16
+    out['pool_size_vv_get_token'] = 1	# FIXME only for DEBUG now, set to 1
     
     out['set_um'] = False
     out['set_vv'] = False
     
     out['flag_v'] = False	# NOTE for vv
-    # TODO
+    out['enable_more'] = False	# add more info in output pvinfo
     
+    out['_use_more'] = False	# use --more mode flag
     # private data
     out['_raw_url'] = ''
     out['_raw_page_html'] = ''
     out['_vid_info'] = None
     
     out['_raw_vms_json'] = ''
-    
-    # TODO
     # add data done
     return out
 

@@ -1,9 +1,9 @@
 <!-- parsev.md, github.com:sceext2/parse_video/doc/parsev.md 
    - language: Chinese (zh_cn) 
-   - version 0.0.1.0 test201512071750
+   - version 0.0.2.0 test201512261629
   -->
 
-parse_video -> version 0.5.0.0
+parse_video version 0.5.0.0
 
 # parse_video : 小而精 的 纯解析 程序
 
@@ -20,7 +20,7 @@ TODO
 + 继承 `parse_video version 0.4.x` 的 `method` 参数传递功能, 
   以及命令行接口. (命令行参数格式)
   
-  (`--min`, `--max`, `--min-i`, `--max-i`, `--extractor`, `--method`, `--debug`)
+  (`--min`, `--max`, `--i-min`, `--i-max`, `--extractor`, `--method`, `--debug`)
 
 
 ## 支持网站 限制

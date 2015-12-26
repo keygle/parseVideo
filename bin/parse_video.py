@@ -24,20 +24,20 @@ OPTIONS:
   -d, --debug
   -q, --quiet
       
-  -i, --min <hd>
-  -M, --max <hd>
-      --i-min <index>
-      --i-max <index>
+  -i, --min HD
+  -M, --max HD
+      --i-min INDEX
+      --i-max INDEX
       
-  -e, --extractor <raw_extractor_str>
-  -m, --method <raw_method_str>
+  -e, --extractor EXTRACTOR
+  -m, --method METHOD
       
       --help
       --version
       --license
       
-  -o, --output <file>	# TODO not support now
-      --more <file>	# TODO not support now
+  -o, --output FILE
+      --more FILE
 
 '''
 
@@ -89,6 +89,9 @@ parse_video: get video info from some web sites.
   
   -e, --extractor EXTRACTOR  set extractor (and extractor arguments)
   -m, --method METHOD        set method (and method arguments)
+  
+  -o, --output FILE  write result (video info) to file (default to stdout)
+      --more FILE    input more info from file to enable more mode
   
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet
@@ -148,6 +151,14 @@ def main(args):
             do_parse()
     # end main
 
+# NOTE more info file must be json file
+def load_more_file(fpath):
+    with open(fpath, 'rb') as f:
+        blob = f.read()
+    text = blob.decode('utf-8')
+    more_info = json.loads(text)
+    return more_info
+
 def do_parse():
     if etc['log_level'] != None:
         log.set_log_level(etc['log_level'])
@@ -161,15 +172,37 @@ def do_parse():
     ]
     for key in set_list:
         entry.var._[key] = etc[key]
-    # TODO support --more option
+    # TODO support '-', read more info from stdin
+    # check load more file
+    if etc['more'] != None:
+        try:
+            more_info = load_more_file(etc['more'])
+        except Exception as e:
+            p('ERROR: can not load more info file \"' + etc['more'] + '\" ')
+            raise
+        entry.var._['more'] = more_info	# do set more
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
-    # TODO support --output option
-    p_result(pvinfo)	# print result
+    # print result, check --output option
+    if etc['output'] == '-':	# stdout
+        p_result(pvinfo, file=sys.stdout)
+    else:	# open output file
+        try:
+            with open(etc['output'], 'wb') as f:
+                p_result(pvinfo, file=f, blob=True)
+        except Exception as e:
+            p('ERROR: can not write to output file \"' + etc['output'] + '\" ')
+            raise
+    # done
 
-def p_result(pvinfo, sort_keys=False, ensure_ascii=False, file=sys.stdout):
+def p_result(pvinfo, sort_keys=False, ensure_ascii=False, file=sys.stdout, blob=False):
     text = json.dumps(pvinfo, indent=4, sort_keys=sort_keys, ensure_ascii=ensure_ascii)
-    print(text, file=file, flush=True)
+    if blob:
+        text += '\n'
+        blob = text.encode('utf-8')
+        file.write(blob)
+    else:
+        print(text, file=file, flush=True)
 
 # process command line args
 def p_args(args):
