@@ -18,7 +18,7 @@ log_filter = {
 }
 
 # set log level function
-def set_log_level(level):
+def set_log_level(level=None):
     if level == 'debug':
         log_filter['DEBUG:'] = True
         log_filter['__show_log_pos'] = True	# only show log pos under debug
@@ -26,8 +26,14 @@ def set_log_level(level):
         log_filter['INFO:'] = False
         log_filter['[ OK ]'] = False
         log_filter[None] = False
-    else:
-        raise err.ConfigError('can not set log level to', level)
+    else:	# set log level to default
+        log_filter['DEBUG:'] = False
+        log_filter['ERROR:'] = True
+        log_filter['WARNING:'] = True
+        log_filter['INFO:'] = True
+        log_filter['[ OK ]'] = True
+        log_filter[None] = True
+        log_filter['__show_log_pos'] = False
 
 # get caller's info for log and DEBUG
 def get_caller_info(depth=2):
