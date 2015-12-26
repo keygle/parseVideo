@@ -36,8 +36,8 @@ def lyyc_import(lyyc_phost_api):
 def lyyc_parse(url, hd_min=None, hd_max=None, i_min=None, i_max=None, 
         more=None, debug=False):
     # get extractor and method from more
-    extractor = None
-    method = None
+    extractor = ''
+    method = ''
     if more != None:
         if 'extractor' in more:
             extractor = more['extractor']

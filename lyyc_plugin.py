@@ -18,7 +18,7 @@ lyyc_parse = plugin.lyyc_parse
 
 # DEBUG functions
 def p(o):
-    print(json.dumps(o, indent=4, sort_keys=True, ensuce_ascii=False))
+    print(json.dumps(o, indent=4, sort_keys=True, ensure_ascii=False))
 
 # end lyyc_plugin.py
 
