@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.0.1.0 test201512261617
+# version 0.1.0.0 test201512261626
 
 import math
 import os, sys, io, json
@@ -16,8 +16,17 @@ except Exception as e:
 # global data
 PACK_VERSION = 1
 
-FLAG_DEBUG = True
+FLAG_DEBUG = False
 ERR_PREFIX = 'yy-6.1::'
+
+RAW_VERSION_INFO = {	# raw output info obj
+    'port_version' : '0.3.0', 
+    'type' : 'parse', 
+    'version' : '1.0.0', 
+    'name' : '上古有颜6.1代', 
+    
+    'note' : 'parse_video for lieying_plugin. ', 
+}
 
 # base functions
 
@@ -57,8 +66,8 @@ def _byte_to_size(size_byte, flag_add_byte=True):
         return size_byte + unit_list[0]
     # get unit
     unit_i = math.floor(math.log(size_byte, 1024))
-    if uint_i > (len(unit_list) -1):
-        uint = uint_list[-1]
+    if unit_i > (len(unit_list) -1):
+        unit = unit_list[-1]
     else:
         unit = unit_list[unit_i]
     size_n = size_byte / pow(1024, unit_i)
@@ -185,7 +194,7 @@ def _make_label(video):
     time = _second_to_time(time_s)
     bitrate = _gen_bitrate(size_byte, time_s)
     # gen label str
-    label = ('_').join([str(hd), quality, px, bitrate, time, count, format_])
+    label = ('_').join([str(hd), quality, px, bitrate, time, str(count), format_])
     return label, size
 
 def _parse_label(label):
@@ -195,14 +204,7 @@ def _parse_label(label):
 
 # before exports
 def _get_version():
-    raw = {	# raw output info obj
-        'port_version' : '0.3.0', 
-        'type' : 'parse', 
-        'version' : '0.1.0', 
-        'name' : '上古有颜6.1代', 
-        
-        'note' : 'parse_video for lieying_plugin. ', 
-    }
+    raw = RAW_VERSION_INFO
     # get version info from lyyc_plugin
     out = lyyc_plugin.lyyc_about()
     old = out.copy()	# save raw lyyc_plugin info
