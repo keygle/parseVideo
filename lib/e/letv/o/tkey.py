@@ -40,7 +40,7 @@ def gen_tm():
     # private function get tm() : int
     if etc['stime'] > 0:
         return etc['stime'] + int((_get_time() - etc['now_time']) * 1e-3)
-    return int(_get_time * 1e-3)
+    return int(_get_time() * 1e-3)
 
 def _get_time():
     return int(time.time() * 1e3)

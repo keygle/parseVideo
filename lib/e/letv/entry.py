@@ -17,7 +17,7 @@ def parse(raw_url, raw_arg='', raw_method=''):
         init()
     var._['raw_arg'] = raw_arg
     var._['raw_method'] = raw_method
-    var._['raw_url'] = raw_url
+    var._['_raw_url'] = raw_url
     # DEBUG log
     log.d('parse, raw_url = \"' + raw_url + '\", raw_arg = \"' + raw_arg + '\", raw_method = \"' + raw_method + '\" ')
     try:

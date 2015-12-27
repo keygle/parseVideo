@@ -99,8 +99,7 @@ def _parse_raw_first_json(first):
     return out
 
 def _parse_one_video_info(vid, domain, dispatch):
-    one = {}
-    
+    out = {}
     rateid, raw_dispatch = dispatch
     out['hd'] = var.RATEID_TO_HD[rateid]
     # set default values
@@ -144,7 +143,7 @@ def _get_file_urls(pvinfo):
         
         # FIXME DEBUG here
         # NOTE write to tmp file for DEBUG
-        filename = rateid + '.tmp.json'
+        filename = rateid + '.tmp.m3u8'
         with open(filename, 'wt') as f:
             f.write(m3u8_text)
         # DEBUG log

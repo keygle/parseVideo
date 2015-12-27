@@ -8,7 +8,8 @@ SITE = 'letv'
 SITE_NAME = '乐视网'
 
 RE_SUPPORT_URL = [
-    '^http://www\.letv\.com/.+\.html', 	# http://www.letv.com/ptv/vplay/24143557.html
+    # http://www.letv.com/ptv/vplay/24143557.html
+    '^http://www\.letv\.com/.+\.html', 
 ]
 
 METHOD_LIST = [

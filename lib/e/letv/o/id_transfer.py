@@ -26,11 +26,13 @@ def get_url(
         default_d = STACK[-1], 
         base = URL):
     # private function getURL(param1:String) : String
+    tk_ = tkey.calcTimeKey(tkey.gen_tm())
+    
     out = base + str(vid)
     out += '&platid=' + str(platid)
     out += '&splatid=' + str(splatid)
     out += '&format=1'
-    out += '&tkey=' + tkey.calcTimeKey(tkey.gen_tm())
+    out += '&tkey=' + str(tk_)
     out += '&domain=' + domain
     #if this.model.user.baiduid != None:
     #    out += '&platuid=' + this.model.user.baiduid
