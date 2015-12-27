@@ -1,7 +1,8 @@
 # m3u8_encrypt.py, parse_video/lib/e/letv/o/
-# KLetvPlayer package M3U8Encryption
+# KLetvPlayer package M3U8Encryption, this is a reference version use flash.ByteArray
 
-from ....b.flash import ByteArray
+from ....b import flash
+ByteArray = flash.ByteArray
 
 # M3U8Encryption.decodeB2T()
 def decode(raw):
@@ -31,10 +32,12 @@ def decodeBytesV1(raw):
     raw.readBytes(data)
     
     first = ByteArray()
-    for i in range(data.length):
-        first[2 * i] = data[i] >> 4	# TODO
-        first[2 * i + 1] = data[i] & 15	# TODO
+    # NOTE fix first size to speed up process data
+    first.length = 2 * data.length
     
+    for i in range(data.length):
+        first[2 * i] = data[i] >> 4
+        first[2 * i + 1] = data[i] & 15
     second = ByteArray()
     first.position = first.length - 11
     first.readBytes(second)
@@ -42,14 +45,14 @@ def decodeBytesV1(raw):
     first.readBytes(second, 11, first.length - 11)
     
     before = ByteArray()
+    # NOTE fix before length here
+    before.length = data.length
     for i in range(data.length):
         before[i] = (second[2 * i] << 4) + second[2 * i + 1]
-    
     before.position = 0
     out = before.readUTFBytes(before.length)
     return out
 
-# TODO
 # end m3u8_encrypt.py
 
 

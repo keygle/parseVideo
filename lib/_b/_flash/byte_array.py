@@ -91,7 +91,7 @@ class ByteArray(object):
     def to_bytearray(self):
         return self._data.copy()
     def from_bytearray(self, data):
-        if not isinstance(bytearray, data):
+        if not isinstance(data, bytearray):
             raise TypeError('only accept bytearray', data)
         self._data = data.copy()
     
@@ -100,7 +100,7 @@ class ByteArray(object):
     # [read-only] -> uint
     @property
     def bytesAvailable(self):
-        out = max(0, self._len - self._pos)
+        out = max(0, len(self._data) - self._pos)
         return out
     
     # -> str
@@ -146,13 +146,13 @@ class ByteArray(object):
     
     # out :ByteArray, offset :uint, length :uint
     def readBytes(self, out, offset=0, length=0):
-        if not isinstance(ByteArray, out):
+        if not isinstance(out, ByteArray):
             raise TypeError('pos 1 argument should be ByteArray', out)
         if length < 0:
             raise ValueError('can not read length', length)
         # read data
-        if (length == 0) and (self.bytesAvaliable > 0):
-            length = self.bytesAvaliable	# NOTE length == 0 will read all data
+        if (length == 0) and (self.bytesAvailable > 0):
+            length = self.bytesAvailable	# NOTE length == 0 will read all data
         data = self._read_bytes(length)
         # write bytes to the ByteArray
         old = out.position	# NOTE save and restore old position
@@ -161,7 +161,7 @@ class ByteArray(object):
         out.position = old
     # bytes :ByteArray, offset :uint, length :uint
     def writeBytes(self, raw, offset=0, length=0):
-        if not isinstance(ByteArray, raw):
+        if not isinstance(raw, ByteArray):
             raise TypeError
         if length < 0:
             raise ValueError('can not write length', length)
