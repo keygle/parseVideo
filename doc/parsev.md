@@ -1,6 +1,6 @@
-<!-- parsev.md, github.com:sceext2/parse_video/doc/parsev.md 
+<!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.2.0 test201512261629
+   - version 0.0.3.0 test201512271455
   -->
 
 parse_video version 0.5.0.0
@@ -8,6 +8,12 @@ parse_video version 0.5.0.0
 # parse_video : 小而精 的 纯解析 程序
 
 TODO
+
+
+## 已支持网站 (1)
+
+1. 271 (`bks1`, w, `4K`)
+
 
 ## -> version 0.5.0.0 特性
 
@@ -42,18 +48,30 @@ TODO
   + 清晰度 (画质) *太低* 的 *不考虑* 支持
 
 
-## 计划 支持 网站 (8)
+## 计划支持的网站 (7)
 (`extractor`)
 
-+ 271 (w, `4K`)
-+ vqq (ckey5.4, `1080p`)
-+ kankan (`1080p`, `h265`)
-+ hunantv (`720p`)
++ letv (`1080p`)
 + tvsohu (`4K`, `h265`)
 + pptv (*高码* `1080p`)
-+ letv (`1080p`)
++ hunantv (`720p`)
+
++ vqq (ckey5.4, `1080p`)
++ kankan (`1080p`, `h265`)
 
 + youku (TODO)
+
+*实现顺序*
+
+1. letv
+2. tvsohu
+3. pptv
+4. hunantv
+
+*简单 TODO*
+
++ kankan
++ vqq
 
 
 ## `bridge` 支持
