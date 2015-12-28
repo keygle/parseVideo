@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.1.0 test201512271451
+# version 0.1.2.0 test201512282006
 
 import math
 import os, sys, io, json
@@ -22,7 +22,7 @@ ERR_PREFIX = 'yy-6.1::'
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.0.1', 
+    'version' : '1.0.2', 
     'name' : '上古有颜6.1代', 
     
     'note' : 'parse_video for lieying_plugin. ', 
@@ -37,10 +37,9 @@ def _number(raw):
     return f
 
 def _num_len(n, l=2):
-    t = str(n)
-    while len(t) < l:
-        t = '0' + t
-    return t
+    if (n < 1):
+        return '-1'
+    return str(n).zfill(l)
 
 def _gen_bitrate(size_byte, time_s, unit_k=1024):
     if (size_byte <= 0) or (time_s <= 0):
@@ -174,8 +173,13 @@ def _t_parse_url(pvinfo, hd):
 
 def _make_title(info):
     title = info['title']
-    title_sub = info['title_sub']
-    title_no = info['title_no']
+    # NOTE process title_sub, ... not exist
+    title_sub = ''
+    title_no = -1
+    if 'title_sub' in info:
+        title_sub = info['title_sub']
+    if 'title_no' in info:
+        title_no = info['title_no']
     site = info['site_name']
     
     no = _num_len(title_no, 4)
