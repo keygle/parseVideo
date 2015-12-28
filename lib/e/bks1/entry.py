@@ -7,7 +7,7 @@ from .. import common, log_text
 from . import var
 from . import method_pc_flash_gate
 
-def Entry(common.ExtractorEntry):
+class Entry(common.ExtractorEntry):
     def _do_parse(self, raw_method):
         method, method_arg_text = common.entry_split_method(raw_method)
         # check method name

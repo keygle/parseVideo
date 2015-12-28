@@ -135,7 +135,7 @@ def _parse_one_video_info(raw, du):
     bid = raw['bid']
     out = {}
     out['hd'] = var.TO_HD[bid]
-    out['size_px'] = common.method_get_size_px(raw['scrsz'].split('x'))
+    out['size_px'] = common.method_get_size_px(*raw['scrsz'].split('x'))
     out['format'] = 'flv'	# NOTE the video file format shoud be flv
     
     # get file list
