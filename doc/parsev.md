@@ -1,6 +1,6 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.3.0 test201512271455
+   - version 0.0.4.0 test201512281338
   -->
 
 parse_video version 0.5.0.0
@@ -10,9 +10,10 @@ parse_video version 0.5.0.0
 TODO
 
 
-## 已支持网站 (1)
+## 已支持网站 (2)
 
-1. 271 (`bks1`, w, `4K`)
+1. 271 (`4K`, w, `bks1`, *flv*)
+2. letv (`1080p`, `letv`, *ts*) (m3u8)
 
 
 ## -> version 0.5.0.0 特性
@@ -48,13 +49,12 @@ TODO
   + 清晰度 (画质) *太低* 的 *不考虑* 支持
 
 
-## 计划支持的网站 (7)
+## 计划支持的网站 (6)
 (`extractor`)
 
-+ letv (`1080p`)
++ hunantv (`720p`)
 + tvsohu (`4K`, `h265`)
 + pptv (*高码* `1080p`)
-+ hunantv (`720p`)
 
 + vqq (ckey5.4, `1080p`)
 + kankan (`1080p`, `h265`)
@@ -63,10 +63,9 @@ TODO
 
 *实现顺序*
 
-1. letv
+1. hunantv
 2. tvsohu
 3. pptv
-4. hunantv
 
 *简单 TODO*
 
@@ -86,7 +85,6 @@ TODO
 此时配合使用 *专用下载器* 可达到更好的效果. 
 
 + `tvsohu`: 断点续传支持 (`pv_sohu`)
-+ `hunantv`: 断点续传支持 (`pv_hunantv`)
 + `kankan_flv`: 专用 flv 视频文件下载器
 
 
