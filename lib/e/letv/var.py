@@ -53,9 +53,11 @@ def init():
     out['i_min'] = None
     out['i_max'] = None
     
-    out['pool_size_get_m3u8'] = 8	# TODO
+    out['pool_size_get_m3u8'] = 8
     
-    out['enable_more'] = False
+    out['flag_fast_parse'] = False	# TODO
+    
+    out['enable_more'] = False	# TODO
     out['_use_more'] = False
     # private data
     out['_raw_url'] = ''
