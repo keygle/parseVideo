@@ -7,11 +7,13 @@ e_bks1_vv_conf = 'private.e_bks1_vv.conf.json'
 # default method for extractors
 DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate', 
+    'letv' : 'pc_flash_gate', 
 }
 
 # URL (RE) to extractor_id
 URL_TO_EXTRACTOR = {
     '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'bks1', 
+    '^http://www\.letv\.com/.+\.html' : 'letv', 
 }
 
 
