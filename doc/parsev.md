@@ -1,13 +1,11 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.4.0 test201512281338
+   - version 0.0.5.0 test201512282002
   -->
 
-parse_video version 0.5.0.0
+parse_video version 0.5.1.0
 
 # parse_video : 小而精 的 纯解析 程序
-
-TODO
 
 
 ## 已支持网站 (2)
@@ -16,7 +14,7 @@ TODO
 2. letv (`1080p`, `letv`, *ts*) (m3u8)
 
 
-## -> version 0.5.0.0 特性
+## -> version 0.5.x 特性
 
 + 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
 

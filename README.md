@@ -1,11 +1,9 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512281343
+   - test201512282002
   -->
 
-# parse_video version 0.5.0.0
-
-NOTE: now only support a few web sites. A lot works not been done. 
+# parse_video version 0.5.1.0
 
 
 ## Description
