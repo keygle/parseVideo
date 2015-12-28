@@ -126,7 +126,7 @@ def _parse_one_video_info(vid, domain, dispatch):
     out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
     return out
 
-def _select_and_count(pvinfo):
+def _count_and_select(pvinfo):
     # sort videos by hd
     pvinfo['video'].sort(key = lambda x: x['hd'], reverse=True)
     # count video info
@@ -197,8 +197,8 @@ def _download_one_m3u8(info):
     rateid = info['rateid']
     url = info['url']
     # DEBUG log
-    log.d('rateid [' + rateid + '] load raw before URL \"' + raw_url + '\" ')
-    raw_before = b.dl_json(raw_url)
+    log.d('rateid [' + rateid + '] load raw before URL \"' + url + '\" ')
+    raw_before = b.dl_json(url)
     # check status code
     if raw_before['status'] != var.BEFORE_OK_CODE:
         raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var.BEFORE_OK_CODE) + ' ')
@@ -231,7 +231,7 @@ def _parse_m3u8(raw):
         elif line.startswith('#EXT-LETV-PIC-WIDTH:'):
             out['size_px'][0] = int(line.split(':', 1)[1])
         elif line.startswith('#EXT-LETV-PIC-HEIGHT:'):
-            out['size_px'][0] = int(line.split(':', 1)[1])
+            out['size_px'][1] = int(line.split(':', 1)[1])
     # get file info
     out['file'] = []
     one = {}
