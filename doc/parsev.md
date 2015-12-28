@@ -1,15 +1,20 @@
-<!-- parsev.md, github.com:sceext2/parse_video/doc/parsev.md 
+<!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.2.0 test201512261629
+   - version 0.0.5.0 test201512282002
   -->
 
-parse_video version 0.5.0.0
+parse_video version 0.5.1.0
 
 # parse_video : 小而精 的 纯解析 程序
 
-TODO
 
-## -> version 0.5.0.0 特性
+## 已支持网站 (2)
+
+1. 271 (`4K`, w, `bks1`, *flv*)
+2. letv (`1080p`, `letv`, *ts*) (m3u8)
+
+
+## -> version 0.5.x 特性
 
 + 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
 
@@ -42,18 +47,28 @@ TODO
   + 清晰度 (画质) *太低* 的 *不考虑* 支持
 
 
-## 计划 支持 网站 (8)
+## 计划支持的网站 (6)
 (`extractor`)
 
-+ 271 (w, `4K`)
-+ vqq (ckey5.4, `1080p`)
-+ kankan (`1080p`, `h265`)
 + hunantv (`720p`)
 + tvsohu (`4K`, `h265`)
 + pptv (*高码* `1080p`)
-+ letv (`1080p`)
+
++ vqq (ckey5.4, `1080p`)
++ kankan (`1080p`, `h265`)
 
 + youku (TODO)
+
+*实现顺序*
+
+1. hunantv
+2. tvsohu
+3. pptv
+
+*简单 TODO*
+
++ kankan
++ vqq
 
 
 ## `bridge` 支持
@@ -68,7 +83,6 @@ TODO
 此时配合使用 *专用下载器* 可达到更好的效果. 
 
 + `tvsohu`: 断点续传支持 (`pv_sohu`)
-+ `hunantv`: 断点续传支持 (`pv_hunantv`)
 + `kankan_flv`: 专用 flv 视频文件下载器
 
 

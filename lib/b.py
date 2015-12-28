@@ -7,7 +7,7 @@ import threading
 import multiprocessing.dummy as multiprocessing
 
 from . import err
-from ._b import log
+from ._b import log, flash
 
 from ._b.network import (
     dl_blob, 

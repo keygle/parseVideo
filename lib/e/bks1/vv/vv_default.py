@@ -39,7 +39,7 @@ def add_tokens(pvinfo, vid_info):
                 one['config'] = config
                 todo_list.append(one)
     # use map do to do get tokens
-    pool_size = var._['pool_size_vv_get_token']
+    pool_size = var._['pool_size']['vv_get_token']
     # INFO log
     log.i('getting ' + str(len(todo_list)) + ' tokens for vv, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(todo_list, worker=_get_one_token, pool_size=pool_size)

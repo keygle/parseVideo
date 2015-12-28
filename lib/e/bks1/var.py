@@ -1,7 +1,7 @@
 # var.py, parse_video/lib/e/bks1/
+from .. import common
 
 # static data
-
 EXTRACTOR_ID = 'bks1'
 EXTRACTOR_NAME = 'bks1_1'
 SITE = 'bks1'
@@ -16,7 +16,6 @@ METHOD_LIST = [
     # default method, only support flv format video
     'pc_flash_gate', 
 ]
-
 RE_VID_LIST = {
     'tvid' : 'data-player-tvid="([^"]+)"', 
     'vid'  : 'data-player-videoid="([^"]+)"', 
@@ -24,9 +23,8 @@ RE_VID_LIST = {
     
     'flag_vv' : 'data-player-ismember="([^"]+)"', 
 }
-
 # site video bid to parse_video hd quality
-BID_TO_HD = {	# video bid to video hd
+TO_HD = {	# video bid to video hd
     10 : 7, 	# 4k, 		4K
     5 : 4, 	# fullhd, 	1080p
     4 : 2, 	# super-high, 	720p
@@ -36,54 +34,25 @@ BID_TO_HD = {	# video bid to video hd
     0 : -2, 	# none, 	超低清
     96 : -3, 	# topspeed, 	渣清
 }
-
-VMS_OK_CODE = 'A000000'
+FIRST_OK_CODE = 'A000000'
 
 # var data
-_ = {}
-
-_var_init_flag = False
-# save old var data for push() and pop()
-__old = []
-
-# var functions
-def init():
-    out = {}
-    # set default values
-    out['raw_arg'] = ''
-    out['raw_method'] = ''
-    
-    out['more'] = None
-    # config items
-    out['hd_min'] = None
-    out['hd_max'] = None
-    out['i_min'] = None
-    out['i_max'] = None
-    
-    out['pool_size_get_file_url'] = 16
-    out['pool_size_vv_get_token'] = 1	# FIXME only for DEBUG now, set to 1
-    
-    out['set_um'] = False
-    out['set_vv'] = False
-    
-    out['flag_v'] = False	# NOTE for vv
-    out['enable_more'] = False	# add more info in output pvinfo
-    
-    out['_use_more'] = False	# use --more mode flag
-    # private data
-    out['_raw_url'] = ''
-    out['_raw_page_html'] = ''
-    out['_vid_info'] = None
-    
-    out['_raw_vms_json'] = ''
-    # add data done
-    return out
-
-# base var functions
-def push():
-    __old.append(_)
-def pop():
-    return __old.pop()
+class VarData(common.ExtractorVar):
+    def init(self):
+        out = super().init()
+        # config items
+        out['pool_size']['get_file_url'] = 16
+        out['pool_size']['vv_get_token'] = 1	# FIXME only for DEBUG now, set to 1
+        
+        out['set_um'] = False
+        out['set_vv'] = False
+        out['flag_v'] = False	# NOTE for vv
+        # private data
+        out['_raw_first_json'] = ''
+        return out
+# var exports
+var = VarData()
+_ = var._	# TODO FIXME set this may be Error
 # end var.py
 
 
