@@ -1,12 +1,9 @@
 # method_pc_flash_gate.py, parse_video/lib/e/bks1/
-
-import re
-
 from ... import err, b
 from ...b import log
+from .. import common, log_text
 
 from . import var
-
 from .o import mixer_remote
 from .vv import vv_default
 
@@ -20,153 +17,89 @@ def parse(method_arg_text):
         log.o('--more mode enabled ')
         # TODO check method match
         # check method args match
-        raw_method = raw_more['method']
-        if ';' in raw_method:
-            raw_method_arg = raw_method.split(';', 1)[1]
-        else:
-            raw_method_arg=None
+        raw_method_arg = common.entry_split_method(raw_more['method'])[1]
         if raw_method_arg != method_arg_text:
-            if raw_method_arg == None:	# old method arg
-                method_text_1 = 'None'
-            else:
-                method_text_1 = '\"' + raw_method_arg + '\"'
-            if method_arg_text == None:	# new method arg
-                method_text_2 = 'None'
-            else:
-                method_text_2 = '\"' + method_arg_text + '\"'
+            method_text_1 = common.method_str_method_arg(raw_method_arg)
+            method_text_2 = common.method_str_method_arg(method_arg_text)
             # WARNING log
             log.w('now method args ' + method_text_2 + ' is different from old method args ' + method_text_1 + ' in more info ')
     # parse method args
-    if method_arg_text != None:
-        args = method_arg_text.split(',')
-        for r in args:
-            if r == 'set_um':
-                var._['set_um'] = True
-            elif r == 'set_vv':
-                var._['set_vv'] = True
-            elif r == 'set_flag_v':
-                var._['flag_v'] = True
-            elif r == 'enable_more':
-                var._['enable_more'] = True
-            else:	# unknow arg
-                log.w('unknow method arg \"' + r + '\" ')
-    raw_url = var._['_raw_url']
+    def rest(r):
+        if r == 'set_um':
+            var._['set_um'] = True
+        elif r == 'set_vv':
+            var._['set_vv'] = True
+        elif r == 'set_flag_v':
+            var._['flag_v'] = True
+        else:	# unknow method arg
+            return True
+    common.method_parse_method_args(method_arg_text, var, rest)
+    
     # check use more mode
     if not var._['_use_more']:
-        # INFO log, loading html page
-        log.i('loading page \"' + raw_url + '\" ')
-        raw_html_text = b.dl_html(raw_url)
-        var._['_raw_page_html'] = raw_html_text
-        
-        vid_info = _get_vid_info(raw_html_text)
-        var._['_vid_info'] = vid_info
-        # DEBUG log
-        log.d('got vid_info ' + str(vid_info))
-        
+        vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
         pvinfo = _get_video_info(vid_info)
     else:
         raw_data = raw_more['_data']
         vid_info = raw_data['vid_info']
-        raw_vms_json = raw_data['raw_vms_json']
+        raw_first_json = raw_data['raw_first_json']
         # set var._
         var._['_vid_info'] = vid_info
-        var._['_raw_vms_json'] = raw_vms_json
-        # just parse vms_json
-        pvinfo = _get_video_info_2(raw_vms_json)
+        var._['_raw_first_json'] = raw_first_json
+        # just parse vms json info
+        pvinfo = _get_video_info_2(raw_first_json)
     # check flag_v mode
     if var._['flag_v']:
         pvinfo = vv_default.add_tokens(pvinfo, vid_info)
     out = _get_file_urls(pvinfo)
+    
     # check enable_more
     if var._['enable_more']:	# add more info
         out['_data'] = {}
         out['_data']['vid_info'] = vid_info
-        out['_data']['raw_vms_json'] = var._['_raw_vms_json']
+        out['_data']['raw_first_json'] = var._['_raw_first_json']
     return out
 
 # return True to use more mode
 def _check_use_more():
-    try:
-        return _do_check_use_more()
-    except Exception as e:
-        # TODO more Error process
-        return False
-
-def _do_check_use_more():
-    # check more data exist
-    if var._['more'] == None:
-        return False	# no more data
-    raw_more = var._['more']
-    if not '_data' in raw_more:
-        return False
-    # check extractor match
-    raw_extractor = raw_more['extractor']
-    if ';' in raw_extractor:
-        extractor_id = raw_extractor.split(';', 1)[0]
-    else:
-        extractor_id = raw_extractor
-    if extractor_id != var.EXTRACTOR_ID:
-        return False	# not this extractor
-    # check url match
-    raw_url = var._['_raw_url']
-    if raw_url != raw_more['info']['url']:
-        return False
-    # check needed data exist
-    raw_data = raw_more['_data']
-    if not 'vid_info' in raw_data:
-        return False
-    if not 'raw_vms_json' in raw_data:
-        return False
-    # check pass, use more mode
-    return True
+    data_list = [
+        'vid_info', 
+        'raw_first_json', 
+    ]
+    return common.method_check_use_more(var, data_list)
 
 def _get_vid_info(raw_html_text):
-    re_list = var.RE_VID_LIST
-    try:
-        out = {}
-        for key, r in re_list.items():
-            one = re.findall(r, raw_html_text)[0]
-            # check empty result
-            if (one == None) or (one == ''):
-                raise err.ParseError('vid_info \"' + key + '\" empty', one)
-            out[key] = one
+    def do_get(raw_html_text):
+        out = common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
         # convert flag_vv
         to_flag_vv = {
             'true' : True, 
             'false' : False, 
         }
         out['flag_vv'] = to_flag_vv.get(out['flag_vv'], None)
-        
         return out
-    except Exception as e:
-        er = err.NotSupportURLError('get vid info failed', var._['_raw_url'])
-        raise er from e
+    return common.method_get_vid_info(raw_html_text, var, do_get)
 
 def _get_video_info(vid_info):
     # check flag_v mode
     if var._['flag_v']:
         first_url = vv_default.make_first_url(vid_info)
-        # [ OK ] log
-        log.o('flag_v, got first URL \"' + first_url + '\" ')
+        log.o(log_text.method_got_first_url(first_url, prefix='flag_v, '))
     else:
         first_url = _make_first_url(vid_info)
-        # [ OK ] log, load first video info json
-        log.o('got first URL \"' + first_url + '\" ')
-    vms = b.dl_json(first_url)
-    var._['_raw_vms_json'] = vms
+        # [ OK ] log, load first vms info json
+        log.o(log_text.method_got_first_url(first_url))
+    first = b.dl_json(first_url)
+    var._['_raw_first_json'] = first
     # check code
-    if vms['code'] != var.VMS_OK_CODE:
-        raise err.MethodError('vms_json info code \"' + vms['code'] + '\" is not ' + var.VMS_OK_CODE + ' ')
+    if first['code'] != var.FIRST_OK_CODE:
+        raise err.MethodError(log_text.method_err_first_code(first['code'], var))
     # parse raw_vms json
-    return _get_video_info_2(vms)
+    return _get_video_info_2(first)
 
-def _get_video_info_2(vms):
-    try:
-        pvinfo = _parse_raw_vms_info(vms)
-    except Exception as e:
-        er = err.MethodError('parse raw vms info failed')
-        raise er from e
-    out = _select_and_count(pvinfo)
+def _get_video_info_2(first):
+    pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
+    out = _count_and_select(pvinfo)
     return out
 
 def _make_first_url(vid_info):
@@ -179,9 +112,9 @@ def _make_first_url(vid_info):
     out = mixer_remote.get_request(tvid, vid, flag_set_um=set_um, flag_set_vv=set_vv)
     return out
 
-def _parse_raw_vms_info(vms_info):
+def _parse_raw_first_info(first):
     out = {}
-    data = vms_info['data']
+    data = first['data']
     # get base video info
     vi = data['vi']
     out['info'] = {}
@@ -190,29 +123,19 @@ def _parse_raw_vms_info(vms_info):
     out['info']['title_sub'] = vi['subt']
     out['info']['title_short'] = vi['an']
     out['info']['title_no'] = vi['pd']
-    
     # get video list
     vp = data['vp']
-    raw_list = vp['tkl'][0]['vs']
-    
     du = vp['du']	# before final url, base part
+    raw_list = vp['tkl'][0]['vs']
     
     out['video'] = [_parse_one_video_info(r, du) for r in raw_list]
     return out
 
 def _parse_one_video_info(raw, du):
-    out = {}
-    
     bid = raw['bid']
-    out['hd'] = var.BID_TO_HD[bid]
-    try:
-        scrsz = raw['scrsz'].split('x')
-        out['size_px'] = [
-            int(scrsz[0]), 
-            int(scrsz[1]), 
-        ]
-    except Exception:
-        out['size_px'] = [-1, -1]
+    out = {}
+    out['hd'] = var.TO_HD[bid]
+    out['size_px'] = common.method_get_size_px(raw['scrsz'].split('x'))
     out['format'] = 'flv'	# NOTE the video file format shoud be flv
     
     # get file list
@@ -229,34 +152,9 @@ def _parse_one_file_info(raw, du):
     out['url'] = du + l	# NOTE before final url, just concat 'du' and 'l'
     return out
 
-# select by hd_min, hd_max, i_min, i_max. count sum data, and sort info
-def _select_and_count(pvinfo):
-    # sort videos by hd
-    pvinfo['video'].sort(key = lambda x: x['hd'], reverse=True)
-    # count video info
-    for v in pvinfo['video']:
-        v['size_byte'] = 0
-        v['time_s'] = 0
-        v['count'] = len(v['file'])
-        for f in v['file']:
-            v['size_byte'] += f['size']
-            v['time_s'] += f['time_s']
-        v['time_s'] = round(v['time_s'], 3)	# NOTE round time to ms
-    # select hd_min, hd_max
-    hd_min = var._['hd_min']
-    hd_max = var._['hd_max']
-    for v in pvinfo['video']:
-        if ((hd_min != None) and (v['hd'] < hd_min)) or ((hd_max != None) and (v['hd'] > hd_max)):
-            v['file'] = []	# clear video file list
-    # select i_min, i_max
-    i_min = var._['i_min']
-    i_max = var._['i_max']
-    for v in pvinfo['video']:
-        for i in range(len(v['file'])):
-            if ((i_min != None) and (i < i_min)) or ((i_max != None) and (i > i_max)):
-                v['file'][i]['url'] = ''	# clear file URL
-    # done
-    return pvinfo
+# select by hd_min, hd_max, i_min, i_max. count sum data, and sort videos by hd
+def _count_and_select(pvinfo):
+    return common.method_simple_count_and_select(pvinfo, var)
 
 def _get_file_urls(pvinfo):
     # TODO maybe retry here
@@ -272,7 +170,7 @@ def _get_file_urls(pvinfo):
                 one['url'] = f['url']	# raw url
                 raw.append(one)	# add one task
     # use map_do() to get many file_urls at the same time
-    pool_size = var._['pool_size_get_file_url']
+    pool_size = var._['pool_size']['get_file_url']
     # INFO log
     log.i('getting ' + str(len(raw)) + ' part file URLs, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(raw, worker = _get_one_file_url, pool_size=pool_size)

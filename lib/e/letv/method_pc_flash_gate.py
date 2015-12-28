@@ -1,17 +1,13 @@
 # method_pc_flash_gate.py, parse_video/lib/e/letv/
-
-import re
-
 from ... import err, b
 from ...b import log
+from .. import common, log_text
 
 from . import var
-
 from .o import (
     id_transfer, 
     gslb_item_data, 
 )
-
 try:
     from .o import m3u8_encrypt2 as m3u8_encrypt
 except Exception:
@@ -21,26 +17,14 @@ except Exception:
 def parse(method_arg_text):
     # TODO support --more
     # process method args
-    if method_arg_text != None:
-        args = method_arg_text.split(',')
-        for r in args:
-            if r == 'fast_parse':
-                var._['flag_fast_parse'] = True
-            elif r == 'enable_more':
-                var._['enable_more'] = True
-            else:	# unknow arg
-                log.w('unknow method arg \"' + r + '\" ')
-    raw_url = var._['_raw_url']
-    # INFO log
-    log.i('loading page \"' + raw_url + '\" ')
-    raw_html_text = b.dl_html(raw_url)
-    var._['_raw_page_html'] = raw_html_text
+    def rest(r):
+        if r == 'fast_parse':
+            var._['flag_fast_parse'] = True
+        else:	# unknow args
+            return True
+    common.method_parse_method_args(method_arg_text, var, rest)
     
-    vid_info = _get_vid_info(raw_html_text)
-    var._['_vid_info'] = vid_info
-    # DEBUG log
-    log.d('got vid_info ' + str(vid_info))
-    
+    vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
     pvinfo = _get_video_info(vid_info)
     # TODO support fast parse here
     out = _get_file_urls(pvinfo)
@@ -49,39 +33,20 @@ def parse(method_arg_text):
     return out
 
 def _get_vid_info(raw_html_text):
-    re_list = var.RE_VID_LIST
-    try:
-        out = {}
-        for key, r in re_list.items():
-            one = re.findall(r, raw_html_text)[0]
-            # check empty result
-            if (one == None) or (one == ''):
-                raise err.ParseError('vid_info \"' + key + '\" empty', one)
-            out[key] = one
-        return out
-    except Exception as e:
-        er = err.NotSupportURLError('get vid info failed', var._['_raw_url'])
-        raise er from e
+    def do_get(raw_html_text):
+        return common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
+    return common.method_get_vid_info(raw_html_text, var, do_get)
 
 def _get_video_info(vid_info):
     first_url = _make_first_url(vid_info)
     # [ OK ] log
-    log.o('got first URL \"' + first_url + '\" ')
+    log.o(log_text.method_got_first_url(first_url))
     first = b.dl_json(first_url)
     var._['_raw_first_json'] = first
     # check code
     if first['statuscode'] != var.FIRST_OK_CODE:
-        raise err.MethodError('first_json status code \"' + first['statuscode'] + '\" is not ' + var.FIRST_OK_CODE + ' ')
-    # TODO
-    # parse raw first json
-    try:
-        pvinfo = _parse_raw_first_json(first)
-    except Exception as e:
-        er = err.MethodError('parse raw first json info failed')
-        raise er from e
-    # sort videos by hd
-    pvinfo['video'].sort(key=lambda x:x['hd'], reverse=True)
-    return pvinfo
+        raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
+    return common.parse_raw_first(first, _parse_raw_first_json)
 
 def _make_first_url(vid_info):
     vid = vid_info['vid']
@@ -107,7 +72,7 @@ def _parse_raw_first_json(first):
 def _parse_one_video_info(vid, domain, dispatch):
     out = {}
     rateid, raw_dispatch = dispatch
-    out['hd'] = var.RATEID_TO_HD[rateid]
+    out['hd'] = var.TO_HD[rateid]
     # set default values
     out['size_px'] = [-1, -1]
     out['format'] = 'ts'	# NOTE video file format should be ts, from m3u8
@@ -127,27 +92,15 @@ def _parse_one_video_info(vid, domain, dispatch):
     return out
 
 def _count_and_select(pvinfo):
-    # sort videos by hd
-    pvinfo['video'].sort(key = lambda x: x['hd'], reverse=True)
+    common.method_sort_video(pvinfo)
     # count video info
     for v in pvinfo['video']:
         # check skip videos
         if len(v['file']) < 1:
             continue
-        v['size_byte'] = 0
-        v['time_s'] = 0
-        v['count'] = len(v['file'])
-        for f in v['file']:
-            v['size_byte'] += f['size']
-            v['time_s'] += f['time_s']
-        v['time_s'] = round(v['time_s'], 3)
+        common.method_count_one_video(v)
     # NOTE only select hd_min, hd_max, not select i_min, i_max
-    hd_min = var._['hd_min']
-    hd_max = var._['hd_max']
-    for v in pvinfo['video']:
-        if ((hd_min != None) and (v['hd'] < hd_min)) or ((hd_max != None) and (v['hd'] > hd_max)):
-            v['file'] = []
-    # done
+    common.method_select_hd(pvinfo, var)
     return pvinfo
 
 def _get_file_urls(pvinfo):
@@ -157,7 +110,7 @@ def _get_file_urls(pvinfo):
     for v in pvinfo['video']:
         if '_data' in v:
             todo_list.append(v['_data'])
-    pool_size = var._['pool_size_get_m3u8']
+    pool_size = var._['pool_size']['get_m3u8']
     # INFO log here
     log.i('downloading ' + str(len(todo_list)) + ' m3u8 files, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(todo_list, worker=_download_one_m3u8, pool_size=pool_size)

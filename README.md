@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512281338
+   - test201512281343
   -->
 
 # parse_video version 0.5.0.0
@@ -15,8 +15,8 @@ from some web sites.
 
 **Supported** (2)
 
-+ *271* [ 4K ] [ flv ] 
-+ *letv* [ 1080p ] [ ts ] (m3u8)
++ *271* [ 4K ] *[ flv ]*
++ *letv* [ 1080p ] *[ ts ]* (m3u8)
 
 **TODO**
 
