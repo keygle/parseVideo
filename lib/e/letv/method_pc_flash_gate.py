@@ -24,7 +24,7 @@ def parse(method_arg_text):
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
     
-    vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
+    vid_info = common.parse_load_page_and_get_vid(var)
     pvinfo = _get_video_info(vid_info)
     # TODO support fast parse here
     out = _get_file_urls(pvinfo)
@@ -32,13 +32,9 @@ def parse(method_arg_text):
     out = _count_and_select(out)
     return out
 
-def _get_vid_info(raw_html_text):
-    def do_get(raw_html_text):
-        return common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
-    return common.method_get_vid_info(raw_html_text, var, do_get)
-
 def _get_video_info(vid_info):
-    first_url = _make_first_url(vid_info)
+    # make first url
+    first_url = id_transfer.get_url(vid_info['vid'])
     # [ OK ] log
     log.o(log_text.method_got_first_url(first_url))
     first = b.dl_json(first_url)
@@ -47,11 +43,6 @@ def _get_video_info(vid_info):
     if first['statuscode'] != var.FIRST_OK_CODE:
         raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
     return common.parse_raw_first(first, _parse_raw_first_json)
-
-def _make_first_url(vid_info):
-    vid = vid_info['vid']
-    out = id_transfer.get_url(vid)
-    return out
 
 def _parse_raw_first_json(first):
     out = {}

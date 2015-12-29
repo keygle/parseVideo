@@ -238,7 +238,9 @@ def parse_load_page_and_get_vid(var, get_vid_info=None):
     return vid_info
 
 def _simple_get_vid_info(raw_html_text, var):
-    pass	# TODO
+    def do_get(raw_html_text):
+        return method_vid_re_get(raw_html_text, var.RE_VID_LIST)
+    return method_get_vid_info(raw_html_text, var, do_get)
 
 def parse_raw_first(first, do_parse):
     try:
