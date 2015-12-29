@@ -93,13 +93,6 @@ class ExtractorEntry(object):
 
 # extractor.entry
 
-def entry_split_method(raw_method):
-    # split method name and method args
-    if ';' in raw_method:
-        method, method_arg_text = raw_method.split(';', 1)
-        return method, method_arg_text
-    return raw_method, None
-
 def entry_add_more_info(pvinfo, var):
     # add more info to pvinfo
     pvinfo['extractor_name'] = var.EXTRACTOR_NAME
@@ -126,17 +119,6 @@ def method_parse_method_args(method_arg_text, var, rest):
                     log.w('unknow method arg \"' + r + '\" ')
     # done parse method arg_text
 
-def method_str_method_arg(method_arg):
-    if method_arg == None:
-        return 'None'
-    return '\"' + method_arg + '\"'
-
-def method_split_raw_extractor(raw_extractor):
-    if ';' in raw_extractor:
-        extractor_id, extractor_args = raw_extractor.split(';', 1)
-        return extractor_id, extractor_args
-    return raw_extractor, None
-
 # check use more mode
 def method_check_use_more(var, data_list=[]):
     try:
@@ -153,7 +135,7 @@ def _method_do_check_use_more(var, data_list):
     if not '_data' in raw_more:
         return False
     # check extractor match
-    extractor_id = method_split_raw_extractor(raw_more['extractor'])
+    extractor_id = b.split_raw_extractor(raw_more['extractor'])[0]
     if extractor_id != var.EXTRACTOR_ID:
         return False	# not this extractor
     # check url match
@@ -239,18 +221,26 @@ def method_select_file(pvinfo, var):
 
 # extractor.method.parse, common parse functions
 
-def parse_load_page_and_get_vid(var, get_vid_info):
+def parse_load_page_and_get_vid(var, get_vid_info=None):
     raw_url = var._['_raw_url']
     # INFO log, loading raw html page
     log.i(log_text.method_loading_page(raw_url))
     raw_html_text = b.dl_html(raw_url)
     var._['_raw_page_html'] = raw_html_text
     
-    vid_info = get_vid_info(raw_html_text)
+    if get_vid_info == None:
+        vid_info = _simple_get_vid_info(raw_html_text, var)
+    else:
+        vid_info = get_vid_info(raw_html_text)
     var._['_vid_info'] = vid_info
     # DEBUG log
     log.d(log_text.method_got_vid_info(vid_info))
     return vid_info
+
+def _simple_get_vid_info(raw_html_text, var):
+    def do_get(raw_html_text):
+        return method_vid_re_get(raw_html_text, var.RE_VID_LIST)
+    return method_get_vid_info(raw_html_text, var, do_get)
 
 def parse_raw_first(first, do_parse):
     try:
@@ -261,7 +251,38 @@ def parse_raw_first(first, do_parse):
     method_sort_video(pvinfo)
     return pvinfo
 
-# TODO
+# map_do() network functions
+
+def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
+    # TODO maybe retry here
+    # make todo list
+    todo = []
+    i = 0
+    for v in pvinfo['video']:
+        for f in v['file']:
+            if f['url'] != '':
+                one = {}
+                one['i'], i = i, i + 1	# add index number for DEBUG
+                one['f'] = f
+                todo.append(one)
+    # INFO log
+    log.i(msg + ', count ' + str(len(todo)) + ', pool_size = ' + str(pool_size) + ' ')
+    def _worker(raw):
+        i = raw['i']
+        log.d('start get index ' + str(i) + ' ')
+        result = worker(raw['f'], i)
+        log.d('[done] got index ' + str(i) + ' ')
+        return result
+    result = b.map_do(todo, worker=_worker, pool_size=pool_size)
+    log.d('got files done. ')
+    # set back result
+    i = 0
+    for v in pvinfo['video']:
+        for j in range(len(v['file'])):
+            if v['file'][j]['url'] != '':
+                v['file'][j], i = result[i], i + 1
+    return pvinfo	# done
+
 # end common.py
 
 
