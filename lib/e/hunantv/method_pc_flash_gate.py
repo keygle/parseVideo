@@ -78,7 +78,7 @@ def _get_file_urls(pvinfo):
         before = b.dl_json(raw)
         # check code
         if before['status'] != var.BEFORE_OK_CODE:
-            raise err.MethodError('before code ' + b.str_or_str(before['status'] + ' is not ' + str(var.BEFORE_OK_CODE) + ' ')
+            raise err.MethodError('before code ' + b.str_or_str(before['status']) + ' is not ' + str(var.BEFORE_OK_CODE) + ' ')
         f['url'] = before['info']	# update URL
         return f
     pool_size = var._['pool_size']['get_before']

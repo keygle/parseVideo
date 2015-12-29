@@ -56,7 +56,7 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     # get extractor_id
     if raw_extractor == '':
         raw_extractor = _url_to_extractor(raw_url)
-    extractor_id = b.split_raw_extractor(raw_extractor)
+    extractor_id = b.split_raw_extractor(raw_extractor)[0]
     var._['_extractor_id'] = extractor_id
     # import extractor
     e = _import_extractor(extractor_id)
