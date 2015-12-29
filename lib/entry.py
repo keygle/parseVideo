@@ -23,7 +23,7 @@ import datetime
 from collections import OrderedDict
 import importlib
 
-from . import err
+from . import err, b
 from .b import log
 
 from . import var, conf
@@ -56,10 +56,7 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     # get extractor_id
     if raw_extractor == '':
         raw_extractor = _url_to_extractor(raw_url)
-    if ';' in raw_extractor:
-        extractor_id = raw_extractor.split(';', 1)[0]
-    else:
-        extractor_id = raw_extractor
+    extractor_id = b.split_raw_extractor(raw_extractor)
     var._['_extractor_id'] = extractor_id
     # import extractor
     e = _import_extractor(extractor_id)
