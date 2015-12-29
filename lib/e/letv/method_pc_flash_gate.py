@@ -44,9 +44,8 @@ def _get_video_info(vid_info):
     return common.parse_raw_first(first, _parse_raw_first_json)
 
 def _parse_raw_first_json(first):
-    out = {}
     playurl = first['playurl']
-    
+    out = {}
     # get base video info
     out['info'] = {}
     out['info']['title'] = playurl['title']
