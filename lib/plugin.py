@@ -20,6 +20,7 @@ def lyyc_about():
         'parse' : [
             '^http://[a-z]+\.iqiyi\.com/.+\.html', 
             '^http://www\.letv\.com/.+\.html', 
+            '^http://www\.hunantv\.com/.+\.html', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 

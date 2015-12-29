@@ -9,7 +9,7 @@ from . import method_pc_flash_gate
 
 class Entry(common.ExtractorEntry):
     def _do_parse(self, raw_method):
-        method, method_arg_text = b.split_raw_method((raw_method)
+        method, method_arg_text = b.split_raw_method((raw_method))
         # check method name
         if method == 'pc_flash_gate':
             log.d(log_text.entry_log_use_method(method, method_arg_text))	# DEBUG log
