@@ -5,26 +5,27 @@ from .. import common
 EXTRACTOR_ID = 'hunantv'
 EXTRACTOR_NAME = 'hunantv_1'
 SITE = 'hunantv'
-SITE_NAME = ''	# TODO
+SITE_NAME = '芒果TV'
 
 RE_SUPPORT_URL = [
-    '', 	# TODO
+    # http://www.hunantv.com/v/2/168868/f/2928760.html
+    '^http://www\.hunantv\.com/.+\.html', 
 ]
 
 METHOD_LIST = [
     'pc_flash_gate', 
 ]
 RE_VID_LIST = {
-    'vid' : '', 	# TODO
+    'vid' : 'data-vid="([^"]+)"', 
 }
 # site stream_name to parse_video hd quality
-TO_HD = {	# TODO
-    '' : 2, 	# 720p
-    '' : 0, 
-    '' : -1, 
+TO_HD = {
+    '超清' : 2, 	# 720p
+    '高清' : 0, 
+    '标清' : -1, 
 }
-FIRST_OK_CODE = 	# TODO
-BEFORE_OK_CODE = 	# TODO
+FIRST_OK_CODE = 200
+BEFORE_OK_CODE = 'ok'
 
 # var data
 class VarData(common.ExtractorVar):
