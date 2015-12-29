@@ -17,6 +17,13 @@ from ._b.network import (
     post, 
     post_form, 
 )
+from ._b.text import (
+    str_or_str, 
+    split_raw_extractor, 
+    split_raw_method, 
+    simple_get_number_from_text, 
+    simple_m3u8_parse, 
+)
 
 # global data
 etc = {}
