@@ -1,6 +1,6 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.5.0 test201512282002
+   - version 0.0.6.0 test201512292030
   -->
 
 parse_video version 0.5.1.0
@@ -8,24 +8,11 @@ parse_video version 0.5.1.0
 # parse_video : 小而精 的 纯解析 程序
 
 
-## 已支持网站 (2)
+## 已支持网站 (3)
 
 1. 271 (`4K`, w, `bks1`, *flv*)
 2. letv (`1080p`, `letv`, *ts*) (m3u8)
-
-
-## -> version 0.5.x 特性
-
-+ 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
-
-+ 整合 原 `parse_video` 和 `evparse` 的 网站 支持. (`evparse` 已被 废弃)
-
-+ 原生内置 `bridge` 功能支持. 
-
-+ 继承 `parse_video version 0.4.x` 的 `method` 参数传递功能, 
-  以及命令行接口. (命令行参数格式)
-  
-  (`--min`, `--max`, `--i-min`, `--i-max`, `--extractor`, `--method`, `--debug`)
+3. hunantv (`720p`, `hunantv`, *m3u8*)
 
 
 ## 支持网站 限制
@@ -47,10 +34,23 @@ parse_video version 0.5.1.0
   + 清晰度 (画质) *太低* 的 *不考虑* 支持
 
 
-## 计划支持的网站 (6)
+## -> version 0.5.x 特性
+
++ 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
+
++ 整合 原 `parse_video` 和 `evparse` 的 网站 支持. (`evparse` 已被 废弃)
+
++ 原生内置 `bridge` 功能支持. 
+
++ 继承 `parse_video version 0.4.x` 的 `method` 参数传递功能, 
+  以及命令行接口. (命令行参数格式)
+  
+  (`--min`, `--max`, `--i-min`, `--i-max`, `--extractor`, `--method`, `--debug`)
+
+
+## 计划支持的网站 (5)
 (`extractor`)
 
-+ hunantv (`720p`)
 + tvsohu (`4K`, `h265`)
 + pptv (*高码* `1080p`)
 
@@ -61,9 +61,8 @@ parse_video version 0.5.1.0
 
 *实现顺序*
 
-1. hunantv
-2. tvsohu
-3. pptv
+1. tvsohu
+2. pptv
 
 *简单 TODO*
 
