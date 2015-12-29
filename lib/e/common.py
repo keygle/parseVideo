@@ -251,9 +251,38 @@ def parse_raw_first(first, do_parse):
     method_sort_video(pvinfo)
     return pvinfo
 
-# TODO
+# map_do() network functions
 
-# TODO
+def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
+    # TODO maybe retry here
+    # make todo list
+    todo = []
+    i = 0
+    for v in pvinfo['video']:
+        for f in v['file']:
+            if f['url'] != '':
+                one = {}
+                one['i'], i = i, i + 1	# add index number for DEBUG
+                one['f'] = f
+                todo.append(one)
+    # INFO log
+    log.i(msg + ', count ' + str(len(todo)) + ', pool_size = ' + str(pool_size) + ' ')
+    def _worker(raw):
+        i = raw['i']
+        log.d('start get index ' + str(i) + ' ')
+        result = worker(raw['f'], i)
+        log.d('[done] got index ' + str(i) + ' ')
+        return result
+    result = b.map_do(todo, worker=_worker, pool_size=pool_size)
+    log.d('got files done. ')
+    # set back result
+    i = 0
+    for v in pvinfo['video']:
+        for j in range(len(v['file'])):
+            if v['file'][j]['url'] != '':
+                v['file'][j], i = result[i], i + 1
+    return pvinfo	# done
+
 # end common.py
 
 

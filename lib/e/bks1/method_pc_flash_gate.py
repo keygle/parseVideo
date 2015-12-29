@@ -17,12 +17,9 @@ def parse(method_arg_text):
         log.o('--more mode enabled ')
         # TODO check method match
         # check method args match
-        raw_method_arg = common.entry_split_method(raw_more['method'])[1]
-        if raw_method_arg != method_arg_text:
-            method_text_1 = common.method_str_method_arg(raw_method_arg)
-            method_text_2 = common.method_str_method_arg(method_arg_text)
-            # WARNING log
-            log.w('now method args ' + method_text_2 + ' is different from old method args ' + method_text_1 + ' in more info ')
+        raw_method_arg = b.split_raw_method(raw_more['method'])[1]
+        if raw_method_arg != method_arg_text:	# WARNING log
+            log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
     # parse method args
     def rest(r):
         if r == 'set_um':
@@ -68,6 +65,7 @@ def _check_use_more():
     ]
     return common.method_check_use_more(var, data_list)
 
+# TODO may be can clean here
 def _get_vid_info(raw_html_text):
     def do_get(raw_html_text):
         out = common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
@@ -99,7 +97,8 @@ def _get_video_info(vid_info):
 
 def _get_video_info_2(first):
     pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
-    out = _count_and_select(pvinfo)
+    # select by hd_min, hd_max, i_min, i_max. count sum data, and sort videos by hd
+    out = common.method_simple_count_and_select(pvinfo, var)
     return out
 
 def _make_first_url(vid_info):
@@ -152,54 +151,17 @@ def _parse_one_file_info(raw, du):
     out['url'] = du + l	# NOTE before final url, just concat 'du' and 'l'
     return out
 
-# select by hd_min, hd_max, i_min, i_max. count sum data, and sort videos by hd
-def _count_and_select(pvinfo):
-    return common.method_simple_count_and_select(pvinfo, var)
-
 def _get_file_urls(pvinfo):
-    # TODO maybe retry here
-    # make task raw list
-    raw = []
-    i = 0
-    for v in pvinfo['video']:
-        for f in v['file']:
-            if f['url'] != '':
-                one = {}
-                one['i'] = i	# add index number for DEBUG
-                i += 1
-                one['url'] = f['url']	# raw url
-                raw.append(one)	# add one task
-    # use map_do() to get many file_urls at the same time
+    def worker(f, i):
+        raw_info = b.dl_json(f['url'])
+        try:
+            f['url'] = raw_info['l']	# update url
+            return f
+        except Exception as e:
+            er = err.MethodError('get final file URL failed', f['url'])
+            raise er from e
     pool_size = var._['pool_size']['get_file_url']
-    # INFO log
-    log.i('getting ' + str(len(raw)) + ' part file URLs, pool_size = ' + str(pool_size) + ' ')
-    result = b.map_do(raw, worker = _get_one_file_url, pool_size=pool_size)
-    # DEBUG log
-    log.d('got file URLs done. ')
-    # set back real file urls
-    i = 0
-    for v in pvinfo['video']:
-        for f in v['file']:
-            if f['url'] != '':
-                f['url'] = result[i]
-                i += 1
-    # done
-    return pvinfo
-
-def _get_one_file_url(raw):
-    i = raw['i']
-    # DEBUG log
-    log.d('start get index ' + str(i) + ' ')
-    
-    raw_info = b.dl_json(raw['url'])
-    try:
-        result = raw_info['l']
-    except Exception as e:
-        er = err.MethodError('get final file URL failed', raw['url'])
-        raise er from e
-    # DEBUG log
-    log.d('[done] got index ' + str(i) + ' ')
-    return result
+    return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
 
 # end method_pc_flash_gate.py
 
