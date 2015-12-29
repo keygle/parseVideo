@@ -28,7 +28,21 @@ def simple_get_number_from_text(raw):
     return int(n)
 
 def simple_m3u8_parse(lines):
-    pass
+    out = []
+    one = {}
+    for line in lines:
+        if (not line.startswith('#')) and (line.strip() != ''):
+            # got URL line, append to out and reset one
+            one['url'] = line
+            out.append(one)
+            one = {}
+        elif line.startswith('#EXTINF:'):	# got time_s line
+            time = line.split(':', 1)[1].split(',', 1)[0]
+            one['time_s'] = float(time)
+        elif line.startswith('#EXT-X-ENDLIST'):	# got m3u8 file end
+            return out
+    # not get m3u8 end
+    raise err.ParseError('not get m3u8 file end #EXT-X-ENDLIST ')
 
 # end text.py
 
