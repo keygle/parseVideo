@@ -42,7 +42,7 @@ class VarData(common.ExtractorVar):
         return out
 # var exports
 var = VarData()
-_ = var._	# TODO
+_ = var._
 # end var.py
 
 

@@ -52,7 +52,7 @@ class VarData(common.ExtractorVar):
         return out
 # var exports
 var = VarData()
-_ = var._	# TODO FIXME set this may be Error
+_ = var._
 # end var.py
 
 
