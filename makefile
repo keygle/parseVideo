@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.0.3.0 test201512301542
+# version 0.0.4.0 test201512301549
 
 # parse_video bin
 PV_BIN=./parsev
@@ -68,7 +68,7 @@ test_more_bks1:
 
 test_more_letv:
 	# pv_test:: INFO: more test extractor letv
-	$(PV_BIN) $(ET_URL_LETV_1) -m "pc_flash_gate;enable_more" -o "test_more.e_letv.tmp.json"
+	$(PV_BIN) $(ET_URL_LETV_1) -i 1 -M 0 -m "pc_flash_gate;fast_parse,enable_more" -o "test_more.e_letv.tmp.json"
 	$(PV_BIN) $(ET_URL_LETV_1) -i 3 --more "test_more.e_letv.tmp.json"
 
 test_more_hunantv:
