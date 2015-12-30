@@ -155,6 +155,30 @@ def method_more_check_method(method_arg_text, raw_more):
     if raw_method_arg != method_arg_text:	# WARNING log
         log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
 
+def method_simple_check_use_more(var, method_arg_text, data_list=[]):
+    if not method_check_use_more(var, data_list):
+        return None	# not use more
+    # set flags
+    var._['_use_more'] = True
+    raw_more = var._['more']
+    # [ OK ] log
+    log.o(log_text.method_enable_more())
+    # check method
+    method_more_check_method(method_arg_text, raw_more)
+    return raw_more
+
+def method_more_simple_get_vid_info(var, f):
+    raw_more = var._['more']
+    if not var._['use_more']:
+        vid_info = f()
+    else:
+        raw_data = raw_more['_data']
+        vid_info = raw_data['vid_info']
+        # set var._
+        var._['_vid_info'] = vid_info
+    return vid_info
+
+# get vid info
 def method_get_vid_info(raw_html_text, var, do_get):
     try:
         return do_get(raw_html_text)

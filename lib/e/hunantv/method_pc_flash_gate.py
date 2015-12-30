@@ -1,4 +1,7 @@
 # method_pc_flash_gate.py, parse_video/lib/e/hunantv/
+
+import functools
+
 from ... import err, b
 from ...b import log
 from .. import common, log_text
@@ -8,14 +11,10 @@ from .o import mango_tv3
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    # NOTE --more mode to direct get vid_info
-    if _check_use_more():
-        var._['_use_more'] = True
-        raw_more = var._['more']
-        # [ OK ] log
-        log.o(log_text.method_enable_more())
-        # check method (and method args)
-        common.method_more_check_method(method_arg_text, raw_more)
+    data_list = [	# NOTE --more mode to direct get vid_info
+        'vid_info', 
+    ]
+    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
     # process method args
     def rest(r):
         if r == 'parse_m3u8':
@@ -23,32 +22,20 @@ def parse(method_arg_text):
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
+    # get vid_info from more if possible
+    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var)
+    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
     
-    # get vid_info from more
-    if not var._['_use_more']:
-        vid_info = common.parse_load_page_and_get_vid(var)
-    else:
-        raw_data = raw_more['_data']
-        vid_info = raw_data['vid_info']
-        # set var._
-        var._['_vid_info'] = vid_info
     pvinfo = _get_video_info(vid_info)
     # NOTE select hd here
     common.method_select_hd(pvinfo, var)
     out = _get_file_urls(pvinfo)
     # TODO support parse m3u8 and count here
-    
     # check enable_more
     if var._['enable_more']:
         out['_data'] = {}
         out['_data']['vid_info'] = vid_info
     return out
-
-def _check_use_more():
-    data_list = [
-        'vid_info', 
-    ]
-    return common.method_check_use_more(var, data_list)
 
 def _get_video_info(vid_info):
     # make first url
