@@ -260,15 +260,14 @@ def parse_load_page_and_get_vid(var, get_vid_info=None):
     var._['_raw_page_html'] = raw_html_text
     
     if get_vid_info == None:
-        vid_info = _simple_get_vid_info(raw_html_text, var)
+        vid_info = parse_simple_get_vid_info(raw_html_text, var)
     else:
         vid_info = get_vid_info(raw_html_text)
     var._['_vid_info'] = vid_info
-    # DEBUG log
     log.d(log_text.method_got_vid_info(vid_info))
     return vid_info
 
-def _simple_get_vid_info(raw_html_text, var):
+def parse_simple_get_vid_info(raw_html_text, var):
     def do_get(raw_html_text):
         return method_vid_re_get(raw_html_text, var.RE_VID_LIST)
     return method_get_vid_info(raw_html_text, var, do_get)

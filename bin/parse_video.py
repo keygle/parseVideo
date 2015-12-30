@@ -67,7 +67,7 @@ etc['more'] = None
 # print help, version and license info. (--help, --version, --license)
 def p_version():
     print('''\
-parse_video version 0.5.1.0 test201512281953
+parse_video version 0.5.2.0 test201512310019
 
     parse_video  Copyright (C) 2015  sceext <sceext@foxmail.com>
     This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 

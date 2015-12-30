@@ -8,6 +8,7 @@ DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate', 
     'letv' : 'pc_flash_gate', 
     'hunantv' : 'pc_flash_gate', 
+    'tvsohu' : 'pc_flash_gate', 
 }
 
 # URL (RE) to extractor_id
@@ -15,6 +16,7 @@ URL_TO_EXTRACTOR = {
     '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'bks1', 
     '^http://www\.letv\.com/.+\.html' : 'letv', 
     '^http://www\.hunantv\.com/.+\.html' : 'hunantv', 
+    '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
 }
 
 

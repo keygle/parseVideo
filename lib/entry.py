@@ -19,6 +19,7 @@
 #
 
 import re
+import math
 import datetime
 from collections import OrderedDict
 import importlib
@@ -125,10 +126,11 @@ def _add_more_pvinfo(pvinfo, add_mark_uuid=False):
     out['info_source'] = var.PVINFO_INFO_SOURCE
     # add video quality
     for v in out['video']:
-        q = var.HD_TO_QUALITY.get(v['hd'], '')
+        hd = math.floor(v['hd'])
+        q = var.HD_TO_QUALITY.get(hd, '')
         # keep old quality
         if 'quality' in v:
-            v['quality'] = q + '_' + v['quality']
+            v['quality'] = q + '-' + v['quality']
         else:
             v['quality'] = q
     # add last_update

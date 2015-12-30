@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.3.0 test201512291720
+# version 0.1.4.0 test201512310013
 
 import math
 import os, sys, io, json
@@ -14,7 +14,7 @@ except Exception as e:
     import lyyc_plugin
 
 # global data
-PACK_VERSION = 3
+PACK_VERSION = 4
 
 FLAG_DEBUG = False
 ERR_PREFIX = 'yy-6.1::'
@@ -22,7 +22,7 @@ ERR_PREFIX = 'yy-6.1::'
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.1.0', 
+    'version' : '1.2.0', 
     'name' : '上古有颜6.1代', 
     
     'note' : 'parse_video for lieying_plugin. ', 
