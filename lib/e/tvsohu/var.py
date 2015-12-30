@@ -19,9 +19,9 @@ RE_VID_LIST = {
     'vid' : 'var vid="([0-9]+)";', 
 }
 # site vid_type to parse_video hd quality
-TO_HD = {	# TODO
+TO_HD = {
     'h2654kVid'    : 7.1, 	# 4K, h265
-    'h2654mVid'    : 7.05, 	# unknow TODO, h265
+    'h2654mVid'    : 5.1, 	# high bitrate 1080p, h265
     'h265oriVid'   : 4.1, 	# 1080p, h265
     'h265superVid' : 2.1, 	# 720p, h265
     'h265highVid'  : 0.1, 
@@ -38,7 +38,7 @@ FIRST_OK_CODE = 1	# first.status
 # vid_name to quality text
 VID_NAME_LIST = {
     'h2654kVid'    : 'h265', 
-    'h2654mVid'    : 'h265_4m', 
+    'h2654mVid'    : 'h265', 
     'h265oriVid'   : 'h265', 
     'h265superVid' : 'h265', 
     'h265highVid'  : 'h265', 

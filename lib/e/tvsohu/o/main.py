@@ -16,8 +16,8 @@ CONFIG_version = '1512071747'
 # package server.LoadFromCDN
 UA_PREFIX = 'sohuce:'
 
-def gen_first_url(vid, ver=31):
-    out = FETCH_VIDEO_PATH + str(vid) + '&ver=' + str(ver) + '&t=' + str(random.random())
+def gen_first_url(vid):
+    out = FETCH_VINFO_PATH + str(vid) + '&t=' + str(random.random())
     return out
 
 def gen_before_url(new, vid, tvid, ch, prod='flash'):

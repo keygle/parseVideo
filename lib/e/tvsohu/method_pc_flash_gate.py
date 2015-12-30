@@ -55,18 +55,18 @@ def _get_video_info(vid_info):
     # [ OK ] log
     log.o(log_text.method_got_first_url(first_url))
     first = b.dl_json(first_url)
-    var._['_raw_first_json'][vid] = first
+    var._['_raw_first_json'][int(vid)] = first
     # TODO support fast_parse here
     # parse raw first, get other vids, and download other first info jsons
     vid_list = _parse_one_first(first, vid)['vid_list']
     # make todo list
     todo = []
     for name, value in vid_list.items():	# NOTE vid == 0 is null
-        if (not value in var._['_raw_first_json']) and (value != 0):
+        if (not int(value) in var._['_raw_first_json']) and (int(value) != 0):
             one = {}
             one['name'] = name
             one['vid'] = value
-            one['url'] = main.gen_first_url(vid)
+            one['url'] = main.gen_first_url(value)
             todo.append(one)
     pool_size = var._['pool_size']['get_first']
     # INFO log
@@ -75,13 +75,13 @@ def _get_video_info(vid_info):
     log.d('got video info (first) done ')
     # save more raw_first_json
     for r in result:
-        var._['_raw_first_json'][r['vid']] = r['json']
+        var._['_raw_first_json'][int(r['vid'])] = r['json']
     # do more parse
     pvinfo = _get_video_info_2()
     return pvinfo
 
 def _dl_one_first(info):
-    log.d('getting first, name ' + b.str_or_str(info['name']) + ', vid ' + b.str_or_str(info['vid']) + ' ')
+    log.d('getting first, name ' + b.str_or_str(info['name']) + ', vid ' + b.str_or_str(info['vid']) + ', url \"' + info['url'] + '\" ')
     raw = b.dl_json(info['url'])
     log.d('[done] got name ' + b.str_or_str(info['name']) + ' ')
     out = {}
@@ -91,7 +91,7 @@ def _dl_one_first(info):
 
 def _parse_one_first(raw, vid):
     try:
-        return _do_parse_one_first(raw, vid)
+        return _do_parse_one_first(raw, int(vid))
     except err.PVError:
         raise
     except Exception as e:
@@ -101,7 +101,6 @@ def _do_parse_one_first(raw, vid):
     # check first code
     if raw['status'] != var.FIRST_OK_CODE:
         raise err.MethodError(log_text.method_err_first_code(raw['status'], var))
-    # TODO check raw info version: data.version == 31
     out = {}
     data = raw['data']
     # get base video info
@@ -158,8 +157,8 @@ def _get_video_info_2():
     raw_list = var._['_raw_first_json']
     out = {}
     out['video'] = []
-    for raw in raw_list.values():
-        one = _parse_one_first(raw)
+    for vid, raw in raw_list.items():
+        one = _parse_one_first(raw, vid)
         if not 'info' in out:
             out['info'] = one['info']
         out['video'].append(one['v'])
