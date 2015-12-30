@@ -169,7 +169,7 @@ def method_simple_check_use_more(var, method_arg_text, data_list=[]):
 
 def method_more_simple_get_vid_info(var, f):
     raw_more = var._['more']
-    if not var._['use_more']:
+    if not var._['_use_more']:
         vid_info = f()
     else:
         raw_data = raw_more['_data']
