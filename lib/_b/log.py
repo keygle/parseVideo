@@ -49,10 +49,12 @@ def _p(text, file=sys.stderr, flush=True):
 # base debug print function
 def _pd(raw_text, depth=3, prefix=conf.PV_LOG_PREFIX, debug_type=''):
     caller_module, caller_function = get_caller_info(depth=depth)
-    debug_prefix = prefix + caller_module + ':' + caller_function + ': '
+    debug_prefix = caller_module + ':' + caller_function + ': '
     debug_text = debug_type + ' ' + raw_text
     if log_filter['__show_log_pos']:
         debug_text = debug_prefix + debug_text
+    # add log prefix
+    debug_text = prefix + debug_text
     # check log output filter
     if log_filter.get(debug_type, log_filter[None]):
         _p(debug_text)
