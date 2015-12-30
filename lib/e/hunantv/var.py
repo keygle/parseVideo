@@ -35,7 +35,6 @@ class VarData(common.ExtractorVar):
         out['pool_size']['get_before'] = 4
         out['pool_size']['get_m3u8'] = 4
         
-        out['flag_fast_parse'] = False	# TODO
         out['flag_parse_m3u8'] = False	# TODO
         # private data
         out['_raw_first_json'] = ''
