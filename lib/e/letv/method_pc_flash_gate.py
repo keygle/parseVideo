@@ -15,7 +15,15 @@ except Exception:
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    # TODO support --more
+    # NOTE --more mode to just get vid_info
+    # TODO check use more code may be can clean
+    if _check_use_more():
+        var._['_use_more'] = True
+        raw_more = var._['more']
+        # [ OK ] log
+        log.o(log_text.method_enable_more())
+        # check method
+        common.method_more_check_method(method_arg_text, raw_more)
     # process method args
     def rest(r):
         if r == 'fast_parse':
@@ -24,12 +32,31 @@ def parse(method_arg_text):
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
     
-    vid_info = common.parse_load_page_and_get_vid(var)
+    # TODO get vid_info code may be cleaned
+    # get vid_info from more
+    if not var._['_use_more']:
+        vid_info = common.parse_load_page_and_get_vid(var)
+    else:
+        raw_data = raw_more['_data']
+        vid_info = raw_data['vid_info']
+        # set var._
+        var._['_vid_info'] = vid_info
     pvinfo = _get_video_info(vid_info)
     # TODO support fast parse here
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
+    
+    # check enable_more
+    if var._['enable_more']:
+        out['_data'] = {}
+        out['_data']['vid_info'] = vid_info
     return out
+
+def _check_use_more():
+    data_list = [
+        'vid_info', 
+    ]
+    return common.method_check_use_more(var, data_list)
 
 def _get_video_info(vid_info):
     # make first url
