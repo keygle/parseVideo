@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512292028
+   - test201512301557
   -->
 
 # parse_video version 0.5.1.0
@@ -56,6 +56,12 @@ parse_video: get video info from some web sites.
 More information online: <https://github.com/sceext2/parse_video> 
 $ 
 ```
+
+
+## Tests
+
+Please run `make test` 
+
 
 ## LICENSE
 
