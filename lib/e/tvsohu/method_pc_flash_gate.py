@@ -182,8 +182,22 @@ def _get_file_urls(pvinfo):
     return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
 
 def _add_headers(pvinfo):
-    # TODO support gen_header method arg here
-    # TODO
+    # NOTE add type and user_agent header for each file
+    user_agent = main.gen_user_agent()
+    file_type = var.TVSOHU_FILE_TYPE
+    for v in pvinfo['video']:
+        for f in v['file']:
+            if f['url'] != '':
+                f['header'] = {
+                    'User-Agent' : user_agent, 
+                }
+                f['type'] = file_type
+    # NOTE support gen_header method arg
+    if var._['flag_gen_header']:
+        for v in pvinfo['video']:
+            for f in v['file']:
+                if f['url'] != '':	# NOTE Range only for example
+                    f['header']['Range'] = 'bytes=0-' + str(f['size'] - 1)
     return pvinfo
 
 # end method_pc_flash_gate.py

@@ -50,6 +50,9 @@ VID_NAME_LIST = {
     'highVid'   : None, 
     'norVid'    : None, 
 }
+TVSOHU_FILE_TYPE = [
+    'pv_tvsohu_http', 
+]
 
 # var data
 class VarData(common.ExtractorVar):
