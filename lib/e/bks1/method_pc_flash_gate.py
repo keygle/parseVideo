@@ -14,12 +14,9 @@ def parse(method_arg_text):
         var._['_use_more'] = True
         raw_more = var._['more']
         # [ OK ] log
-        log.o('--more mode enabled ')
-        # TODO check method match
-        # check method args match
-        raw_method_arg = b.split_raw_method(raw_more['method'])[1]
-        if raw_method_arg != method_arg_text:	# WARNING log
-            log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
+        log.o(log_text.method_enable_more())
+        # check method (and method_args)
+        common.method_more_check_method(method_arg_text, raw_more)
     # parse method args
     def rest(r):
         if r == 'set_um':

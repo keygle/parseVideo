@@ -148,6 +148,13 @@ def _method_do_check_use_more(var, data_list):
             return False
     return True	# check pass, use more mode
 
+def method_more_check_method(method_arg_text, raw_more):
+    # TODO check method match
+    # check method args match
+    raw_method_arg = b.split_raw_method(raw_more['method'])[1]
+    if raw_method_arg != method_arg_text:	# WARNING log
+        log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
+
 def method_get_vid_info(raw_html_text, var, do_get):
     try:
         return do_get(raw_html_text)

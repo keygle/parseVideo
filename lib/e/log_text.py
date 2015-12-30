@@ -8,6 +8,9 @@ from ..b import str_or_str
 def entry_log_use_method(method, method_arg_text):
     return ('use method \"' + method + '\" and method_args ' + str_or_str(method_arg_text) + ' ')
 
+def method_enable_more():
+    return ('--more mode enabled ')
+
 def method_loading_page(raw_url):
     return ('loading page \"' + raw_url + '\" ')
 
