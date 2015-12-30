@@ -34,7 +34,8 @@ def parse(method_arg_text):
     vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
     
     pvinfo = _get_video_info(vid_info)
-    # TODO support fast parse here
+    if var._['flag_fast_parse']:	# NOTE support fast_parse here
+        pvinfo = _select_fast_parse(pvinfo)
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
     # check enable_more
@@ -92,6 +93,14 @@ def _parse_one_video_info(vid, domain, dispatch):
     out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
     return out
 
+def _select_fast_parse(pvinfo):
+    # select by hd
+    hd_min, hd_max = var._['hd_min'], var._['hd_max']
+    for v in pvinfo['video']:
+        if ((hd_min != None) and (v['hd'] < hd_min)) or ((hd_max != None) and (v['hd'] > hd_max)):
+            v.pop('_data')
+    return pvinfo
+
 def _count_and_select(pvinfo):
     common.method_sort_video(pvinfo)
     # count video info
@@ -105,8 +114,6 @@ def _count_and_select(pvinfo):
     return pvinfo
 
 def _get_file_urls(pvinfo):
-    # TODO support fast parse mode
-    
     # download m3u8
     todo_list = []
     for v in pvinfo['video']:
