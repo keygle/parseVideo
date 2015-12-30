@@ -21,9 +21,11 @@ def parse(method_arg_text):
     
     vid_info = common.parse_load_page_and_get_vid(var)
     pvinfo = _get_video_info(vid_info)
+    # NOTE select hd here
+    common.method_select_hd(pvinfo, var)
     # TODO support fast parse here
     out = _get_file_urls(pvinfo)
-    # TODO support parse m3u8 and count and select here
+    # TODO support parse m3u8 and count here
     return out
 
 def _get_video_info(vid_info):
