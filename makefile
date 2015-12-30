@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.0.4.0 test201512301549
+# version 0.0.5.0 test201512301612
 
 # parse_video bin
 PV_BIN=./parsev
@@ -15,7 +15,7 @@ ET_URL_BKS1_2=http://www.iqiyi.com/v_19rrkgos5s.html
 # TODO add parse Error and fix BUG test
 
 target: test
-.PHONY: target test clean
+.PHONY: target test clean clean_py
 
 # run parse_video auto test
 test: test_bin test_parse test_more
@@ -86,6 +86,11 @@ clean_test:
 test_v:
 	# test extractor bks1
 	$(PV_BIN) $(ET_URL_BKS1_2) -m "pc_flash_gate;set_flag_v" -i 3
+
+# clean python 3 tmp (cache) files
+clean_py:
+	- find . | grep "\.pyc" | xargs rm -v
+	- find . | grep "__pycache__" | xargs rmdir -v
 
 # end makefile
 
