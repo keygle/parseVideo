@@ -196,7 +196,7 @@ def method_vid_re_get(raw_html_text, re_list):
         out[key] = one
     return out
 
-def method_get_size_px(x, y):
+def method_get_size_px(x=-1, y=-1):
     out = [-1, -1]
     try:
         out[0] = int(x)

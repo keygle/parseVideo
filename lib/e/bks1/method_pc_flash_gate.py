@@ -1,5 +1,6 @@
 # method_pc_flash_gate.py, parse_video/lib/e/bks1/
 
+import re
 import functools
 
 from ... import err, b
@@ -62,6 +63,14 @@ def _get_vid_info(raw_html_text):
             'false' : False, 
         }
         out['flag_vv'] = to_flag_vv.get(out['flag_vv'], None)
+        # get aid
+        for key, r in var.RE_VID_LIST2.items():
+            try:
+                out[key] = re.findall(r, raw_html_text)[0]
+            except Exception as e:	# NOTE just ignore Error
+                out['key'] = ''	# set empty value
+                # WARNING log
+                log.w('vid_info [' + key + '] empty ')
         return out
     return common.method_get_vid_info(raw_html_text, var, do_get)
 
