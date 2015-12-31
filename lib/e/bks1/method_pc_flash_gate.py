@@ -1,5 +1,6 @@
 # method_pc_flash_gate.py, parse_video/lib/e/bks1/
 
+import re
 import functools
 
 from ... import err, b
@@ -62,6 +63,14 @@ def _get_vid_info(raw_html_text):
             'false' : False, 
         }
         out['flag_vv'] = to_flag_vv.get(out['flag_vv'], None)
+        # get aid
+        for key, r in var.RE_VID_LIST2.items():
+            try:
+                out[key] = re.findall(r, raw_html_text)[0]
+            except Exception as e:	# NOTE just ignore Error
+                out['key'] = ''	# set empty value
+                # WARNING log
+                log.w('vid_info [' + key + '] empty ')
         return out
     return common.method_get_vid_info(raw_html_text, var, do_get)
 
@@ -74,6 +83,9 @@ def _get_video_info(vid_info):
         first_url = _make_first_url(vid_info)
         # [ OK ] log, load first vms info json
         log.o(log_text.method_got_first_url(first_url))
+    # check fix_4k
+    if var._['flag_fix_4k']:
+        first_url = _first_url_fix_4k(first_url)
     first = b.dl_json(first_url)
     var._['_raw_first_json'] = first
     # check code
@@ -81,6 +93,9 @@ def _get_video_info(vid_info):
         raise err.MethodError(log_text.method_err_first_code(first['code'], var))
     # parse raw_vms json
     return _get_video_info_2(first)
+
+def _first_url_fix_4k(raw):
+    return raw.split('&src=', 1)[0] + '&' + raw.split('&src=', 1)[1].split('&', 1)[1]
 
 def _get_video_info_2(first):
     pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
@@ -96,9 +111,6 @@ def _make_first_url(vid_info):
     set_vv = var._['set_vv']
     
     out = mixer_remote.get_request(tvid, vid, flag_set_um=set_um, flag_set_vv=set_vv)
-    # check fix_4k
-    if var._['flag_fix_4k']:
-        out = out.split('&src=', 1)[0] + '&' + out.split('&src=', 1)[1].split('&', 1)[1]
     return out
 
 def _parse_raw_first_info(first):

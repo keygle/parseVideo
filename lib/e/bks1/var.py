@@ -19,9 +19,11 @@ METHOD_LIST = [
 RE_VID_LIST = {
     'tvid' : 'data-player-tvid="([^"]+)"', 
     'vid'  : 'data-player-videoid="([^"]+)"', 
-    'aid'  : 'data-player-albumid="([^"]+)"', 
     
     'flag_vv' : 'data-player-ismember="([^"]+)"', 
+}
+RE_VID_LIST2 = {	# NOTE aid may be empty
+    'aid'  : 'data-player-albumid="([^"]+)"', 
 }
 # site video bid to parse_video hd quality
 TO_HD = {	# video bid to video hd

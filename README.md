@@ -1,9 +1,9 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512310015
+   - test201512312025
   -->
 
-# parse_video version 0.5.2.0
+# parse_video version 0.5.2.2
 
 
 ## Description

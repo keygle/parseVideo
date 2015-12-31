@@ -1,9 +1,9 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.0.7.0 test201512310018
+   - version 0.0.8.0 test201512312024
   -->
 
-parse_video version 0.5.2.0
+parse_video version 0.5.2.2
 
 # parse_video : 小而精 的 纯解析 程序
 
