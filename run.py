@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.4.0 test201512310013
+# version 0.1.5.0 test201512311605
 
 import math
 import os, sys, io, json
@@ -14,7 +14,7 @@ except Exception as e:
     import lyyc_plugin
 
 # global data
-PACK_VERSION = 4
+PACK_VERSION = 5
 
 FLAG_DEBUG = True
 ERR_PREFIX = 'yy-6.1::'
@@ -22,7 +22,7 @@ ERR_PREFIX = 'yy-6.1::'
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.2.0', 
+    'version' : '1.3.0', 
     'name' : '上古有颜6.1代', 
     
     'note' : 'parse_video for lieying_plugin. ', 
@@ -167,45 +167,8 @@ def _t_parse(pvinfo):
         'data' : [], 
     }
     out['name'] = _make_title(pvinfo['info'])
-    video_len = len(pvinfo['video'])
-    label_info = []
-    for i in range(video_len):
-        v = pvinfo['video'][i]
-        one = {}
-        out['data'].append(one)
-        one['ext'] = v['format']
-        # process label info
-        one['label'], one['size'] = _make_label(v, i + 1, video_len)
-        label_info.append(one['label'][1])
-        one['label'] = one['label'][0]
-    # make label text
-    value_len = []	# label keys text length
-    for i in range(len(label_info[0])):
-        value_len.append(0)
-        for j in range(len(label_info)):
-            l = _label_str_len(label_info[j][i])
-            if l > value_len[i]:
-                value_len[i] = l
-    # add text to label
-    for i in range(len(value_len)):
-        for j in range(len(out['data'])):
-            out['data'][j]['label'] += _label_ljust(label_info[j][i], value_len[i] + 1, '_')
-    # gen label text done
+    out['data'] = _make_label_data(pvinfo['video'])
     return out
-
-def _label_str_len(raw, max_ascii=128):
-    i = 0
-    for c in raw:
-        if ord(c) > max_ascii:
-            i += 2
-        else:
-            i += 1
-    return i
-
-def _label_ljust(raw, l=0, fill='_'):
-    while _label_str_len(raw) < l:
-        raw += fill
-    return raw
 
 def _make_title(info):
     title = info['title']
@@ -224,28 +187,92 @@ def _make_title(info):
     out = ('').join([i if not i in FILENAME_BAD_CHAR else FILENAME_REPLACE for i in out])
     return out
 
-def _make_label(video, i, video_len):
-    hd = video['hd']
-    quality = video['quality']
-    size_px = video['size_px']
-    size_byte = video['size_byte']
-    time_s = video['time_s']
-    format_ = video['format']
-    count = video['count']
-    # make label part str
-    n_len = math.floor(math.log(video_len, 10)) + 1
-    index = '(' + _num_len(i, n_len) + ')  '
+# make output data info, include label text
+def _make_label_data(video):
+    out = []
+    # make base output info
+    for v in video:
+        one = {}
+        one['ext'] = v['format']
+        one['size'] = _byte_to_size(v['size_byte'])
+        one['label'] = ''
+        out.append(one)
+    # gen base label info
+    label_info = []
+    for v in video:
+        label_info.append(_gen_label_info(v))
     
-    px = str(size_px[0]) + 'x' + str(size_px[1])
-    size = _byte_to_size(size_byte)
-    time = _second_to_time(time_s)
-    bitrate = _gen_bitrate(size_byte, time_s)
-    # NOTE not gen label str now, just return label info
-    label = (index, [str(hd), quality, px, bitrate, time, str(count), format_])
-    return label, size
+    # add label index
+    video_len = len(video)
+    n_len = math.floor(math.log(video_len, 10)) + 1
+    for i in range(video_len):
+        index = '(' + _num_len(i + 1, n_len) + ') '
+        out[i]['label'] += index
+    # add hd
+    for i in range(video_len):	# process hd text like -1
+        if not label_info[i][0].startswith('-'):
+            label_info[i][0] = ' ' + label_info[i][0]
+    out = _label_just_str(0, out, label_info)
+    # add quality
+    quality_max_len = 0
+    for i in range(video_len):
+        l = _quality_str_len(label_info[i][1])
+        if l > quality_max_len:
+            quality_max_len = l
+    quality_max_len += 1
+    for i in range(video_len):
+        out[i]['label'] += _quality_ljust(label_info[i][1], quality_max_len)
+    # add px and bitrate
+    for i in [2, 3]:
+        out = _label_just_str(i, out, label_info, rjust=True)
+    # add time
+    out = _label_just_str(4, out, label_info)
+    # add count and format
+    for i in [5, 6]:
+        out = _label_just_str(i, out, label_info, rjust=True)
+    # gen label text done
+    return out
+
+def _label_just_str(i, out, info, rjust=False, fill='_'):
+    max_len = 0
+    for j in range(len(info)):
+        l = len(info[j][i])
+        if l > max_len:
+            max_len = l
+    for j in range(len(out)):
+        raw = info[j][i]
+        if rjust:
+            t = raw.rjust(max_len, fill) + fill
+        else:
+            t = raw.ljust(max_len + 1, fill)
+        out[j]['label'] += t
+    return out
+
+# process no-ascii chars
+def _quality_str_len(raw, max_ascii=128):
+    i = 0
+    for c in raw:
+        if ord(c) > max_ascii:
+            i += 2
+        else:
+            i += 1
+    return i
+
+def _quality_ljust(raw, l=0, fill='_'):
+    while _quality_str_len(raw) < l:
+        raw += fill
+    return raw
+
+def _gen_label_info(v):
+    p = v['size_px']
+    px = str(p[0]) + 'x' + str(p[1])
+    bitrate = _gen_bitrate(v['size_byte'], v['time_s'])
+    time = _second_to_time(v['time_s'])
+    out = [str(v['hd']), v['quality'], px, bitrate, time, str(v['count']), v['format']]
+    return out
 
 def _parse_label(label):
-    hd = label.split('  ', 1)[1].split('_', 1)[0]
+    hd = label.split(' ', 1)[1].split('_', 1)[0]
     out = float(hd)
     return out
 
