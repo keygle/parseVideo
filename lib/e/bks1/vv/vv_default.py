@@ -4,6 +4,7 @@ import json
 
 from .... import b, err, conf
 from ....b import log
+from ... import common
 
 from .. import var
 from ..o import (
@@ -25,64 +26,28 @@ def make_first_url(vid_info, set_um=True, set_vv=True):
 
 def add_tokens(pvinfo, vid_info):
     config = _load_vv_conf()
-    # get raw_url and make token todo_list
-    todo_list = []
-    i = 0
-    for v in pvinfo['video']:
-        for f in v['file']:
-            if f['url'] != '':
-                one = {}
-                one['i'] = i
-                i += 1
-                one['url'] = f['url']
-                one['vid_info'] = vid_info
-                one['config'] = config
-                todo_list.append(one)
-    # use map do to do get tokens
+    # use map_do to get tokens
+    def worker(f, i):
+        raw_url = f['url']
+        try:
+            token = _do_get_one_token(raw_url, vid_info, config, i)
+        except err.PVError as e:
+            er = err.ParseError('load token failed', i)
+            raise er from e
+        except Exception as e:
+            er = err.UnknowError('unknow load token Error', i)
+            raise er from e
+        # update url with token info
+        vid, uid, qyid = vid_info['vid'], config['uid'], config['qyid']
+        key = token['data']['t']	# token
+        f['url'] = member_dispatch_remote.get_request(raw_url, vid, key, uid=uid, qyid=qyid)
+        return f
     pool_size = var._['pool_size']['vv_get_token']
-    # INFO log
-    log.i('getting ' + str(len(todo_list)) + ' tokens for vv, pool_size = ' + str(pool_size) + ' ')
-    result = b.map_do(todo_list, worker=_get_one_token, pool_size=pool_size)
-    # DEBUG log
-    log.d('got tokens done ')
-    # set back result
-    i = 0
-    for v in pvinfo['video']:
-        for f in v['file']:
-            if f['url'] != '':
-                one = result[i]
-                i += 1
-                # get needed info
-                raw_url = f['url']
-                vid = vid_info['vid']
-                key = one['data']['t']	# token
-                uid = config['uid']
-                qyid = config['qyid']
-                # update url
-                f['url'] = member_dispatch_remote.get_request(raw_url, vid, key, uid=uid, qyid=qyid)
-    # update raw_url done
-    return pvinfo
-
-def _get_one_token(info):
-    raw_url = info['url']
-    vid_info = info['vid_info']
-    config = info['config']
-    i = info['i']
-    try:
-        out = _do_get_one_token(raw_url, vid_info, config, i)
-        return out
-    except err.PVError as e:
-        er = err.ParseError('load token failed', i)
-        raise er from e
-    except Exception as e:
-        er = err.UnknowError('unknow load token Error', i)
-        raise er from e
+    return common.simple_get_file_urls(pvinfo, worker, msg='getting tokens for vv', pool_size=pool_size)
 
 def _do_get_one_token(raw_url, vid_info, config, index):
-    tvid = vid_info['tvid']
-    aid = vid_info['aid']
-    uid = config['uid']
-    device_id = config['qyid']
+    tvid, aid = vid_info['tvid'], vid_info['aid']
+    uid, device_id = config['uid'], config['qyid']
     
     # get post data
     post_url, post_data = authentication_remote.get_request(raw_url, tvid, aid, uid=uid, device_id=device_id)

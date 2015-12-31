@@ -47,12 +47,13 @@ class VarData(common.ExtractorVar):
         out['set_um'] = False
         out['set_vv'] = False
         out['flag_v'] = False	# NOTE for vv
+        out['flag_fix_4k'] = False
         # private data
         out['_raw_first_json'] = ''
         return out
 # var exports
 var = VarData()
-_ = var._	# TODO FIXME set this may be Error
+_ = var._
 # end var.py
 
 

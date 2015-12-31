@@ -13,13 +13,15 @@ def lyyc_about():
         'port_version' : '0.1.0', 
         'type' : 'parse', 
         'uuid' : 'cf01a87e-d4b1-4c49-bd87-b21392559cb9', 
-        'version' : '0.5.1.0', 
+        'version' : '0.5.2.0', 
         'name' : 'parse_video', 
         'note' : 'parse_video for lyyc_plugin. ', 
         
         'parse' : [
             '^http://[a-z]+\.iqiyi\.com/.+\.html', 
             '^http://www\.letv\.com/.+\.html', 
+            '^http://www\.hunantv\.com/.+\.html', 
+            '^http://tv\.sohu\.com/.+\.shtml', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 

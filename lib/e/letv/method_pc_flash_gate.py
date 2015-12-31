@@ -1,4 +1,7 @@
 # method_pc_flash_gate.py, parse_video/lib/e/letv/
+
+import functools
+
 from ... import err, b
 from ...b import log
 from .. import common, log_text
@@ -15,7 +18,10 @@ except Exception:
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    # TODO support --more
+    data_list = [	# NOTE --more mode to just get vid_info
+        'vid_info', 
+    ]
+    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
     # process method args
     def rest(r):
         if r == 'fast_parse':
@@ -23,22 +29,24 @@ def parse(method_arg_text):
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
+    # get vid_info from more if possible
+    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var)
+    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
     
-    vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
     pvinfo = _get_video_info(vid_info)
-    # TODO support fast parse here
+    if var._['flag_fast_parse']:	# NOTE support fast_parse here
+        pvinfo = _select_fast_parse(pvinfo)
     out = _get_file_urls(pvinfo)
-    # NOTE count after get file urls
-    out = _count_and_select(out)
+    out = _count_and_select(out)	# NOTE count after get file urls
+    # check enable_more
+    if var._['enable_more']:
+        out['_data'] = {}
+        out['_data']['vid_info'] = vid_info
     return out
 
-def _get_vid_info(raw_html_text):
-    def do_get(raw_html_text):
-        return common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
-    return common.method_get_vid_info(raw_html_text, var, do_get)
-
 def _get_video_info(vid_info):
-    first_url = _make_first_url(vid_info)
+    # make first url
+    first_url = id_transfer.get_url(vid_info['vid'])
     # [ OK ] log
     log.o(log_text.method_got_first_url(first_url))
     first = b.dl_json(first_url)
@@ -48,15 +56,9 @@ def _get_video_info(vid_info):
         raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
     return common.parse_raw_first(first, _parse_raw_first_json)
 
-def _make_first_url(vid_info):
-    vid = vid_info['vid']
-    out = id_transfer.get_url(vid)
-    return out
-
 def _parse_raw_first_json(first):
-    out = {}
     playurl = first['playurl']
-    
+    out = {}
     # get base video info
     out['info'] = {}
     out['info']['title'] = playurl['title']
@@ -91,6 +93,14 @@ def _parse_one_video_info(vid, domain, dispatch):
     out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
     return out
 
+def _select_fast_parse(pvinfo):
+    # select by hd
+    hd_min, hd_max = var._['hd_min'], var._['hd_max']
+    for v in pvinfo['video']:
+        if ((hd_min != None) and (v['hd'] < hd_min)) or ((hd_max != None) and (v['hd'] > hd_max)):
+            v.pop('_data')
+    return pvinfo
+
 def _count_and_select(pvinfo):
     common.method_sort_video(pvinfo)
     # count video info
@@ -104,7 +114,6 @@ def _count_and_select(pvinfo):
     return pvinfo
 
 def _get_file_urls(pvinfo):
-    # TODO support fast parse mode
     # download m3u8
     todo_list = []
     for v in pvinfo['video']:
@@ -114,12 +123,12 @@ def _get_file_urls(pvinfo):
     # INFO log here
     log.i('downloading ' + str(len(todo_list)) + ' m3u8 files, pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(todo_list, worker=_download_one_m3u8, pool_size=pool_size)
-    # DEBUG log here
     log.d('download m3u8 files done. ')
     i = 0	# set back result
     for v in pvinfo['video']:
         if '_data' in v:
             v['_data'], i = result[i], i + 1
+    
     # INFO log, decoding m3u8
     log.i('decoding ' + str(len(result)) + ' m3u8 blobs ')
     try:
@@ -129,6 +138,7 @@ def _get_file_urls(pvinfo):
     except Exception as e:
         er = err.MethodError('decoding letv m3u8 blob failed')
         raise er from e
+    
     # DEBUG log, parse m3u8 and update video info
     log.d('parse letv m3u8 text to get video info ')
     try:
@@ -149,14 +159,12 @@ def _get_file_urls(pvinfo):
 def _download_one_m3u8(info):
     rateid = info['rateid']
     url = info['url']
-    # DEBUG log
     log.d('rateid [' + rateid + '] load raw before URL \"' + url + '\" ')
     raw_before = b.dl_json(url)
     # check status code
     if raw_before['status'] != var.BEFORE_OK_CODE:
         raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var.BEFORE_OK_CODE) + ' ')
     location = raw_before['location']
-    # DEBUG log
     log.d('got final m3u8 location \"' + location + '\" ')
     raw_m3u8 = b.dl_blob(location)
     return raw_m3u8
@@ -185,26 +193,13 @@ def _parse_m3u8(raw):
             out['size_px'][0] = int(line.split(':', 1)[1])
         elif line.startswith('#EXT-LETV-PIC-HEIGHT:'):
             out['size_px'][1] = int(line.split(':', 1)[1])
-    # get file info
-    out['file'] = []
-    one = {}
-    for line in lines:
-        if line.startswith('http://'):	# got url
-            one['url'] = line
-            # get file size from url
-            filename = line.split('?', 1)[0].rsplit('/', 1)[1]
-            size = filename.split('_')[-2]
-            one['size'] = int(size)
-            # add one file and reset one
-            out['file'].append(one)
-            one = {}
-        elif line.startswith('#EXTINF:'):	# got time_s
-            time = line.split(':', 1)[1].split(',', 1)[0]
-            one['time_s'] = float(time)
-        elif line.startswith('#EXT-X-ENDLIST'):	# got m3u8 file end
-            return out
-    # not get #EXT-X-ENDLIST
-    raise err.ParseError('not get m3u8 file end #EXT-X-ENDLIST ')
+    # get file info, use base m3u8 parse function
+    out['file'] = b.simple_m3u8_parse(lines)
+    for f in out['file']:	# get size from url
+        filename = f['url'].split('?', 1)[0].rsplit('/', 1)[1]
+        size = filename.split('_')[-2]
+        f['size'] = int(size)	# update size
+    return out
 
 # end method_pc_flash_gate.py
 

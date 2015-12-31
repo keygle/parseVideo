@@ -19,11 +19,12 @@
 #
 
 import re
+import math
 import datetime
 from collections import OrderedDict
 import importlib
 
-from . import err
+from . import err, b
 from .b import log
 
 from . import var, conf
@@ -56,10 +57,7 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     # get extractor_id
     if raw_extractor == '':
         raw_extractor = _url_to_extractor(raw_url)
-    if ';' in raw_extractor:
-        extractor_id = raw_extractor.split(';', 1)[0]
-    else:
-        extractor_id = raw_extractor
+    extractor_id = b.split_raw_extractor(raw_extractor)[0]
     var._['_extractor_id'] = extractor_id
     # import extractor
     e = _import_extractor(extractor_id)
@@ -128,10 +126,11 @@ def _add_more_pvinfo(pvinfo, add_mark_uuid=False):
     out['info_source'] = var.PVINFO_INFO_SOURCE
     # add video quality
     for v in out['video']:
-        q = var.HD_TO_QUALITY.get(v['hd'], '')
+        hd = math.floor(v['hd'])
+        q = var.HD_TO_QUALITY.get(hd, '')
         # keep old quality
         if 'quality' in v:
-            v['quality'] = q + '_' + v['quality']
+            v['quality'] = q + '-' + v['quality']
         else:
             v['quality'] = q
     # add last_update
