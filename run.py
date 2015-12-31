@@ -16,7 +16,7 @@ except Exception as e:
 # global data
 PACK_VERSION = 4
 
-FLAG_DEBUG = False
+FLAG_DEBUG = True
 ERR_PREFIX = 'yy-6.1::'
 
 RAW_VERSION_INFO = {	# raw output info obj
@@ -141,19 +141,6 @@ def _do_parse(url, hd_min=None, hd_max=None):
     pvinfo = lyyc_plugin.lyyc_parse(url, hd_min=hd_min, hd_max=hd_max)
     return pvinfo
 
-def _t_parse(pvinfo):
-    out = {
-        'type' : 'formats', 
-        'data' : [], 
-    }
-    out['name'] = _make_title(pvinfo['info'])
-    for v in pvinfo['video']:
-        one = {}
-        one['label'], one['size'] = _make_label(v)
-        one['ext'] = v['format']
-        out['data'].append(one)
-    return out
-
 def _t_parse_url(pvinfo, hd):
     # select video by hd
     video = None
@@ -174,6 +161,52 @@ def _t_parse_url(pvinfo, hd):
         out.append(one)
     return out
 
+def _t_parse(pvinfo):
+    out = {
+        'type' : 'formats', 
+        'data' : [], 
+    }
+    out['name'] = _make_title(pvinfo['info'])
+    video_len = len(pvinfo['video'])
+    label_info = []
+    for i in range(video_len):
+        v = pvinfo['video'][i]
+        one = {}
+        out['data'].append(one)
+        one['ext'] = v['format']
+        # process label info
+        one['label'], one['size'] = _make_label(v, i + 1, video_len)
+        label_info.append(one['label'][1])
+        one['label'] = one['label'][0]
+    # make label text
+    value_len = []	# label keys text length
+    for i in range(len(label_info[0])):
+        value_len.append(0)
+        for j in range(len(label_info)):
+            l = _label_str_len(label_info[j][i])
+            if l > value_len[i]:
+                value_len[i] = l
+    # add text to label
+    for i in range(len(value_len)):
+        for j in range(len(out['data'])):
+            out['data'][j]['label'] += _label_ljust(label_info[j][i], value_len[i] + 1, '_')
+    # gen label text done
+    return out
+
+def _label_str_len(raw, max_ascii=128):
+    i = 0
+    for c in raw:
+        if ord(c) > max_ascii:
+            i += 2
+        else:
+            i += 1
+    return i
+
+def _label_ljust(raw, l=0, fill='_'):
+    while _label_str_len(raw) < l:
+        raw += fill
+    return raw
+
 def _make_title(info):
     title = info['title']
     # NOTE process title_sub, ... not exist
@@ -191,7 +224,7 @@ def _make_title(info):
     out = ('').join([i if not i in FILENAME_BAD_CHAR else FILENAME_REPLACE for i in out])
     return out
 
-def _make_label(video):
+def _make_label(video, i, video_len):
     hd = video['hd']
     quality = video['quality']
     size_px = video['size_px']
@@ -200,16 +233,19 @@ def _make_label(video):
     format_ = video['format']
     count = video['count']
     # make label part str
+    n_len = math.floor(math.log(video_len, 10)) + 1
+    index = '(' + _num_len(i, n_len) + ')  '
+    
     px = str(size_px[0]) + 'x' + str(size_px[1])
     size = _byte_to_size(size_byte)
     time = _second_to_time(time_s)
     bitrate = _gen_bitrate(size_byte, time_s)
-    # gen label str
-    label = ('_').join([str(hd), quality, px, bitrate, time, str(count), format_])
+    # NOTE not gen label str now, just return label info
+    label = (index, [str(hd), quality, px, bitrate, time, str(count), format_])
     return label, size
 
 def _parse_label(label):
-    hd = label.split('_', 1)[0]
+    hd = label.split('  ', 1)[1].split('_', 1)[0]
     out = float(hd)
     return out
 
