@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.5.0 test201512311605
+# version 0.1.6.0 test201512311709
 
 import math
 import os, sys, io, json
@@ -16,13 +16,13 @@ except Exception as e:
 # global data
 PACK_VERSION = 5
 
-FLAG_DEBUG = True
+FLAG_DEBUG = False
 ERR_PREFIX = 'yy-6.1::'
 
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.3.0', 
+    'version' : '1.3.1', 
     'name' : '上古有颜6.1代', 
     
     'note' : 'parse_video for lieying_plugin. ', 
@@ -91,9 +91,9 @@ def _second_to_time(time_s):
     hour = math.floor(minute / 60)
     minute -= hour * 60
     # make text, and add ms
-    t = _num_len(minute, 2) + ':' + _num_len(sec, 2) + '.' + str(round(ms * 1e3))
+    t = str(minute).zfill(2) + ':' + str(sec).zfill(2) + '.' + str(round(ms * 1e3))
     if hour > 0:	# check add hour
-        t = _num_len(hour, 2) + t
+        t = str(hour).zfill(2) + t
     return t
 
 def _p_json(raw):
