@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.6.0 test201512311709
+# version 0.1.7.0 test201512311823
 
 import math
 import os, sys, io, json
@@ -14,7 +14,7 @@ except Exception as e:
     import lyyc_plugin
 
 # global data
-PACK_VERSION = 5
+PACK_VERSION = 6
 
 FLAG_DEBUG = False
 ERR_PREFIX = 'yy-6.1::'
@@ -22,7 +22,7 @@ ERR_PREFIX = 'yy-6.1::'
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.3.1', 
+    'version' : '1.3.2', 
     'name' : '上古有颜6.1代', 
     
     'note' : 'parse_video for lieying_plugin. ', 
@@ -159,6 +159,10 @@ def _t_parse_url(pvinfo, hd):
         if 'header' in f:
             one['args'] = f['header']
         out.append(one)
+    # fix protocol for m3u8
+    if video['format'] == 'm3u8':
+        for f in out:
+            f['protocol'] = 'm3u8'
     return out
 
 def _t_parse(pvinfo):
