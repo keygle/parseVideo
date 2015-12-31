@@ -47,6 +47,8 @@ import json
 from lib.b import log
 from lib import entry
 
+VERSION_STR = 'parse_video version 0.5.2.1 test201512311417'
+
 # global data
 etc = {}
 etc['log_level'] = None	# default, or 'debug', 'quiet'
@@ -66,8 +68,7 @@ etc['more'] = None
 
 # print help, version and license info. (--help, --version, --license)
 def p_version():
-    print('''\
-parse_video version 0.5.2.1 test201512311417
+    print(VERSION_STR + '''
 
     parse_video  Copyright (C) 2015  sceext <sceext@foxmail.com>
     This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 
@@ -181,6 +182,9 @@ def do_parse():
             p('ERROR: can not load more info file \"' + etc['more'] + '\" ')
             raise
         entry.var._['more'] = more_info	# do set more
+    # NOTE print parse_video version info in debug mode
+    if etc['log_level'] == 'debug':
+        p('DEBUG: ' + VERSION_STR)
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
     # print result, check --output option
