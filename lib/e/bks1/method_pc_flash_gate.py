@@ -26,6 +26,8 @@ def parse(method_arg_text):
             var._['set_vv'] = True
         elif r == 'set_flag_v':
             var._['flag_v'] = True
+        elif r == 'fix_4k':
+            var._['flag_fix_4k'] = True
         else:	# unknow method arg
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
@@ -94,6 +96,9 @@ def _make_first_url(vid_info):
     set_vv = var._['set_vv']
     
     out = mixer_remote.get_request(tvid, vid, flag_set_um=set_um, flag_set_vv=set_vv)
+    # check fix_4k
+    if var._['flag_fix_4k']:
+        out = out.split('&src=', 1)[0] + '&' + out.split('&src=', 1)[1].split('&', 1)[1]
     return out
 
 def _parse_raw_first_info(first):
