@@ -74,6 +74,9 @@ def _get_video_info(vid_info):
         first_url = _make_first_url(vid_info)
         # [ OK ] log, load first vms info json
         log.o(log_text.method_got_first_url(first_url))
+    # check fix_4k
+    if var._['flag_fix_4k']:
+        first_url = _first_url_fix_4k(first_url)
     first = b.dl_json(first_url)
     var._['_raw_first_json'] = first
     # check code
@@ -81,6 +84,9 @@ def _get_video_info(vid_info):
         raise err.MethodError(log_text.method_err_first_code(first['code'], var))
     # parse raw_vms json
     return _get_video_info_2(first)
+
+def _first_url_fix_4k(raw):
+    return raw.split('&src=', 1)[0] + '&' + raw.split('&src=', 1)[1].split('&', 1)[1]
 
 def _get_video_info_2(first):
     pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
@@ -96,9 +102,6 @@ def _make_first_url(vid_info):
     set_vv = var._['set_vv']
     
     out = mixer_remote.get_request(tvid, vid, flag_set_um=set_um, flag_set_vv=set_vv)
-    # check fix_4k
-    if var._['flag_fix_4k']:
-        out = out.split('&src=', 1)[0] + '&' + out.split('&src=', 1)[1].split('&', 1)[1]
     return out
 
 def _parse_raw_first_info(first):
