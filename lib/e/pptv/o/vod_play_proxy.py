@@ -13,11 +13,13 @@ ph = [
     'http://211.151.82.252', 
 ]
 
+PID = 5701	# TODO
+
 def get_play_url(
-        cid,    # TODO
-        pid,    # TODO
-        vvid,   # TODO
+        cid, 
         
+        vvid = '', 	# TODO
+        pid = PID, 
         token = None, 
         play_type = 'web.fpp', 
         user_type = 0, 
