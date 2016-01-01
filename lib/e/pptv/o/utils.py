@@ -39,8 +39,7 @@ def add(raw, length):
     return raw
 
 # public static function getkey(param1: String) :uint
-def getkey(param1):
-    raw = param1.split('')
+def getkey(raw):
     out = 0
     for i in range(len(raw)):
         out = out ^ (ord(raw[i]) << i % 4 * 8)
@@ -53,7 +52,7 @@ def time2String(raw):
     out = ''
     for i in range(8):
         #j = param1 >>> 28 - i % 8 * 4 & 15
-        j = raw >> 28 - i % 8 * 4 & 15
+        j = int(raw) >> 28 - i % 8 * 4 & 15
         out += k[j]
     return out
 
@@ -61,7 +60,7 @@ def time2String(raw):
 def Str2Hex(raw):
     k = '0123456789abcdef'
     # out = new Array(2 * len(raw) + 1)
-    out = [None for i in range(2 * len(raw) + 1)]
+    out = ['' for i in range(2 * len(raw) + 1)]
     for i in range(len(raw)):
         if i < 8:
             #_loc7 = ord(raw[i]) & 15
@@ -96,8 +95,8 @@ def encrypt(param1, param2):
     
     _loc4 = getkey(param2)
     
-    _loc8 = param1.split('')
-    _loc9 = param2.split('')
+    _loc8 = param1
+    _loc9 = param2
     #_loc5 = _loc4 << 8 | _loc4 >>> 24
     #_loc6 = _loc4 << 16 | _loc4 >>> 16
     #_loc7 = _loc4 << 24 | _loc4 >>> 8
