@@ -130,7 +130,7 @@ def _parse_raw_first_info(first):
             more = {}
             more['k'] = data['dt'].find('key').findtext('.')
             more['key'] = play_info.gen_key()
-            f['url'] = play_info.make_cdn_url(server, filename, more)
+            f['url'] = play_info.make_cdn_url(server, filename, index, more=more)
             one['file'].append(f)
         out['video'].append(one)
     return out
