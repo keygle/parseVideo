@@ -37,9 +37,9 @@ class VarData(common.ExtractorVar):
         out['pool_size']['get_file_url'] = 16	# TODO
         
         # make another http request to get title_no info (use video list)
-        out['gen_title_no'] = False	# TODO
+        out['flag_get_title_no'] = False	# TODO
         # private data
-        out['_raw_first_json'] = ''
+        out['_raw_first_xml'] = ''
         return out
 # var exports
 var = VarData()
