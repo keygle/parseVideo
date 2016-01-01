@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512312025
+   - test201601011341
   -->
 
 # parse_video version 0.5.2.2
@@ -69,7 +69,7 @@ Please run `make test`
 ```
 $ ./parsev --license
     parse_video : get video info from some web sites. 
-    Copyright (C) 2015 sceext <sceext@foxmail.com>
+    Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

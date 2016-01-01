@@ -2,7 +2,7 @@
 # parse_video.py, parse_video/bin/
 #
 #    parse_video : get video info from some web sites. 
-#    Copyright (C) 2015 sceext <sceext@foxmail.com>
+#    Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ etc['more'] = None
 def p_version():
     print(VERSION_STR + '''
 
-    parse_video  Copyright (C) 2015  sceext <sceext@foxmail.com>
+    parse_video  Copyright (C) 2015-2016  sceext <sceext@foxmail.com>
     This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 
     you are welcome to redistribute it under certain conditions. 
 
@@ -107,7 +107,7 @@ More information online: <https://github.com/sceext2/parse_video> \
 def p_license():
     print('''\
     parse_video : get video info from some web sites. 
-    Copyright (C) 2015 sceext <sceext@foxmail.com>
+    Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

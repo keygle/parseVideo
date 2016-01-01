@@ -25,7 +25,7 @@ def lyyc_about():
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 
-        'copyright' : 'copyright 2015 sceext ', 
+        'copyright' : 'copyright 2015-2016 sceext ', 
         'license' : 'GNU GPL v3+ <http://www.gnu.org/licenses/> ', 
         'home' : 'https://github.com/sceext2/parse_video', 
     }

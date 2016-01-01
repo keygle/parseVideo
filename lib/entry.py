@@ -2,7 +2,7 @@
 # entry.py, parse_video/lib/, entry for parse_video.lib
 #
 #    parse_video : get video info from some web sites. 
-#    Copyright (C) 2015 sceext <sceext@foxmail.com>
+#    Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
