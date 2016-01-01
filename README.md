@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201601012333
+   - test201601020005
   -->
 
 # parse_video version 0.5.2.2
@@ -13,11 +13,12 @@ from some web sites.
 
 **Supported** (5)
 
-+ *271* [ 4K ] *[ flv ]*
-+ *letv* [ 1080p ] *[ ts ]* (m3u8)
-+ *hunantv* [ 720p ] *[ m3u8 ]*
-+ *tvsohu* [ 4K ] *[ mp4 ]* (h265)
-+ *pptv* [ *high bitrate* 1080p ] *[ mp4 ]*
+| site      | quality                | format      |
+| *271*     | `4K`                   | *flv*       |
+| *letv*    | `1080p`                | *ts* (m3u8) |
+| *hunantv* | `720p`                 | *m3u8*      |
+| *tvsohu*  | `4K` (h265)            | *mp4*       |
+| *pptv*    | *high bitrate* `1080p` | *mp4*       |
 
 
 **TODO**
