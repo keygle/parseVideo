@@ -22,6 +22,7 @@ def lyyc_about():
             '^http://www\.letv\.com/.+\.html', 
             '^http://www\.hunantv\.com/.+\.html', 
             '^http://tv\.sohu\.com/.+\.shtml', 
+            '^http://v\.pptv\.com/.+\.html', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 
