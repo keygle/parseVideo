@@ -121,8 +121,8 @@ def _parse_raw_first_info(first):
         one['file'] = []
         for s in sgm:
             f = {}
+            f['size'] = int(s.get('fs'))
             f['time_s'] = float(s.get('dur'))
-            f['size_byte'] = int(s.get('fs'))
             # TODO gen file URL here
             f['url'] = ''
             one['file'].append(f)

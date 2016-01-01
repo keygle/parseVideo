@@ -29,7 +29,7 @@ def setCTX(param1):
 # private static function getCTX(param1 :Object, param2 :String) :String
 def getCTX(raw, key):
     out = ''
-    if not raw[key]:
+    if not key in raw:
         return out
     a = raw[key]
     for i in a:

@@ -43,8 +43,8 @@ def get_play_url(
             out += 'webplay3'
         else:
             out += 'webplay4'
-        out += '-0-' + cid + '.xml' + '?zone=' + str(zone)
-        out += '&pid=' + pid + '&vvid=' + vvid + '&version=4'
+        out += '-0-' + str(cid) + '.xml' + '?zone=' + str(zone)
+        out += '&pid=' + str(pid) + '&vvid=' + str(vvid) + '&version=4'
         if set_open:
             out += '&open=1'
     if token != None:

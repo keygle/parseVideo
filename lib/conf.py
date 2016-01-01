@@ -9,6 +9,7 @@ DEFAULT_METHOD = {
     'letv' : 'pc_flash_gate', 
     'hunantv' : 'pc_flash_gate', 
     'tvsohu' : 'pc_flash_gate', 
+    'pptv' : 'pc_flash_gate', 
 }
 
 # URL (RE) to extractor_id
@@ -17,6 +18,7 @@ URL_TO_EXTRACTOR = {
     '^http://www\.letv\.com/.+\.html' : 'letv', 
     '^http://www\.hunantv\.com/.+\.html' : 'hunantv', 
     '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
+    '^http://v\.pptv\.com/.+\.html' : 'pptv', 
 }
 
 
