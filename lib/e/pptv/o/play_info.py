@@ -11,7 +11,7 @@ version = '1.3.0.19'
 server_time_offset = 0
 
 # public function constructCdnURL(param1 :uint, param2 :String = null, param3 :uint = 0, param4 :uint = 0): String
-def make_cdn_url(server, filename, more={}, index=0):
+def make_cdn_url(server, filename, index, more={}):
     # NOTE not fully support the function
     out = 'http://' + server + '/' + str(index) + '/' + filename
     out += '?fpp.ver=' + version

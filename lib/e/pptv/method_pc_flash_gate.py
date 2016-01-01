@@ -126,6 +126,7 @@ def _parse_raw_first_info(first):
             # NOTE gen file URL here
             server = data['dt'].find('bh').findtext('.')
             filename = data['item'].get('rid')
+            index = int(s.get('no'))
             more = {}
             more['k'] = data['dt'].find('key').findtext('.')
             more['key'] = play_info.gen_key()
