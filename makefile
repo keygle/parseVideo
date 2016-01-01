@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.0.0 test201512301731
+# version 0.1.1.0 test201601012336
 
 # parse_video bin
 PV_BIN=./parsev
@@ -9,6 +9,7 @@ ET_URL_BKS1_1=http://www.iqiyi.com/v_19rrkfbay8.html
 ET_URL_LETV_1=http://www.letv.com/ptv/vplay/24185834.html
 ET_URL_HUNANTV_1=http://www.hunantv.com/v/2/168868/f/2928760.html
 ET_URL_TVSOHU_1=http://tv.sohu.com/20140914/n404300963.shtml
+ET_URL_PPTV_1=http://v.pptv.com/show/0UyKCXHXR4XoZs4.html
 
 # test extractor bks1 vv mode
 ET_URL_BKS1_2=http://www.iqiyi.com/v_19rrkgos5s.html
@@ -39,8 +40,16 @@ test_bin:
 # +   hd_min, hd_max select test
 # +   i_min, i_max select test
 # +   --debug, --quiet log test
-test_parse: test_parse_bks1 test_parse_letv test_parse_hunantv test_parse_tvsohu
-.PHONY: test_parse_bks1 test_parse_letv test_parse_hunantv test_parse_tvsohu
+test_parse: test_parse_bks1 \
+	test_parse_letv \
+	test_parse_hunantv \
+	test_parse_tvsohu \
+	test_parse_pptv
+.PHONY: test_parse_bks1 \
+	test_parse_letv \
+	test_parse_hunantv \
+	test_parse_tvsohu \
+	test_parse_pptv
 
 test_parse_bks1:
 	# pv_test:: INFO: parse test extractor bks1
@@ -58,11 +67,15 @@ test_parse_hunantv:
 	$(PV_BIN) $(ET_URL_HUNANTV_1) --debug
 	$(PV_BIN) $(ET_URL_HUNANTV_1) -i 2
 
-# TODO
 test_parse_tvsohu:
 	# pv_test:: INFO: parse test extractor tvsohu
 	$(PV_BIN) $(ET_URL_TVSOHU_1) -i 4
 	$(PV_BIN) $(ET_URL_TVSOHU_1) -M 0 --debug
+
+test_parse_pptv:
+	# pv_test:: INFO: parse test extractor pptv
+	$(PV_BIN) $(ET_URL_PPTV_1) -i 4
+	$(PV_BIN) $(ET_URL_PPTV_1) -M 0 --debug
 
 # test extractor --more mode support
 test_more: test_more_bks1 test_more_letv test_more_hunantv
