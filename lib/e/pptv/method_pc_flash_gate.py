@@ -29,9 +29,9 @@ def parse(method_arg_text):
     
     # get video info and file URLs
     pvinfo = _get_video_info(vid_info)
-    out = _get_file_urls(pvinfo)
+    # NOTE already got file URLs here
     # TODO support enable_more
-    return out
+    return pvinfo
 
 def _get_vid_info(raw_html_text):
     def do_get(raw_html_text):
@@ -123,17 +123,16 @@ def _parse_raw_first_info(first):
             f = {}
             f['size'] = int(s.get('fs'))
             f['time_s'] = float(s.get('dur'))
-            # TODO gen file URL here
-            f['url'] = ''
+            # NOTE gen file URL here
+            server = data['dt'].find('bh').findtext('.')
+            filename = data['item'].get('rid')
+            more = {}
+            more['k'] = data['dt'].find('key').findtext('.')
+            more['key'] = play_info.gen_key()
+            f['url'] = play_info.make_cdn_url(server, filename, more)
             one['file'].append(f)
         out['video'].append(one)
     return out
-
-# TODO maybe no need this
-def _get_file_urls(pvinfo):
-    return pvinfo
-    # TODO not finished now
-    pass
 
 # end method_pc_flash_gate.py
 
