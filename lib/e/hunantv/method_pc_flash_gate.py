@@ -1,20 +1,15 @@
 # method_pc_flash_gate.py, parse_video/lib/e/hunantv/
 
-import functools
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from . import var, method
 from .o import mango_tv3
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    data_list = [	# NOTE --more mode to direct get vid_info
-        'vid_info', 
-    ]
-    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
+    method.get_raw_more(method_arg_text)
     # process method args
     def rest(r):
         if r == 'parse_m3u8':
@@ -22,52 +17,24 @@ def parse(method_arg_text):
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
-    # get vid_info from more if possible
-    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
+    vid_info = method.get_vid_info()
     
-    pvinfo = _get_video_info(vid_info)
+    pvinfo = method.get_video_info(vid_info, _parse_raw_first_json)
     # NOTE select hd here
     common.method_select_hd(pvinfo, var)
     out = _get_file_urls(pvinfo)
     # TODO support parse m3u8 and count here
-    # check enable_more
-    if var._['enable_more']:
-        out['_data'] = {}
-        out['_data']['vid_info'] = vid_info
+    out = method.check_enable_more(out)
     return out
 
-def _get_video_info(vid_info):
-    # make first url
-    first_url = mango_tv3.gen_first_url(vid_info['vid'])
-    # [ OK ] log
-    log.o(log_text.method_got_first_url(first_url))
-    first = b.dl_json(first_url)
-    var._['_raw_first_json'] = first
-    # check code
-    if first['status'] != var.FIRST_OK_CODE:
-        raise err.MethodError(log_text.method_err_first_code(first['status'], var))
-    return common.parse_raw_first(first, _parse_raw_first_json)
-
 def _parse_raw_first_json(first):
-    data = first['data']
-    out = {}
-    # get base video info
-    info = data['info']
-    out['info'] = {}
-    out['info']['title'] = info['title']
-    out['info']['title_short'] = info['collection_name']
-    out['info']['title_sub'] = info['sub_title']
-    out['info']['title_no'] = b.simple_get_number_from_text(info['series'])
-    
+    out, data, info = method.raw_first_get_base_info(first)
     # get video list
-    duration = float(info['duration'])
-    stream = data['stream']
+    duration, stream = float(info['duration']), data['stream']
     out['video'] = []
     for s in stream:
-        name = s['name']
         one = {}
-        one['hd'] = var.TO_HD[name]
+        one['hd'] = var.TO_HD[s['name']]
         # set default values
         one['format'] = 'm3u8'	# NOTE the type should be m3u8
         one['size_px'] = [-1, -1]
@@ -77,6 +44,7 @@ def _parse_raw_first_json(first):
         # add one file info, the m3u8 file
         one['file'] = []
         f = {}
+        f['size'] = -1
         f['time_s'] = duration
         f['url'] = mango_tv3.gen_before_url(s['url'])
         one['file'].append(f)
