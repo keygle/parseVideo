@@ -23,7 +23,7 @@ def parse(method_arg_text):
     pvinfo = _get_video_info(vid_info)
     # NOTE there is no need to get file URLs, already got
     common.method_simple_count(pvinfo)	# NOTE just count, not select
-    out = method.check_enable_more(pvinfo, vid_info)
+    out = method.check_enable_more(pvinfo)
     return out
 
 def _get_video_info(vid_info):

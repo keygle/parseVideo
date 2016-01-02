@@ -31,7 +31,7 @@ def parse(method_arg_text):
         pvinfo = _select_fast_parse(pvinfo)
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
-    out = method.check_enable_more(out, vid_info)
+    out = method.check_enable_more(out)
     return out
 
 def _get_video_info(vid_info):

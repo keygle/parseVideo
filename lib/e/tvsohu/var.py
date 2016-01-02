@@ -14,6 +14,7 @@ RE_SUPPORT_URL = [
 
 METHOD_LIST = [
     'pc_flash_gate', 
+    'flvsp', 
 ]
 RE_VID_LIST = {
     'vid' : 'var vid="([0-9]+)";', 

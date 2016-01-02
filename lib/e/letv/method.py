@@ -24,11 +24,11 @@ def get_vid_info():
     return vid_info
 
 # add --more data to out
-def check_enable_more(out, vid_info):
+def check_enable_more(out):
     # check enable_more
     if var._['enable_more']:
         out['_data'] = {}
-        out['_data']['vid_info'] = vid_info
+        out['_data']['vid_info'] = var._['_vid_info']
     return out
 
 def dl_first_json(first_url):
