@@ -31,7 +31,7 @@ def _get_video_info(vid_info):
 
 def _make_first_url(vid_info):
     BEFORE = 'http://play.api.pptv.com/boxplay.api?platform=android3&type=phone.android&userType=1&&id='
-    out = BEFORE + vid_info['cid']
+    out = BEFORE + str(vid_info['cid'])
     return out
 
 def _parse_raw_first(first):
@@ -80,7 +80,7 @@ def _gen_one_file_url(rid, dt):
     sh = dt.find('sh').findtext('.')
     k = dt.find('key').findtext('.')
     
-    out = 'http://' + sh + '/' + rid + PART_1 + k
+    out = 'http://' + sh + '/' + str(rid) + PART_1 + k
     return out
 
 # end method_android.py
