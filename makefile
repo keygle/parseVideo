@@ -65,8 +65,8 @@ test_parse_letv:
 
 test_parse_hunantv:
 	# pv_test:: INFO: parse test extractor hunantv
-	$(PV_BIN) $(ET_URL_HUNANTV_1) --debug
-	$(PV_BIN) $(ET_URL_HUNANTV_1) -i 2
+	$(PV_BIN) $(ET_URL_HUNANTV_1) --debug -i 2 -m "pc_flash_gate"
+	$(PV_BIN) $(ET_URL_HUNANTV_1) -m "flvsp"
 
 test_parse_tvsohu:
 	# pv_test:: INFO: parse test extractor tvsohu
