@@ -8,7 +8,7 @@ DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate;fix_4k', 
     'letv' : 'flvsp', 
     'hunantv' : 'flvsp', 
-    'tvsohu' : 'pc_flash_gate', 
+    'tvsohu' : 'flvsp', 
     'pptv' : 'pc_flash_gate', 
 }
 

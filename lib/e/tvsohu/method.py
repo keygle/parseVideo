@@ -15,7 +15,7 @@ def get_raw_more(method_arg_text):
     ]
     raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
     if raw_more != None:	# set first_json
-        var._['_raw_first_json'] = raw_more['raw_first_json']
+        var._['_raw_first_json'] = raw_more['_data']['raw_first_json']
     return raw_more
 
 def _do_get_vid_info():
