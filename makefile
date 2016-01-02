@@ -60,8 +60,8 @@ test_parse_bks1:
 test_parse_letv:
 	# pv_test:: INFO: parse test extractor letv
 	$(PV_BIN) $(ET_URL_LETV_1) -i 3 -m "pc_flash_gate;fast_parse"
-	$(PV_BIN) $(ET_URL_LETV_1) -i 5 --debug
-	$(PV_BIN) $(ET_URL_LETV_1) -m "flvsp"
+	$(PV_BIN) $(ET_URL_LETV_1) -i 5 -m "pc_flash_gate" --debug
+	$(PV_BIN) $(ET_URL_LETV_1)
 
 test_parse_hunantv:
 	# pv_test:: INFO: parse test extractor hunantv
