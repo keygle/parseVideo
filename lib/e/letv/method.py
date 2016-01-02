@@ -1,5 +1,7 @@
 # method.py, parse_video/lib/e/letv/, method common code
 
+import functools
+
 from ... import err, b
 from ...b import log
 from .. import common, log_text
@@ -29,7 +31,23 @@ def check_enable_more(out, vid_info):
         out['_data']['vid_info'] = vid_info
     return out
 
-# TODO
+def dl_first_json(first_url):
+    # [ OK ] log
+    log.o(log_text.method_got_first_url(first_url))
+    first = b.dl_json(first_url)
+    var._['_raw_first_json'] = first
+    # check code
+    if first['statuscode'] != var.FIRST_OK_CODE:
+        raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
+    return first
+
+def raw_first_get_base_info(first):
+    playurl = first['playurl']
+    out = {}
+    # get base video info
+    out['info'] = {}
+    out['info']['title'] = playurl['title']
+    return out, playurl
 
 # end method.py
 

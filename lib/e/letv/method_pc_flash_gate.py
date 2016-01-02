@@ -1,7 +1,5 @@
 # method_pc_flash_gate.py, parse_video/lib/e/letv/
 
-import functools
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
@@ -33,32 +31,19 @@ def parse(method_arg_text):
         pvinfo = _select_fast_parse(pvinfo)
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
-    
     out = method.check_enable_more(out, vid_info)
     return out
 
 def _get_video_info(vid_info):
     # make first url
     first_url = id_transfer.get_url(vid_info['vid'])
-    # [ OK ] log
-    log.o(log_text.method_got_first_url(first_url))
-    first = b.dl_json(first_url)
-    var._['_raw_first_json'] = first
-    # check code
-    if first['statuscode'] != var.FIRST_OK_CODE:
-        raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
+    first = method.dl_first_json(first_url)
     return common.parse_raw_first(first, _parse_raw_first_json)
 
 def _parse_raw_first_json(first):
-    playurl = first['playurl']
-    out = {}
-    # get base video info
-    out['info'] = {}
-    out['info']['title'] = playurl['title']
-    
+    out, playurl = method.raw_first_get_base_info(first)
     # get video list
-    domain = playurl['domain']
-    dispatch = playurl['dispatch']
+    domain, dispatch = playurl['domain'], playurl['dispatch']
     
     vid = playurl['vid']
     out['video'] = [_parse_one_video_info(vid, domain, i) for i in dispatch.items()]
