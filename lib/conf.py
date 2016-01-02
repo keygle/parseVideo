@@ -6,9 +6,10 @@ e_bks1_vv_conf = 'private.e_bks1_vv.conf.json'
 # default method for extractors
 DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate;fix_4k', 
-    'letv' : 'pc_flash_gate', 
-    'hunantv' : 'pc_flash_gate', 
-    'tvsohu' : 'pc_flash_gate', 
+    'letv' : 'flvsp', 
+    'hunantv' : 'flvsp', 
+    'tvsohu' : 'flvsp', 
+    'pptv' : 'pc_flash_gate', 
 }
 
 # URL (RE) to extractor_id
@@ -17,6 +18,7 @@ URL_TO_EXTRACTOR = {
     '^http://www\.letv\.com/.+\.html' : 'letv', 
     '^http://www\.hunantv\.com/.+\.html' : 'hunantv', 
     '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
+    '^http://v\.pptv\.com/.+\.html' : 'pptv', 
 }
 
 

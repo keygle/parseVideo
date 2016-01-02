@@ -3,7 +3,7 @@
 import re
 import functools
 
-from ... import err, b
+from ... import err, b, lan
 from ...b import log
 from .. import common, log_text
 
@@ -29,12 +29,17 @@ def parse(method_arg_text):
             var._['flag_v'] = True
         elif r == 'fix_4k':
             var._['flag_fix_4k'] = True
+        elif r == 'enable_vv_error':
+            var._['flag_enable_vv_error'] = True
         else:	# unknow method arg
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
     # get vid_info from more if possible
     default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var, _get_vid_info)
     vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
+    # check enable_vv_error
+    if var._['flag_enable_vv_error'] and vid_info['flag_vv']:
+        raise err.NotSupportURLError(lan.zh_cn_not_support_vip_video(), var._['_raw_url'])
     
     # check use more mode to get raw_first_json
     if not var._['_use_more']:

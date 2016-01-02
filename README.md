@@ -1,9 +1,9 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201512312025
+   - test201601022231
   -->
 
-# parse_video version 0.5.2.2
+# parse_video version 0.5.3.0
 
 
 ## Description
@@ -11,12 +11,16 @@
 `parse_video` is used to get video information (video file download URL) 
 from some web sites. 
 
-**Supported** (4)
+**Supported** (5)
 
-+ *271* [ 4K ] *[ flv ]*
-+ *letv* [ 1080p ] *[ ts ]* (m3u8)
-+ *hunantv* [ 720p ] *[ m3u8 ]*
-+ *tvsohu* [ 4K ] *[ mp4 ]* (h265)
+| site | quality | format | method | `--more` mode |
+| :--- | :------ | :----- | :----- | :------------ |
+| *271*     | `4K`                   | *flv*              | `pc_flash_gate`            | *first json* |
+| *letv*    | `1080p`                | *ts* (m3u8), *mp4* | `pc_flash_gate`, `flvsp`   | *vid*        |
+| *hunantv* | `720p`                 | *m3u8*, *mp4*      | `pc_flash_gate`, `flvsp`   | *vid*        |
+| *tvsohu*  | `4K` (h265)            | *mp4*              | `pc_flash_gate`, `flvsp`   | *first json* |
+| *pptv*    | *high bitrate* `1080p` | *mp4*              | `pc_flash_gate`, `android` | *vid*        |
+
 
 **TODO**
 
@@ -69,7 +73,7 @@ Please run `make test`
 ```
 $ ./parsev --license
     parse_video : get video info from some web sites. 
-    Copyright (C) 2015 sceext <sceext@foxmail.com>
+    Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

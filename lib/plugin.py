@@ -13,7 +13,7 @@ def lyyc_about():
         'port_version' : '0.1.0', 
         'type' : 'parse', 
         'uuid' : 'cf01a87e-d4b1-4c49-bd87-b21392559cb9', 
-        'version' : '0.5.2.2', 
+        'version' : '0.5.3.0', 
         'name' : 'parse_video', 
         'note' : 'parse_video for lyyc_plugin. ', 
         
@@ -22,10 +22,11 @@ def lyyc_about():
             '^http://www\.letv\.com/.+\.html', 
             '^http://www\.hunantv\.com/.+\.html', 
             '^http://tv\.sohu\.com/.+\.shtml', 
+            '^http://v\.pptv\.com/.+\.html', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 
-        'copyright' : 'copyright 2015 sceext ', 
+        'copyright' : 'copyright 2015-2016 sceext ', 
         'license' : 'GNU GPL v3+ <http://www.gnu.org/licenses/> ', 
         'home' : 'https://github.com/sceext2/parse_video', 
     }
