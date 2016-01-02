@@ -6,7 +6,7 @@ from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from . import var, method
 from .o import (
     id_transfer, 
     gslb_item_data, 
@@ -18,10 +18,7 @@ except Exception:
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    data_list = [	# NOTE --more mode to just get vid_info
-        'vid_info', 
-    ]
-    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
+    raw_more = method.get_raw_more(method_arg_text)
     # process method args
     def rest(r):
         if r == 'fast_parse':
@@ -29,19 +26,15 @@ def parse(method_arg_text):
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
-    # get vid_info from more if possible
-    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
     
+    vid_info = method.get_vid_info()
     pvinfo = _get_video_info(vid_info)
     if var._['flag_fast_parse']:	# NOTE support fast_parse here
         pvinfo = _select_fast_parse(pvinfo)
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
-    # check enable_more
-    if var._['enable_more']:
-        out['_data'] = {}
-        out['_data']['vid_info'] = vid_info
+    
+    out = method.check_enable_more(out, vid_info)
     return out
 
 def _get_video_info(vid_info):
