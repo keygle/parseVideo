@@ -10,15 +10,13 @@ class Entry(common.ExtractorEntry):
         method, method_arg_text = b.split_raw_method((raw_method))
         # check method name
         if method == 'pc_flash_gate':
-            from . import method_pc_flash_gate
-            log.d(log_text.entry_log_use_method(method, method_arg_text))
-            pvinfo = method_pc_flash_gate.parse(method_arg_text)
+            from . import method_pc_flash_gate as method_worker
         elif method == 'flvsp':
-            from . import method_flvsp
-            log.d(log_text.entry_log_use_method(method, method_arg_text))
-            pvinfo = method_flvsp.parse(method_arg_text)
+            from . import method_flvsp as method_worker
         else:
             raise err.ConfigError(log_text.entry_err_no_method(method))
+        log.d(log_text.entry_log_use_method(method, method_arg_text))
+        pvinfo = method_worker.parse(method_arg_text)
         return common.entry_add_more_info(pvinfo, var)
 # entry exports
 entry = Entry(var)

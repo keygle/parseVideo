@@ -14,6 +14,7 @@ RE_SUPPORT_URL = [
 
 METHOD_LIST = [
     'pc_flash_gate', 
+    'flvsp', 
 ]
 RE_VID_LIST = {
     'vid' : 'data-vid="([^"]+)"', 
@@ -36,6 +37,7 @@ class VarData(common.ExtractorVar):
         out['pool_size']['get_m3u8'] = 4
         
         out['flag_parse_m3u8'] = False	# TODO
+        out['flag_fix_size'] = False	# TODO for method flvsp, fix file size
         # private data
         out['_raw_first_json'] = ''
         return out
