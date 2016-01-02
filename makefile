@@ -40,7 +40,8 @@ test_bin:
 # +   hd_min, hd_max select test
 # +   i_min, i_max select test
 # +   --debug, --quiet log test
-test_parse: test_parse_bks1 \
+test_parse: \
+	test_parse_bks1 \
 	test_parse_letv \
 	test_parse_hunantv \
 	test_parse_tvsohu \

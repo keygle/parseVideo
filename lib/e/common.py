@@ -299,7 +299,7 @@ def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
     log.i(msg + ', count ' + str(len(todo)) + ', pool_size = ' + str(pool_size) + ' ')
     def _worker(raw):
         i = raw['i']
-        log.d('start get index ' + str(i) + ' ')
+        log.d('start get index ' + str(i) + ', url \"' + raw['f']['url'] + '\" ')
         result = worker(raw['f'], i)
         log.d('[done] got index ' + str(i) + ' ')
         return result
