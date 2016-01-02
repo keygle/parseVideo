@@ -1,13 +1,10 @@
 # method_pc_flash_gate.py, parse_video/lib/e/pptv/
 
-import json
-import xml.etree.ElementTree as ET
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from . import var, method
 from .o import (
     vod_play_proxy, 
     ctx_query, 
@@ -16,7 +13,7 @@ from .o import (
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
-    # TODO support --more
+    method.get_raw_more(method_arg_text)
     # parse method args
     def rest(r):
         if r == 'get_title_no':
@@ -24,48 +21,18 @@ def parse(method_arg_text):
         else:	# unknow method arg
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
-    # load page and get vid info
-    vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
+    vid_info = method.get_vid_info()
     
     # get video info and file URLs
     pvinfo = _get_video_info(vid_info)
     # NOTE already got file URLs here
-    # TODO support enable_more
-    return pvinfo
-
-def _get_vid_info(raw_html_text):
-    def do_get(raw_html_text):
-        out = common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
-        try:	# parse webcfg as json
-            out['webcfg'] = json.loads(out['webcfg'])
-        except Exception as e:
-            er = err.MethodError('parse webcfg json text failed', out['webcfg'])
-            raise er from e
-        # get more info from webcfg
-        cfg = out['webcfg']
-        out['cid'] = cfg['id']
-        out['ctx'] = cfg['player']['ctx']
-        return out
-    return common.method_get_vid_info(raw_html_text, var, do_get)
+    out = method.check_enable_more(pvinfo)
+    return out
 
 def _get_video_info(vid_info):
     # TODO support get_title_no here
     first_url = _make_first_url(vid_info)
-    # [ OK ] log
-    log.o(log_text.method_got_first_url(first_url))
-    # NOTE download and parse as xml
-    first_xml = b.dl_html(first_url)
-    var._['_raw_first_xml'] = first_xml	# save raw xml text
-    try:
-        first  = ET.fromstring(first_xml)
-    except Exception as e:
-        er = err.ParseXMLError('parse first xml text failed, first_url ', first_url)
-        er.text = first
-        raise er from e
-    # check first Error
-    if first.find('error') != None:
-        raise err.MethodError('first xml info Error', ET.dump(first.find('error')))
-    vid_info['vip'] = str(first.find('channel').get('vip'))
+    first = method.dl_first_xml(first_url)
     # parse first info
     pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
     out = common.method_simple_count_and_select(pvinfo, var)
@@ -80,12 +47,7 @@ def _make_first_url(vid_info):
     return vod_play_proxy.get_play_url(cid)
 
 def _parse_raw_first_info(first):
-    channel = first.find('channel')
-    out = {}
-    # get base video info
-    out['info'] = {}
-    out['info']['title'] = channel.get('nm')
-    out['info']['title_short'] = channel.get('hjnm')
+    out, channel = method.raw_first_get_base_info(first)
     
     # collect info by ft, NOTE ft as str
     info = {}
