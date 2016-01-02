@@ -1,7 +1,5 @@
 # method.py, parse_video/lib/e/tvsohu/
 
-import functools
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
@@ -16,8 +14,8 @@ def get_raw_more(method_arg_text):
         'raw_first_json', 	# NOTE also get raw first json info in --more mode
     ]
     raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
-    # set first_json
-    var._['_raw_first_json'] = raw_more['raw_first_json']
+    if raw_more != None:	# set first_json
+        var._['_raw_first_json'] = raw_more['raw_first_json']
     return raw_more
 
 def _do_get_vid_info():
@@ -35,8 +33,7 @@ def _do_get_vid_info():
 
 def get_vid_info():
     # get vid_info from more if possible
-    default_get_vid_info = functools.partial(_do_get_vid_info, var)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
+    vid_info = common.method_more_simple_get_vid_info(var, _do_get_vid_info)
     return vid_info
 
 def check_enable_more(out):
