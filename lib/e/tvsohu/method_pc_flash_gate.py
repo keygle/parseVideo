@@ -1,12 +1,10 @@
 # method_pc_flash_gate.py, parse_video/lib/e/tvsohu/
 
-import functools
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from . import var, method
 from .o import main
 
 # method_pc_flash_gate.parse(), entry function
