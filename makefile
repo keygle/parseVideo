@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.1.0 test201601021502
+# version 0.1.2.0 test201601022215
 
 # parse_video bin
 PV_BIN=./parsev
@@ -77,18 +77,21 @@ test_parse_tvsohu:
 test_parse_pptv:
 	# pv_test:: INFO: parse test extractor pptv
 	$(PV_BIN) $(ET_URL_PPTV_1) -i 4
-	$(PV_BIN) $(ET_URL_PPTV_1) -M 0 --debug
+	$(PV_BIN) $(ET_URL_PPTV_1) -M 0 --debug -m "pc_flash_gate"
+	$(PV_BIN) $(ET_URL_PPTV_1) -m "android"
 
 # test extractor --more mode support
 test_more: \
 	test_more_bks1 \
 	test_more_letv \
 	test_more_hunantv \
-	test_more_tvsohu
+	test_more_tvsohu \
+	test_more_pptv
 .PHONY: test_more_bks1 \
 	test_more_letv \
 	test_more_hunantv \
-	test_more_tvsohu
+	test_more_tvsohu \
+	test_more_pptv
 
 test_more_bks1:
 	# pv_test:: INFO: more test extractor bks1
@@ -110,12 +113,18 @@ test_more_tvsohu:
 	$(PV_BIN) $(ET_URL_TVSOHU_1) -i 1 -M 0 -m "pc_flash_gate;enable_more" -o "test_more.e_tvsohu.tmp.json"
 	$(PV_BIN) $(ET_URL_TVSOHU_1) -i 7 --more "test_more.e_tvsohu.tmp.json"
 
+test_more_pptv:
+	# pv_test:: INFO: more test extractor pptv
+	$(PV_BIN) $(ET_URL_PPTV_1) -i 1 -M 0 -m "pc_flash_gate;enable_more" -o "test_more.e_pptv.tmp.json"
+	$(PV_BIN) $(ET_URL_PPTV_1) -i 5 --more "test_more.e_pptv.tmp.json"
+
 # remove test tmp files
 clean_test:
 	- rm test_more.e_bks1.tmp.json
 	- rm test_more.e_letv.tmp.json
 	- rm test_more.e_hunantv.tmp.json
 	- rm test_more.e_tvsohu.tmp.json
+	- rm test_more.e_pptv.tmp.json
 
 # test extractor vv mode
 test_v:
