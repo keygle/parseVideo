@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201601022231
+   - test201601031544
   -->
 
 # parse_video version 0.5.3.0
@@ -13,18 +13,11 @@ from some web sites.
 
 **Supported** (5)
 
-| site | quality | format | method | `--more` mode |
-| :--- | :------ | :----- | :----- | :------------ |
-| *271*     | `4K`                   | *flv*              | `pc_flash_gate`            | *first json* |
-| *letv*    | `1080p`                | *ts* (m3u8), *mp4* | `pc_flash_gate`, `flvsp`   | *vid*        |
-| *hunantv* | `720p`                 | *m3u8*, *mp4*      | `pc_flash_gate`, `flvsp`   | *vid*        |
-| *tvsohu*  | `4K` (h265)            | *mp4*              | `pc_flash_gate`, `flvsp`   | *first json* |
-| *pptv*    | *high bitrate* `1080p` | *mp4*              | `pc_flash_gate`, `android` | *vid*        |
-
-
-**TODO**
-
-+ TODO
++ *271* (`4K`)
++ *letv* (1080p)
++ *hunantv* (*720p*)
++ *tvsohu* (`4K` h265)
++ *pptv* (`1080p` *high bitrate*)
 
 
 ## Install

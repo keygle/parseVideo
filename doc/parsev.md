@@ -1,6 +1,5 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.1.1.0 test201601022244
   -->
 
 parse_video version 0.5.3.0
@@ -10,13 +9,13 @@ parse_video version 0.5.3.0
 
 ## 已支持网站 (5)
 
-|   # | site | quality | extractor | format | method and features |
-| --: | :--- | :-----: | :-------- | :----- | :------------------ |
-|  1 | 271     | `4K`          | `bks1`    | *flv*              | `pc_flash_gate` (w)        |
-|  2 | letv    | `1080p`       | `letv`    | *ts* (m3u8), *mp4* | `pc_flash_gate`, `flvsp`   |
-|  3 | hunantv | `720p`        | `hunantv` | *m3u8*, *mp4*      | `pc_flash_gate`, `flvsp`   |
-|  4 | tvsohu  | `4K` *h265*   | `tvsohu`  | *mp4*              | `pc_flash_gate`, `flvsp`   |
-|  5 | pptv    | *高码* `1080p` | `pptv`    | *mp4*              | `pc_flash_gate`, `android` |
+|   # | site | quality | extractor |
+| --: | :--- | :-----: | :-------- |
+|  1 | 271     | `4K`          | `bks1`    |
+|  2 | letv    | `1080p`       | `letv`    |
+|  3 | hunantv | `720p`        | `hunantv` |
+|  4 | tvsohu  | `4K` *h265*   | `tvsohu`  |
+|  5 | pptv    | `1080p` *高码* | `pptv`    |
 
 
 ## 支持网站 限制
