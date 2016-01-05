@@ -12,8 +12,8 @@ parse_video version 0.5.3.0
 |   # | site | quality | extractor |
 | --: | :--- | :-----: | :-------- |
 |  1 | 271     | `4K`          | `bks1`    |
-|  2 | letv    | `1080p`       | `letv`    |
-|  3 | hunantv | `720p`        | `hunantv` |
+|  2 | letv    | 1080p         | `letv`    |
+|  3 | hunantv | *720p*        | `hunantv` |
 |  4 | tvsohu  | `4K` *h265*   | `tvsohu`  |
 |  5 | pptv    | `1080p` *高码* | `pptv`    |
 
