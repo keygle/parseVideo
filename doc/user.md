@@ -1,14 +1,17 @@
 <!-- user.md, parse_video/doc/
    - language: Chinese (zh_cn) 
+   - test201601051943
   -->
 
 # 负锐 视频解析 (parse_video) 用户指导
-
+parse_video version 0.5.3.0
 
 ## 内容目录
 
 + **[1. parse_video 整体结构](#1-parse_video-整体结构)**
+
 + **[2. `method` 及其参数](#2-method-及其参数)**
+  + **[2.1 `method` 字符串格式](#21-method-字符串格式)**
 
 + **[3. 加速解析](#3-加速解析)**
   + **[3.1 `hd` 和 `index` 的选择](#31-hd-和-index-的选择)**
@@ -41,10 +44,37 @@
 
 每个 *extractor* 可以支持多个 *method*, 也就是说, 能够使用 *多种方法* 解析一个网站. 
 
-TODO
+不同的 method 可能各有优缺点. 请根据需要选择使用. 
+
+method (extractor) 可能支持若干 *参数*, 用来控制或调节一些 *解析细节*. 
+
+*参数* 由 method 解析和支持, 其含义由 method 自行定义. 不同 method 的参数很可能不同. 
 
 ### 2.1 `method` 字符串格式
-TODO
+
+*method 字符串* 格式如下:
+
+```
+method 名称;参数1,参数2, ...
+```
+
+*method 名称* 和 *参数* 之间用 `;` (分号) 分开. 如果没有参数, 则 `;` 可省略. 
+
+*多个参数* 之间用 `,` (逗号) 分开. 如果只有一个参数, 则 `,` 可省略. 
+
+比如 
+
+> `android` <br />
+> `pc_flash_gate;gen_header` <br />
+> `pc_flash_gate;enable_more,fast_parse` <br />
+> `pc_flash_gate;set_um,fix_4k,enable_vv_error` 
+
+等, 都是格式正确的 *method 字符串*. 
+
+使用 CLI 的 `--method` 参数指定解析时使用的 *method 字符串*. 如果没有指定, 
+将使用 `lib/conf.py` 中配置的默认值. 
+
+*注意*: 有的 extractor 可能自定义 `;` 后面的参数分隔格式. 此处所使用 `,` 分隔, 只是通常情况. 
 
 
 ## 3. 加速解析
@@ -181,7 +211,6 @@ TODO
 仅输出 *错误* 和 *警告* 信息. 
 
 
-TODO
 <!-- end user.md -->
 
 
