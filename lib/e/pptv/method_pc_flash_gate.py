@@ -93,6 +93,10 @@ def _parse_raw_first_info(first):
             more['k'] = data['dt'].find('key').findtext('.')
             more['key'] = play_info.gen_key()
             f['url'] = play_info.make_cdn_url(server, filename, index, more=more)
+            # TODO code can be clean
+            # NOTE add expire time
+            f['expire'] = method.get_expire(data['dt'])
+            
             one['file'].append(f)
         out['video'].append(one)
     return out

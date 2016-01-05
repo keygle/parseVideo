@@ -3,6 +3,7 @@
 import json
 import functools
 import xml.etree.ElementTree as ET
+import datetime
 
 from ... import err, b
 from ...b import log
@@ -72,6 +73,18 @@ def raw_first_get_base_info(first):
     out['info']['title'] = channel.get('nm')
     out['info']['title_short'] = channel.get('hjnm')
     return out, channel
+
+def get_key_expire(key):
+    date_format = '%a %b %d %H:%M:%S %Y %Z'
+    expire_time = key.get('expire')
+    expire = datetime.datetime.strptime(expire_time, date_format)
+    return expire
+
+def get_expire(dt):
+    key = dt.find('key')
+    date = get_key_expire(key)
+    expire = b.print_time_iso(date)
+    return expire
 
 # end method.py
 

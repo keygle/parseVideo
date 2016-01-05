@@ -27,9 +27,7 @@ parse_video/    # parse_video 根目录
         
         b.py            # 基础工具集
         _b/             # 基础工具集
-        lan.py          # 语言文本
         
-        bridge/         # bridge 功能
         e/              # extractor
             common.py   # extractor 共用代码
             log_text.py # extractor 共用提示文本
@@ -37,6 +35,8 @@ parse_video/    # parse_video 根目录
             hunantv/    # extractor hunantv, 以此 extractor 举例说明
                 entry.py        # extractor 入口文件
                 var.py          # extractor 全局数据
+        bridge/         # bridge 功能
+        lan.py          # 语言文本
     bin/                # 命令行界面 (CLI)
         parse_video.py  # CLI 主要可执行文件
     

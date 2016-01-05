@@ -69,6 +69,9 @@ def _parse_raw_first(first):
         # gen file url
         rid = item.get('rid')
         f['url'] = _gen_one_file_url(rid, data['dt'])
+        # TODO code can be clean
+        # NOTE add expire time
+        f['expire'] = method.get_expire(data['dt'])
         
         one['file'].append(f)
         out['video'].append(one)

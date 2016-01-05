@@ -20,7 +20,6 @@
 
 import re
 import math
-import datetime
 import importlib
 
 from . import err, b
@@ -137,8 +136,7 @@ def _add_more_pvinfo(pvinfo, add_mark_uuid=False):
     return out
 
 def _gen_last_update():
-    now = datetime.datetime.today().utcnow().isoformat()
-    last_update = now + 'Z'
+    last_update = b.print_time_iso(b.get_utc_now())
     return last_update
 
 def _restruct_pvinfo(pvinfo):
