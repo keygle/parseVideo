@@ -15,7 +15,7 @@ def lyyc_about():
         'uuid' : 'cf01a87e-d4b1-4c49-bd87-b21392559cb9', 
         'version' : '0.5.3.0', 
         'name' : 'parse_video', 
-        'note' : 'parse_video for lyyc_plugin. ', 
+        'note' : '负锐视频解析 \n parse_video for lyyc_plugin. ', 
         
         'parse' : [
             '^http://[a-z]+\.iqiyi\.com/.+\.html', 
