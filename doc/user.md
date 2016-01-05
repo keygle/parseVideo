@@ -1,6 +1,6 @@
 <!-- user.md, parse_video/doc/
    - language: Chinese (zh_cn) 
-   - test201601051943
+   - test201601052021
   -->
 
 # 负锐 视频解析 (parse_video) 用户指导
@@ -18,7 +18,7 @@ parse_video version 0.5.3.0
   + **[3.2 `--more` 功能](#32---more-功能)**
 
 + **[4. 主要配置文件](#4-主要配置文件)**
-  + **[4.1 `lib/conf.py`](#41-lib-conf-py)**
+  + **[4.1 `lib/conf.py`](#41-libconfpy)**
 
 + **[5. 调试模式](#5-调试模式)**
 
@@ -183,7 +183,7 @@ method 名称;参数1,参数2, ...
   }
   ```
   
-  左侧为 `EXTRACTOR_ID`, 右侧为 *默认* method 字符串. 
+  左侧为 `EXTRACTOR_ID`, 右侧为 **默认** *method 字符串*. 
 
 + **根据输入的 URL 匹配选择 extractor**
   
