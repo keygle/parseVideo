@@ -4,7 +4,7 @@
 
 parse_video version 0.5.3.0
 
-# parse_video : 小而精 的 纯解析 程序
+# 负锐 视频解析 (parse_video) : 小而精 的 纯解析 程序
 
 
 ## 已支持网站 (5)
