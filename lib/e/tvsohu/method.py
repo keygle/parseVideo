@@ -63,7 +63,6 @@ def _get_first_json_info(vid_info, gen_one_before_url):
     log.o(log_text.method_got_first_url(first_url))
     first = b.dl_json(first_url)
     var._['_raw_first_json'][int(vid)] = first
-    # TODO support fast_parse here
     # parse raw first, get other vids, and download other first info jsons
     vid_list = _parse_one_first(first, vid, gen_one_before_url)['vid_list']
     # make todo list

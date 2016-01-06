@@ -86,11 +86,11 @@ def _parse_raw_first_info(first):
             f['size'] = int(s.get('fs'))
             f['time_s'] = float(s.get('dur'))
             # NOTE gen file URL here
-            server = data['dt'].find('bh').findtext('.')
+            server = data['dt'].find('bh').text
             filename = data['item'].get('rid')
             index = int(s.get('no'))
             more = {}
-            more['k'] = data['dt'].find('key').findtext('.')
+            more['k'] = data['dt'].find('key').text
             more['key'] = play_info.gen_key()
             f['url'] = play_info.make_cdn_url(server, filename, index, more=more)
             # TODO code can be clean

@@ -17,6 +17,7 @@ from ._b.network import (
     dl_xml, 
     post, 
     post_form, 
+    make_post_str, 
 )
 from ._b.text import (
     str_or_str, 

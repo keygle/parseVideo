@@ -3,6 +3,7 @@
 # TODO support proxy
 
 import json
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 
@@ -92,16 +93,19 @@ def post(url, method='POST', post_data=None, header={}):
         raise er from e
 
 # post with 'application/x-www-form-urlencoded' data
-def post_form(url, header={}, post_data={}):
-    post_data = make_post_str(post_data).encode('utf-8')
+def post_form(url, header={}, post_data={}, quote=False):
+    post_data = make_post_str(post_data, quote=quote).encode('utf-8')
     header['Content-Type'] = 'application/x-www-form-urlencoded'
     return post(url, header=header, post_data=post_data)
 
 # make post text for form
-def make_post_str(post_data):
+def make_post_str(post_data, quote=False):
     s = ''
     for key, value in post_data.items():
-        s += '&' + str(key) + '=' + str(value)	# TODO use form encode
+        value = str(value)
+        if quote:	# NOTE use URI encode
+            value = urllib.parse.quote(value)
+        s += '&' + str(key) + '=' + value
     return s[1:]	# remove first '&' char
 
 # end network.py

@@ -80,8 +80,8 @@ def _parse_raw_first(first):
 def _gen_one_file_url(rid, dt):
     PART_1 = '?w=1&platform=android3&type=phone.android&k='
     
-    sh = dt.find('sh').findtext('.')
-    k = dt.find('key').findtext('.')
+    sh = dt.find('sh').text
+    k = dt.find('key').text
     
     out = 'http://' + sh + '/' + str(rid) + PART_1 + k
     return out
