@@ -8,7 +8,7 @@ def gen_tm():
     return random.randint(1000, 3000)
 
 # package Zombie.bite()
-def bite(tvid, tm=None):	# TODO
+def bite(tvid, tm=None):
     if tm == None:
         tm = gen_tm()
     
