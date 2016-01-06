@@ -10,6 +10,7 @@ DEFAULT_METHOD = {
     'hunantv' : 'flvsp', 
     'tvsohu' : 'flvsp', 
     'pptv' : 'pc_flash_gate', 
+    'vqq' : 'pc_flash_gate;fix_1080p,enable_fmt_black_list,ignore_fix_1080p_error', 
 }
 
 # URL (RE) to extractor_id
@@ -19,6 +20,7 @@ URL_TO_EXTRACTOR = {
     '^http://www\.hunantv\.com/.+\.html' : 'hunantv', 
     '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
     '^http://v\.pptv\.com/.+\.html' : 'pptv', 
+    '^http://v\.qq\.com/.+' : 'vqq', 
 }
 
 
@@ -26,6 +28,16 @@ PV_LOG_PREFIX = 'pv::'
 
 # firefox/43.0 on Windows 7 (64bit)
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
+
+
+## extractor config
+
+# extractor vqq
+E_VQQ_FMT_BLACK_LIST = [
+    'mp4', 
+    'flv', 
+]
+
 
 # end conf.py
 

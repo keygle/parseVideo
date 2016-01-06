@@ -1,0 +1,72 @@
+# var.py, parse_video/lib/e/vqq/
+from .. import common
+from ... import conf
+
+# static data
+EXTRACTOR_ID = 'vqq'
+EXTRACTOR_NAME = 'vqq_1'
+SITE = 'v2q'
+SITE_NAME = '疼X视频'
+
+RE_SUPPORT_URL = [
+    '^http://v\.qq\.com/.+', 
+]
+
+METHOD_LIST = [
+    'pc_flash_gate', 
+]
+RE_VID_LIST = {	# NOTE not normal method
+    'title_short' : '\ntitle[ :]+"([^"]+)"', 
+    'title_sub' : '\nsecTitle[ :]+"([^"]+)"', 
+    'title_no' : '\ntitle[ :]+"([^"]+)"', 
+    'vid' : '\nvid[ :]+"([^"]+)"', 
+}
+# site fmt to parse_video hd quality
+TO_HD = {
+    'fhd' : 4, 		# id : 10209, 蓝光;(1080P)	1080p
+    'shd' : 2, 		# id : 10401, 超清;(720P)	720p
+    'hd' : 0, 		# id : 10412, 高清;(480P)	普清
+    
+    # these low quality video, not well support now
+    'flv' : -1, 	# id : 1, 高清;(360P)		低清
+    'mp4' : -1, 	# id : 2, 高清;(360P)		低清
+    'sd' : -3, 		# id : 10203, 标清;(270P)	渣清
+}
+FIRST_OK_CODE = None	# TODO
+
+# TODO
+# base POST headers
+BASE_POST_HEADER = {
+    'X-Requested-With' : 'ShockwaveFlash/18.0.0.233', 
+}
+
+DEFAULT_PLATFORM = 11
+DEFAULT_UTYPE = 0
+
+# var data
+class VarData(common.ExtractorVar):
+    def init(self):
+        out = super().init()
+        # config items
+        out['pool_size']['get_formats'] = 8
+        out['pool_size']['get_final_url'] = 16
+        
+        out['platform'] = DEFAULT_PLATFORM
+        out['utype'] = DEFAULT_UTYPE
+        out['fmt_black_list'] = conf.E_VQQ_FMT_BLACK_LIST
+        
+        out['flag_fast_parse'] = False
+        out['flag_fix_1080p'] = False
+        out['flag_ignore_fix_1080p_error'] = False
+        out['flag_enable_fmt_black_list'] = False
+        # private data
+        out['_raw_first_xml'] = {}	# NOTE there will be many first xml info here
+        out['_raw_xml_root'] = {}	# save first xml root here
+        out['_server_list'] = None	# TODO
+        return out
+# var exports
+var = VarData()
+_ = var._
+# end var.py
+
+
