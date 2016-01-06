@@ -17,16 +17,6 @@ def parse(method_arg_text):
     def rest(r):
         if r == 'fix_1080p':
             var._['flag_fix_1080p'] = True
-            # TODO maybe fix_1080p no need to chang hd range
-            # NOTE fix_1080p requires hd range
-            if (var._['hd_min'] != None) and (var._['hd_min'] > 2):
-                var._['hd_min'] = 2	# NOTE to fix_1080p, should get 720p video info
-                # WARNING log
-                log.w('set fix_1080p, auto set hd_min = 2 ')
-            if (var._['hd_max'] != None) and (var._['hd_max'] < 4):
-                var._['hd_max'] = 4
-                # WARNING log
-                log.w('set fix_1080p, auto set hd_max = 4')
         elif r == 'ignore_fix_1080p_error':
             var._['flag_ignore_fix_1080p_error'] = True
         elif r == 'enable_fmt_black_list':
@@ -48,12 +38,13 @@ def parse(method_arg_text):
     if var._['flag_fix_1080p']:	# NOTE fix_1080p
         v1080p = _fix_1080p(pvinfo)
     pvinfo = common.method_simple_count_and_select(pvinfo, var)
-    # NOTE count and select before get final file URLs
-    out = _get_file_urls(pvinfo)
-    if var._['flag_fix_1080p']:	# add 1080p video info
+    out = _get_raw_file_urls(pvinfo)	# NOTE count and select before get file URLs
+    # add 1080p video info
+    if var._['flag_fix_1080p'] and (v1080p != None):
         common.method_count_one_video(v1080p)
         out['video'].append(v1080p)
     common.method_sort_video(out)
+    out = _gen_final_urls(out)	# gen final url, NOTE will also gen fix_1080p file URLs
     # TODO support enable_more
     return out
 
@@ -169,6 +160,8 @@ def _get_first_xml_info(vid_info):
         if str(i['limit']) != '0':	# 0 is un-limit
             # WARNING log
             log.w('skip limit format ' + i['id'] + ':' + i['name'] + ':' + i['cname'] + ' ')
+            # add limit info to limit list
+            var._['_limit_list'][str(i['name'])] = i
         # check fmt black list
         elif var._['flag_enable_fmt_black_list'] and (i['name'] in var._['fmt_black_list']):
             log.d('skip fmt ' + i['name'] + ' in fmt_black_list ')
@@ -290,11 +283,7 @@ def _do_parse_one_first(root):
     out['video'] = v
     return out	# parse first xml and get info done
 
-def _fix_1080p(pvinfo):
-    # TODO not support now
-    pass
-
-def _get_file_urls(pvinfo):
+def _get_raw_file_urls(pvinfo):
     # NOTE just use first server here
     server = var._['_server_list'][0]
     vt = server['vt']
@@ -316,13 +305,17 @@ def _get_file_urls(pvinfo):
         f['_vkey'] = vkey	# save vkey
         return f
     pool_size = var._['pool_size']['get_file_url']
-    out = common.simple_get_file_urls(pvinfo, worker, msg='getting part file vkey', pool_size=pool_size)
+    return common.simple_get_file_urls(pvinfo, worker, msg='getting part file vkey', pool_size=pool_size)
+
+def _gen_final_urls(pvinfo):
+    # NOTE use first server
+    server = var._['_server_list'][0]
     # gen final file URLs
     for v in out['video']:
         for f in v['file']:
             if f['url'] != '':
                 f['url'] = _gen_one_final_url(f, server)
-    return out
+    return pvinfo
 
 def _make_one_file_post_data(f, data, vt):
     fn = data['fn']
@@ -348,6 +341,94 @@ def _gen_one_final_url(f, server):
     # make final url
     out = server_url + filename + '?vkey=' + vkey
     return out
+
+# fix 1080p
+def _fix_1080p(pvinfo):
+    try:
+        out = _do_fix_1080p(pvinfo)
+    except Exception as e:
+        if var._['flag_ignore_fix_1080p_error']:
+            # WARNING log
+            log.w('ignored fix_1080p Error ', str(e))
+            out = None	# NOTE if failed, return None
+        else:
+            er = err.ParseError('fix_1080p failed')
+            raise er from e
+    return out
+
+def _do_fix_1080p(pvinfo):
+    # get 720p info from pvinfo
+    v720 = None
+    for v in pvinfo['video']:
+        if v['hd'] == 2:
+            v720 = v
+            break
+    if v720 == None:
+        # WARNING log
+        log.w('no 720p video info, can not fix_1080p ')
+        return None	# no 720p video
+    # check 1080p info
+    if not 'fhd' in var._['_limit_list']:
+        # WARNING log
+        log.w('no 1080p video info, can not fix_1080p ')
+        return None
+    data = var._['_limit_list']['fhd']	# NOTE 1080p fmt is fhd
+    # make post data list
+    server = var._['_server_list'][0]	# NOTE use first server
+    vt = var._['_server_list'][0]['vt']
+    
+    fmt = data['name']
+    format_ = data['id']
+    vid = v720['_data']['lnk']
+    
+    todo = []
+    i = 0
+    for f in v720['file']:
+        idx = f['url']['idx']
+        one = player.getvclip(vid, idx, fmt, format_, vt)
+        one['i'], i = i, i + 1	# add index for DEBUG
+        todo.append(one)
+    def worker(one):
+        prefix = 'index ' + str(one['i']) + ' get vclip, '
+        root, xml_text = _do_one_post_xml(one, prefix=prefix)
+        # TODO check code OK
+        vi = root.find('vi')
+        out = {}
+        out['filename'] = vi.find('fn').text
+        out['size'] = int(vi.find('fs').text)
+        out['md5'] = vi.find('md5').text
+        out['vkey'] = vi.find('key').text
+        
+        log.d('done index ' + str(one['i']) + ' ')
+        return out
+    pool_size = var._['pool_size']['fix_1080p']
+    log.i('starting fix_1080p, count ' + str(len(todo)) + ', pool_size = ' + str(pool_size) + ' ')
+    result = b.map_do(todo, worker=worker, pool_size=pool_size)
+    log.d('do vclip POSTs info done. ')
+    
+    # gen video info
+    v = {}
+    v['hd'] = var.TO_HD[fmt]
+    if var._['flag_add_raw_quality']:
+        v['quality'] = data['cname']
+    v['size_px'] = [-1, -1]	# NOTE can not get size_px info
+    v['format'] = v720['format']
+    # add files
+    raw = v720['file']
+    v['file'] = []
+    for i in range(len(result)):
+        r = result[i]
+        one = {}
+        one['size'] = r['size']
+        one['time_s'] = raw[i]['time_s']
+        one['checksum'] = {	# add checksum
+            'md5' : r['md5'], 
+        }
+        # save filename in f.url
+        one['url'] = r['filename']
+        one['_vkey'] = r['vkey']
+        v['file'].append(one)
+    return v	# fix_1080p, finished
 
 # end method_pc_flash_gate.py
 

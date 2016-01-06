@@ -49,6 +49,7 @@ class VarData(common.ExtractorVar):
         # config items
         out['pool_size']['get_formats'] = 8
         out['pool_size']['get_file_url'] = 16
+        out['pool_size']['fix_1080p'] = 16
         
         out['platform'] = DEFAULT_PLATFORM
         out['utype'] = DEFAULT_UTYPE
@@ -63,6 +64,7 @@ class VarData(common.ExtractorVar):
         out['_raw_first_xml'] = {}	# NOTE there will be many first xml info here
         out['_raw_xml_root'] = {}	# save first xml root here
         out['_server_list'] = None
+        out['_limit_list'] = {}		# limit info, for fix_1080p
         return out
 # var exports
 var = VarData()
