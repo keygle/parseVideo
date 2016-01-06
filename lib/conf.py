@@ -10,7 +10,7 @@ DEFAULT_METHOD = {
     'hunantv' : 'flvsp', 
     'tvsohu' : 'flvsp', 
     'pptv' : 'pc_flash_gate', 
-    'vqq' : 'pc_flash_gate;enable_fmt_black_list', 
+    'vqq' : 'pc_flash_gate;enable_fmt_black_list,fix_1080p,ignore_fix_1080p_error', 
 }
 
 # URL (RE) to extractor_id

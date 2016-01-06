@@ -311,7 +311,7 @@ def _gen_final_urls(pvinfo):
     # NOTE use first server
     server = var._['_server_list'][0]
     # gen final file URLs
-    for v in out['video']:
+    for v in pvinfo['video']:
         for f in v['file']:
             if f['url'] != '':
                 f['url'] = _gen_one_final_url(f, server)

@@ -1,6 +1,6 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201601031544
+   - test201601062200
   -->
 
 # parse_video version 0.5.3.0
@@ -11,13 +11,14 @@
 `parse_video` is used to get video information (video file download URL) 
 from some web sites. 
 
-**Supported** (5)
+**Supported** (6)
 
 + *271* (`4K`)
 + *letv* (1080p)
 + *hunantv* (*720p*)
 + *tvsohu* (`4K` h265)
 + *pptv* (`1080p` *high bitrate*)
++ *vqq* (1080p)
 
 
 ## Install
