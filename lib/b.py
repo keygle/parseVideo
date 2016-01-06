@@ -3,6 +3,7 @@
 import os
 import json
 import hashlib
+import datetime
 import threading
 import multiprocessing.dummy as multiprocessing
 
@@ -16,6 +17,7 @@ from ._b.network import (
     dl_xml, 
     post, 
     post_form, 
+    make_post_str, 
 )
 from ._b.text import (
     str_or_str, 
@@ -82,6 +84,16 @@ def load_config_json(fpath):
         er = err.ParseJSONError('can not parse json text, config file', fpath)
         er.text = text
         raise er from e
+
+# time functions
+
+def get_utc_now():
+    return datetime.datetime.today().utcnow()
+
+def print_time_iso(date):
+    text = date.isoformat() + 'Z'
+    return text
+
 
 # end b.py
 

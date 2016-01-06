@@ -51,6 +51,7 @@ def parse(method_arg_text):
     if var._['flag_v']:
         pvinfo = vv_default.add_tokens(pvinfo, vid_info)
     out = _get_file_urls(pvinfo)
+    out = _add_checksum(pvinfo)	# add part files checksum info
     # check enable_more
     if var._['enable_more']:	# add more info
         out['_data'] = {}
@@ -169,6 +170,23 @@ def _get_file_urls(pvinfo):
             raise er from e
     pool_size = var._['pool_size']['get_file_url']
     return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
+
+def _add_checksum(pvinfo):
+    for v in pvinfo['video']:
+        for f in v['file']:
+            if f['url'] != '':
+                f['checksum'] = _get_one_checksum(f)
+    return pvinfo
+
+def _get_one_checksum(f):
+    raw = f['url']
+    raw = raw.split('://', 1)[1].split('#', 1)[0].split('?', 1)[0]
+    filename = raw.rsplit('/', 1)[1]
+    md5 = filename.split('.', 1)[0]	# NOTE the md5 is just the filename
+    out = {
+        'md5' : md5, 
+    }
+    return out
 
 # end method_pc_flash_gate.py
 

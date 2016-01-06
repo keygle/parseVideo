@@ -1,22 +1,22 @@
 <!-- parsev.md, parse_video/doc/, <https://github.com/sceext2/parse_video>
    - language: Chinese (zh_cn) 
-   - version 0.1.1.0 test201601022244
   -->
 
-parse_video version 0.5.3.0
+parse_video version 0.5.4.0
 
-# parse_video : 小而精 的 纯解析 程序
+# 负锐 视频解析 (parse_video) : 小而精 的 纯解析 程序
 
 
-## 已支持网站 (5)
+## 已支持网站 (6)
 
-|   # | site | quality | extractor | format | method and features |
-| --: | :--- | :-----: | :-------- | :----- | :------------------ |
-|  1 | 271     | `4K`          | `bks1`    | *flv*              | `pc_flash_gate` (w)        |
-|  2 | letv    | `1080p`       | `letv`    | *ts* (m3u8), *mp4* | `pc_flash_gate`, `flvsp`   |
-|  3 | hunantv | `720p`        | `hunantv` | *m3u8*, *mp4*      | `pc_flash_gate`, `flvsp`   |
-|  4 | tvsohu  | `4K` *h265*   | `tvsohu`  | *mp4*              | `pc_flash_gate`, `flvsp`   |
-|  5 | pptv    | *高码* `1080p` | `pptv`    | *mp4*              | `pc_flash_gate`, `android` |
+|   # | site | quality | extractor |     |
+| --: | :--- | :-----: | :-------- | :-- |
+|  1 | 271     | `4K`          | `bks1`    | |
+|  2 | letv    | 1080p         | `letv`    | |
+|  3 | hunantv | *720p*        | `hunantv` | |
+|  4 | tvsohu  | `4K` *h265*   | `tvsohu`  | |
+|  5 | pptv    | `1080p` *高码* | `pptv`    | |
+|  6 | vqq     | 1080p         | `vqq`     | *ckey5.4* |
 
 
 ## 支持网站 限制
@@ -52,10 +52,9 @@ parse_video version 0.5.3.0
   (`--min`, `--max`, `--i-min`, `--i-max`, `--extractor`, `--method`, `--debug`)
 
 
-## 计划支持的网站 (3)
+## 计划支持的网站 (2)
 (`extractor`)
 
-+ vqq (ckey5.4, `1080p`)
 + kankan (`1080p`, `h265`)
 
 + youku (TODO)
@@ -63,7 +62,6 @@ parse_video version 0.5.3.0
 *实现顺序*
 
 1. kankan
-2. vqq
 
 
 ## `bridge` 支持
@@ -71,6 +69,7 @@ parse_video version 0.5.3.0
 + `vqq`: 有关 `ckey5.4` 的 bridge
 + `271`: 有关 `salt` 的 *bridge* (*无颜* 系列)
 
+TODO
 
 ## 专用 下载器
 

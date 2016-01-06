@@ -1,4 +1,4 @@
-# wuyan_bridge.py, parse_video/lib/bridge/
+# wuyan_bridge.py, parse_video/lib/bridge/, for extractor bks1
 
 from .wy_bridge import salt
 

@@ -69,6 +69,9 @@ def _parse_raw_first(first):
         # gen file url
         rid = item.get('rid')
         f['url'] = _gen_one_file_url(rid, data['dt'])
+        # TODO code can be clean
+        # NOTE add expire time
+        f['expire'] = method.get_expire(data['dt'])
         
         one['file'].append(f)
         out['video'].append(one)
@@ -77,8 +80,8 @@ def _parse_raw_first(first):
 def _gen_one_file_url(rid, dt):
     PART_1 = '?w=1&platform=android3&type=phone.android&k='
     
-    sh = dt.find('sh').findtext('.')
-    k = dt.find('key').findtext('.')
+    sh = dt.find('sh').text
+    k = dt.find('key').text
     
     out = 'http://' + sh + '/' + str(rid) + PART_1 + k
     return out

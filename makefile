@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.2.0 test201601022215
+# version 0.1.3.0 test201601062058
 
 # parse_video bin
 PV_BIN=./parsev
@@ -10,6 +10,7 @@ ET_URL_LETV_1=http://www.letv.com/ptv/vplay/24185834.html
 ET_URL_HUNANTV_1=http://www.hunantv.com/v/2/168868/f/2928760.html
 ET_URL_TVSOHU_1=http://tv.sohu.com/20140914/n404300963.shtml
 ET_URL_PPTV_1=http://v.pptv.com/show/0UyKCXHXR4XoZs4.html
+ET_URL_VQQ_1=http://v.qq.com/cover/w/wldxl2tsezs0jzt/h00154yrbvi.html
 
 # test extractor bks1 vv mode
 ET_URL_BKS1_2=http://www.iqiyi.com/v_19rrkgos5s.html
@@ -45,12 +46,14 @@ test_parse: \
 	test_parse_letv \
 	test_parse_hunantv \
 	test_parse_tvsohu \
-	test_parse_pptv
+	test_parse_pptv \
+	test_parse_vqq
 .PHONY: test_parse_bks1 \
 	test_parse_letv \
 	test_parse_hunantv \
 	test_parse_tvsohu \
-	test_parse_pptv
+	test_parse_pptv \
+	test_parse_vqq
 
 test_parse_bks1:
 	# pv_test:: INFO: parse test extractor bks1
@@ -79,6 +82,12 @@ test_parse_pptv:
 	$(PV_BIN) $(ET_URL_PPTV_1) -i 4
 	$(PV_BIN) $(ET_URL_PPTV_1) -M 0 --debug -m "pc_flash_gate"
 	$(PV_BIN) $(ET_URL_PPTV_1) -m "android"
+
+test_parse_vqq:
+	# pv_test:: INFO: parse test extractor vqq
+	$(PV_BIN) $(ET_URL_VQQ_1) -M 1 --debug
+	$(PV_BIN) $(ET_URL_VQQ_1) -i 2
+
 
 # test extractor --more mode support
 test_more: \
