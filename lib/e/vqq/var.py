@@ -34,10 +34,9 @@ TO_HD = {
 }
 FIRST_OK_CODE = None	# TODO
 
-# TODO
-# base POST headers
+# base POST headers, NOTE may be no need
 BASE_POST_HEADER = {
-    'X-Requested-With' : 'ShockwaveFlash/18.0.0.233', 
+    'X-Requested-With' : 'ShockwaveFlash/20.0.0.228', 
 }
 
 DEFAULT_PLATFORM = 11
@@ -49,7 +48,7 @@ class VarData(common.ExtractorVar):
         out = super().init()
         # config items
         out['pool_size']['get_formats'] = 8
-        out['pool_size']['get_final_url'] = 16
+        out['pool_size']['get_file_url'] = 16
         
         out['platform'] = DEFAULT_PLATFORM
         out['utype'] = DEFAULT_UTYPE
@@ -59,10 +58,11 @@ class VarData(common.ExtractorVar):
         out['flag_fix_1080p'] = False
         out['flag_ignore_fix_1080p_error'] = False
         out['flag_enable_fmt_black_list'] = False
+        out['flag_add_raw_quality'] = False
         # private data
         out['_raw_first_xml'] = {}	# NOTE there will be many first xml info here
         out['_raw_xml_root'] = {}	# save first xml root here
-        out['_server_list'] = None	# TODO
+        out['_server_list'] = None
         return out
 # var exports
 var = VarData()

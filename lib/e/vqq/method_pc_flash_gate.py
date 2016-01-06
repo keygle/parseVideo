@@ -17,6 +17,7 @@ def parse(method_arg_text):
     def rest(r):
         if r == 'fix_1080p':
             var._['flag_fix_1080p'] = True
+            # TODO maybe fix_1080p no need to chang hd range
             # NOTE fix_1080p requires hd range
             if (var._['hd_min'] != None) and (var._['hd_min'] > 2):
                 var._['hd_min'] = 2	# NOTE to fix_1080p, should get 720p video info
@@ -33,6 +34,8 @@ def parse(method_arg_text):
             log.d('use fmt_black_list ' + str(var._['fmt_black_list']) + ' ')
         elif r == 'fast_parse':
             var._['flag_fast_parse'] = True
+        elif r == 'add_raw_quality':
+            var._['flag_add_raw_quality'] = True
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
@@ -41,14 +44,16 @@ def parse(method_arg_text):
     # TODO support --more here for vid_info
     # get vid info
     vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
-    # TODO base parse
     pvinfo = _get_video_info(vid_info)
-    
-    # TODO fix_1080p
-    if var._['flag_fix_1080p']:
-        pvinfo = _fix_1080p(pvinfo)
-    
+    if var._['flag_fix_1080p']:	# NOTE fix_1080p
+        v1080p = _fix_1080p(pvinfo)
+    pvinfo = common.method_simple_count_and_select(pvinfo, var)
+    # NOTE count and select before get final file URLs
     out = _get_file_urls(pvinfo)
+    if var._['flag_fix_1080p']:	# add 1080p video info
+        common.method_count_one_video(v1080p)
+        out['video'].append(v1080p)
+    common.method_sort_video(out)
     # TODO support enable_more
     return out
 
@@ -122,11 +127,21 @@ def _get_video_info(vid_info):
     # get video list
     raw_list = var._['_raw_xml_root']
     out['video'] = []
-    for fmt, root in raw_list.items():
-        info = _parse_one_first(root)
+    for fmt, raw in raw_list.items():
+        info = _parse_one_first(raw[0])
         one = info['video']
-        # add more info
         one['hd'] = var.TO_HD[fmt]
+        # add more info for later parse
+        d = {}
+        d['fn'] = info['fn']
+        d['lnk'] = info['lnk']
+        d['id'] = raw[1]['id']
+        d['name'] = raw[1]['name']
+        d['cname'] = raw[1]['cname']
+        one['_data'] = d
+        # NOTE add raw quality text here
+        if var._['flag_add_raw_quality']:
+            one['quality'] = d['cname']
         out['video'].append(one)
     common.method_sort_video(out)
     return out
@@ -170,7 +185,7 @@ def _get_first_xml_info(vid_info):
         fmt = r['fmt']
         var._['_raw_first_xml'][fmt] = r['xml']
         # save xml root
-        var._['_raw_xml_root'][fmt] = r['root']
+        var._['_raw_xml_root'][fmt] = (r['root'], r['format'])
     # get first xml info done
 
 def _dl_one_first(info):
@@ -182,6 +197,7 @@ def _dl_one_first(info):
     out['fmt'] = fmt
     out['xml'] = raw_xml
     out['root'] = root
+    out['format'] = info[0]
     return out
 
 # do one POST and get xml info
@@ -279,8 +295,60 @@ def _fix_1080p(pvinfo):
     return pvinfo
 
 def _get_file_urls(pvinfo):
-    # TODO not support now
-    return pvinfo
+    # NOTE just use first server here
+    server = var._['_server_list'][0]
+    vt = server['vt']
+    
+    # make post data to get vkey
+    for v in pvinfo['video']:
+        for i in range(len(v['file'])):
+            f = v['file'][i]
+            if f['url'] != '':
+                v['file'][i] = _make_one_file_post_data(f, v['_data'], vt)
+        v.pop('_data')	# remove _data
+    # do POSTs
+    def worker(f, i):
+        post_info = f.pop('_post_info')	# NOTE remove _post_info data
+        root, xml_text = _do_one_post_xml(post_info, prefix='get vkey ' + str(i) + ' ')
+        # TODO check OK code and Error process
+        # get vkey
+        vkey = root.find('key').text
+        f['_vkey'] = vkey	# save vkey
+        return f
+    pool_size = var._['pool_size']['get_file_url']
+    out = common.simple_get_file_urls(pvinfo, worker, msg='getting part file vkey', pool_size=pool_size)
+    # gen final file URLs
+    for v in out['video']:
+        for i in range(len(v['file'])):
+            f = v['file'][i]
+            if f['url'] != '':
+                v['file'][i] = _gen_one_final_url(f, server)
+    return out
+
+def _make_one_file_post_data(f, data, vt):
+    fn = data['fn']
+    fn_parts = fn.rsplit('.', 1)
+    idx = f['url']['idx']
+    filename = ('.').join([fn_parts[0], idx, fn_parts[1]])
+    
+    vid = data['lnk']
+    format_ = data['id']
+    # gen post info
+    post_info = player.getvkey(vid, format_ = format_, vt = vt, filename = filename)
+    # NOTE save post_info
+    f['_post_info'] = post_info
+    f['url'] = filename	# NOTE save filename in f.url
+    return f
+
+def _gen_one_final_url(f, server):
+    vkey = f.pop('_vkey')
+    filename = f['url']	# NOTE set filename to f.url
+    server_url = server['url']
+    if server_url[-1] != '/':
+        server_url += '/'
+    # make final url
+    out = server_url + filename + '?vkey=' + vkey
+    return out
 
 # end method_pc_flash_gate.py
 

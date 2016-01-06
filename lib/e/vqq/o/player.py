@@ -126,8 +126,6 @@ def getvclip(vid, idx, fmt, format_, vt, charge=0):
         'header' : post_header, 
     }
 
-# TODO
-
 
 # end player.py
 
