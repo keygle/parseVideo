@@ -18,11 +18,11 @@ def parse(method_arg_text):
         if r == 'fix_1080p':
             var._['flag_fix_1080p'] = True
             # NOTE fix_1080p requires hd range
-            if var._['hd_min'] > 2:
+            if (var._['hd_min'] != None) and (var._['hd_min'] > 2):
                 var._['hd_min'] = 2	# NOTE to fix_1080p, should get 720p video info
                 # WARNING log
                 log.w('set fix_1080p, auto set hd_min = 2 ')
-            if var._['hd_max'] < 4:
+            if (var._['hd_max'] != None) and (var._['hd_max'] < 4):
                 var._['hd_max'] = 4
                 # WARNING log
                 log.w('set fix_1080p, auto set hd_max = 4')
