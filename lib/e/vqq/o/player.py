@@ -4,6 +4,8 @@ import random
 
 from .. import var, bridge
 
+APP_VER = '3.2.19.346'
+
 # player global config data
 CGI_GETVINFO = 'http://vv.video.qq.com/getvinfo'
 CGI_GETKEY   = 'http://vv.video.qq.com/getvkey'

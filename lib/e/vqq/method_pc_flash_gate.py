@@ -131,30 +131,6 @@ def _get_video_info(vid_info):
     common.method_sort_video(out)
     return out
 
-# do one POST and get xml info
-def _do_one_post_xml(raw, log_debug=True, prefix=''):
-    # do log text
-    log_text = prefix + 'POST \"' + raw['url'] + '\" with data \"' + b.make_post_str(raw['post_data']) + '\" '
-    if log_debug:
-        log.d(log_text)	# DEBUG log
-    else:
-        log.i(log_text)	# INFO log
-    raw_blob = b.post_form(raw['url'], header=raw['header'], post_data=raw['post_data'])
-    # decode as xml, NOTE only support utf-8 encoding here
-    try:
-        raw_xml = raw_blob.decode('utf-8')
-    except Exception as e:
-        er = err.DecodingError('can not decode raw blob with utf-8 ')
-        er.blob = raw_blob
-        raise er from e
-    try:
-        root = ET.fromstring(raw_xml)
-    except Exception as e:
-        er = err.ParseXMLError('can not parse raw xml text ')
-        er.text = raw_xml
-        raise er from e
-    return root, raw_xml	# done
-
 def _get_first_xml_info(vid_info):
     # TODO support fast_parse here
     vid = vid_info['vid']
@@ -186,7 +162,7 @@ def _get_first_xml_info(vid_info):
             todo.append((i, post_info))
     pool_size = var._['pool_size']['get_formats']
     # INFO log
-    log.i('getting video info, count ' + str(len(todo)) + ', pool_size = ' + str(len(pool_size)) + ' ')
+    log.i('getting video info, count ' + str(len(todo)) + ', pool_size = ' + str(pool_size) + ' ')
     result = b.map_do(todo, worker=_dl_one_first, pool_size=pool_size)
     log.d('got video info (first) done ')
     # save result
@@ -207,6 +183,30 @@ def _dl_one_first(info):
     out['xml'] = raw_xml
     out['root'] = root
     return out
+
+# do one POST and get xml info
+def _do_one_post_xml(raw, log_debug=True, prefix=''):
+    # do log text
+    log_text = prefix + 'POST \"' + raw['url'] + '\" with data \"' + b.make_post_str(raw['post_data'], quote=True) + '\" '
+    if log_debug:
+        log.d(log_text)	# DEBUG log
+    else:
+        log.i(log_text)	# INFO log
+    raw_blob = b.post_form(raw['url'], header=raw['header'], post_data=raw['post_data'], quote=True)
+    # decode as xml, NOTE only support utf-8 encoding here
+    try:
+        raw_xml = raw_blob.decode('utf-8')
+    except Exception as e:
+        er = err.DecodingError('can not decode raw blob with utf-8 ')
+        er.blob = raw_blob
+        raise er from e
+    try:
+        root = ET.fromstring(raw_xml)
+    except Exception as e:
+        er = err.ParseXMLError('can not parse raw xml text ')
+        er.text = raw_xml
+        raise er from e
+    return root, raw_xml	# done
 
 def _parse_one_first(raw):
     try:

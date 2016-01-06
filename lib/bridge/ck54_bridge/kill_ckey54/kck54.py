@@ -8,7 +8,7 @@ from .echo_ckeyv3 import echo_ckeyv3
 etc = {}
 # default platform for gen ckey
 etc['enc_ver'] = '5.4'
-etc['player_version'] = '3.2.19.336'
+etc['player_version'] = '3.2.19.346'
 etc['default_platform'] = 11
 
 # NOTE should gen uuid here
