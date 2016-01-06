@@ -292,7 +292,7 @@ def _do_parse_one_first(root):
 
 def _fix_1080p(pvinfo):
     # TODO not support now
-    return pvinfo
+    pass
 
 def _get_file_urls(pvinfo):
     # NOTE just use first server here
@@ -319,10 +319,9 @@ def _get_file_urls(pvinfo):
     out = common.simple_get_file_urls(pvinfo, worker, msg='getting part file vkey', pool_size=pool_size)
     # gen final file URLs
     for v in out['video']:
-        for i in range(len(v['file'])):
-            f = v['file'][i]
+        for f in v['file']:
             if f['url'] != '':
-                v['file'][i] = _gen_one_final_url(f, server)
+                f['url'] = _gen_one_final_url(f, server)
     return out
 
 def _make_one_file_post_data(f, data, vt):

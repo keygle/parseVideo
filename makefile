@@ -1,5 +1,5 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.2.0 test201601022215
+# version 0.1.3.0 test201601062058
 
 # parse_video bin
 PV_BIN=./parsev
@@ -46,12 +46,14 @@ test_parse: \
 	test_parse_letv \
 	test_parse_hunantv \
 	test_parse_tvsohu \
-	test_parse_pptv
+	test_parse_pptv \
+	test_parse_vqq
 .PHONY: test_parse_bks1 \
 	test_parse_letv \
 	test_parse_hunantv \
 	test_parse_tvsohu \
-	test_parse_pptv
+	test_parse_pptv \
+	test_parse_vqq
 
 test_parse_bks1:
 	# pv_test:: INFO: parse test extractor bks1
@@ -80,6 +82,12 @@ test_parse_pptv:
 	$(PV_BIN) $(ET_URL_PPTV_1) -i 4
 	$(PV_BIN) $(ET_URL_PPTV_1) -M 0 --debug -m "pc_flash_gate"
 	$(PV_BIN) $(ET_URL_PPTV_1) -m "android"
+
+test_parse_vqq:
+	# pv_test:: INFO: parse test extractor vqq
+	$(PV_BIN) $(ET_URL_VQQ_1) -M 1 --debug
+	$(PV_BIN) $(ET_URL_VQQ_1) -i 2
+
 
 # test extractor --more mode support
 test_more: \
