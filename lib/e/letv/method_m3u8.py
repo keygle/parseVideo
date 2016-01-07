@@ -18,9 +18,9 @@ def parse(method_arg_text):
     # parse m3u8 to get video info
     pvinfo = _do_parse_one_m3u8(m3u8_blob)
     # count it
-    out = common.method_count_video(pvinfo)
+    common.method_simple_count(pvinfo)
     # NOTE not support enable_more here
-    return out
+    return pvinfo
 
 def _get_raw_m3u8(raw_url):
     # check download m3u8 file
@@ -46,6 +46,8 @@ def _get_raw_m3u8(raw_url):
     return blob
 
 def _do_parse_one_m3u8(raw):
+    # INFO log
+    log.i('decoding m3u8 file ')
     try:	# decode raw m3u8 data
         m3u8_text = method.decode_m3u8(raw)
     except Exception as e:

@@ -22,8 +22,8 @@ URL_TO_EXTRACTOR = {
     '^http://v\.pptv\.com/.+\.html' : 'pptv', 
     '^http://v\.qq\.com/.+' : 'vqq', 
     # NOTE for extractor letv method m3u8
-    '^file:///.+\.m3u8$', 	# TODO may be not stable
-    '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 
+    '^file:///.+\.m3u8$' : 'letv', 	# TODO may be not stable
+    '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'letv', 
 }
 
 
