@@ -23,6 +23,9 @@ def lyyc_about():
             '^http://www\.hunantv\.com/.+\.html', 
             '^http://tv\.sohu\.com/.+\.shtml', 
             '^http://v\.pptv\.com/.+\.html', 
+            # NOTE for letv.m3u8
+            '^file:///.+\.m3u8$', 	# TODO may be not stable
+            '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 

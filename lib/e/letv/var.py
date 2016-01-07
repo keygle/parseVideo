@@ -11,7 +11,8 @@ RE_SUPPORT_URL = [
     # http://www.letv.com/ptv/vplay/24143557.html
     '^http://www\.letv\.com/.+\.html', 
     # NOTE only for method m3u8
-    # TODO
+    '^file:///.+\.m3u8$', 	# NOTE support local m3u8 file, TODO may be not stable
+    '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 	# NOTE raw m3u8 file URL
 ]
 
 METHOD_LIST = [

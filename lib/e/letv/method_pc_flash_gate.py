@@ -9,10 +9,6 @@ from .o import (
     id_transfer, 
     gslb_item_data, 
 )
-try:
-    from .o import m3u8_encrypt2 as m3u8_encrypt
-except Exception:
-    from .o import m3u8_encrypt
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
@@ -112,17 +108,16 @@ def _get_file_urls(pvinfo):
     try:
         for v in pvinfo['video']:
             if '_data' in v:
-                v['_data'] = m3u8_encrypt.decode(v['_data'])
+                v['_data'] = method.decode_m3u8(v['_data'])
     except Exception as e:
         er = err.MethodError('decoding letv m3u8 blob failed')
         raise er from e
-    
     # DEBUG log, parse m3u8 and update video info
     log.d('parse letv m3u8 text to get video info ')
     try:
         for v in pvinfo['video']:
             if '_data' in v:
-                raw = _parse_m3u8(v['_data'])
+                raw = method.parse_m3u8(v['_data'])
                 # update video info
                 v['size_px'] = raw['size_px']
                 v['file'] = raw['file']
@@ -146,38 +141,6 @@ def _download_one_m3u8(info):
     log.d('got final m3u8 location \"' + location + '\" ')
     raw_m3u8 = b.dl_blob(location)
     return raw_m3u8
-
-# parse letv's m3u8 file text
-def _parse_m3u8(raw):
-    # check raw text
-    check_list = [
-        '#EXTM3U', 
-        '#EXT-X-VERSION:3', 
-        '#EXT-LETV-M3U8-TYPE:VOD', 
-        '#EXT-LETV-M3U8-VER:ver_00_22', 
-    ]
-    for c in check_list:
-        if not c in raw:
-            raise err.ParseError('letv m3u8 file format bad, not exist key value', c)
-    lines = raw.splitlines()
-    out = {}
-    # parse head lines, get size_px
-    out['size_px'] = [-1, -1]
-    while len(lines) > 0:
-        line, lines = lines[0], lines[1:]
-        if line.startswith('#EXT-LETV-START-TIME:'):
-            break
-        elif line.startswith('#EXT-LETV-PIC-WIDTH:'):
-            out['size_px'][0] = int(line.split(':', 1)[1])
-        elif line.startswith('#EXT-LETV-PIC-HEIGHT:'):
-            out['size_px'][1] = int(line.split(':', 1)[1])
-    # get file info, use base m3u8 parse function
-    out['file'] = b.simple_m3u8_parse(lines)
-    for f in out['file']:	# get size from url
-        filename = f['url'].split('?', 1)[0].rsplit('/', 1)[1]
-        size = filename.split('_')[-2]
-        f['size'] = int(size)	# update size
-    return out
 
 # end method_pc_flash_gate.py
 
