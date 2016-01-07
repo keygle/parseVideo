@@ -59,8 +59,9 @@ def _do_parse_one_m3u8(raw):
     except Exception as e:
         er = err.ParseError('parse m3u8 text failed')
         raise er from e
-    # add hd
+    # add hd, format
     v['hd'] = _get_hd_from_px(v['size_px'])
+    v['format'] = 'ts'	# NOTE file format here should be ts
     # create pvinfo
     out = {}
     out['info'] = {}
