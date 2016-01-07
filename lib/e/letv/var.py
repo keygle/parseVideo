@@ -10,11 +10,14 @@ SITE_NAME = '乐视网'
 RE_SUPPORT_URL = [
     # http://www.letv.com/ptv/vplay/24143557.html
     '^http://www\.letv\.com/.+\.html', 
+    # NOTE only for method m3u8
+    # TODO
 ]
 
 METHOD_LIST = [
     'pc_flash_gate', 
     'flvsp', 
+    'm3u8', 
 ]
 RE_VID_LIST = {
     'vid' : ' vid:([0-9]+),', 
