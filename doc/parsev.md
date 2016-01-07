@@ -2,9 +2,8 @@
    - language: Chinese (zh_cn) 
   -->
 
+# 负锐 视频解析 (parse_video) : 小型 纯解析 程序
 parse_video version 0.5.4.0
-
-# 负锐 视频解析 (parse_video) : 小而精 的 纯解析 程序
 
 
 ## 已支持网站 (6)
@@ -38,20 +37,6 @@ parse_video version 0.5.4.0
   + 清晰度 (画质) *太低* 的 *不考虑* 支持
 
 
-## -> version 0.5.x 特性
-
-+ 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
-
-+ 整合 原 `parse_video` 和 `evparse` 的 网站 支持. (`evparse` 已被 废弃)
-
-+ 原生内置 `bridge` 功能支持. 
-
-+ 继承 `parse_video version 0.4.x` 的 `method` 参数传递功能, 
-  以及命令行接口. (命令行参数格式)
-  
-  (`--min`, `--max`, `--i-min`, `--i-max`, `--extractor`, `--method`, `--debug`)
-
-
 ## 计划支持的网站 (2)
 (`extractor`)
 
@@ -64,14 +49,19 @@ parse_video version 0.5.4.0
 1. kankan
 
 
-## `bridge` 支持
+## version 0.5.x 特性
+
++ 原生提供 `lyyc` 插件接口. (默认输出 `LYYC_parsev 结构` 格式)
+
++ 原生内置 `bridge` 功能支持. 
+
+
+## TODO `bridge` 支持
 
 + `vqq`: 有关 `ckey5.4` 的 bridge
 + `271`: 有关 `salt` 的 *bridge* (*无颜* 系列)
 
-TODO
-
-## 专用 下载器
+## TODO 专用 下载器
 
 某些网站的视频文件下载方式, 不是普通的 http 下载方式. 
 使用 *通用下载工具* 难以取得良好的效果. 
@@ -79,8 +69,6 @@ TODO
 
 + `tvsohu`: 专用文件下载器 (`pv_tvsohu_http`)
 + `kankan_flv`: 专用 flv 视频文件下载器
-
-TODO
 
 
 <!-- end parsev.md -->
