@@ -22,6 +22,7 @@ METHOD_LIST = [
 ]
 RE_VID_LIST = {
     'vid' : ' vid:([0-9]+),', 
+    'pid' : ' pid:([0-9]+),', 
 }
 # site rateid to parse_video hd quality
 TO_HD = {
@@ -42,6 +43,7 @@ class VarData(common.ExtractorVar):
         out['pool_size']['get_m3u8'] = 8
         
         out['flag_fast_parse'] = False
+        out['flag_v'] = False
         # private data
         out['_raw_first_json'] = ''
         return out

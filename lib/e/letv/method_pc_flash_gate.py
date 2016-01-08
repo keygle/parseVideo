@@ -9,6 +9,7 @@ from .o import (
     id_transfer, 
     gslb_item_data, 
 )
+from .vv import vv_default
 
 # method_pc_flash_gate.parse(), entry function
 def parse(method_arg_text):
@@ -17,6 +18,8 @@ def parse(method_arg_text):
     def rest(r):
         if r == 'fast_parse':
             var._['flag_fast_parse'] = True
+        elif r == 'set_flag_v':
+            var._['flag_v'] = True
         else:	# unknow args
             return True
     common.method_parse_method_args(method_arg_text, var, rest)
@@ -25,6 +28,9 @@ def parse(method_arg_text):
     pvinfo = _get_video_info(vid_info)
     if var._['flag_fast_parse']:	# NOTE support fast_parse here
         pvinfo = _select_fast_parse(pvinfo)
+    # NOTE check flag_v
+    if var._['flag_v']:
+        pvinfo = vv_default.add_args(pvinfo)
     out = _get_file_urls(pvinfo)
     out = _count_and_select(out)	# NOTE count after get file urls
     out = method.check_enable_more(out)
@@ -65,6 +71,7 @@ def _parse_one_video_info(vid, domain, dispatch):
     # gen video info URL
     raw_url = d + raw_dispatch[0]
     out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
+    out['_data']['filename'] = raw_dispatch[1]	# NOTE add for vv
     return out
 
 def _select_fast_parse(pvinfo):
