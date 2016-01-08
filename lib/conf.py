@@ -26,6 +26,14 @@ URL_TO_EXTRACTOR = {
     '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'letv', 
 }
 
+# overwrite extractor default method by URL RE match
+OVERWRITE_EXTRACTOR_METHOD = {
+    'letv' : {
+        '^file:///.+\.m3u8$' : 'm3u8',
+        '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'm3u8', 
+    }, 
+}
+
 
 PV_LOG_PREFIX = 'pv::'
 

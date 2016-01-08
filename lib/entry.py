@@ -61,7 +61,7 @@ def _do_parse(raw_url, raw_extractor='', raw_method=''):
     e = _import_extractor(extractor_id)
     # check default method
     if raw_method == '':
-        raw_method = conf.DEFAULT_METHOD[extractor_id]
+        raw_method = _auto_get_method(extractor_id, raw_url)
     # DEBUG log
     log.d('use extractor \"' + extractor_id + '\", raw_extractor = \"' + raw_extractor + '\" ')
     # call extractor to parse
@@ -141,6 +141,15 @@ def _gen_last_update():
 
 def _restruct_pvinfo(pvinfo):
     return restruct.restruct_pvinfo(pvinfo)
+
+# used for auto overwrite default method by raw_url
+def _auto_get_method(extractor_id, raw_url):
+    raw_method = conf.DEFAULT_METHOD[extractor_id]
+    for re_text, method_text in conf.OVERWRITE_EXTRACTOR_METHOD.get(extractor_id, {}).items():
+        if len(re.findall(re_text, raw_url)) > 0:
+            log.d('overwrite extractor method to \"' + method_text + '\" ')
+            return method_text
+    return raw_method
 
 # end entry.py
 
