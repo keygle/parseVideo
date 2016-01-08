@@ -15,33 +15,33 @@ etc['vv_conf'] = None
 
 
 # add args to before urls
-def add_args(pvinfo):
+def add_args(pvinfo, a_idx=''):
+    # TODO a_idx support
+    # TODO Error process
     # TODO use map_do
     # INFO log
     log.i('adding args for vv ')
+    pid = var._['_vid_info']['pid']
     for v in pvinfo['video']:
         if '_data' in v:
-            v['_data'] = _add_one_arg(v['_data'])
+            d = v['_data']
+            filename = d['filename']
+            d['url'] = make_one_url(d['url'], pid, filename)
     return pvinfo
 
-# TODO a_idx support
-def _add_one_arg(data, a_idx=''):
-    filename = data['filename']
-    pid = var._['_vid_info']['pid']
+def make_one_url(raw, pid, filename):
     # get token info
     tinfo = get_token(pid, filename)
     # TODO use .o. add args code
     # add more args
-    raw = data['url']
-    raw += '&pay=1'
-    raw += '&uinfo=' + tinfo['uinfo']
-    raw += '&iscpn=f9051'
-    raw += '&uuid=' + tinfo['uuid']
-    raw += '&a_idx=' + a_idx
-    raw += '&token=' + tinfo['token']
-    raw += '&uid=' + tinfo['uid']
-    data['url'] = raw	# update url
-    return data
+    out = raw + '&pay=1'
+    out += '&uinfo=' + tinfo['uinfo']
+    out += '&iscpn=f9051'
+    out += '&uuid=' + tinfo['uuid']
+    out += '&a_idx=' + a_idx
+    out += '&token=' + tinfo['token']
+    out += '&uid=' + tinfo['uid']
+    return out
 
 def get_token(pid, filepath):
     info = _load_vv_conf()
