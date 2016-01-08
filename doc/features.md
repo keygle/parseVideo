@@ -8,8 +8,8 @@ parse_video version 0.5.4.0
 | extractor | `method` | quality | format | `--more` |     |
 | :-------- | :------- | :-----: | :----- | :------- | :-- |
 | bks1      | pc_flash_gate | `4K`          | flv         | *first_json* | `checksum.md5`, (w) |
-| letv      | pc_flash_gate | 1080p         | *ts* (m3u8) | vid_info     | |
-|           | `flvsp`       |               | mp4 *(单段)* |              | |
+| letv      | pc_flash_gate | 1080p         | *ts* (m3u8) | vid_info     | (w) |
+|           | `flvsp`       |               | mp4 *(单段)* |              | (w) |
 |           | *m3u8*        |               | *ts* (m3u8) | 不支持        | 支持 m3u8 URL 或 本地 m3u8 文件 |
 | hunantv   | pc_flash_gate | *720p*        | *m3u8*      | vid_info     | |
 |           | `flvsp`       |               | mp4 *(单段)* |              | |
