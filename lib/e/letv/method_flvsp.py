@@ -20,7 +20,7 @@ def parse(method_arg_text):
         if r == 'set_flag_v':	# TODO DEBUG here
             var._['flag_v'] = True
         else:	# unknow args
-        return True
+            return True
     common.method_parse_method_args(method_arg_text, var, rest)
     
     vid_info = method.get_vid_info()
@@ -31,7 +31,7 @@ def parse(method_arg_text):
         pvinfo = _add_args(pvinfo)
     common.method_simple_count(pvinfo)	# NOTE just count, not select
     # remove _data in video
-    for v in pvinfo:
+    for v in pvinfo['video']:
         if '_data' in v:
             v.pop('_data')
     out = method.check_enable_more(pvinfo)
@@ -84,7 +84,7 @@ def _gen_one_file_url(raw):
     return out
 
 # add args for vv
-def _add_args(pvinfo):
+def _add_args(pvinfo, a_idx=''):
     # INFO log
     log.i('adding args for vv ')
     # TODO clean code here
@@ -97,7 +97,7 @@ def _add_args(pvinfo):
         d = v['_data']
         filename = d['filename']
         f = v['file'][0]
-        f['url'] = vv_default.make_one_url(f['url'], pid, filename)
+        f['url'] = vv_default.make_one_url(f['url'], pid, filename, a_idx=a_idx)
     return pvinfo
 
 # end method_flvsp.py

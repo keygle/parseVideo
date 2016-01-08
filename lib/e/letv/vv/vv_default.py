@@ -26,10 +26,10 @@ def add_args(pvinfo, a_idx=''):
         if '_data' in v:
             d = v['_data']
             filename = d['filename']
-            d['url'] = make_one_url(d['url'], pid, filename)
+            d['url'] = make_one_url(d['url'], pid, filename, a_idx=a_idx)
     return pvinfo
 
-def make_one_url(raw, pid, filename):
+def make_one_url(raw, pid, filename, a_idx=''):
     # get token info
     tinfo = get_token(pid, filename)
     # TODO use .o. add args code
