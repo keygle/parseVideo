@@ -18,11 +18,30 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from . import log
-from . import err, b, conf
+from . import err, conf, log
+from . import b
 from . import parse, make_title, dl_worker, merge
 from . import lan
 
+
+def entry():
+    pass
+
+# TODO
+def _retry_error():
+    pass
+
+def _select_hd():
+    pass
+
+def _create_task():
+    pass
+
+def _check_log_file():
+    pass
+
+def _check_lock_file():
+    pass
 
 # TODO
 # end entry.py

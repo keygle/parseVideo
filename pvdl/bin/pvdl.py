@@ -43,9 +43,11 @@ def print_help():
 Usage: pvdl [OPTION]... URL
 pvdl: A reference implemention of a downloader which uses parse_video. 
 
-      --hd HD        set hd to select
-  -o, --output DIR   save downloaded file to DIR
-      --retry TIMES  set retry times
+      --hd HD                set hd to select
+  -o, --output DIR           save downloaded file to DIR
+      --title-suffix SUFFIX  add suffix to resolve name conflicts
+      --retry TIMES          set retry times
+      --retry-wait SECONDS   wait seconds before retry
       
       --enable FEATURE   enable pvdl features
       --disable FEATURE  disable pvdl features
@@ -67,9 +69,16 @@ def print_version():
 def print_license():
     pass
 
+# NOTE main function
+def main(args):
+    pass
 
+# process args
+def p_args(args):
+    pass
 # TODO
 
+# TODO
 # end pvdl.py
 
 

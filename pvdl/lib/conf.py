@@ -5,12 +5,12 @@
 auto_select_hd = [-1, 8]
 
 # save downloaded file here
-output_dir = './dl/'
+output_dir = './dl/'	# --output
 
 # error retry times
-error_retry = 3		# -1 means retry forever
+error_retry = 3		# -1 means retry forever; --retry
 # before error_retry, first sleep some time
-retry_wait_time_s = 1
+retry_wait_time_s = 1	# --retry-wait
 
 
 
@@ -22,7 +22,7 @@ retry_wait_time_s = 1
 merge_output_format = 'mp4'	# NOTE other formats may not work
 
 # enable and disable pvdl features
-FEATURES = {
+FEATURES = {	# --enable, --disable
     ## parse stage
     'fix_size' : True, 	# if parse_video not get part file size, try to fix it here
     'force_enable_more' : False, 	# each time use log file to enable_more
@@ -75,7 +75,28 @@ CHECK_ERR_K = {	# NOTE -1 means unlimit
 }
 
 
+# pvdl call subprocess bin file
+SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
+    'parsev' : '../parsev', 
+    'wget' : 'wget', 
+    'ffmpeg' : 'ffmpeg', 
+    'mediainfo' : 'mediainfo', 
+}
+
+
 PVDL_LOG_PREFIX = 'pvdl::'
+
+
+## more data here, global common data
+raw_url = ''
+raw_args = []	# --, raw args passed to parse_video
+pvinfo = None
+task_info = None
+
+select_hd = None	# --hd
+title_suffix = None	# --title-suffix
+
+flag_debug = False	# --debug
 
 # end conf.py
 

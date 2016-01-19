@@ -5,8 +5,9 @@
 Exception
     PvdlError
         UnknowError
-        CallError
         ConfigError
+        CallError
+        ExitCodeError
         CheckError
         
         RetryableError
@@ -22,9 +23,11 @@ class PvdlError(Exception):
 
 class UnknowError(PvdlError):
     pass
+class ConfigError(PvdlError):
+    pass
 class CallError(PvdlError):
     pass
-class ConfigError(PvdlError):
+class ExitCodeError(PvdlError):
     pass
 class CheckError(PvdlError):
     pass
