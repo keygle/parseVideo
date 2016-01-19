@@ -28,17 +28,19 @@ TODO support options (new functions)
 TODO
 '''
 
-from lib import entry, log, lan
+from lib import entry, log, lan, err, conf
 
 VERSION_STR = 'pvdl version 0.0.1.0 test201601191216'
 
 # global data
 etc = {}
+etc['start_mode'] = 'normal'	# ['normal', '--help', '--version', '--license']
+
 # TODO
 
 # print functions
 
-def print_help():
+def p_help():
     print('''\
 Usage: pvdl [OPTION]... URL
 pvdl: A reference implemention of a downloader which uses parse_video. 
@@ -63,20 +65,122 @@ pvdl: A reference implemention of a downloader which uses parse_video.
 More information online: <https://github.com/sceext2/parse_video> \
 ''')
 
-def print_version():
+def p_version():
+    print(VERSION_STR)
+    # TODO
+    log.w('print version not finished ')
+
+def p_license():
+    log.w('print license () not finished ')
     pass
 
-def print_license():
-    pass
+def p_cline_err():
+    log.e('bad command line format, please try \"--help\". ')
 
 # NOTE main function
 def main(args):
-    pass
+    try:
+        p_args(args)
+    except Exception:
+        p_cline_err()
+        raise
+    # check main start mode
+    mode_list = {
+        'normal' : start_normal, 
+        '--help' : p_help, 
+        '--version' : p_version, 
+        '--license' : p_license, 
+    }
+    worker = mode_list[etc['start_mode']]
+    worker()
+    # end main
 
-# process args
+# process command line args
 def p_args(args):
-    pass
+    rest = args.copy()
+    while len(rest) > 0:
+        one, rest = rest[0], rest[1:]
+        # --help, --version, --license
+        if one in ['--help', '--version', '--license']:
+            if etc['start_mode'] == '--help':
+                log.e('already set start_mode to \"' + etc['start_mode'] + '\", can not set to \"' + one + '\" ')
+                continue
+            elif etc['start_mode'] != 'normal':
+                log.w('already set start_mode to \"' + etc['start_mode'] + '\", now set to \"' + one + '\" ')
+            etc['start_mode'] = one
+        # enable disable features
+        elif one in ['--disable', '--enable']:
+            text_to_enable = {
+                '--disable' : False, 
+                '--enable' : True, 
+            }
+            raw, rest = rest[0], rest[1:]
+            disable_enable_features(raw, text_to_enable(one))
+        # directly pass args to parse_video
+        elif one == '--':
+            conf.raw_args = rest
+            break	# NOTE stop parse args
+        # set config
+        elif one == '--hd':
+            hd, rest = rest[0], rest[1:]
+            hd = float(hd)
+            if conf.select_hd != None:
+                log.w('already set hd to ' + str(conf.select_hd) + ', now set to ' + str(hd) + ' ')
+            conf.select_hd = hd
+        elif one in ['-o', '--output']:
+            output, rest = rest[0], rest[1:]
+            if conf.set_output != conf.output_dir:
+                log.w('already set output to \"' + conf.set_output + '\", now set to \"' + output + '\" ')
+            conf.set_output = output
+        elif one == '--title-suffix':
+            suffix, rest = rest[0], rest[1:]
+            if conf.title_suffix != None:
+                log.w('already set suffix to \"' + conf.title_suffix + '\", now set to \"' + suffix + '\" ')
+            conf.title_suffix = suffix
+        elif one == '--retry':
+            retry, rest = rest[0], rest[1:]
+            retry = int(retry)
+            if conf.set_retry != conf.error_retry:
+                log.w('already set retry to ' + str(conf.set_retry) + ', now set to ' + str(retry) + ' ')
+            conf.set_retry = retry
+        elif one == '--retry-wait':
+            wait, rest = rest[0], rest[1:]
+            wait = float(wait)
+            if conf.set_retry_wait != conf.retry_wait_time_s:
+                log.w('already set retry to ' + str(conf.set_retry_wait) + ', now set to ' + str(wait) + ' ')
+            conf.set_retry_wait = wait
+        # DEBUG mode
+        elif one in ['-d', '--debug']:
+            if conf.flag_debug:
+                log.w('already set debug mode ')
+            conf.flag_debug = True
+        else:	# NOTE set URL
+            if conf.raw_url != '':
+                log.w('already set raw_url to \"' + conf.raw_url + '\", now set to \"' + one + '\" ')
+            conf.raw_url = one
+    # end p_args
+
+def disable_enable_features(raw, enable=False):
+    enable_to_text = {
+        False : 'disable', 
+        True : 'enable', 
+    }
+    feature_list = raw.split(',')
+    for f in feature_list:
+        if not f in conf.FEATURES:
+            log.e('can not ' + enable_to_text(enable) + ' feature [' + f + '], no such feature ')
+            raise err.ConfigError('no such feature', f)
+        elif conf.FEATURES[f] == enable:
+            log.w('already ' + enable_to_text(enable) + ' feature [' + f + '] ')
+        conf.FEATURES[f] = enable
+    # end disable_enable_features
+
+
 # TODO
+# normal start mode
+def start_normal():
+    log.w('start_normal() not finished ')
+    pass
 
 def input_url():
     pass

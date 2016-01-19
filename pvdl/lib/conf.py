@@ -101,11 +101,16 @@ FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 ## more data here, global common data
 raw_url = ''
 raw_args = []	# --, raw args passed to parse_video
+
 pvinfo = None
 task_info = None
 
 select_hd = None	# --hd
 title_suffix = None	# --title-suffix
+# overwrite default values
+set_output = output_dir
+set_retry = error_retry
+set_retry_wait = retry_wait_time_s
 
 flag_debug = False	# --debug
 
