@@ -24,7 +24,8 @@ from . import parse, make_title, dl_worker, merge
 from . import lan
 
 
-def entry():
+def start():
+    log.w('entry.start() not finished ')
     pass
 
 # TODO

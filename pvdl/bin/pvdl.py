@@ -36,7 +36,6 @@ VERSION_STR = 'pvdl version 0.0.1.0 test201601191216'
 etc = {}
 etc['start_mode'] = 'normal'	# ['normal', '--help', '--version', '--license']
 
-# TODO
 
 # print functions
 
@@ -115,7 +114,7 @@ def p_args(args):
                 '--enable' : True, 
             }
             raw, rest = rest[0], rest[1:]
-            disable_enable_features(raw, text_to_enable(one))
+            disable_enable_features(raw, text_to_enable[one])
         # directly pass args to parse_video
         elif one == '--':
             conf.raw_args = rest
@@ -168,24 +167,44 @@ def disable_enable_features(raw, enable=False):
     feature_list = raw.split(',')
     for f in feature_list:
         if not f in conf.FEATURES:
-            log.e('can not ' + enable_to_text(enable) + ' feature [' + f + '], no such feature ')
+            log.e('can not ' + enable_to_text[enable] + ' feature [' + f + '], no such feature ')
             raise err.ConfigError('no such feature', f)
         elif conf.FEATURES[f] == enable:
-            log.w('already ' + enable_to_text(enable) + ' feature [' + f + '] ')
+            log.w('already ' + enable_to_text[enable] + ' feature [' + f + '] ')
         conf.FEATURES[f] = enable
     # end disable_enable_features
 
 
-# TODO
 # normal start mode
 def start_normal():
-    log.w('start_normal() not finished ')
-    pass
+    # check input_url
+    if conf.raw_url == '':
+        conf.raw_url = input_url()
+    # just start pvdl
+    try:
+        entry.start()
+    except err.PvdlError:
+        raise
+    except Exception as e:
+        log.e('unknow pvdl Error ')	# TODO improve output here
+        er = err.UnknowError('unknow pvdl error')
+        raise er from e
 
 def input_url():
-    pass
+    from colored import fg, attr
+    log.p(attr('reset') + fg('light_yellow'), end='')
+    log.p('pvdl:: please input URL of a video play page: ', end='')
+    log.p(attr('reset') + fg('white') + attr('bold'), end='')
+    raw = input()
+    log.p(attr('reset'), end='')
+    # check input URL
+    out = raw.strip()
+    if out == '':
+        log.e('can not input empty URL ')
+        raise err.ConfigError('input empty URL', out)
+    return out
 
-# TODO
+
 # end pvdl.py
 
 

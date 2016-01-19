@@ -17,8 +17,8 @@ def _p(t, file=sys.stderr, *k, **kk):
     print(t, file=file, *k, **kk)
 
 # prefix print function
-def _pp(raw, prefix='', *k, **kk):
-    t = conf.PVDL_LOG_PREFIX + prefix + raw
+def _pp(raw, prefix='', color=attr('reset'), *k, **kk):
+    t = color + conf.PVDL_LOG_PREFIX + prefix + raw + attr('reset')
     _p(t, *k, **kk)
 
 # exports log functions
@@ -26,17 +26,20 @@ def _pp(raw, prefix='', *k, **kk):
 def p(t, *k, **kk):	# just print, no prefix
     _p(t, *k, **kk)
 
-# TODO color output support
-def e(t, *k, **kk):	# ERROR
-    _pp(t, prefix='ERROR: ', *k, **kk)
-def w(t, *k, **kk):	# WARNING
-    _pp(t, prefix='WARNING: ', *k, **kk)
-def i(t, *k, **kk):	# INFO
-    _pp(t, prefix='INFO: ', *k, **kk)
-def o(t, *k, **kk):	# [ OK ]
-    _pp(t, prefix='[ OK ] ', *k, **kk)
-def d(t, *k, **kk):	# DEBUG
-    _pp(t, prefix='DEBUG: ', *k, **kk)
+def e(t, color=fg('light_red'), *k, **kk):	# ERROR
+    _pp(t, prefix='ERROR: ', color=color, *k, **kk)
+
+def w(t, color=fg('orange_1'), *k, **kk):	# WARNING
+    _pp(t, prefix='WARNING: ', color=color, *k, **kk)
+
+def i(t, color=fg('light_yellow'), *k, **kk):	# INFO
+    _pp(t, prefix='INFO: ', color=color, *k, **kk)
+
+def o(t, color=fg('light_blue'), *k, **kk):	# [ OK ]
+    _pp(t, prefix='[ OK ] ', color=color, *k, **kk)
+
+def d(t, color=fg('grey_50'), *k, **kk):	# DEBUG
+    _pp(t, prefix='DEBUG: ', color=color, *k, **kk)
 
 def raw(t, *k, **kk):
     _pp(t, *k, **kk)
