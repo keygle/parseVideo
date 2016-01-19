@@ -23,6 +23,10 @@ If you use `ArchLinux`, you can install them by:
  # pacman -S --needed wget ffmpeg mediainfo
 ```
 
+*python modules*
+
++ `colored` (version 1.2 or later)
+
 
 ## Usage
 
