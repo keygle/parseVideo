@@ -9,6 +9,9 @@ def merge():
 def _do_merge():
     pass
 
+def _check_force_merge():
+    pass
+
 def _gen_ffmpeg_merge_list():
     pass
 

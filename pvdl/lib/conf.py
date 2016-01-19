@@ -46,12 +46,20 @@ FEATURES = {	# --enable, --disable
     'check_merged_size' : True, 	# check merged file size
     'check_merged_time' : True, 	# check merged video time, if possible (requires mediainfo)
     
+    'force_merge' : False, 	# remove output file and continue merge, if output file already exists
+    
     ## other options
     'parse_twice' : True, 	# (TODO support it) first parse only to get video formats, second parse to get file URLs
     'parse_twice_enable_more' : True, 	# enable_more to speed up second parse
     'merge_single_file' : True, 	# do merge with single file (only one part file) (This is required for check_merged_time)
     
+    'check_disk_space' : False, 	# before download to check disk space, and stop when space is not enough
+    'check_permission' : False, 	# check permission to write files
+    
     'fix_unicode' : False, 	# fix_unicode is only for Windows
+    
+    ## DANGER options
+    'auto_remove_tmp_files' : False, 	# remove pvdl tmp files after download succeed; require enable check_merged_time and merge_single_file
 }
 
 
@@ -85,6 +93,7 @@ SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
 
 
 PVDL_LOG_PREFIX = 'pvdl::'
+FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 
 
 ## more data here, global common data

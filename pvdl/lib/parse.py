@@ -15,6 +15,12 @@ def _check_add_enable_more():
 def _fix_size():
     pass
 
+def _create_task():
+    pass
+
+def _check_log_file():
+    pass
+
 # TODO
 # end parse.py
 

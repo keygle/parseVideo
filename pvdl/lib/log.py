@@ -8,6 +8,9 @@ from . import conf
 
 # exports log functions
 
+def p(t):	# just print
+    pass
+
 def e(t):	# ERROR
     pass
 

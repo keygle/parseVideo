@@ -4,8 +4,25 @@ from . import b
 from . import err, conf
 
 # main pvdl video 'title' format
-def gen_title():
-    pass
+def gen_title():	# TODO
+    # TODO get needed info
+    title = ''
+    quality = ''
+    site = ''
+    title_no = 0
+    title_sub = ''
+    
+    raw = _do_gen_title(title, quality, site, title_no=title_no, title_sub=title_sub)
+    out = b.replace_filename_bad_char(raw)
+    return out
+
+def _do_gen_title(title, quality, site, title_no=-1, title_sub=''):
+    if title_no < 0:
+        title_no = ''
+    else:
+        title_no = b.num_len(title_no, 4)
+    out = ('_').join([title_no, title, title_sub, quality, site])
+    return out
 
 # gen pvdl download filename and paths
 

@@ -25,7 +25,9 @@ If you use `ArchLinux`, you can install them by:
 
 *python modules*
 
-+ `colored` (version 1.2 or later)
++ `colored` (version 1.2 or later) <https://pypi.python.org/pypi/colored/>
+
+please use `# pip install colored --upgrade` to install it. 
 
 
 ## Usage

@@ -34,13 +34,16 @@ def _retry_error():
 def _select_hd():
     pass
 
-def _create_task():
-    pass
-
-def _check_log_file():
-    pass
-
 def _check_lock_file():
+    pass
+
+def _check_disk_space():
+    pass
+
+def _check_permission():
+    pass	# TODO
+
+def _auto_remove_tmp_files():
     pass
 
 # TODO

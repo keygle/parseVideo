@@ -28,7 +28,7 @@ TODO support options (new functions)
 TODO
 '''
 
-from lib import entry
+from lib import entry, log, lan
 
 VERSION_STR = 'pvdl version 0.0.1.0 test201601191216'
 
@@ -77,6 +77,9 @@ def main(args):
 def p_args(args):
     pass
 # TODO
+
+def input_url():
+    pass
 
 # TODO
 # end pvdl.py
