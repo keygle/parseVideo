@@ -30,7 +30,7 @@ TODO
 
 from lib import entry, log, lan, err, conf
 
-VERSION_STR = 'pvdl version 0.0.1.0 test201601191216'
+VERSION_STR = 'pvdl version 0.0.2.0 test201601200103'
 
 # global data
 etc = {}

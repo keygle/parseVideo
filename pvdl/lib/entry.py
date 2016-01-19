@@ -18,6 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import colored
+
 from . import err, conf, log
 from . import b
 from . import parse, make_title, dl_worker, merge
@@ -36,12 +38,11 @@ def start():
     labels = make_title.gen_labels(pvinfo)
     # [ OK ] log here
     log.o('got ' + str(len(labels)) + ' video formats ')
-    for l in labels:
-        log.p(l)
+    for i in range(len(labels) -1, -1, -1):	# NOTE print labels reverse
+        log.p(labels[i])
     # print video name (title)
     common_title = make_title.gen_common_title(pvinfo)
-    # INFO log
-    log.i('video ' + common_title + ' ')
+    log.p(colored.fg('blue') + 'video ' + colored.fg('light_blue') + colored.attr('bold') + common_title + colored.attr('reset') + ' ')
     
     # TODO select hd
     

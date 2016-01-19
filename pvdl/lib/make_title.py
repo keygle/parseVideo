@@ -1,5 +1,7 @@
 # make_title.py, parse_video/pvdl/lib/
 
+import math
+
 from . import b
 from . import err, conf
 
@@ -84,7 +86,7 @@ def _make_label(video):
     for i in range(video_len):	# process hd text like -1
         if not label_info[i][0].startswith('-'):
             label_info[i][0] = ' ' + label_info[i][0]
-    out = _label_just_str(0, out, label_info)
+    out = _label_just_str(0, out, label_info, fill=' ')
     # add quality
     quality_max_len = 0
     for i in range(video_len):
@@ -93,15 +95,15 @@ def _make_label(video):
             quality_max_len = l
     quality_max_len += 1
     for i in range(video_len):
-        out[i] += _quality_ljust(label_info[i][1], quality_max_len)
+        out[i] += _quality_ljust(label_info[i][1], quality_max_len, fill=' ')
     # add px and bitrate
     for i in [2, 3]:
-        out = _label_just_str(i, out, label_info, rjust=True)
+        out = _label_just_str(i, out, label_info, rjust=True, fill=' ')
     # add time
-    out = _label_just_str(4, out, label_info)
+    out = _label_just_str(4, out, label_info, fill=' ')
     # add count and format
     for i in [5, 6]:
-        out = _label_just_str(i, out, label_info, rjust=True)
+        out = _label_just_str(i, out, label_info, rjust=True, fill=' ')
     # add size_byte
     out = _label_just_str(7, out, label_info, rjust=True, fill=' ')
     # remove last _ char

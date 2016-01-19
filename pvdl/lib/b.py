@@ -1,6 +1,7 @@
 # b.py, parse_video/pvdl/lib/
 
 import os, sys
+import math
 
 from . import conf
 
@@ -62,7 +63,7 @@ def byte_to_size(size_byte, flag_add_byte=True):
     return size_str
 
 def second_to_time(time_s):
-    raw = _number(time_s)
+    raw = number(time_s)
     sec = math.floor(raw)
     ms = raw - sec
     minute = math.floor(sec / 60)
