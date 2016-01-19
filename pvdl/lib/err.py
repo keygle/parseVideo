@@ -15,6 +15,9 @@ Exception
             DownloadError
         RetryError
         MergeError
+        
+        DecodingError
+        ParseJSONError
 
 '''
 
@@ -44,6 +47,10 @@ class RetryError(PvdlError):
 class MergeError(PvdlError):
     pass
 
+class DecodingError(PvdlError):
+    pass
+class ParseJSONError(PvdlError):
+    pass
 
 # end err.py
 

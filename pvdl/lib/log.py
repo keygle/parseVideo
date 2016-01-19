@@ -1,16 +1,13 @@
 # log.py, parse_video/pvdl/lib/
 
-# TODO color output support
 # TODO debug log in functions (package) support
 # TODO turn off DEBUG log support
 
 import sys
-
 from colored import fg, bg, attr
 
 from . import conf
 
-# TODO
 
 # base print functions
 def _p(t, file=sys.stderr, *k, **kk):

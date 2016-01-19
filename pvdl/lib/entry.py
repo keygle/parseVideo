@@ -25,6 +25,28 @@ from . import lan
 
 
 def start():
+    # TODO support retry
+    
+    # TODO support parse_twice
+    # TODO support parse_twice_enable_more
+    
+    # do first parse to get video formats
+    pvinfo = parse.parse()
+    # gen format labels and print it
+    labels = make_title.gen_labels(pvinfo)
+    # [ OK ] log here
+    log.o('got ' + str(len(labels)) + ' video formats ')
+    for l in labels:
+        log.p(l)
+    # print video name (title)
+    common_title = make_title.gen_common_title(pvinfo)
+    # INFO log
+    log.i('video ' + common_title + ' ')
+    
+    # TODO select hd
+    
+    # TODO create task
+    
     log.w('entry.start() not finished ')
     pass
 

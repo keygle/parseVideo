@@ -24,8 +24,7 @@ merge_output_format = 'mp4'	# NOTE other formats may not work
 # enable and disable pvdl features
 FEATURES = {	# --enable, --disable
     ## parse stage
-    'fix_size' : True, 			# TODO if parse_video not get part file size, try to fix it here
-    'force_enable_more' : False, 	# TODO each time use log file to enable_more
+    'fix_size' : True, 			# if parse_video not get part file size, try to fix it here
     
     # create task
     'check_log_file' : True, 		# TODO check log file if exists, and stop if not match
@@ -58,7 +57,7 @@ FEATURES = {	# --enable, --disable
     'check_disk_space' : False, 	# TODO before download to check disk space, and stop when space is not enough
     'check_permission' : False, 	# TODO check permission to write files
     
-    'fix_unicode' : False, 		# TODO fix_unicode is only for Windows
+    'fix_unicode' : False, 		# fix_unicode is only for Windows
     
     ## DANGER options
     'auto_remove_tmp_files' : False, 	# TODO remove pvdl tmp files after download succeed; require enable check_merged_time and merge_single_file
@@ -96,6 +95,7 @@ SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
 
 PVDL_LOG_PREFIX = 'pvdl::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
+FILENAME_REPLACE = '-'
 
 
 ## more data here, global common data
