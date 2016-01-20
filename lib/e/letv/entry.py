@@ -13,6 +13,8 @@ class Entry(common.ExtractorEntry):
             from . import method_pc_flash_gate as method_worker
         elif method == 'flvsp':
             from . import method_flvsp as method_worker
+        elif method == 'm3u8':
+            from . import method_m3u8 as method_worker
         else:
             raise err.ConfigError(log_text.entry_err_no_method(method))
         log.d(log_text.entry_log_use_method(method, method_arg_text))

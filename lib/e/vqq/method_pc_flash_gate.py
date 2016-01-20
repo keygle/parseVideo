@@ -105,7 +105,14 @@ def _get_vid_info(raw_html_text):
             out['vid'] = uparts['vid']
             out['title_no'] = -1	# NOTE fix title_no here
             log.d('reset vid to \"' + out['vid'] + '\" to fix URL \"' + raw_url + '\" ')
-    out['title_no'] = int(out['title_no'])	# FIXME may be Error here
+    try:	# NOTE fix Error here, int(title_no)
+        out['title_no'] = int(out['title_no'])
+    except Exception as e:
+        # WARNING log
+        log.w('get title_no failed, \"' + str(out['title_no']) + '\", ' + str(e) + ' ')
+        out['title_sub'] += '-' + str(out['title_no'])	# NOTE add title_no to title_sub first
+        # get title_no failed, NOTE reset title_no
+        out['title_no'] = -1
     return out	# get vid_info done
 
 def _get_video_info(vid_info):

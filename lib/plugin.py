@@ -13,7 +13,7 @@ def lyyc_about():
         'port_version' : '0.1.0', 
         'type' : 'parse', 
         'uuid' : 'cf01a87e-d4b1-4c49-bd87-b21392559cb9', 
-        'version' : '0.5.3.0', 
+        'version' : '0.5.4.0', 
         'name' : 'parse_video', 
         'note' : '负锐视频解析 \n parse_video for lyyc_plugin. ', 
         
@@ -23,6 +23,9 @@ def lyyc_about():
             '^http://www\.hunantv\.com/.+\.html', 
             '^http://tv\.sohu\.com/.+\.shtml', 
             '^http://v\.pptv\.com/.+\.html', 
+            # NOTE for letv.m3u8
+            '^file:///.+\.m3u8$', 	# TODO may be not stable
+            '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 
         ], 
         
         'author' : 'sceext <sceext@foxmail.com> ', 

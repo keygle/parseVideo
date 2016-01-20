@@ -2,6 +2,7 @@
 
 # config file path
 e_bks1_vv_conf = 'private.e_bks1_vv.conf.json'
+e_letv_vv_conf = 'private.e_letv_vv.conf.json'
 
 # default method for extractors
 DEFAULT_METHOD = {
@@ -21,6 +22,17 @@ URL_TO_EXTRACTOR = {
     '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
     '^http://v\.pptv\.com/.+\.html' : 'pptv', 
     '^http://v\.qq\.com/.+' : 'vqq', 
+    # NOTE for extractor letv method m3u8
+    '^file:///.+\.m3u8$' : 'letv', 	# TODO may be not stable
+    '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'letv', 
+}
+
+# overwrite extractor default method by URL RE match
+OVERWRITE_EXTRACTOR_METHOD = {
+    'letv' : {
+        '^file:///.+\.m3u8$' : 'm3u8',
+        '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'm3u8', 
+    }, 
 }
 
 

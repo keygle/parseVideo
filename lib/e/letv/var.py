@@ -10,14 +10,19 @@ SITE_NAME = '乐视网'
 RE_SUPPORT_URL = [
     # http://www.letv.com/ptv/vplay/24143557.html
     '^http://www\.letv\.com/.+\.html', 
+    # NOTE only for method m3u8
+    '^file:///.+\.m3u8$', 	# NOTE support local m3u8 file, TODO may be not stable
+    '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 	# NOTE raw m3u8 file URL
 ]
 
 METHOD_LIST = [
     'pc_flash_gate', 
     'flvsp', 
+    'm3u8', 
 ]
 RE_VID_LIST = {
     'vid' : ' vid:([0-9]+),', 
+    'pid' : ' pid:([0-9]+),', 
 }
 # site rateid to parse_video hd quality
 TO_HD = {
@@ -38,6 +43,7 @@ class VarData(common.ExtractorVar):
         out['pool_size']['get_m3u8'] = 8
         
         out['flag_fast_parse'] = False
+        out['flag_v'] = False
         # private data
         out['_raw_first_json'] = ''
         return out

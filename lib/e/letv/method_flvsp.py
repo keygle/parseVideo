@@ -6,6 +6,7 @@ from .. import common, log_text
 
 from . import var, method
 from .o import id_transfer
+from .vv import vv_default
 
 # global data
 FLVSP_PLATID = 1
@@ -16,13 +17,23 @@ def parse(method_arg_text):
     raw_more = method.get_raw_more(method_arg_text)
     # process method args
     def rest(r):
-        return True	# NOTE no more args
+        if r == 'set_flag_v':	# TODO DEBUG here
+            var._['flag_v'] = True
+        else:	# unknow args
+            return True
     common.method_parse_method_args(method_arg_text, var, rest)
     
     vid_info = method.get_vid_info()
     pvinfo = _get_video_info(vid_info)
     # NOTE there is no need to get file URLs, already got
+    # check flag_v
+    if var._['flag_v']:
+        pvinfo = _add_args(pvinfo)
     common.method_simple_count(pvinfo)	# NOTE just count, not select
+    # remove _data in video
+    for v in pvinfo['video']:
+        if '_data' in v:
+            v.pop('_data')
     out = method.check_enable_more(pvinfo)
     return out
 
@@ -51,8 +62,11 @@ def _parse_raw_first_json(first):
         f['time_s'], f['size'] = _get_file_info(raw[1])
         raw_url = domain[0] + raw[0]
         f['url'] = _gen_one_file_url(raw_url)
-        
         one['file'].append(f)
+        # NOTE add _data
+        one['_data'] = {
+            'filename' : raw[1], 
+        }
         out['video'].append(one)
     return out
 
@@ -68,6 +82,23 @@ def _gen_one_file_url(raw):
     a, b = raw.split('&tss=', 1)
     out = a + '&tss=no&' + b.split('&', 1)[1]
     return out
+
+# add args for vv
+def _add_args(pvinfo, a_idx=''):
+    # INFO log
+    log.i('adding args for vv ')
+    # TODO clean code here
+    # TODO use map_do() here
+    # TODO Error process
+    pid = var._['_vid_info']['pid']
+    for v in pvinfo['video']:
+        if not '_data' in v:
+            continue
+        d = v['_data']
+        filename = d['filename']
+        f = v['file'][0]
+        f['url'] = vv_default.make_one_url(f['url'], pid, filename, a_idx=a_idx)
+    return pvinfo
 
 # end method_flvsp.py
 

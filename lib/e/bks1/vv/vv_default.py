@@ -80,7 +80,7 @@ def _do_get_one_token(raw_url, vid_info, config, index):
 
 def _load_vv_conf(reload=False):
     if reload or (etc['vv_conf'] == None):
-        return _do_load_vv_conf()
+        etc['vv_conf'] = _do_load_vv_conf()
     return etc['vv_conf']
 
 def _do_load_vv_conf():
@@ -89,7 +89,6 @@ def _do_load_vv_conf():
     except Exception as e:
         er = err.ConfigError('can not load vv_config file', conf.e_bks1_vv_conf)
         raise er from e
-    etc['vv_conf'] = info
     return info
 
 # end vv_default.py
