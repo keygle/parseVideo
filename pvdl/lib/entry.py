@@ -59,6 +59,9 @@ def start():
     _do_download(task_info)
     # TODO merge Error process
     _do_merge(task_info)
+    
+    # NOTE check auto_remove_tmp_files
+    _auto_remove_tmp_files(task_info)
     # end entry.start()
 
 def _print_pvinfo(pvinfo):
@@ -132,17 +135,70 @@ def _check_permission(task_info):
 ## main download and merge works
 
 def _do_download(task_info):
-    log.w('entry._do_download() not finished ')
-    pass
+    # TODO fix task_info video count info before download
+    # TODO support no size_byte, etc. count info
+    # TODO print download speed, remain time, etc. 
+    v = task_info['video']
+    count = len(v['file'])
+    all_size = b.byte_to_size(v['size_byte'])
+    all_time = b.second_to_time(v['time_s'])
+    # log info before start download
+    log.i('start download ' + str(count) + ' files, ' + all_size + ' ' + all_time + ' ')
+    # reset count
+    count_ok = 0
+    count_err = 0
+    done_size = 0
+    rest_size = v['size_byte']
+    done_time = 0
+    rest_time = v['time_s']
+    # TODO support without video count info (time_s, size_byte, etc. )
+    # download each file
+    for i in range(count):
+        f = v['file'][i]
+        size = b.byte_to_size(f['size'])
+        time = b.second_to_time(f['time_s'])
+        # print info before download
+        log.i('(' + str(i + 1) + ' / ' + str(count) + ') download part file \"' + f['_part_name'] + '\", ' + size + ' ' + time + ' ')
+        
+        # TODO print download speed, rest time, etc. 
+        # do download one file
+        if dl_worker.dl_one_file(f):
+            count_ok += 1
+            done_size += f['size']
+            done_time += f['time_s']
+        else:
+            count_err += 1
+        # update count
+        rest_size -= f['size']
+        rest_time -= f['time_s']
+        # download status info
+        log.i('download status: ok ' + str(count_ok) + ', err ' + str(count_err) + '; ' + b.byte_to_size(done_size) + ' / ' + all_size + ', ' + b.second_to_time(done_time) + ' / ' + all_time + '; rest ' + b.byte_to_size(rest_size) + ' ' + b.second_to_time(rest_time) + ' ')
+    # download done, check download succeed
+    if count_err > 0:
+        log.e('download part files failed, err ' + str(count_err) + ' / ' + str(count) + ' ')
+        raise err.DownloadError('part file', count_err, count)
+    # download OK
+    log.o('download part files finished, OK ' + str(count_ok) + ' / ' + str(count) + ' ')
+
 
 def _do_merge(task_info):
+    # TODO
     log.w('entry._do_merge() not finished ')
-    pass
 
-def _auto_remove_tmp_files():
-    pass
+def _auto_remove_tmp_files(task_info):
+    if not conf.FEATURES['auto_remove_tmp_files']:
+        return
+    # check required features
+    if not conf.FEATURES['check_merged_time']:
+        log.e('disabled feature auto_remove_tmp_files. To enable this, feature check_merged_time must be enabled ')
+        return
+    if not conf.FEATURES['merge_single_file']:
+        log.e('disabled feature auto_remove_tmp_files. To enable this, feature merge_single_file must be enabled ')
+        return
+    # TODO do remove
+    log.w('entry._auto_remove_tmp_files() not finished ')
 
-# TODO
+
 # end entry.py
 
 

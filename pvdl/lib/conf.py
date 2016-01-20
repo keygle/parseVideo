@@ -1,5 +1,7 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 
+# TODO not support download speed limit
+
 
 # auto-select hd in this range, will always select max hd
 auto_select_hd = [-1, 8]
@@ -34,7 +36,7 @@ FEATURES = {	# --enable, --disable
     ## download stage
     
     # before download
-    'check_remote_size' : False, 	# TODO check network file size
+    'check_remote_size' : False, 	# check network file size
     'check_remote_fix_size' : True, 	# TODO if check_remote_size enabled, fix part file size here
     
     'check_local_size' : True, 		# check local file size and skip finished files
@@ -42,7 +44,7 @@ FEATURES = {	# --enable, --disable
     
     # after download
     'check_file_size' : True, 		# check part file size
-    'check_file_md5' : True, 		# TODO check part file md5 checksum if possible
+    'check_file_md5' : True, 		# check part file md5 checksum if possible
     
     ## merge stage
     'check_merged_size' : True, 	# check merged file size
@@ -61,7 +63,7 @@ FEATURES = {	# --enable, --disable
     'fix_unicode' : False, 		# fix_unicode is only for Windows
     
     ## DANGER options
-    'auto_remove_tmp_files' : False, 	# TODO remove pvdl tmp files after download succeed; require enable check_merged_time and merge_single_file
+    'auto_remove_tmp_files' : False, 	# remove pvdl tmp files after download succeed; require enable check_merged_time and merge_single_file
 }
 
 

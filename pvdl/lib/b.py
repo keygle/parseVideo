@@ -44,6 +44,11 @@ def byte_to_size(size_byte, flag_add_byte=True):
         'PB', 
     ]
     size_byte = int(size_byte)
+    # NOTE process size_byte < 0
+    less_than_0 = ''
+    if size_byte < 0:
+        size_byte = math.abs(size_byte)
+        less_than_0 = '-'
     # check < 1 Byte
     if size_byte < 1:
         return '-1'
@@ -58,9 +63,9 @@ def byte_to_size(size_byte, flag_add_byte=True):
     size_n = size_byte / pow(1024, unit_i)
     size_t = str(round(size_n, 2))
     
-    size_str = size_t + ' ' + unit
+    size_str = less_than_0 + size_t + ' ' + unit
     if flag_add_byte:
-        size_str += ' (' + str(size_byte) + ' Byte)'
+        size_str += ' (' + less_than_0 + str(size_byte) + ' Byte)'
     return size_str
 
 def second_to_time(time_s):
