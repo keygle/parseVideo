@@ -48,9 +48,9 @@ FEATURES = {	# --enable, --disable
     
     ## merge stage
     'check_merged_size' : True, 	# check merged file size
-    'check_merged_time' : True, 	# TODO check merged video time, if possible (requires mediainfo)
+    'check_merged_time' : True, 	# check merged video time, if possible (requires mediainfo)
     
-    'force_merge' : False, 		# TODO remove output file and continue merge, if output file already exists
+    'force_merge' : False, 		# remove output file and continue merge, if output file already exists
     
     ## other options
     'parse_twice' : True, 		# TODO first parse only to get video formats, second parse to get file URLs

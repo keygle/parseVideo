@@ -59,7 +59,7 @@ def start():
     # TODO download Error process
     _do_download(task_info)
     # TODO merge Error process
-    _do_merge(task_info)
+    merge.merge(task_info)
     
     # NOTE check auto_remove_tmp_files
     _auto_remove_tmp_files(task_info)
@@ -133,8 +133,9 @@ def _check_permission(task_info):
     log.w('entry._check_permission() not finished ')
 
 
-## main download and merge works
+## main download works
 
+# TODO clean UI print code here
 # TODO output style should be improved
 def _do_download(task_info):
     # TODO fix task_info video count info before download
@@ -214,10 +215,6 @@ def _do_download(task_info):
     # download OK
     log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
 
-
-def _do_merge(task_info):
-    # TODO
-    log.w('entry._do_merge() not finished ')
 
 def _auto_remove_tmp_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_files']:
