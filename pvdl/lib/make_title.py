@@ -11,7 +11,7 @@ def gen_common_title(pvinfo):
     info = pvinfo['info']
     title_no = info.get('title_no', -1)
     title_sub = info.get('title_sub', '')
-    raw = _do_gen_title(info['title'], '', info['site'], title_no=title_no, title_sub=title_sub)
+    raw = _do_gen_title(info['title'], '', info['site_name'], title_no=title_no, title_sub=title_sub)
     out = b.replace_filename_bad_char(raw)
     return out
 
@@ -24,7 +24,7 @@ def gen_title(task_info):
     title_sub = info.get('title_sub', '')
     quality = task_info['video']['quality']
     
-    raw = _do_gen_title(info['title'], quality, info['site'], title_no=title_no, title_sub=title_sub)
+    raw = _do_gen_title(info['title'], quality, info['site_name'], title_no=title_no, title_sub=title_sub)
     out = b.replace_filename_bad_char(raw)
     return out
 
@@ -51,7 +51,7 @@ def gen_lock_file_name(title):	# pvdl.tmp.TITLE.lock
     return out
 
 def gen_part_file_name(title, index, ext):	# pvdl.tmp.TITLE.part.INDEX.EXT
-    out = ('.').join(['pvdl', 'tmp', title, 'part', index, ext])
+    out = ('.').join(['pvdl', 'tmp', title, 'part', str(index), ext])
     return out
 
 def gen_ffmpeg_list_file_name(title):	# pvdl.tmp.TITLE.ffmpeg.list

@@ -13,8 +13,9 @@ def parse(hd=None, enable_more=False):
     if hd == None:
         log.i('first parse, call parse_video to parse URL \"' + raw_url + '\" ')
     pvinfo, raw_text = _do_parse(raw_url, hd=hd, enable_more=enable_more)
-    # TODO maybe not print parse_video raw output
-    print(raw_text)	# NOTE print parse_video raw output here
+    # check print parse_video output
+    if conf.FEATURES['print_parse_video_output']:
+        print(raw_text)	# print raw output
     # check fix_size
     if conf.FEATURES['fix_size']:
         pvinfo = _fix_size(pvinfo)
@@ -67,7 +68,7 @@ def _fix_size(pvinfo):
     # TODO
     return pvinfo
 
-def _create_task(pvinfo, hd):
+def create_task(pvinfo, hd):
     ## create task_info, based on pvinfo
     task_info = b.json_clone(pvinfo)	# deep clone pvinfo object
     # replace video with hd
@@ -83,9 +84,9 @@ def _create_task(pvinfo, hd):
     title = make_title.gen_title(task_info)
     task_info['title'] = title
     ## add more to task_info
-    
+    task_info['path'] = {}
     # gen base_path, will save final merged file in base_path
-    task_info['path']['base_path'] = os.path.normpath(conf.set_output_dir)
+    task_info['path']['base_path'] = os.path.normpath(conf.set_output)
     # gen tmp_name and tmp_path
     task_info['path']['tmp_name'] = make_title.gen_tmp_dir_name(title)
     tmp_path = b.pjoin(task_info['path']['base_path'], task_info['path']['tmp_name'])
@@ -96,7 +97,7 @@ def _create_task(pvinfo, hd):
     task_info['path']['lock_file'] = make_title.gen_lock_file_name(title)
     # gen each part file name and file path
     ext = task_info['video']['format']
-    for i in range(len(task_info['video']['file']):
+    for i in range(len(task_info['video']['file'])):
         f = task_info['video']['file'][i]
         f['_part_name'] = make_title.gen_part_file_name(title, i + 1, ext)
         f['path'] = b.pjoin(tmp_path, f['_part_name'])	# NOTE gen final part file path here
@@ -111,7 +112,8 @@ def _create_task(pvinfo, hd):
 
 def _write_log_file(pvinfo, task_info):
     # create log file path
-    log_path = b.pjoin(task_info['path']['tmp_path'], task_info['path']['log_file'])
+    tmp_path = task_info['path']['tmp_path']
+    log_path = b.pjoin(tmp_path, task_info['path']['log_file'])
     task_info['path']['log_path'] = log_path
     
     # clone task_info to prevent modify it
@@ -121,7 +123,14 @@ def _write_log_file(pvinfo, task_info):
     # create json blob, with utf-8 encode
     text = json.dumps(task_info, indent=4, sort_keys=True, ensure_ascii=False)
     blob = text.encode('utf-8')
-    
+    # NOTE try to create tmp_path
+    try:
+        if not os.path.isdir(tmp_path):
+            os.makedirs(tmp_path)
+    except Exception as e:
+        log.e('can not create tmp dir \"' + tmp_path + '\" ')
+        er = err.ConfigError('create tmp_dir', tmp_path)
+        raise er from e
     # NOTE use write-replace to write log file
     tmp_log_file = log_path + '.tmp'
     try:

@@ -24,6 +24,7 @@ merge_output_format = 'mp4'	# NOTE other formats may not work
 # enable and disable pvdl features
 FEATURES = {	# --enable, --disable
     ## parse stage
+    'print_parse_video_output' : False, # print parse_video raw output for DEBUG
     'fix_size' : True, 			# if parse_video not get part file size, try to fix it here
     
     # create task

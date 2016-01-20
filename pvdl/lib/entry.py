@@ -106,7 +106,8 @@ def _print_task_info(task_info):
     merged_path = b.pjoin(base_path, task_info['path']['merged_file'])
     # [ OK ] log
     log.o('select hd ' + str(hd) + ', create_task \"' + title + '\" ')
-    log.i('log file \"' + log_path + '\", output file \"' + merged_path + '\" ')
+    log.d('log file \"' + log_path + '\" ')
+    log.i('output file \"' + merged_path + '\" ')
 
 def _check_lock_file(task_info):
     if not conf.FEATURES['check_lock_file']:
