@@ -2,6 +2,7 @@
 
 import os, sys
 import math
+import json
 
 from . import conf
 
@@ -77,8 +78,6 @@ def second_to_time(time_s):
     return t
 
 
-# TODO
-
 ## path functions
 
 # join paths
@@ -95,6 +94,11 @@ def get_root_path(to_root='../'):
 
 
 ## other functions
+
+# deep clone a object with json
+def json_clone(raw):
+    out = json.loads(json.dumps(raw))
+    return out
 
 def md5sum():
     pass	# TODO
