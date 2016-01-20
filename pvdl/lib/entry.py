@@ -135,6 +135,7 @@ def _check_permission(task_info):
 
 ## main download and merge works
 
+# TODO output style should be improved
 def _do_download(task_info):
     # TODO fix task_info video count info before download
     # TODO support no size_byte, etc. count info
@@ -167,12 +168,12 @@ def _do_download(task_info):
         grey = fg('grey_50')
         light_yellow = fg('light_yellow')
         yellow = fg('yellow')
+        blue = fg('blue')
         white = fg('white')
         # print info before download
-        t = grey + '(' + light_yellow + str(i + 1) + grey + ' / ' + str(count) + ') '
-        t += yellow + 'download ' + grey + 'part file \"' + light_yellow + f['_part_name'] + grey + '\", '
-        t += yellow + size + ' ' + grey + time + ' '
-        log.i(t)
+        t = grey + ' ' + yellow + str(i + 1) + grey + '/' + str(count) + ' ' + white + 'download '
+        t += light_yellow + f['_part_name'] + grey + ', ' + blue + size + ' ' + grey + time + ' '
+        log.r(t)
         
         # TODO print download speed, rest time, etc. 
         # do download one file
@@ -195,23 +196,23 @@ def _do_download(task_info):
             err_info = fg('light_red') + str(count_err)
         else:
             err_info = grey + str(count_err)
-        t = grey + 'download ' + light_yellow + done_per + yellow + ' % '
-        t += grey + '[ ok ' + yellow + str(count_ok)
-        t += grey + ', err ' + err_info + grey + '] '
-        t += yellow + b.byte_to_size(done_size, flag_add_grey=True) + grey + ' / ' + all_size
-        t += ', ' + yellow + b.second_to_time(done_time) + grey + ' / ' + all_time + '; rest '
+        t = ' ' + light_yellow + done_per + yellow + ' % '
+        t += grey + '[ok ' + yellow + str(count_ok)
+        t += grey + ' err ' + err_info + grey + '] '
+        t += white + b.byte_to_size(done_size, flag_add_grey=True) + grey + '/' + all_size
+        t += ', ' + b.second_to_time(done_time) + '/' + all_time + '; rest '
         if rest_size > 0:
             t += yellow + b.byte_to_size(rest_size, flag_add_grey=True)
         else:
             t += '0'
         t += ' ' + grey + b.second_to_time(rest_time) + ' '
-        log.i(t)
+        log.r(t)
     # download done, check download succeed
     if count_err > 0:
-        log.e('download part files failed, err ' + str(count_err) + ' / ' + str(count) + ' ')
+        log.e('download part files failed, err ' + str(count_err) + '/' + str(count) + ' ')
         raise err.DownloadError('part file', count_err, count)
     # download OK
-    log.o('download part files finished, OK ' + str(count_ok) + ' / ' + str(count) + ' ')
+    log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
 
 
 def _do_merge(task_info):

@@ -65,6 +65,7 @@ def _check_local_size(f):
     grey = fg('grey_50')
     blue = fg('blue')
     light_blue = fg('light_blue')
+    white = fg('white')
     # check size
     err = local_size - f['size']
     err_k = (err / f['size']) * 1e2	# %
@@ -75,8 +76,8 @@ def _check_local_size(f):
     else:
         err_info = grey + '0'
     # [ OK ] log skip info
-    t = light_blue + 'skip' + blue + ' local file ' + grey + '\"' + f['_part_name'] + '\", size '
-    t += blue + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
+    t = light_blue + 'skip' + grey + ' \"' + f['_part_name'] + '\", ' + b.byte_to_size(local_size, flag_add_grey=True)
+    t += ' err ' + blue + err_info + ' '
     log.o(t)
     return True
 
@@ -98,6 +99,7 @@ def _check_file_size(f):
     grey = fg('grey_50')
     blue = fg('blue')
     light_blue = fg('light_blue')
+    white = fg('white')
     # make err
     err = local_size - f['size']
     err_k = (err / f['size']) * 1e2	# %
@@ -112,7 +114,7 @@ def _check_file_size(f):
         err_info = grey + '0'
     # log check pass
     t = 'check part file size pass' + grey + ': \"' + f['_part_name'] + '\", size '
-    t += blue + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
+    t += white + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
     log.o(t)
     return False
 
