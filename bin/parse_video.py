@@ -19,26 +19,9 @@
 #
 ''' parse_video main bin file
 
-OPTIONS: 
+OPTIONS not in --help: 
 
-  -d, --debug
-  -q, --quiet
-      
-  -i, --min HD
-  -M, --max HD
-      --i-min INDEX
-      --i-max INDEX
-      
-  -e, --extractor EXTRACTOR
-  -m, --method METHOD
-      
-      --help
-      --version
-      --license
-      
-  -o, --output FILE
-      --more FILE
-
+TODO
 '''
 
 import sys

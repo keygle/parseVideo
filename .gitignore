@@ -8,6 +8,8 @@ __pycache__/
 
 *.m3u8
 
+/pvdl/dl
+
 # end .gitignore
 
 

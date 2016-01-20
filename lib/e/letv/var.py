@@ -5,7 +5,7 @@ from .. import common
 EXTRACTOR_ID = 'letv'
 EXTRACTOR_NAME = 'letv_1'
 SITE = 'letv'
-SITE_NAME = '乐视网'
+SITE_NAME = '乐视视频'
 
 RE_SUPPORT_URL = [
     # http://www.letv.com/ptv/vplay/24143557.html
