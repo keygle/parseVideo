@@ -47,7 +47,7 @@ def _check_force_merge(task_info):
     merged_file = task_info['path']['merged_file']
     
     list_path = b.pjoin(tmp_path, list_file)
-    merged_path = b.pjoin(base_path, merged_path)
+    merged_path = b.pjoin(base_path, merged_file)
     task_info['path']['list_path'] = list_path
     task_info['path']['merged_path'] = merged_path
     # TODO check permission
@@ -60,10 +60,14 @@ def _check_force_merge(task_info):
     log.w('merge._check_force_merge() not finished ')
 
 def _gen_ffmpeg_merge_list(task_info):
-    # TODO maybe need to fix path
+    # NOTE should fix path here
+    list_file = task_info['path']['list_path']
+    from_path = os.path.dirname(list_file)
     out = ''
     for f in task_info['video']['file']:
-        one = 'file \'' + f['path'] + '\'\n'
+        # fix path
+        rel_path = os.path.relpath(f['path'], from_path)
+        one = 'file \'' + rel_path + '\'\n'
         out += one
     return out
 
