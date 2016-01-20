@@ -15,7 +15,7 @@ def _p(t, file=sys.stderr, *k, **kk):
 
 # prefix print function
 def _pp(raw, prefix='', color=attr('reset'), *k, **kk):
-    t = color + conf.PVDL_LOG_PREFIX + prefix + raw + attr('reset')
+    t = fg('grey_50') + conf.PVDL_LOG_PREFIX + color + prefix + raw + attr('reset')
     _p(t, *k, **kk)
 
 # exports log functions
@@ -29,11 +29,11 @@ def e(t, color=fg('light_red'), *k, **kk):	# ERROR
 def w(t, color=fg('orange_1'), *k, **kk):	# WARNING
     _pp(t, prefix='WARNING: ', color=color, *k, **kk)
 
-def i(t, color=fg('light_yellow'), *k, **kk):	# INFO
-    _pp(t, prefix='INFO: ', color=color, *k, **kk)
+def i(t, color=fg('yellow'), *k, **kk):	# INFO
+    _pp(color + t, prefix='INFO: ', color=fg('grey_50'), *k, **kk)
 
 def o(t, color=fg('light_blue'), *k, **kk):	# [ OK ]
-    _pp(t, prefix='[ OK ] ', color=color, *k, **kk)
+    _pp(color + t, prefix='[ OK ] ', color=fg('blue'), *k, **kk)
 
 def d(t, color=fg('grey_50'), *k, **kk):	# DEBUG
     _pp(t, prefix='DEBUG: ', color=color, *k, **kk)

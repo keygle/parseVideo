@@ -1,7 +1,7 @@
 # dl_worker.py, parse_video/pvdl/lib/
 
 import os
-import math
+import colored
 
 from . import err, conf, log
 from . import b
@@ -60,17 +60,24 @@ def _check_local_size(f):
     # TODO support no f['size'] value, or f['size'] == 0
     
     # TODO may be clean check_size code
+    # NOTE add more colors
+    fg = colored.fg
+    grey = fg('grey_50')
+    blue = fg('blue')
+    light_blue = fg('light_blue')
     # check size
     err = local_size - f['size']
     err_k = (err / f['size']) * 1e2	# %
     if local_size != f['size']:
-        if (math.abs(err / pow(1024, 2)) >= conf.CHECK_ERR_K['local_size_mb']) or (math.abs(err_k) >= conf.CHECK_ERR_K['local_size']):
+        if (abs(err / pow(1024, 2)) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
             return False	# not skip
-        err_info = b.byte_to_size(err) + ' ' + str(err_k) + ' % '
+        err_info = b.byte_to_size(err, flag_add_grey=True) + ' ' + str(err_k) + ' % '
     else:
-        err_info = '0'
-    # log skip info
-    log.i('skip local file \"' + f['_part_name'] + '\", size ' + b.byte_to_size(local_size) + ' err ' + err_info + ' ')
+        err_info = grey + '0'
+    # [ OK ] log skip info
+    t = light_blue + 'skip' + blue + ' local file ' + grey + '\"' + f['_part_name'] + '\", size '
+    t += blue + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
+    log.o(t)
     return True
 
 # return True if check failed
@@ -86,19 +93,27 @@ def _check_file_size(f):
     local_size = s.st_size
     # TODO support no f['size'] or f['size'] == 0
     # TODO may clean check err code here
+    # NOTE add more colors
+    fg = colored.fg
+    grey = fg('grey_50')
+    blue = fg('blue')
+    light_blue = fg('light_blue')
     # make err
     err = local_size - f['size']
     err_k = (err / f['size']) * 1e2	# %
     if local_size != f['size']:
         err_info = b.byte_to_size(err) + ' ' + str(err_k) + ' % '
-        if (math.abs(err / pow(1024, 2)) >= conf.CHECK) or ():
+        if (abs(err / pow(1024, 2)) >= conf.CHECK_ERR_K['file_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['file_size']):
             # ERROR log
             log.e('check part file size failed: \"' + f['_part_name'] + '\", size ' + b.byte_to_size(local_size) + ' err ' + err_info + ' ')
             return True
+        err_info = b.byte_to_size(err, flag_add_grey=True) + ' ' + str(err_k) + ' % '
     else:
-        err_info = '0'
+        err_info = grey + '0'
     # log check pass
-    log.o('check part file size pass: \"' + f['_part_name'] + '\", size ' + b.byte_to_size(local_size) + ' err ' + err_info + ' ')
+    t = 'check part file size pass' + grey + ': \"' + f['_part_name'] + '\", size '
+    t += blue + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
+    log.o(t)
     return False
 
 

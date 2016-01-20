@@ -18,6 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import math
 import colored
 
 from . import err, conf, log
@@ -152,13 +153,26 @@ def _do_download(task_info):
     done_time = 0
     rest_time = v['time_s']
     # TODO support without video count info (time_s, size_byte, etc. )
+    all_size = b.byte_to_size(v['size_byte'], flag_add_grey=True)
+    all_time = b.second_to_time(v['time_s'])
     # download each file
     for i in range(count):
         f = v['file'][i]
-        size = b.byte_to_size(f['size'])
+        size = b.byte_to_size(f['size'], flag_add_grey=True)
         time = b.second_to_time(f['time_s'])
+        # FIXME NOTE for better print
+        log.p('')
+        # NOTE add more color here
+        fg = colored.fg
+        grey = fg('grey_50')
+        light_yellow = fg('light_yellow')
+        yellow = fg('yellow')
+        white = fg('white')
         # print info before download
-        log.i('(' + str(i + 1) + ' / ' + str(count) + ') download part file \"' + f['_part_name'] + '\", ' + size + ' ' + time + ' ')
+        t = grey + '(' + light_yellow + str(i + 1) + grey + ' / ' + str(count) + ') '
+        t += yellow + 'download ' + grey + 'part file \"' + light_yellow + f['_part_name'] + grey + '\", '
+        t += yellow + size + ' ' + grey + time + ' '
+        log.i(t)
         
         # TODO print download speed, rest time, etc. 
         # do download one file
@@ -172,7 +186,26 @@ def _do_download(task_info):
         rest_size -= f['size']
         rest_time -= f['time_s']
         # download status info
-        log.i('download status: ok ' + str(count_ok) + ', err ' + str(count_err) + '; ' + b.byte_to_size(done_size) + ' / ' + all_size + ', ' + b.second_to_time(done_time) + ' / ' + all_time + '; rest ' + b.byte_to_size(rest_size) + ' ' + b.second_to_time(rest_time) + ' ')
+        done_per = (done_size / v['size_byte']) * 1e2
+        if done_size == v['size_byte']:
+            done_per = '100'
+        else:
+            done_per = str(math.floor(done_per * 1e1) / 1e1)
+        if count_err > 0:
+            err_info = fg('light_red') + str(count_err)
+        else:
+            err_info = grey + str(count_err)
+        t = grey + 'download ' + light_yellow + done_per + yellow + ' % '
+        t += grey + '[ ok ' + yellow + str(count_ok)
+        t += grey + ', err ' + err_info + grey + '] '
+        t += yellow + b.byte_to_size(done_size, flag_add_grey=True) + grey + ' / ' + all_size
+        t += ', ' + yellow + b.second_to_time(done_time) + grey + ' / ' + all_time + '; rest '
+        if rest_size > 0:
+            t += yellow + b.byte_to_size(rest_size, flag_add_grey=True)
+        else:
+            t += '0'
+        t += ' ' + grey + b.second_to_time(rest_time) + ' '
+        log.i(t)
     # download done, check download succeed
     if count_err > 0:
         log.e('download part files failed, err ' + str(count_err) + ' / ' + str(count) + ' ')

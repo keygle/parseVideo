@@ -3,6 +3,7 @@
 import os, sys
 import math
 import json
+import colored
 
 from . import conf
 
@@ -34,7 +35,7 @@ def gen_bitrate(size_byte, time_s, unit_k=1024):
     bitrate = str(round(kbps, 1)) + 'kbps'
     return bitrate
 
-def byte_to_size(size_byte, flag_add_byte=True):
+def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
     unit_list = [
         ' Byte', 
         'KB', 
@@ -65,6 +66,8 @@ def byte_to_size(size_byte, flag_add_byte=True):
     
     size_str = less_than_0 + size_t + ' ' + unit
     if flag_add_byte:
+        if flag_add_grey:
+            size_str += colored.fg('grey_50')
         size_str += ' (' + less_than_0 + str(size_byte) + ' Byte)'
     return size_str
 

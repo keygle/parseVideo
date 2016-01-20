@@ -31,7 +31,7 @@ FEATURES = {	# --enable, --disable
     
     # create task
     'check_log_file' : True, 		# check log file if exists, and stop if not match
-    'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
+    'check_lock_file' : False, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
     
     ## download stage
     
@@ -44,7 +44,7 @@ FEATURES = {	# --enable, --disable
     
     # after download
     'check_file_size' : True, 		# check part file size
-    'check_file_md5' : True, 		# check part file md5 checksum if possible
+    'check_file_md5' : False, 		# check part file md5 checksum if possible
     
     ## merge stage
     'check_merged_size' : True, 	# check merged file size
@@ -89,10 +89,10 @@ CHECK_ERR_K = {	# NOTE -1 means unlimit
 
 # pvdl call subprocess bin file
 SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
-    'parsev' : '../parsev', 
-    'wget' : 'wget', 
-    'ffmpeg' : 'ffmpeg', 
-    'mediainfo' : 'mediainfo', 
+    'parsev' : ('../parsev', True), 
+    'wget' : ('wget', False), 
+    'ffmpeg' : ('ffmpeg', False), 
+    'mediainfo' : ('mediainfo', False), 
 }
 
 

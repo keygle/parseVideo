@@ -61,7 +61,8 @@ def call_sub_downloader(sub, args):
     pass	# TODO
 
 # gen bin path from config
-def _make_bin_path(raw, check=True):
+def _make_bin_path(info):
+    raw, check = info
     # check startswith ./ or ../
     if (raw.startswith('./')) or (raw.startswith('../')):
         out = b.pjoin(b.get_root_path(), raw)
@@ -78,14 +79,14 @@ def _call_and_check(call_bin, args, name='', action='', ok_code=0):
     # DEBUG log
     log.d('call ' + name + ' to ' + action + ', with args ' + str(args) + ' ')
     try:
-        p = subprocess.run([call_bin, args])
+        p = subprocess.run([call_bin] + args)
     except Exception as e:
         log.e('can not execute ' + name + ' ')
         er = err.CallError(name, call_bin, args)
         raise er from e
     # check exit code
     exit_code = p.returncode
-    if exit_code != ok:
+    if exit_code != ok_code:
         log.e(action + ' failed, ' + name + ' return ' + str(exit_code) + ' ')
         raise err.ExitCodeError(name, exit_code)
     # everything OK
