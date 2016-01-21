@@ -18,6 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import functools
 
 from . import err, b, conf, log
@@ -56,17 +57,42 @@ def _do_can_retry():
     # create task
     task_info = parse.create_task(pvinfo, hd)
     
+    tmp_path = task_info['path']['tmp_path']
+    lock_file = task_info['path']['lock_file']
+    lock_path = b.pjoin(tmp_path, lock_file)
     # NOTE run _do_with_lock() in _do_in_lock()
     f = functools.partial(_do_with_lock, task_info, pvinfo)
-    _do_in_lock(f)
+    _do_in_lock(f, lock_path)
 
-def _do_in_lock(f):
-    # TODO
-    if not conf.FEATURES['check_lock_file']:
-        return
-    # TODO create lock_file and remove it
-    log.w('entry._check_lock_file() not finished ')
-    # TODO do check
+def _do_in_lock(f, lock_file):
+    # TODO on windows, should use tmp file
+    lock_fd = None
+    try:
+        # get lock (create lock file)
+        try:
+            lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
+            log.d('got lock \"' + lock_file + '\" ')
+        except Exception as e:	# get lock failed
+            log.e('can not get lock \"' + lock_file + '\", ' + str(e))
+            if conf.FEATURES['check_lock_file']:
+                log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
+                er = err.ConfigError('check_lock_file', lock_file)
+                raise er from e
+            else:	# just ignore it
+                log.d('disabled feature check_lock_file ')
+        # do with lock
+        return f()
+    finally:
+        try:	# close lock file
+            os.close(lock_fd)
+        except Exception as e:	# ignore close Error
+            log.w('can not close lock file [' + str(lock_fd) + '] \"' + lock_file + '\", ' + str(e))
+        try:	# remove lock file
+            os.remove(lock_file)
+        except Exception as e:	# ignore remove Error
+            log.w('can not remove lock file \"' + lock_file + '\", ' + str(e))
+    # end _do_in_lock
+
 
 def _select_hd(pvinfo):
     # get hd list

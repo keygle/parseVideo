@@ -36,7 +36,7 @@ FEATURES = {	# --enable, --disable
     'check_log_file_strict' : True, 	# check more values in log file
     
     ## entry works
-    'check_lock_file' : True, 		# TODO use lock file to prevent two instance of pvdl to work in same directory at the same time
+    'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
     
     ## download stage
     
