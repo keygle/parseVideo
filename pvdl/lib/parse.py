@@ -71,6 +71,8 @@ def _fix_size(pvinfo):
     # TODO
     return pvinfo
 
+
+# NOTE do fix_size before create_task
 def create_task(pvinfo, hd):
     ## create task_info, based on pvinfo
     task_info = b.json_clone(pvinfo)	# deep clone pvinfo object
@@ -109,7 +111,6 @@ def create_task(pvinfo, hd):
     task_info['path']['merged_file'] = make_title.gen_merged_file_name(title, conf.merge_output_format)
     # create task_info done
     _check_log_file(task_info)	# some checks
-    
     _write_log_file(pvinfo, task_info)
     return task_info	# end create_task
 
@@ -149,9 +150,112 @@ def _write_log_file(pvinfo, task_info):
 
 def _check_log_file(task_info):
     if not conf.FEATURES['check_log_file']:
+        log.d('disabled feature check_log_file ')
         return
-    # TODO do check
-    log.w('parse._check_log_file() not finished ')
+    # check log file exist
+    log_path = b.pjoin(task_info['path']['tmp_path'], task_info['path']['log_file'])
+    if not os.path.isfile(log_path):
+        log.d('log file not exist, \"' + log_path + '\" ')
+        return
+    # read log file
+    try:
+        with open(log_path, 'rb') as f:
+            blob = f.read()
+    except Exception as e:
+        log.e('can not read log file \"' + log_path + '\" ')
+        er = err.ConfigError('read log_file', log_path)
+        raise er from e
+    # parse json
+    try:
+        text = blob.decode('utf-8')
+        log_info = json.loads(text)
+    except Exception as e:
+        log.w('can not parse json text of log file \"' + log_path + '\", ' + str(e))
+        # TODO print more error info
+    # do check
+    old, now = log_info, task_info
+    try:
+        # base check
+        def print_check_err(value, new, old):	# base check error print function
+            t = 'check log failed, new ' + value + ' ' + str(new) + ' != old ' + str(old) + ' '
+            log.e(t)
+            return err.CheckError('check log_file', value, old, new)
+        now_v, old_v = now['video'], old['video']
+        # check hd match
+        now_hd, old_hd = now_v['hd'], old_v[['hd']
+        if now_hd != old_hd:
+            raise print_check_err('hd', now_hd, old_hd)
+        # check format match
+        now_format, old_format = now_v['format'], old_v['format']
+        if now_format != old_format:
+            raise print_check_err('format', now_format, old_format)
+        # check part file count
+        now_f, old_f = now_v['file'], old_v['file']
+        now_count, old_count = len(now_f), len(old_f)
+        if now_count != old_count:
+            raise print_check_err('count', now_count, old_count)
+        # check each part file size, time_s match
+        for i in range(now_count):
+            f, o = now_f[i], old_f[i]
+            now_size, old_size = f['size'], o['size']
+            now_time, old_time = f['time_s'], o['time_s']
+            t = 'check log failed, part file ' + str(i + 1) + ': '
+            if now_size != old_size:
+                t += 'new size ' + str(now_size) + ' != old ' + str(old_size) + ' '
+                log.e(t)
+                raise err.CheckError('check log_file part_file', i, 'size', old_size, now_size)
+            if now_time != old_time:
+                t += 'new time_s ' + str(now_time) + ' != old ' + str(old_time) + ' '
+                log.e(t)
+                raise err.CheckError('check log_file part_file', i, 'time_s', old_time, now_time)
+            # check checksum
+            if not 'checksum' in o:
+                continue	# no checksum info
+            if not 'checksum' in f:
+                t += 'no checksum in new file info '
+                log.e(t)
+                raise err.CheckError('check log_file part_file', i, 'no checksum', o['checksum'])
+            now_checksum, old_checksum = f['checksum'], o['checksum']
+            if now_checksum != old_checksum:
+                t += 'new checksum ' + str(now_checksum) + ' != old ' + str(old_checksum) + ' '
+                log.e(t)
+                raise err.CheckError('check log_file part_file', i, 'checksum', old_checksum, now_checksum)
+        ## strict check (more checks)
+        if conf.FEATURES['check_log_file_strict']:
+            log.i('enabled feature check_log_file_strict ')
+            def print_strict_err(value, new, old):
+                t = 'strict check log failed, new ' + value + ' ' + str(new) + ' != old ' + str(old) + ' '
+                log.e(t)
+                return err.CheckError('check log_file strict', value, old, new)
+            # check title match
+            now_title, old_title = now['title'], old['title']
+            if now_title != old_title:
+                raise print_strict_err('title', '[' + now_title + ']', '[' + old_title + ']')
+            now_info, old_info = now['info'], old['info']
+            # check extractor, method match
+            now_extractor, old_extractor = now_info['extractor'], old_info['extractor']
+            now_method, old_method = now_info['method'], old_info['method']
+            if now_extractor != old_extractor:
+                raise print_strict_err('extractor', '[' + now_extractor + ']', '[' + old_extractor + ']')
+            if now_method != old_method:
+                raise print_strict_err('method', '[' + now_method + ']', '[' + old_method + ']')
+            # check URL match
+            now_url, old_url = now_info['url'], old_info['url']
+            if now_url != old_url:
+                raise print_strict_err('url', '\"' + now_url + '\"', '\"' + old_url + '\"')
+            # check size_px match
+            now_size_px, old_size_px = now_v['size_px'], old_v['size_px']
+            if now_size_px != old_size_px:
+                raise print_strict_err('size_px', now_size_px, old_size_px)
+            # TODO check each part file download type
+            # TODO maybe add more strict check items
+        # end strict check
+    except err.CheckError:
+        raise
+    except Exception as e:
+        log.w('bad log file \"' + log_path + '\", ' + str(e))
+        # TODO print more error info
+    log.o('check log file pass ')
 
 
 # end parse.py

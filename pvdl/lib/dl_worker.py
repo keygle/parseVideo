@@ -72,6 +72,7 @@ def _check_local_size(f):
 # return True if check failed
 def _check_file_size(f):
     if not conf.FEATURES['check_file_size']:
+        log.d('disabled feature check_file_size ')
         return False
     # get file info
     try:

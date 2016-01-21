@@ -111,9 +111,11 @@ def json_clone(raw):
     return out
 
 # common check size function
-def check_size(real_size, ok_size, check_unit=1):
+def check_size(real_size, ok_size, check_unit=1, keep=1e2):
     err_s = real_size - ok_size
     err_k = (err_s / ok_size) * 1e2	# %
+    # NOTE err_k looks like 12.23 %
+    err_k = (math.floor(err_k * keep) + 1) / keep
     if real_size != ok_size:
         er = True
     err_u = err_s / check_unit
