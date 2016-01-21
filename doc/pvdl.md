@@ -60,10 +60,6 @@
   
   *解析错误* (`ParseError`), *下载错误* (`DownloadError`) 自动重试. 
 
-+ `check_lock_file`: **独占锁**
-  
-  避免多个 pvdl 实例对同一个下载目录进行操作. 
-
 *其它事项*
 
 + 文档化 TODO

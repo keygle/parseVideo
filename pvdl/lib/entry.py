@@ -67,20 +67,20 @@ def _do_can_retry():
 def _do_in_lock(f, lock_file):
     # TODO on windows, should use tmp file
     lock_fd = None
+    # get lock (create lock file)
     try:
-        # get lock (create lock file)
-        try:
-            lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
-            log.d('got lock \"' + lock_file + '\" ')
-        except Exception as e:	# get lock failed
-            log.e('can not get lock \"' + lock_file + '\", ' + str(e))
-            if conf.FEATURES['check_lock_file']:
-                log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
-                er = err.ConfigError('check_lock_file', lock_file)
-                raise er from e
-            else:	# just ignore it
-                log.d('disabled feature check_lock_file ')
-        # do with lock
+        lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
+        log.d('got lock \"' + lock_file + '\" ')
+    except Exception as e:	# get lock failed
+        log.e('can not get lock \"' + lock_file + '\", ' + str(e))
+        if conf.FEATURES['check_lock_file']:
+            log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
+            er = err.ConfigError('check_lock_file', lock_file)
+            raise er from e
+        else:	# just ignore it
+            log.d('disabled feature check_lock_file ')
+    # do with lock
+    try:
         return f()
     finally:
         try:	# close lock file
