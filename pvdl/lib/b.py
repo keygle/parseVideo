@@ -50,7 +50,7 @@ def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
     # NOTE process size_byte < 0
     less_than_0 = ''
     if size_byte < 0:
-        size_byte = math.abs(size_byte)
+        size_byte = abs(size_byte)
         less_than_0 = '-'
     # check < 1 Byte
     if size_byte < 1:
@@ -78,7 +78,7 @@ def second_to_time(time_s):
     # NOTE process time_s < 0
     less_than_0 = ''
     if raw < 0:
-        raw = math.abs(raw)
+        raw = abs(raw)
         less_than_0 = '-'
     # get time info
     sec = math.floor(raw)
@@ -123,6 +123,7 @@ def check_size(real_size, ok_size, check_unit=1, keep=1e2):
     err_k = (err_s / ok_size) * 1e2	# %
     # NOTE err_k looks like 12.23 %
     err_k = (math.floor(err_k * keep) + 1) / keep
+    er = False
     if real_size != ok_size:
         er = True
     err_u = err_s / check_unit

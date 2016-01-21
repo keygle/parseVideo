@@ -30,6 +30,8 @@ FEATURES = {	# --enable, --disable
     'fix_size' : False, 		# TODO if parse_video not get part file size, try to fix it here
     
     # create task
+    'fix_title_no' : False, 		# TODO try to get check and fix title_no from title text
+    
     'check_log_file' : True, 		# check log file if exists, and stop if not match
     'check_log_file_strict' : True, 	# check more values in log file
     
@@ -115,6 +117,7 @@ task_info = None
 
 select_hd = None	# --hd
 title_suffix = None	# --title-suffix
+title_no = None		# --title-no
 # overwrite default values
 set_output = output_dir
 set_retry = error_retry

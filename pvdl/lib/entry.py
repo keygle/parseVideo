@@ -114,7 +114,7 @@ def _do_download(task_info):
     # TODO fix task_info video count info before download
     v = task_info['video']
     count = len(v['file'])
-    ui.entry_print_start_download(v['size_byte'], v['time_s'])
+    ui.entry_print_start_download(count, v['size_byte'], v['time_s'])
     # reset count
     count_ok = 0
     count_err = 0

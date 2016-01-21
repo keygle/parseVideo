@@ -42,7 +42,7 @@ def entry_print_create_task(hd, title, log_path, merged_path):
     log.d('log file \"' + log_path + '\" ')
     log.i('output file \"' + merged_path + '\" ')
 
-def entry_print_start_download(size, time):
+def entry_print_start_download(count, size, time):
     size = b.byte_to_size(size)
     time = b.second_to_time(time)
     t = 'start download ' + str(count) + ' files, ' + size + ' ' + time + ' '
@@ -58,7 +58,7 @@ def entry_print_before_download(i, count, part_name, size, time):
     log.r(t)
 
 def entry_print_download_status(count_err, count_ok, done_size, all_size, done_time, all_time, rest_size, rest_time):
-    done_per = (done_size / v['size_byte']) * 1e2
+    done_per = (done_size / all_size) * 1e2
     if done_size == all_size:
         done_per = '100'
     else:

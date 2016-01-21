@@ -19,6 +19,7 @@ def parse(hd=None, enable_more=False):
         print(raw_text)	# print raw output
     else:	# DEBUG log
         log.d('disabled feature print_parse_video_output ')
+    # TODO check parse_video output mark_uuid and port_version
     # check fix_size
     if conf.FEATURES['fix_size']:
         pvinfo = _fix_size(pvinfo)
@@ -85,8 +86,17 @@ def create_task(pvinfo, hd):
     if v == None:
         raise err.UnknowError('can not select hd from pvinfo', hd, pvinfo)
     task_info['video'] = v
+    # NOTE check --title-no
+    if conf.title_no != None:
+        log.i('fix title_no to ' + str(conf.title_no) + ' ')
+        task_info['info']['title_no'] = conf.title_no
+    # TODO support fix_title_no
     # gen task_title
     title = make_title.gen_title(task_info)
+    # NOTE check --title-suffix
+    if conf.title_suffix != None:
+        log.d('add title_suffix \"' + conf.title_suffix + '\" ')
+        title += '.' + conf.title_suffix
     task_info['title'] = title
     ## add more to task_info
     task_info['path'] = {}
@@ -182,7 +192,7 @@ def _check_log_file(task_info):
             return err.CheckError('check log_file', value, old, new)
         now_v, old_v = now['video'], old['video']
         # check hd match
-        now_hd, old_hd = now_v['hd'], old_v[['hd']
+        now_hd, old_hd = now_v['hd'], old_v['hd']
         if now_hd != old_hd:
             raise print_check_err('hd', now_hd, old_hd)
         # check format match
@@ -233,8 +243,8 @@ def _check_log_file(task_info):
                 raise print_strict_err('title', '[' + now_title + ']', '[' + old_title + ']')
             now_info, old_info = now['info'], old['info']
             # check extractor, method match
-            now_extractor, old_extractor = now_info['extractor'], old_info['extractor']
-            now_method, old_method = now_info['method'], old_info['method']
+            now_extractor, old_extractor = now['extractor'], old['extractor']
+            now_method, old_method = now['method'], old['method']
             if now_extractor != old_extractor:
                 raise print_strict_err('extractor', '[' + now_extractor + ']', '[' + old_extractor + ']')
             if now_method != old_method:

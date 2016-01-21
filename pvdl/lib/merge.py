@@ -3,7 +3,7 @@
 import os
 
 from . import err, b, conf, log
-from . import call_sub
+from . import call_sub, ui
 
 
 def merge(task_info):
@@ -40,7 +40,6 @@ def _do_merge(task_info):
     call_sub.call_ffmpeg(arg)
 
 def _check_force_merge(task_info):
-    
     base_path = task_info['path']['base_path']
     tmp_path = task_info['path']['tmp_path']
     list_file = task_info['path']['ffmpeg_list']
@@ -51,13 +50,15 @@ def _check_force_merge(task_info):
     task_info['path']['list_path'] = list_path
     task_info['path']['merged_path'] = merged_path
     # TODO check permission
-    
     # check final file exists
-    if os.path.isfile(merged_path) and (not conf.FEATURES['force_merge']):
-        log.e('can not merge \"' + merged_path + '\", this output file already exists ')
-        raise err.CheckError('output merged_file', merged_path)
-    # TODO do force merge, remove file
-    log.w('merge._check_force_merge() not finished ')
+    if not os.path.isfile(merged_path):
+        return	# check pass
+    if conf.FEATURES['force_merge']:
+        # TODO do force merge, remove file
+        log.w('merge._check_force_merge() not finished ')
+        return
+    log.e('can not merge \"' + merged_path + '\", this output file already exists ')
+    raise err.CheckError('output merged_file', merged_path)
 
 def _gen_ffmpeg_merge_list(task_info):
     # NOTE should fix path here
@@ -137,7 +138,7 @@ def _get_file_time_s(fpath):
     for l in line:
         if not ':' in l:
             continue	# skip this line
-        key, value = l.split(':')
+        key, value = l.split(':', 1)
         key, value = key.strip(), value.strip()
         # check Duration
         if key == 'Duration':	# NOTE unit of value is ms
