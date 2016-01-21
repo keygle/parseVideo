@@ -32,16 +32,18 @@ FEATURES = {	# --enable, --disable
     # create task
     'check_log_file' : True, 		# check log file if exists, and stop if not match
     'check_log_file_strict' : False, 	# TODO check more values in log file
+    
+    ## entry works
     'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
     
     ## download stage
     
     # before download
-    'check_remote_size' : False, 	# check network file size
+    'check_remote_size' : False, 	# TODO check network file size
     'check_remote_fix_size' : True, 	# TODO if check_remote_size enabled, fix part file size here
     
     'check_local_size' : True, 		# check local file size and skip finished files
-    'skip_local_lager_file' : False, 	# TODO if local file is too large, just skip it (ignore Error)
+    'skip_local_lager_file' : False, 	# if local file is too large, just skip it (ignore Error)
     
     # after download
     'check_file_size' : True, 		# check part file size

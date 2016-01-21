@@ -2,6 +2,7 @@
 
 import os, sys
 import math, json
+import hashlib
 import multiprocessing.dummy as multiprocessing
 
 import colored
@@ -129,9 +130,16 @@ def map_do(task_list, worker=lambda x:x, pool_size=1):
     pool.join()
     return result
 
-def md5sum(fpath):
-    # TODO
-    pass
+def md5sum(fpath, chunk_size=pow(1024, 2) * 16):	# NOTE default chunk size to road file bytes is 16 MB
+    md5 = hashlib.md5()
+    with open(fpath, 'rb') as f:
+        while True:
+            data = f.read(chunk_size)
+            if not data:
+                break
+            md5.update(data)
+    out = md5.hexdigest()
+    return out
 
 
 # end b.py

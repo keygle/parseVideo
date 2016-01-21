@@ -62,7 +62,10 @@ def _check_local_size(f):
     # check size
     err_s, err_k, er, err_u = b.check_size(local_size, f['size'], b.CHECK_SIZE_MB)
     if (abs(err_u) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
-        return False	# not skip
+        # check skip_local_larger_file
+        if not conf.FEATURES['skip_local_larger_file']:
+            return False	# not skip
+        log.w('enabled feature skip_local_larger_file ')
     ui.dl_worker_print_skip_part_file(err_s, err_k, er, f['_part_name'], local_size)
     return True	# check pass, skip file
 
@@ -95,8 +98,29 @@ def _check_file_size(f):
 def _check_file_md5(f):
     if not conf.FEATURES['check_file_md5']:
         return False
-    # TODO do check
-    log.w('dl_worker._check_file_md5() not finished ')
+    # check md5 info
+    if not 'checksum' in f:
+        log.d('no checksum info for this file ')
+        return False
+    if not 'md5' in f['checksum']:
+        log.d('no checksum.md5 info for this file ')
+        return False
+    ok_md5 = f['checksum']['md5']
+    # INFO log
+    log.i('checking checksum.md5 for file \"' + f['_part_name'] + '\" ')
+    try:	# check file md5
+        file_md5 = b.md5sum(f['path'])
+    except Exception as e:
+        log.e('can not check md5, ' + str(e))
+        # TODO print Error info here
+        return True	# check failed
+    # check md5 match
+    if file_md5 != ok_md5:
+        log.e('checksum.md5 failed, file ' + file_md5 + ', OK ' + ok_md5 + ' ')
+        return True
+    log.o('checksum.md5 OK ' + ok_md5 + ' ')
+    return False
+
 
 # download with wget
 def _dl_wget(f):
