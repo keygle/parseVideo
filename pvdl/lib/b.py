@@ -75,6 +75,12 @@ def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
 
 def second_to_time(time_s):
     raw = number(time_s)
+    # NOTE process time_s < 0
+    less_than_0 = ''
+    if raw < 0:
+        raw = math.abs(raw)
+        less_than_0 = '-'
+    # get time info
     sec = math.floor(raw)
     ms = raw - sec
     minute = math.floor(sec / 60)
@@ -85,6 +91,7 @@ def second_to_time(time_s):
     t = str(minute).zfill(2) + ':' + str(sec).zfill(2) + '.' + str(round(ms * 1e3))
     if hour > 0:	# check add hour
         t = str(hour).zfill(2) + ':' + t
+    t = less_than_0 + t
     return t
 
 

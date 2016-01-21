@@ -52,9 +52,37 @@ def call_ffmpeg(args):
     ffmpeg_bin = _make_bin_path(conf.SUB_BIN['ffmpeg'])
     _call_and_check(ffmpeg_bin, args, name='ffmpeg', action='merge')
 
-def call_mediainfo(args):
+def call_mediainfo(args, ignore_decoding_error=True):
     mediainfo_bin = _make_bin_path(conf.SUB_BIN['mediainfo'])
-    _call_and_check(mediainfo_bin, args, name='mediainfo', action='get video file info')
+    a = [mediainfo_bin] + args
+    # DEBUG log
+    log.d('call mediainfo to get video file info, with args ' + str(args) + ' ')
+    
+    # call mediainfo
+    PIPE = subprocess.PIPE
+    try:
+        p = subprocess.run(a, stdout=PIPE)
+    except Exception as e:
+        log.e('can not execute mediainfo ')
+        er = err.CallError('mediainfo', mediainfo_bin, args)
+        raise er from e
+    # check exit code
+    exit_code = p.returncode
+    if exit_code != 0:
+        log.e('get video file info failed, mediainfo return ' + str(exit_code) + ' ')
+        raise err.ExitCodeError('mediainfo', exit_code, args)
+    # decode stdout, NOTE just with utf-8
+    try:
+        stdout = p.stdout.decode('utf-8')
+    except Exception as e:
+        if not ignore_decoding_error:
+            log.e('decode mediainfo stdout to text with utf-8 failed ')
+            er = err.DecodingError('mediainfo', 'stdout', args)
+            er.blob = p.stdout
+            raise er from e
+        # just ignore decoding Error here
+        stdout = p.stdout.decode('utf-8', 'ignore')
+    return stdout	# end call mediainfo
 
 def call_sub_downloader(sub, args):
     pass	# TODO

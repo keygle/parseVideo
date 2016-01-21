@@ -61,7 +61,7 @@ def _check_local_size(f):
         return False	# not skip
     # check size
     err_s, err_k, er, err_u = b.check_size(local_size, f['size'], b.CHECK_SIZE_MB)
-    if (abs(err_u) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
         # check skip_local_larger_file
         if not conf.FEATURES['skip_local_larger_file']:
             return False	# not skip
@@ -88,7 +88,7 @@ def _check_file_size(f):
         return
     # check size
     err_s, err_k, er, err_u = b.check_size(local_size, f['size'], b.CHECK_SIZE_MB)
-    if (abs(err_u) >= conf.CHECK_ERR_K['file_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['file_size']):
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['file_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['file_size']):
         ui.dl_worker_print_check_file_size_error(err_s, err_k, f['_part_name'], local_size)
         return True
     ui.dl_worker_print_check_file_size_pass(err_s, err_k, er, f['_part_name'], local_size)

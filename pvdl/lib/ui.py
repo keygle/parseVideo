@@ -84,6 +84,8 @@ def entry_print_download_status(count_err, count_ok, done_size, all_size, done_t
     t += ' ' + _grey + rest_time + ' '
     log.r(t)
 
+# TODO maybe clean check print code
+
 ## dl_worker.py
 
 def dl_worker_print_skip_part_file(err_s, err_k, er, part_name, local_size):
@@ -94,7 +96,7 @@ def dl_worker_print_skip_part_file(err_s, err_k, er, part_name, local_size):
     log.o(t)
 
 def dl_worker_print_check_file_size_error(err_s, err_k, part_name, local_size):
-    err_info = b.byte_to_size(err_s) + ' ' + str(err_k) + ' % '
+    err_info = b.byte_to_size(err_s) + ' ' + str(err_k) + ' %'
     local_size = b.byte_to_size(local_size)
     # ERROR log
     t = 'check part file size failed: \"' + f['_part_name'] + '\", size ' + local_size
@@ -104,10 +106,47 @@ def dl_worker_print_check_file_size_error(err_s, err_k, part_name, local_size):
 def dl_worker_print_check_file_size_pass(err_s, err_k, er, part_name, local_size):
     err_info = make_err_size_info(err_s, err_k, er)
     local_size = b.byte_to_size(local_size, flag_add_grey=True)
+    # [ OK ] log
     t = 'check part file size pass' + _grey + ': \"' + part_name + '\", size '
     t += _white + local_size + _grey + ' err ' + _blue + err_info + ' '
     log.o(t)
 
+## merge.py
+
+def merge_print_check_merged_size_error(err_s, err_k, merged_path, local_size):
+    err_info = b.byte_to_size(err_s) + ' ' + str(err_k) + ' %'
+    local_size = b.byte_to_size(local_size)
+    # ERROR log
+    t = 'check merged file size failed: \"' + merged_path + '\", size ' + local_size
+    t += ' err ' + err_info + ' '
+    log.e(t)
+
+def merge_print_check_merged_size_pass(err_s, err_k, er, merged_name, local_size):
+    err_info = make_err_size_info(err_s, err_k, er)
+    local_size = b.byte_to_size(local_size, flag_add_grey=True)
+    # [ OK ] log
+    t = 'check merged file size pass' + _grey + ': \"' + merged_name + '\", size '
+    t += _white + local_size + _grey + ' err ' + _blue + err_info + ' '
+    log.o(t)
+
+def merge_print_check_merged_time_error(err_s, err_k, merged_path, local_time):
+    err_info = b.second_to_time(err_s) + ' ' + str(err_k) + ' %'
+    local_time = b.second_to_time(local_time)
+    # ERROR log
+    t = 'check merged file time_s failed: \"' + merged_path + '\", time_s ' + local_time
+    t += ' err ' + err_info + ' '
+    log.e(t)
+
+def merge_print_check_merged_time_pass(err_s, err_k, er, merged_name, local_time):
+    if er:
+        err_info = b.second_to_time(err_s) + ' ' + str(err_k) + ' %'
+    else:
+        err_info = _grey + '0'
+    local_time = b.second_to_time(local_time)
+    # [ OK ]  log
+    t = 'check merged file time_s pass' + _grey + ': \"' + merged_name + '\", time_s '
+    t += _white + local_time + _grey + ' err ' + _blue + err_info + ' '
+    log.o(t)
 
 ## error checks
 
