@@ -30,7 +30,7 @@ TODO
 
 from lib import entry, log, lan, err, conf
 
-VERSION_STR = 'pvdl version 0.0.3.0 test201601201759'
+VERSION_STR = 'pvdl version 0.0.6.0 test201601212036'
 
 # global data
 etc = {}
@@ -47,6 +47,7 @@ pvdl: A reference implemention of a downloader which uses parse_video.
       --hd HD                set hd to select
   -o, --output DIR           save downloaded file to DIR
       --title-suffix SUFFIX  add suffix to resolve name conflicts
+      --title-no NO          set title_no
       --retry TIMES          set retry times
       --retry-wait SECONDS   wait seconds before retry
       
@@ -65,13 +66,34 @@ More information online: <https://github.com/sceext2/parse_video> \
 ''')
 
 def p_version():
-    print(VERSION_STR)
-    # TODO
-    log.w('print version not finished ')
+    print(VERSION_STR + '''
+
+    pvdl  Copyright (C) 2016  sceext <sceext@foxmail.com>
+    This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 
+    you are welcome to redistribute it under certain conditions. 
+
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>. 
+Please use "--license" or read LICENSE for more details. \
+''')
 
 def p_license():
-    log.w('print license () not finished ')
-    pass
+    print('''\
+    pvdl : A reference implemention of a downloader which uses parse_video. 
+    Copyright (C) 2016 sceext <sceext@foxmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. \
+''')
 
 def p_cline_err():
     log.e('bad command line format, please try \"--help\". ')
@@ -136,6 +158,12 @@ def p_args(args):
             if conf.title_suffix != None:
                 log.w('already set suffix to \"' + conf.title_suffix + '\", now set to \"' + suffix + '\" ')
             conf.title_suffix = suffix
+        elif one == '--title-no':
+            no, rest = rest[0], rest[1:]
+            no = int(no)
+            if conf.title_no != None:
+                log.w('already set title_no to ' + str(conf.title_no) + '\", now set to \"' + str(no) + '\" ')
+            conf.title_no = no
         elif one == '--retry':
             retry, rest = rest[0], rest[1:]
             retry = int(retry)

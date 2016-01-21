@@ -1,11 +1,13 @@
 # b.py, parse_video/pvdl/lib/
 
 import os, sys
-import math
-import json
+import math, json
+import hashlib
+import multiprocessing.dummy as multiprocessing
+
 import colored
 
-from . import conf
+from . import err, conf
 
 ## text functions
 
@@ -48,7 +50,7 @@ def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
     # NOTE process size_byte < 0
     less_than_0 = ''
     if size_byte < 0:
-        size_byte = math.abs(size_byte)
+        size_byte = abs(size_byte)
         less_than_0 = '-'
     # check < 1 Byte
     if size_byte < 1:
@@ -73,6 +75,12 @@ def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
 
 def second_to_time(time_s):
     raw = number(time_s)
+    # NOTE process time_s < 0
+    less_than_0 = ''
+    if raw < 0:
+        raw = abs(raw)
+        less_than_0 = '-'
+    # get time info
     sec = math.floor(raw)
     ms = raw - sec
     minute = math.floor(sec / 60)
@@ -83,6 +91,7 @@ def second_to_time(time_s):
     t = str(minute).zfill(2) + ':' + str(sec).zfill(2) + '.' + str(round(ms * 1e3))
     if hour > 0:	# check add hour
         t = str(hour).zfill(2) + ':' + t
+    t = less_than_0 + t
     return t
 
 
@@ -108,8 +117,39 @@ def json_clone(raw):
     out = json.loads(json.dumps(raw))
     return out
 
-def md5sum():
-    pass	# TODO
+# common check size function
+def check_size(real_size, ok_size, check_unit=1, keep=1e2):
+    err_s = real_size - ok_size
+    err_k = (err_s / ok_size) * 1e2	# %
+    # NOTE err_k looks like 12.23 %
+    err_k = (math.floor(err_k * keep) + 1) / keep
+    er = False
+    if real_size != ok_size:
+        er = True
+    err_u = err_s / check_unit
+    return err_s, err_k, er, err_u
+
+CHECK_SIZE_MB = pow(1024, 2)	# for check size MB
+
+
+# use many threads to do many tasks at the same time
+def map_do(task_list, worker=lambda x:x, pool_size=1):
+    pool = multiprocessing.Pool(processes=pool_size)
+    result = pool.map(worker, task_list)
+    pool.close()
+    pool.join()
+    return result
+
+def md5sum(fpath, chunk_size=pow(1024, 2) * 16):	# NOTE default chunk size to road file bytes is 16 MB
+    md5 = hashlib.md5()
+    with open(fpath, 'rb') as f:
+        while True:
+            data = f.read(chunk_size)
+            if not data:
+                break
+            md5.update(data)
+    out = md5.hexdigest()
+    return out
 
 
 # end b.py

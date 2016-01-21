@@ -1,11 +1,9 @@
 # dl_worker.py, parse_video/pvdl/lib/
 
 import os
-import colored
 
-from . import err, conf, log
-from . import b
-from . import call_sub
+from . import err, b, conf, log
+from . import call_sub, ui
 
 # download only one file, return True if download succeed
 def dl_one_file(f):
@@ -56,34 +54,25 @@ def _check_local_size(f):
     # get local file info
     s = os.stat(f['path'])
     local_size = s.st_size
-    
-    # TODO support no f['size'] value, or f['size'] == 0
-    
-    # TODO may be clean check_size code
-    # NOTE add more colors
-    fg = colored.fg
-    grey = fg('grey_50')
-    blue = fg('blue')
-    light_blue = fg('light_blue')
-    white = fg('white')
+    # NOTE check falied if no f['size'] info
+    if (not 'size' in f) or (f['size'] <= 0):
+        log.d('local file size ' + b.byte_to_size(local_size) + ' ')
+        log.w('can not check_local_size, no file size info ')
+        return False	# not skip
     # check size
-    err = local_size - f['size']
-    err_k = (err / f['size']) * 1e2	# %
-    if local_size != f['size']:
-        if (abs(err / pow(1024, 2)) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
+    err_s, err_k, er, err_u = b.check_size(local_size, f['size'], b.CHECK_SIZE_MB)
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['local_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['local_size']):
+        # check skip_local_larger_file
+        if not conf.FEATURES['skip_local_larger_file']:
             return False	# not skip
-        err_info = b.byte_to_size(err, flag_add_grey=True) + ' ' + str(err_k) + ' % '
-    else:
-        err_info = grey + '0'
-    # [ OK ] log skip info
-    t = light_blue + 'skip' + grey + ' \"' + f['_part_name'] + '\", ' + b.byte_to_size(local_size, flag_add_grey=True)
-    t += ' err ' + blue + err_info + ' '
-    log.o(t)
-    return True
+        log.w('enabled feature skip_local_larger_file ')
+    ui.dl_worker_print_skip_part_file(err_s, err_k, er, f['_part_name'], local_size)
+    return True	# check pass, skip file
 
 # return True if check failed
 def _check_file_size(f):
     if not conf.FEATURES['check_file_size']:
+        log.d('disabled feature check_file_size ')
         return False
     # get file info
     try:
@@ -92,30 +81,17 @@ def _check_file_size(f):
         log.e('can not check_file_size \"' + f['_part_name'] + '\", ' + str(e))
         return True	# NOTE not raise here
     local_size = s.st_size
-    # TODO support no f['size'] or f['size'] == 0
-    # TODO may clean check err code here
-    # NOTE add more colors
-    fg = colored.fg
-    grey = fg('grey_50')
-    blue = fg('blue')
-    light_blue = fg('light_blue')
-    white = fg('white')
-    # make err
-    err = local_size - f['size']
-    err_k = (err / f['size']) * 1e2	# %
-    if local_size != f['size']:
-        err_info = b.byte_to_size(err) + ' ' + str(err_k) + ' % '
-        if (abs(err / pow(1024, 2)) >= conf.CHECK_ERR_K['file_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['file_size']):
-            # ERROR log
-            log.e('check part file size failed: \"' + f['_part_name'] + '\", size ' + b.byte_to_size(local_size) + ' err ' + err_info + ' ')
-            return True
-        err_info = b.byte_to_size(err, flag_add_grey=True) + ' ' + str(err_k) + ' % '
-    else:
-        err_info = grey + '0'
-    # log check pass
-    t = 'check part file size pass' + grey + ': \"' + f['_part_name'] + '\", size '
-    t += white + b.byte_to_size(local_size, flag_add_grey=True) + grey + ' err ' + blue + err_info + ' '
-    log.o(t)
+    # NOTE check no f['size'] info
+    if (not 'size' in f) or (f['size'] <= 0):
+        log.d('local file_size ' + b.byte_to_size(local_size) + ' ')
+        log.w('can not check_file_size, no file size info ')
+        return
+    # check size
+    err_s, err_k, er, err_u = b.check_size(local_size, f['size'], b.CHECK_SIZE_MB)
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['file_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['file_size']):
+        ui.dl_worker_print_check_file_size_error(err_s, err_k, f['_part_name'], local_size)
+        return True
+    ui.dl_worker_print_check_file_size_pass(err_s, err_k, er, f['_part_name'], local_size)
     return False
 
 
@@ -123,8 +99,29 @@ def _check_file_size(f):
 def _check_file_md5(f):
     if not conf.FEATURES['check_file_md5']:
         return False
-    # TODO do check
-    log.w('dl_worker._check_file_md5() not finished ')
+    # check md5 info
+    if not 'checksum' in f:
+        log.d('no checksum info for this file ')
+        return False
+    if not 'md5' in f['checksum']:
+        log.d('no checksum.md5 info for this file ')
+        return False
+    ok_md5 = f['checksum']['md5']
+    # INFO log
+    log.i('checking checksum.md5 for file \"' + f['_part_name'] + '\" ')
+    try:	# check file md5
+        file_md5 = b.md5sum(f['path'])
+    except Exception as e:
+        log.e('can not check md5, ' + str(e))
+        # TODO print Error info here
+        return True	# check failed
+    # check md5 match
+    if file_md5 != ok_md5:
+        log.e('checksum.md5 failed, file ' + file_md5 + ', OK ' + ok_md5 + ' ')
+        return True
+    log.o('checksum.md5 OK ' + ok_md5 + ' ')
+    return False
+
 
 # download with wget
 def _dl_wget(f):

@@ -2,9 +2,9 @@
 
 import os
 
-from . import err, conf, log
-from . import b
-from . import call_sub
+from . import err, b, conf, log
+from . import call_sub, ui
+
 
 def merge(task_info):
     # checks before merge
@@ -40,7 +40,6 @@ def _do_merge(task_info):
     call_sub.call_ffmpeg(arg)
 
 def _check_force_merge(task_info):
-    
     base_path = task_info['path']['base_path']
     tmp_path = task_info['path']['tmp_path']
     list_file = task_info['path']['ffmpeg_list']
@@ -51,13 +50,15 @@ def _check_force_merge(task_info):
     task_info['path']['list_path'] = list_path
     task_info['path']['merged_path'] = merged_path
     # TODO check permission
-    
     # check final file exists
-    if os.path.isfile(merged_path) and (not conf.FEATURES['force_merge']):
-        log.e('can not output merged file \"' + merged_path + '\", already exists ')
-        raise err.CheckError('output merged_file', merged_path)
-    # TODO do force merge, remove file
-    log.w('merge._check_force_merge() not finished ')
+    if not os.path.isfile(merged_path):
+        return	# check pass
+    if conf.FEATURES['force_merge']:
+        # TODO do force merge, remove file
+        log.w('merge._check_force_merge() not finished ')
+        return
+    log.e('can not merge \"' + merged_path + '\", this output file already exists ')
+    raise err.CheckError('output merged_file', merged_path)
 
 def _gen_ffmpeg_merge_list(task_info):
     # NOTE should fix path here
@@ -78,15 +79,73 @@ def _fix_ffmpeg_args():
 
 def _check_merged_size(task_info):
     if not conf.FEATURES['check_merged_size']:
+        log.d('disabled feature check_merged_size ')
         return
-    # TODO do check
-    log.w('merge._check_merged_size() not finished ')
+    # get file info
+    merged_path = task_info['path']['merged_path']
+    try:
+        s = os.stat(merged_path)
+    except Exception as e:
+        log.e('can not check_merged_size \"' + merged_path + '\", can not get file info ')
+        er = err.CheckError('merged_size', 'stat file', merged_path)
+        raise er from e
+    local_size = s.st_size
+    # NOTE check no video['size_byte'] info
+    v = task_info['video']
+    if (not 'size_byte' in v) or (v['size_byte'] <= 0):
+        log.d('local merged file size ' + b.byte_to_size(local_size) + ' ')
+        log.w('can not check_merged_size, no video size_byte info ')
+        return
+    # check size
+    err_s, err_k, er, err_u = b.check_size(local_size, v['size_byte'], b.CHECK_SIZE_MB)
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_size']):
+        ui.merge_print_check_merged_size_error(err_s, err_k, merged_path, local_size)
+        raise err.CheckError('merged_size', local_size, v['size_byte'], merged_path)
+    ui.merge_print_check_merged_size_pass(err_s, err_k, er, task_info['path']['merged_file'], local_size)
 
 def _check_merged_time(task_info):
     if not conf.FEATURES['check_merged_time']:
         return
-    # TODO do check
-    log.w('merge._check_merged_time() not finished ')
+    # get merged file time_s
+    merged_path = task_info['path']['merged_path']
+    try:
+        local_time = _get_file_time_s(merged_path)
+    except Exception as e:
+        log.e('can not check_merged_time \"' + merged_path + '\", can not get file time_s ')
+        er = err.CheckError('merged_time', 'get time_s', merged_path)
+        raise er from e
+    # NOTE check no video['time_s'] info
+    v = task_info['video']
+    if (not 'time_s' in v) or (v['time_s'] <= 0):
+        log.d('local merged file time_s ' + b.second_to_time(local_time) + ' ')
+        log.w('can to check_merged_time, no video time_s info ')
+        return
+    # check time
+    err_s, err_k, er, err_u = b.check_size(local_time, v['time_s'], 60)	# NOTE unit is minute, 60s
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_time_min']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_time']):
+        ui.merge_print_check_merged_time_error(err_s, err_k, merged_path, local_time)
+        raise err.CheckError('merged_time', local_time, v['time_s'], merged_path)
+    ui.merge_print_check_merged_time_pass(err_s, err_k, er, task_info['path']['merged_file'], local_time)
+
+# TODO check merged size_px
+def _get_file_time_s(fpath):
+    # make mediainfo args
+    arg = ['--full', '--language=raw', fpath]
+    # call mediainfo
+    stdout = call_sub.call_mediainfo(arg)
+    # process lines to get time_s
+    line = stdout.splitlines()
+    for l in line:
+        if not ':' in l:
+            continue	# skip this line
+        key, value = l.split(':', 1)
+        key, value = key.strip(), value.strip()
+        # check Duration
+        if key == 'Duration':	# NOTE unit of value is ms
+            time_s = float(value) / 1e3
+            return time_s	# got time_s
+    log.e('no Duration info in mediainfo output ')
+    raise err.CheckError('merged_time', 'mediainfo output Duration', stdout)
 
 
 # end merge.py

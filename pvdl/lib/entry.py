@@ -18,29 +18,62 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import math
-import colored
+import os
+import time
+import functools
 
-from . import err, conf, log
-from . import b
-from . import parse, make_title, dl_worker, merge
+from . import err, b, conf, log
+from . import parse, dl_worker, merge, ui
 from . import lan
 
-# TODO
-def _retry_error():
-    pass
 
-
-
+# pvdl core entry function
 def start():
-    # TODO support retry
-    
-    # TODO support parse_twice
-    # TODO support parse_twice_enable_more
+    # NOTE support retry here
+    retry_count = 0
+    # check to retry
+    def check_should_retry():
+        if conf.set_retry < 0:	# NOTE -1 means retry forever
+            return True
+        if retry_count <= conf.set_retry:
+            return True
+    # NOTE -1 means retry forever
+    while check_should_retry():
+        retry_info = str(retry_count) + ' / ' + str(conf.set_retry)
+        # print retry info
+        if retry_count > 0:
+            log.i('pvdl task retry ' + retry_info)
+        try:
+            _do_can_retry()
+            # print retry OK info
+            if retry_count > 0:
+                log.o('pvdl task finished at retry ' + retry_info + ' ')
+            break	# no more retry
+        except err.RetryableError as e:	# ignore this Error
+            # ERROR log
+            if retry_count > 0:
+                log.e('pvdl task failed at retry ' + retry_info + ' ')
+            else:
+                log.e('pvdl task failed ')
+            # update retry count
+            retry_count += 1
+            # NOTE sleep before retry
+            if check_should_retry():
+                log.i('wait ' + str(conf.set_retry_wait) + ' s before next retry ')
+                time.sleep(conf.set_retry_wait)
+        except Exception:
+            raise	# not process other Errors
+    # end entry.start()
+
+# NOTE this works can be retry
+def _do_can_retry():
+    # TODO maybe not support parse_twice_enable_more, for lock file
+    # TODO support parse_once
+    # TODO support parse_twice enable_more
     
     # do first parse to get video formats
     pvinfo = parse.parse()
-    _print_pvinfo(pvinfo)
+    ui.entry_print_pvinfo(pvinfo)
     # select hd
     hd = _select_hd(pvinfo)
     
@@ -49,32 +82,51 @@ def start():
     pvinfo = parse.parse(hd=hd)
     # create task
     task_info = parse.create_task(pvinfo, hd)
-    _print_task_info(task_info)
     
-    # do some checks before start download
-    _check_lock_file(task_info)
-    _check_disk_space(task_info)
-    _check_permission(task_info)
-    
-    # TODO download Error process
-    _do_download(task_info)
-    # TODO merge Error process
-    merge.merge(task_info)
-    
-    # NOTE check auto_remove_tmp_files
-    _auto_remove_tmp_files(task_info)
-    # end entry.start()
+    tmp_path = task_info['path']['tmp_path']
+    lock_file = task_info['path']['lock_file']
+    lock_path = b.pjoin(tmp_path, lock_file)
+    # NOTE try to create tmp_path
+    try:
+        if not os.path.isdir(tmp_path):
+            os.makedirs(tmp_path)
+    except Exception as e:
+        log.e('can not create tmp dir \"' + tmp_path + '\" ')
+        er = err.ConfigError('create tmp_dir', tmp_path)
+        raise er from e
+    # NOTE run _do_with_lock() in _do_in_lock()
+    f = functools.partial(_do_with_lock, task_info, pvinfo)
+    _do_in_lock(f, lock_path)
 
-def _print_pvinfo(pvinfo):
-    # gen format labels and print it
-    labels = make_title.gen_labels(pvinfo)
-    # [ OK ] log here
-    log.o('got ' + str(len(labels)) + ' video formats ')
-    for i in range(len(labels) -1, -1, -1):	# NOTE print labels reverse
-        log.p(labels[i])
-    # print video name (title)
-    common_title = make_title.gen_common_title(pvinfo)
-    log.p(colored.fg('blue') + 'video ' + colored.fg('light_blue') + colored.attr('bold') + common_title + colored.attr('reset') + ' ')
+def _do_in_lock(f, lock_file):
+    # TODO on windows, should use tmp file
+    lock_fd = None
+    # get lock (create lock file)
+    try:
+        lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
+        log.d('got lock \"' + lock_file + '\" ')
+    except Exception as e:	# get lock failed
+        log.e('can not get lock \"' + lock_file + '\", ' + str(e))
+        if conf.FEATURES['check_lock_file']:
+            log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
+            er = err.ConfigError('check_lock_file', lock_file)
+            raise er from e
+        else:	# just ignore it
+            log.d('disabled feature check_lock_file ')
+    # do with lock
+    try:
+        return f()
+    finally:
+        try:	# close lock file
+            os.close(lock_fd)
+        except Exception as e:	# ignore close Error
+            log.w('can not close lock file [' + str(lock_fd) + '] \"' + lock_file + '\", ' + str(e))
+        try:	# remove lock file
+            os.remove(lock_file)
+        except Exception as e:	# ignore remove Error
+            log.w('can not remove lock file \"' + lock_file + '\", ' + str(e))
+    # end _do_in_lock
+
 
 def _select_hd(pvinfo):
     # get hd list
@@ -102,23 +154,20 @@ def _select_hd(pvinfo):
     # just select max hd
     return b.number(hd_list[0])
 
-def _print_task_info(task_info):
-    hd = task_info['video']['hd']
-    title = task_info['title']
-    log_path = task_info['path']['log_path']
-    base_path = task_info['path']['base_path']
-    merged_path = b.pjoin(base_path, task_info['path']['merged_file'])
-    # [ OK ] log
-    log.o('select hd ' + str(hd) + ', create_task \"' + title + '\" ')
-    log.d('log file \"' + log_path + '\" ')
-    log.i('output file \"' + merged_path + '\" ')
+# NOTE these works is protected by the lock file
+def _do_with_lock(task_info, pvinfo):
+    parse.create_log_file(task_info, pvinfo)	# write log file
+    _print_task_info(task_info)
+    # do some checks before start download
+    _check_disk_space(task_info)
+    # download part files
+    _do_download(task_info)
+    merge.merge(task_info)	# merge video part files
+    _auto_remove_tmp_files(task_info)	# check auto_remove_tmp_files
 
-def _check_lock_file(task_info):
-    if not conf.FEATURES['check_lock_file']:
-        return
-    # TODO create lock_file and remove it
-    log.w('entry._check_lock_file() not finished ')
-    # TODO do check
+def _print_task_info(task_info):
+    merged_path = b.pjoin(task_info['path']['base_path'], task_info['path']['merged_file'])
+    ui.entry_print_create_task(task_info['video']['hd'], task_info['title'], task_info['path']['log_path'], merged_path)
 
 def _check_disk_space(task_info):
     if not conf.FEATURES['check_disk_space']:
@@ -126,27 +175,14 @@ def _check_disk_space(task_info):
     # TODO do check
     log.w('entry._check_disk_space() not finished ')
 
-def _check_permission(task_info):
-    if not conf.FEATURES['check_permission']:
-        return
-    # TODO do check
-    log.w('entry._check_permission() not finished ')
-
 
 ## main download works
 
-# TODO clean UI print code here
-# TODO output style should be improved
 def _do_download(task_info):
     # TODO fix task_info video count info before download
-    # TODO support no size_byte, etc. count info
-    # TODO print download speed, remain time, etc. 
     v = task_info['video']
     count = len(v['file'])
-    all_size = b.byte_to_size(v['size_byte'])
-    all_time = b.second_to_time(v['time_s'])
-    # log info before start download
-    log.i('start download ' + str(count) + ' files, ' + all_size + ' ' + all_time + ' ')
+    ui.entry_print_start_download(count, v['size_byte'], v['time_s'])
     # reset count
     count_ok = 0
     count_err = 0
@@ -154,67 +190,32 @@ def _do_download(task_info):
     rest_size = v['size_byte']
     done_time = 0
     rest_time = v['time_s']
-    # TODO support without video count info (time_s, size_byte, etc. )
-    all_size = b.byte_to_size(v['size_byte'], flag_add_grey=True)
-    all_time = b.second_to_time(v['time_s'])
     # download each file
     for i in range(count):
         f = v['file'][i]
-        size = b.byte_to_size(f['size'], flag_add_grey=True)
-        time = b.second_to_time(f['time_s'])
-        # FIXME NOTE for better print
-        log.p('')
-        # NOTE add more color here
-        fg = colored.fg
-        grey = fg('grey_50')
-        light_yellow = fg('light_yellow')
-        yellow = fg('yellow')
-        blue = fg('blue')
-        white = fg('white')
-        # print info before download
-        t = grey + ' ' + yellow + str(i + 1) + grey + '/' + str(count) + ' ' + white + 'download '
-        t += light_yellow + f['_part_name'] + grey + ', ' + blue + size + ' ' + grey + time + ' '
-        log.r(t)
-        
         # TODO print download speed, rest time, etc. 
-        # do download one file
-        if dl_worker.dl_one_file(f):
+        ui.entry_print_before_download(i, count, f['_part_name'], f['size'], f['time_s'])
+        if dl_worker.dl_one_file(f):	# do download one file
             count_ok += 1
-            done_size += f['size']
-            done_time += f['time_s']
+            # NOTE support task_info without size_byte, size, time_s, etc. 
+            if f['size'] >= 0:	# -1 means None
+                done_size += f['size']
+            if f['time_s'] >= 0:
+                done_time += f['time_s']
         else:
             count_err += 1
-        # update count
-        rest_size -= f['size']
-        rest_time -= f['time_s']
-        # download status info
-        done_per = (done_size / v['size_byte']) * 1e2
-        if done_size == v['size_byte']:
-            done_per = '100'
-        else:
-            done_per = str(math.floor(done_per * 1e1) / 1e1)
-        if count_err > 0:
-            err_info = fg('light_red') + str(count_err)
-        else:
-            err_info = grey + str(count_err)
-        t = ' ' + light_yellow + done_per + yellow + ' % '
-        t += grey + '[ok ' + yellow + str(count_ok)
-        t += grey + ' err ' + err_info + grey + '] '
-        t += white + b.byte_to_size(done_size, flag_add_grey=True) + grey + '/' + all_size
-        t += ', ' + b.second_to_time(done_time) + '/' + all_time + '; rest '
-        if rest_size > 0:
-            t += yellow + b.byte_to_size(rest_size, flag_add_grey=True)
-        else:
-            t += '0'
-        t += ' ' + grey + b.second_to_time(rest_time) + ' '
-        log.r(t)
+        # update count, NOTE support no info
+        if f['size'] >= 0:
+            rest_size -= f['size']
+        if f['time_s'] >= 0:
+            rest_time -= f['time_s']
+        ui.entry_print_download_status(count_err, count_ok, done_size, v['size_byte'], done_time, v['time_s'], rest_size, rest_time)
     # download done, check download succeed
     if count_err > 0:
         log.e('download part files failed, err ' + str(count_err) + '/' + str(count) + ' ')
         raise err.DownloadError('part file', count_err, count)
     # download OK
     log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
-
 
 def _auto_remove_tmp_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_files']:
@@ -228,7 +229,6 @@ def _auto_remove_tmp_files(task_info):
         return
     # TODO do remove
     log.w('entry._auto_remove_tmp_files() not finished ')
-
 
 # end entry.py
 
