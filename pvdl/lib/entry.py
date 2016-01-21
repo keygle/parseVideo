@@ -19,6 +19,7 @@
 #
 
 import os
+import time
 import functools
 
 from . import err, b, conf, log
@@ -26,17 +27,42 @@ from . import parse, dl_worker, merge, ui
 from . import lan
 
 
-# entry.start(), pvdl core entry function
+# pvdl core entry function
 def start():
-    # TODO support retry
-    try:
-        _do_can_retry()
-    except err.RetryableError as e:
-        # TODO
-        log.w('support retry not finished ')
-        raise
-    except Exception:
-        raise
+    # NOTE support retry here
+    retry_count = 0
+    # check to retry
+    def check_should_retry():
+        if conf.set_retry < 0:	# NOTE -1 means retry forever
+            return True
+        if retry_count <= conf.set_retry:
+            return True
+    # NOTE -1 means retry forever
+    while check_should_retry():
+        retry_info = str(retry_count) + ' / ' + str(conf.set_retry)
+        # print retry info
+        if retry_count > 0:
+            log.i('pvdl task retry ' + retry_info)
+        try:
+            _do_can_retry()
+            # print retry OK info
+            if retry_count > 0:
+                log.o('pvdl task finished at retry ' + retry_info + ' ')
+            break	# no more retry
+        except err.RetryableError as e:	# ignore this Error
+            # ERROR log
+            if retry_count > 0:
+                log.e('pvdl task failed at retry ' + retry_info + ' ')
+            else:
+                log.e('pvdl task failed ')
+            # update retry count
+            retry_count += 1
+            # NOTE sleep before retry
+            if check_should_retry():
+                log.i('wait ' + conf.set_retry_wait + ' s before next retry ')
+                time.sleep(conf.set_retry_wait)
+        except Exception:
+            raise	# not process other Errors
     # end entry.start()
 
 # NOTE this works can be retry

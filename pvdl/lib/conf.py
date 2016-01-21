@@ -1,7 +1,5 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 
-# TODO not support download speed limit
-
 
 # auto-select hd in this range, will always select max hd
 auto_select_hd = [-1, 8]
@@ -10,9 +8,9 @@ auto_select_hd = [-1, 8]
 output_dir = './dl/'	# --output
 
 # error retry times
-error_retry = 3		# TODO -1 means retry forever; --retry
+error_retry = 5		# -1 means retry forever; --retry
 # before error_retry, first sleep some time
-retry_wait_time_s = 1	# TODO --retry-wait
+retry_wait_time_s = 1	# --retry-wait
 
 
 
