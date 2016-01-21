@@ -21,16 +21,19 @@
 
 OPTIONS not in --help: 
 
-TODO
+    --fix-unicode
+    --options-overwrite-once
+
 '''
 
+import io
 import sys
 import json
 
 from lib.b import log
 from lib import entry
 
-VERSION_STR = 'parse_video version 0.5.4.0 test201601082116'
+VERSION_STR = 'parse_video version 0.5.5.0 test201601211902'
 
 # global data
 etc = {}
@@ -48,6 +51,9 @@ etc['url'] = ''
 etc['flag_mode'] = None	# default mode, or 'help', 'version', 'license'
 etc['output'] = '-'	# '-' means stdout
 etc['more'] = None
+
+etc['flag_fix_unicode'] = False
+
 
 # print help, version and license info. (--help, --version, --license)
 def p_version():
@@ -172,7 +178,8 @@ def do_parse():
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
     # print result, check --output option
     if etc['output'] == '-':	# stdout
-        p_result(pvinfo, file=sys.stdout)
+        # NOTE support --fix-unicode here
+        p_result(pvinfo, file=sys.stdout, blob=etc['flag_fix_unicode'])
     else:	# open output file
         try:
             with open(etc['output'], 'wb') as f:
@@ -187,16 +194,19 @@ def p_result(pvinfo, sort_keys=False, ensure_ascii=False, file=sys.stdout, blob=
     if blob:
         text += '\n'
         blob = text.encode('utf-8')
+        # NOTE fix write here
+        if isinstance(file, io.TextIOWrapper):
+            file = file.buffer
         file.write(blob)
     else:
         print(text, file=file, flush=True)
 
 # process command line args
 def p_args(args):
-    rest = args
+    # TODO support --options-overwrite-once
+    rest = args.copy()
     while len(rest) > 0:
-        one = rest[0]
-        rest = rest[1:]
+        one, rest = rest[0], rest[1:]
         # --help, --version, --license
         if one == '--help':
             etc['flag_mode'] = 'help'
@@ -242,6 +252,12 @@ def p_args(args):
         elif one == '--more':
             etc['more'] = rest[0]
             rest = rest[1:]
+        # --fix-unicode
+        elif one == '--fix-unicode':
+            etc['flag_fix_unicode'] = True
+        # TODO support --options-overwrite-once
+        elif one == '--options-overwrite-once':
+            pass	# TODO
         # URL
         else:	# NOTE set URL
             if etc['url'] != '':

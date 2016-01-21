@@ -18,23 +18,31 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import functools
+
 from . import err, b, conf, log
 from . import parse, dl_worker, merge, ui
 from . import lan
 
-# TODO
-def _retry_error():
-    pass
 
-
-
+# entry.start(), pvdl core entry function
 def start():
     # TODO support retry
-    
-    # TODO support parse_twice
-    # TODO support parse_twice_enable_more
-    
-    # TODO support enable_more, support retry parse_once
+    try:
+        _do_can_retry()
+    except err.RetryableError as e:
+        # TODO
+        log.w('support retry not finished ')
+        raise
+    except Exception:
+        raise
+    # end entry.start()
+
+# NOTE this works can be retry
+def _do_can_retry():
+    # TODO maybe not support parse_twice_enable_more, for lock file
+    # TODO support parse_once
+    # TODO support parse_twice enable_more
     
     # do first parse to get video formats
     pvinfo = parse.parse()
@@ -47,22 +55,18 @@ def start():
     pvinfo = parse.parse(hd=hd)
     # create task
     task_info = parse.create_task(pvinfo, hd)
-    _print_task_info(task_info)
     
-    # TODO support lock
-    
-    # do some checks before start download
-    _check_lock_file(task_info)
-    _check_disk_space(task_info)
-    
-    # TODO download Error process
-    _do_download(task_info)
-    # TODO merge Error process
-    merge.merge(task_info)
-    
-    # NOTE check auto_remove_tmp_files
-    _auto_remove_tmp_files(task_info)
-    # end entry.start()
+    # NOTE run _do_with_lock() in _do_in_lock()
+    f = functools.partial(_do_with_lock, task_info, pvinfo)
+    _do_in_lock(f)
+
+def _do_in_lock(f):
+    # TODO
+    if not conf.FEATURES['check_lock_file']:
+        return
+    # TODO create lock_file and remove it
+    log.w('entry._check_lock_file() not finished ')
+    # TODO do check
 
 def _select_hd(pvinfo):
     # get hd list
@@ -90,16 +94,20 @@ def _select_hd(pvinfo):
     # just select max hd
     return b.number(hd_list[0])
 
+# NOTE these works is protected by the lock file
+def _do_with_lock(task_info, pvinfo):
+    parse.create_log_file(task_info, pvinfo)	# write log file
+    _print_task_info(task_info)
+    # do some checks before start download
+    _check_disk_space(task_info)
+    # download part files
+    _do_download(task_info)
+    merge.merge(task_info)	# merge video part files
+    _auto_remove_tmp_files(task_info)	# check auto_remove_tmp_files
+
 def _print_task_info(task_info):
     merged_path = b.pjoin(task_info['path']['base_path'], task_info['path']['merged_file'])
     ui.entry_print_create_task(task_info['video']['hd'], task_info['title'], task_info['path']['log_path'], merged_path)
-
-def _check_lock_file(task_info):
-    if not conf.FEATURES['check_lock_file']:
-        return
-    # TODO create lock_file and remove it
-    log.w('entry._check_lock_file() not finished ')
-    # TODO do check
 
 def _check_disk_space(task_info):
     if not conf.FEATURES['check_disk_space']:
@@ -149,7 +157,6 @@ def _do_download(task_info):
     # download OK
     log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
 
-
 def _auto_remove_tmp_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_files']:
         return
@@ -162,7 +169,6 @@ def _auto_remove_tmp_files(task_info):
         return
     # TODO do remove
     log.w('entry._auto_remove_tmp_files() not finished ')
-
 
 # end entry.py
 

@@ -120,9 +120,11 @@ def create_task(pvinfo, hd):
     task_info['path']['ffmpeg_list'] = make_title.gen_ffmpeg_list_file_name(title)
     task_info['path']['merged_file'] = make_title.gen_merged_file_name(title, conf.merge_output_format)
     # create task_info done
+    return task_info
+
+def create_log_file(task_info, pvinfo):
     _check_log_file(task_info)	# some checks
     _write_log_file(pvinfo, task_info)
-    return task_info	# end create_task
 
 def _write_log_file(pvinfo, task_info):
     # create log file path
