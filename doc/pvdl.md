@@ -54,13 +54,7 @@
 
 ## TODO
 
-达到 `pvdl -> version 0.1.0.0` 还要实现的 功能特性 (features): 
-
-+ `retry`: **错误自动重试**
-  
-  *解析错误* (`ParseError`), *下载错误* (`DownloadError`) 自动重试. 
-
-*其它事项*
+达到 `pvdl -> version 0.1.0.0` 还要: 
 
 + 文档化 TODO
 

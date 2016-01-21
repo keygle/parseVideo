@@ -140,14 +140,6 @@ def _write_log_file(pvinfo, task_info):
     # create json blob, with utf-8 encode
     text = json.dumps(pvinfo, indent=4, sort_keys=True, ensure_ascii=False)
     blob = text.encode('utf-8')
-    # NOTE try to create tmp_path
-    try:
-        if not os.path.isdir(tmp_path):
-            os.makedirs(tmp_path)
-    except Exception as e:
-        log.e('can not create tmp dir \"' + tmp_path + '\" ')
-        er = err.ConfigError('create tmp_dir', tmp_path)
-        raise er from e
     # NOTE use write-replace to write log file
     tmp_log_file = log_path + '.tmp'
     try:

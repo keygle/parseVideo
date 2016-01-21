@@ -56,17 +56,6 @@ etc['flag_fix_unicode'] = False
 
 
 # print help, version and license info. (--help, --version, --license)
-def p_version():
-    print(VERSION_STR + '''
-
-    parse_video  Copyright (C) 2015-2016  sceext <sceext@foxmail.com>
-    This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 
-    you are welcome to redistribute it under certain conditions. 
-
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>. 
-Please use "--license" or read LICENSE for more details. \
-''')
-
 def p_help():
     print('''\
 Usage: parsev [OPTION]... URL
@@ -91,6 +80,17 @@ parse_video: get video info from some web sites.
       --license  show license information and exit
 
 More information online: <https://github.com/sceext2/parse_video> \
+''')
+
+def p_version():
+    print(VERSION_STR + '''
+
+    parse_video  Copyright (C) 2015-2016  sceext <sceext@foxmail.com>
+    This program comes with ABSOLUTELY NO WARRANTY. This is free software, and 
+    you are welcome to redistribute it under certain conditions. 
+
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>. 
+Please use "--license" or read LICENSE for more details. \
 ''')
 
 def p_license():

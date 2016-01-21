@@ -43,7 +43,7 @@ FEATURES = {	# --enable, --disable
     'check_remote_fix_size' : True, 	# TODO if check_remote_size enabled, fix part file size here
     
     'check_local_size' : True, 		# check local file size and skip finished files
-    'skip_local_lager_file' : False, 	# if local file is too large, just skip it (ignore Error)
+    'skip_local_larger_file' : False, 	# if local file is too large, just skip it (ignore Error)
     
     # after download
     'check_file_size' : True, 		# check part file size

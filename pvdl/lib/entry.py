@@ -59,7 +59,7 @@ def start():
             retry_count += 1
             # NOTE sleep before retry
             if check_should_retry():
-                log.i('wait ' + conf.set_retry_wait + ' s before next retry ')
+                log.i('wait ' + str(conf.set_retry_wait) + ' s before next retry ')
                 time.sleep(conf.set_retry_wait)
         except Exception:
             raise	# not process other Errors
@@ -86,6 +86,14 @@ def _do_can_retry():
     tmp_path = task_info['path']['tmp_path']
     lock_file = task_info['path']['lock_file']
     lock_path = b.pjoin(tmp_path, lock_file)
+    # NOTE try to create tmp_path
+    try:
+        if not os.path.isdir(tmp_path):
+            os.makedirs(tmp_path)
+    except Exception as e:
+        log.e('can not create tmp dir \"' + tmp_path + '\" ')
+        er = err.ConfigError('create tmp_dir', tmp_path)
+        raise er from e
     # NOTE run _do_with_lock() in _do_in_lock()
     f = functools.partial(_do_with_lock, task_info, pvinfo)
     _do_in_lock(f, lock_path)
