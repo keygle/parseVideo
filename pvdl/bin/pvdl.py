@@ -174,7 +174,7 @@ def p_args(args):
             wait, rest = rest[0], rest[1:]
             wait = float(wait)
             if conf.set_retry_wait != conf.retry_wait_time_s:
-                log.w('already set retry to ' + str(conf.set_retry_wait) + ', now set to ' + str(wait) + ' ')
+                log.w('already set retry_wait to ' + str(conf.set_retry_wait) + ', now set to ' + str(wait) + ' ')
             conf.set_retry_wait = wait
         # DEBUG mode
         elif one in ['-d', '--debug']:
