@@ -132,10 +132,11 @@ def _write_log_file(pvinfo, task_info):
     
     # clone task_info to prevent modify it
     task_info = b.json_clone(task_info)
-    # add pvinfo for DEBUG
-    task_info['_pvinfo'] = pvinfo
+    pvinfo = b.json_clone(pvinfo)
+    # NOTE add task_info in pvinfo by default to write log file, will be used for parse_video --more
+    pvinfo['_pvdl_task_info'] = task_info
     # create json blob, with utf-8 encode
-    text = json.dumps(task_info, indent=4, sort_keys=True, ensure_ascii=False)
+    text = json.dumps(pvinfo, indent=4, sort_keys=True, ensure_ascii=False)
     blob = text.encode('utf-8')
     # NOTE try to create tmp_path
     try:
@@ -180,11 +181,11 @@ def _check_log_file(task_info):
         text = blob.decode('utf-8')
         log_info = json.loads(text)
     except Exception as e:
-        log.w('can not parse json text of log file \"' + log_path + '\", ' + str(e))
         # TODO print more error info
+        log.w('can not parse json text of log file \"' + log_path + '\", ' + str(e))
     # do check
-    old, now = log_info, task_info
-    try:
+    try:	# NOTE get task_info from pvdl log file
+        old, now = log_info['_pvdl_task_info'], task_info
         # base check
         def print_check_err(value, new, old):	# base check error print function
             t = 'check log failed, new ' + value + ' ' + str(new) + ' != old ' + str(old) + ' '
