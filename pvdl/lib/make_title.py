@@ -1,9 +1,7 @@
 # make_title.py, parse_video/pvdl/lib/
 
 import math
-
-from . import b
-from . import err, conf
+from . import err, b, conf
 
 
 # gen video common title

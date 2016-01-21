@@ -2,9 +2,9 @@
 
 import os
 
-from . import err, conf, log
-from . import b
+from . import err, b, conf, log
 from . import call_sub
+
 
 def merge(task_info):
     # checks before merge
@@ -54,7 +54,7 @@ def _check_force_merge(task_info):
     
     # check final file exists
     if os.path.isfile(merged_path) and (not conf.FEATURES['force_merge']):
-        log.e('can not output merged file \"' + merged_path + '\", already exists ')
+        log.e('can not merge \"' + merged_path + '\", this output file already exists ')
         raise err.CheckError('output merged_file', merged_path)
     # TODO do force merge, remove file
     log.w('merge._check_force_merge() not finished ')

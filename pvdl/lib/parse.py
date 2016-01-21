@@ -3,10 +3,11 @@
 import os
 import json
 
-from . import err, conf, log
-from . import b
+from . import err, b, conf, log
 from . import call_sub, make_title
 
+
+# TODO support enable_more
 def parse(hd=None, enable_more=False):
     raw_url = conf.raw_url
     # INFO log
@@ -16,6 +17,8 @@ def parse(hd=None, enable_more=False):
     # check print parse_video output
     if conf.FEATURES['print_parse_video_output']:
         print(raw_text)	# print raw output
+    else:	# DEBUG log
+        log.d('disabled feature print_parse_video_output ')
     # check fix_size
     if conf.FEATURES['fix_size']:
         pvinfo = _fix_size(pvinfo)

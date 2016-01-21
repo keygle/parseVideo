@@ -4,8 +4,7 @@ import os, sys
 import json
 import subprocess
 
-from . import err, conf, log
-from . import b
+from . import err, b, conf, log
 
 
 def call_parsev(args):

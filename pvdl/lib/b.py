@@ -1,11 +1,12 @@
 # b.py, parse_video/pvdl/lib/
 
 import os, sys
-import math
-import json
+import math, json
+import multiprocessing.dummy as multiprocessing
+
 import colored
 
-from . import conf
+from . import err, conf
 
 ## text functions
 
@@ -108,8 +109,29 @@ def json_clone(raw):
     out = json.loads(json.dumps(raw))
     return out
 
-def md5sum():
-    pass	# TODO
+# common check size function
+def check_size(real_size, ok_size, check_unit=1):
+    err_s = real_size - ok_size
+    err_k = (err_s / ok_size) * 1e2	# %
+    if real_size != ok_size:
+        er = True
+    err_u = err_s / check_unit
+    return err_s, err_k, er, err_u
+
+CHECK_SIZE_MB = pow(1024, 2)	# for check size MB
+
+
+# use many threads to do many tasks at the same time
+def map_do(task_list, worker=lambda x:x, pool_size=1):
+    pool = multiprocessing.Pool(processes=pool_size)
+    result = pool.map(worker, task_list)
+    pool.close()
+    pool.join()
+    return result
+
+def md5sum(fpath):
+    # TODO
+    pass
 
 
 # end b.py
