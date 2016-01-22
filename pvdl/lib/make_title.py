@@ -56,6 +56,10 @@ def gen_ffmpeg_list_file_name(title):	# pvdl.tmp.TITLE.ffmpeg.list
     out = ('.').join(['pvdl', 'tmp', title, 'ffmpeg', 'list'])
     return out
 
+def gen_check_log_name(title):	# pvdl.tmp.TITLE.check.log
+    out = ('.').join(['pvdl', 'tmp', title, 'check', 'log'])
+    return out
+
 def gen_merged_file_name(title, ext):	# TITLE.EXT
     out = ('.').join([title, ext])
     return out

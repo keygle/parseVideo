@@ -163,7 +163,7 @@ def _do_with_lock(task_info, pvinfo):
     # download part files
     _do_download(task_info)
     merge.merge(task_info)	# merge video part files
-    _auto_remove_tmp_files(task_info)	# check auto_remove_tmp_files
+    _auto_remove_tmp_part_files(task_info)	# check auto_remove_tmp_part_files
 
 def _print_task_info(task_info):
     merged_path = b.pjoin(task_info['path']['base_path'], task_info['path']['merged_file'])
@@ -217,9 +217,10 @@ def _do_download(task_info):
     # download OK
     log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
 
-def _auto_remove_tmp_files(task_info):
-    if not conf.FEATURES['auto_remove_tmp_files']:
+def _auto_remove_tmp_part_files(task_info):
+    if not conf.FEATURES['auto_remove_tmp_part_files']:
         return
+    # TODO more check on checks' status
     # check required features
     if not conf.FEATURES['check_merged_time']:
         log.e('disabled feature auto_remove_tmp_files. To enable this, feature check_merged_time must be enabled ')
@@ -228,7 +229,7 @@ def _auto_remove_tmp_files(task_info):
         log.e('disabled feature auto_remove_tmp_files. To enable this, feature merge_single_file must be enabled ')
         return
     # TODO do remove
-    log.w('entry._auto_remove_tmp_files() not finished ')
+    log.w('entry._auto_remove_tmp_part_files() not finished ')
 
 # end entry.py
 

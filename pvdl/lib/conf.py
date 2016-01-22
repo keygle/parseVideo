@@ -1,5 +1,7 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 
+# TODO support check_log file
+
 
 # auto-select hd in this range, will always select max hd
 auto_select_hd = [-1, 8]
@@ -67,7 +69,8 @@ FEATURES = {	# --enable, --disable
     'fix_unicode' : False, 		# fix_unicode is only for Windows
     
     ## DANGER options
-    'auto_remove_tmp_files' : False, 	# TODO remove pvdl tmp files after download succeed; require enable check_merged_time and merge_single_file
+    'auto_remove_tmp_part_files' : False, 	# TODO remove part files (tmp file) to save disk space after download succeed
+    # NOTE this require all needed checks to pass TODO require enable check_merged_time and merge_single_file
 }
 
 
@@ -122,6 +125,11 @@ set_retry = error_retry
 set_retry_wait = retry_wait_time_s
 
 flag_debug = False	# --debug
+
+# NOTE save checks status, for final check remove part file
+check_status = {
+    # TODO
+}
 
 # end conf.py
 
