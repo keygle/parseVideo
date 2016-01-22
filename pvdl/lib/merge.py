@@ -121,8 +121,8 @@ def _check_merged_time(task_info):
         log.w('can to check_merged_time, no video time_s info ')
         return
     # check time
-    err_s, err_k, er, err_u = b.check_size(local_time, v['time_s'], 60)	# NOTE unit is minute, 60s
-    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_time_min']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_time']):
+    err_s, err_k, er, err_u = b.check_size(local_time, v['time_s'], 1)	# NOTE unit is second
+    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_time_s']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_time']):
         ui.merge_print_check_merged_time_error(err_s, err_k, merged_path, local_time)
         raise err.CheckError('merged_time', local_time, v['time_s'], merged_path)
     ui.merge_print_check_merged_time_pass(err_s, err_k, er, task_info['path']['merged_file'], local_time)

@@ -25,13 +25,13 @@ merge_output_format = 'mp4'	# NOTE other formats may not work
 FEATURES = {	# --enable, --disable
     ## parse stage
     'print_parse_video_output' : False, # print parse_video raw output for DEBUG
-    'fix_size' : False, 		# TODO if parse_video not get part file size, try to fix it here
+    'fix_size' : True, 		# TODO if parse_video not get part file size, try to fix it here
     
     # create task
     'fix_title_no' : False, 		# TODO try to get check and fix title_no from title text
     
     'check_log_file' : True, 		# check log file if exists, and stop if not match
-    'check_log_file_strict' : True, 	# check more values in log file
+    'check_log_file_strict' : False, 	# check more values in log file
     
     ## entry works
     'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
@@ -61,7 +61,7 @@ FEATURES = {	# --enable, --disable
     'parse_twice_enable_more' : True, 	# TODO enable_more to speed up second parse
     'merge_single_file' : True, 	# TODO do merge with single file (only one part file) (This is required for check_merged_time)
     
-    'check_disk_space' : False, 	# TODO before download to check disk space, and stop when space is not enough
+    'check_disk_space' : True, 		# TODO before download to check disk space, and stop when space is not enough
     'check_permission' : False, 	# TODO check permission to write files
     
     'fix_unicode' : False, 		# fix_unicode is only for Windows
@@ -78,17 +78,17 @@ CHECK_ERR_K = {	# NOTE -1 means unlimit
     'remote_size' : 1, 		# 1 %
     'remote_size_mb' : 64, 	# 64 MB
     # check_local_size
-    'local_size' : 0.1, 	# 0.1 %
+    'local_size' : 0, 		# 0 %
     'local_size_mb' : 0, 	# 0
     # check_file_size
     'file_size' : 1, 		# 1 %
-    'file_size_mb' : 64, 	# 64 MB
+    'file_size_mb' : 16, 	# 16 MB
     # check_merged_size
-    'merged_size' : 5, 		# 5 %
-    'merged_size_mb' : 256, 	# 256 MB
+    'merged_size' : 1, 		# 1 %
+    'merged_size_mb' : 32, 	# 32 MB
     # check_merged_time
-    'merged_time' : 1, 		# 1 %
-    'merged_time_min' : 1, 	# 1 minute
+    'merged_time' : 0.5, 		# 0.5 %
+    'merged_time_s' : 5, 	# 5 second
 }
 
 
