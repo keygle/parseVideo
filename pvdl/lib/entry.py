@@ -179,6 +179,7 @@ def _do_with_lock(task_info, pvinfo):
     _do_download(task_info)
     merge.merge(task_info)	# merge video part files
     _auto_remove_tmp_part_files(task_info)	# check auto_remove_tmp_part_files
+    _check_keep_lock(task_info)	# NOTE check keep_lock_file here
 
 def _create_check_log(task_info):
     # TODO

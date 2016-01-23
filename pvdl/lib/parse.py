@@ -104,6 +104,8 @@ def create_task(pvinfo, hd):
     task_info['path'] = {}
     # gen base_path, will save final merged file in base_path
     task_info['path']['base_path'] = os.path.normpath(conf.set_output)
+    # NOTE add absolute base_path for DEBUG
+    task_info['path']['_base_path_abs'] = os.path.realpath(task_info['path']['base_path'])
     # gen tmp_name and tmp_path
     task_info['path']['tmp_name'] = make_title.gen_tmp_dir_name(title)
     tmp_path = b.pjoin(task_info['path']['base_path'], task_info['path']['tmp_name'])
