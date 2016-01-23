@@ -25,7 +25,9 @@ OPTIONS not in --help:
 TODO support options (new functions)
   --list  LIST file
 
-TODO
+TODO support speed limit (only for wget)
+  --limit-kb  VALUE  limit download speed to value (unit KB/s)
+
 '''
 
 from lib import entry, log, lan, err, conf

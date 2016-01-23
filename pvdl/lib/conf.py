@@ -10,9 +10,12 @@ auto_select_hd = [-1, 8]
 output_dir = './dl/'	# --output
 
 # error retry times
-error_retry = 5		# -1 means retry forever; --retry
+error_retry = 20	# -1 means retry forever; --retry
 # before error_retry, first sleep some time
 retry_wait_time_s = 1	# --retry-wait
+
+# parse timeout
+parse_timeout_s = 180	# TODO -1 means disabled; default 3 minute (180s); after this second, will stop parse (as parse failed)
 
 
 
@@ -31,12 +34,15 @@ FEATURES = {	# --enable, --disable
     
     # create task
     'fix_title_no' : False, 		# TODO try to get check and fix title_no from title text
+    'base_path_add_title' : False, 	# TODO if title_no is add to title, add title_short to base_path (for auto group videos)
     
     'check_log_file' : True, 		# check log file if exists, and stop if not match
     'check_log_file_strict' : False, 	# check more values in log file
     
     ## entry works
     'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
+    'keep_lock_file' : True, 		# TODO not remove lock file when task successfully finished, to prevent re-do this work
+    'skip_lock_err' : False, 		# TODO if get lock file failed, just skip it (for list download)
     
     ## download stage
     

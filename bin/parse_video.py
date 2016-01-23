@@ -22,7 +22,9 @@
 OPTIONS not in --help: 
 
     --fix-unicode
-    --options-overwrite-once
+    --options-overwrite-once	TODO
+    
+    --network-timeout-s		TODO
 
 '''
 
