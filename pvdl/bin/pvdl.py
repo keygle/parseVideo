@@ -28,11 +28,14 @@ TODO support options (new functions)
 TODO support speed limit (only for wget)
   --limit-kb  VALUE  limit download speed to value (unit KB/s)
 
+TODO support parse timeout_s
+  --parse-timeout-s
+
 '''
 
 from lib import entry, log, lan, err, conf
 
-VERSION_STR = 'pvdl version 0.0.6.0 test201601212036'
+VERSION_STR = 'pvdl version 0.0.7.0 test201601232051'
 
 # global data
 etc = {}
@@ -183,6 +186,20 @@ def p_args(args):
             if conf.flag_debug:
                 log.w('already set debug mode ')
             conf.flag_debug = True
+        # --limit-kb
+        elif one == '--limit-kb':
+            limit, rest = rest[0], rest[1:]
+            limit = float(limit)
+            if conf.limit_kb != None:
+                log.w('already set limit_kb to ' + str(conf.limit_kb) + ', now set to ' + str(limit) + ' ')
+            conf.limit_kb = limit
+        # --parse-timeout-s
+        elif one == '--parse-timeout-s':
+            timeout, rest = rest[0], rest[1:]
+            timeout = float(timeout)
+            if conf.set_parse_timeout != conf.parse_timeout_s:
+                log.w('already set parse_timeout_s to ' + str(conf.set_parse_timeout) + ', now set to ' + str(timeout) + ' ')
+            conf.set_parse_timeout = timeout
         else:	# NOTE set URL
             if conf.raw_url != '':
                 log.w('already set raw_url to \"' + conf.raw_url + '\", now set to \"' + one + '\" ')

@@ -129,8 +129,10 @@ title_no = None		# --title-no
 set_output = output_dir
 set_retry = error_retry
 set_retry_wait = retry_wait_time_s
+set_parse_timeout = parse_timeout_s
 
 flag_debug = False	# --debug
+limit_kb = None		# TODO download speed limit, unit KB
 
 # NOTE save checks status, for final check remove part file
 check_status = {
