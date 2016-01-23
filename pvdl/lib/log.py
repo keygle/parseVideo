@@ -1,7 +1,5 @@
 # log.py, parse_video/pvdl/lib/
 
-# TODO add log to file function, for check_log file; NOTE not remove color chars (ANSI ESC)
-
 # TODO debug log in functions (package) support
 # TODO turn off DEBUG log support
 
@@ -14,6 +12,11 @@ from . import conf
 # base print functions
 def _p(t, file=sys.stderr, *k, **kk):
     print(t, file=file, *k, **kk)
+    # NOTE support print to check_log file; NOTE not remove color chars (ANSI ESC)
+    if conf.check_log_file != None:
+        blob = t.encode('utf-8')	# NOTE just write utf-8 blob data, not raw text
+        conf.check_log_file.write(blob)
+    # end base print
 
 # prefix print function
 def _pp(raw, prefix='', color=attr('reset'), *k, **kk):

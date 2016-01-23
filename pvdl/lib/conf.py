@@ -1,7 +1,5 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 
-# TODO support check_log file
-
 
 # auto-select hd in this range, will always select max hd
 auto_select_hd = [-1, 8]
@@ -41,8 +39,8 @@ FEATURES = {	# --enable, --disable
     
     ## entry works
     'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
-    'keep_lock_file' : True, 		# TODO not remove lock file when task successfully finished, to prevent re-do this work
-    'skip_lock_err' : False, 		# TODO if get lock file failed, just skip it (for list download)
+    'keep_lock_file' : True, 		# not remove lock file when task successfully finished, to prevent re-do this work
+    'skip_lock_err' : False, 		# if get lock file failed, just skip it (for list download)
     
     ## download stage
     
@@ -138,8 +136,10 @@ limit_kb = None		# TODO download speed limit, unit KB
 check_status = {
     # TODO
 }
-check_log_file = None	# TODO used to close check_log file
 
+keep_lock_file = False		# if True, will not remove lock file
+check_log_file = None		# NOTE used for check_log file
+check_log_file_path = None	# used for DEBUG
 
 # end conf.py
 

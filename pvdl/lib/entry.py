@@ -99,13 +99,16 @@ def _do_can_retry():
     _do_in_lock(f, lock_path)
 
 def _do_in_lock(f, lock_file):
-    # TODO support check_log file
     lock_fd = None
     # get lock (create lock file)
     try:
         lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
         log.d('got lock \"' + lock_file + '\" ')
     except Exception as e:	# get lock failed
+        # check skip_lock_err
+        if conf.FEATURES['skip_lock_err']:
+            log.i('skip lock file \"' + lock_file + '\" ')
+            return	# NOTE with no Error
         log.e('can not get lock \"' + lock_file + '\", ' + str(e))
         if conf.FEATURES['check_lock_file']:
             log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
@@ -117,19 +120,25 @@ def _do_in_lock(f, lock_file):
     try:
         return f()
     finally:
+        # NOTE close check_log file
+        if conf.check_log_file != None:
+            try:
+                conf.check_log_file.close()
+            except Exception as e:
+                log.w('can not close check_log file \"' + str(conf.check_log_file_path) + '\", ' + str(e) + ' ')
         try:	# close lock file
             os.close(lock_fd)
         except Exception as e:	# ignore close Error
             log.w('can not close lock file [' + str(lock_fd) + '] \"' + lock_file + '\", ' + str(e))
+        # NOTE check keep_lock_file
+        if conf.keep_lock_file:
+            log.i('keep lock file \"' + lock_file + '\" ')
+            return	# NOTE not remove lock file
         try:	# remove lock file
             os.remove(lock_file)
         except Exception as e:	# ignore remove Error
             log.w('can not remove lock file \"' + lock_file + '\", ' + str(e))
     # end _do_in_lock
-
-# TODO
-def _create_check_log(task_info):
-    pass
 
 
 def _select_hd(pvinfo):
@@ -160,6 +169,8 @@ def _select_hd(pvinfo):
 
 # NOTE these works is protected by the lock file
 def _do_with_lock(task_info, pvinfo):
+    _create_check_log(task_info)
+    
     parse.create_log_file(task_info, pvinfo)	# write log file
     _print_task_info(task_info)
     # do some checks before start download
@@ -168,6 +179,10 @@ def _do_with_lock(task_info, pvinfo):
     _do_download(task_info)
     merge.merge(task_info)	# merge video part files
     _auto_remove_tmp_part_files(task_info)	# check auto_remove_tmp_part_files
+
+def _create_check_log(task_info):
+    # TODO
+    log.w('entry._create_check_log() not finished ')
 
 def _print_task_info(task_info):
     merged_path = b.pjoin(task_info['path']['base_path'], task_info['path']['merged_file'])
@@ -178,6 +193,12 @@ def _check_disk_space(task_info):
         return
     # TODO do check
     log.w('entry._check_disk_space() not finished ')
+
+def _check_keep_lock(task_info):
+    if not conf.FEATURES['keep_lock_file']:
+        return
+    # NOTE no more checks here now, not strict check like auto_remove_tmp_part_files
+    conf.keep_lock_file = True	# NOTE just set flag here
 
 
 ## main download works
