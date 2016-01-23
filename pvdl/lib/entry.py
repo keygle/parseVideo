@@ -129,6 +129,8 @@ def _do_in_lock(f, lock_file):
                 conf.check_log_file.close()
             except Exception as e:
                 log.w('can not close check_log file \"' + str(conf.check_log_file_path) + '\", ' + str(e) + ' ')
+            finally:	# NOTE reset check_log file after try close it
+                conf.check_log_file = None
         try:	# close lock file
             os.close(lock_fd)
         except Exception as e:	# ignore close Error
@@ -209,8 +211,10 @@ def _create_check_log(task_info):
     args = sys.argv
     pvdl_version = conf.pvdl_version
     p('[fix check_log] pvdl_version ' + str(pvdl_version) + ' ---> args ' + str(args) + ' ')
+    # add lock file info
+    p('[fix check_log] lock file \"' + task_info['path']['lock_path'] + '\" ')
     # create check_log file and fix check_log info, done
-    log.o('create check_log \"' + check_log_path + '\" ')
+    log.d('create check_log \"' + check_log_path + '\" ')
 
 
 def _print_task_info(task_info):
@@ -266,10 +270,10 @@ def _do_download(task_info):
         ui.entry_print_download_status(count_err, count_ok, done_size, v['size_byte'], done_time, v['time_s'], rest_size, rest_time)
     # download done, check download succeed
     if count_err > 0:
-        log.e('download part files failed, err ' + str(count_err) + '/' + str(count) + ' ')
+        log.e('download part files failed, err ' + str(count_err) + '/' + str(count) + ' ', add_check_log_prefix=True)
         raise err.DownloadError('part file', count_err, count)
     # download OK
-    log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ')
+    log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ', add_check_log_prefix=True)
 
 def _auto_remove_tmp_part_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_part_files']:

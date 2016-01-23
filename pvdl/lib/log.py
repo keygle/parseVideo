@@ -10,11 +10,12 @@ from . import b, conf
 
 
 # base print functions
-def _p(t, file=sys.stderr, add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
+def _p(t, file=sys.stderr, end='\n', add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
     if not fix_check_log_file:	# NOTE fix logs not print to screen
         print(t, file=file, *k, **kk)
     # NOTE support print to check_log file; NOTE not remove color chars (ANSI ESC)
     if conf.check_log_file != None:
+        t += end	# fix line end here
         if add_check_log_prefix:
             t = _gen_check_log_prefix() + t
         blob = t.encode('utf-8')	# NOTE just write utf-8 blob data, not raw text
