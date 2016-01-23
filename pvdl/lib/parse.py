@@ -77,6 +77,8 @@ def _fix_size(pvinfo):
 def create_task(pvinfo, hd):
     ## create task_info, based on pvinfo
     task_info = b.json_clone(pvinfo)	# deep clone pvinfo object
+    # NOTE add pvdl version info in task_info
+    task_info['pvdl_version'] = conf.pvdl_version
     # replace video with hd
     v = None
     for vi in task_info['video']:

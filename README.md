@@ -30,7 +30,7 @@ from some web sites.
 ## Usage
 
 ```
-$ ./parsev --help
+$ ./pv --help
 Usage: parsev [OPTION]... URL
 parse_video: get video info from some web sites. 
 
@@ -67,7 +67,7 @@ Please run `make test`
 ## LICENSE
 
 ```
-$ ./parsev --license
+$ ./pv --license
     parse_video : get video info from some web sites. 
     Copyright (C) 2015-2016 sceext <sceext@foxmail.com>
 

@@ -227,6 +227,8 @@ def start_normal():
     # check input_url
     if conf.raw_url == '':
         conf.raw_url = input_url()
+    # NOTE set pvdl version info
+    conf.pvdl_version = VERSION_STR
     # just start pvdl
     try:
         entry.start()

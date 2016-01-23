@@ -101,7 +101,7 @@ CHECK_ERR_K = {	# NOTE -1 means unlimit
 
 # pvdl call subprocess bin file
 SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
-    'parsev' : ('../parsev', True), 
+    'parsev' : ('../pv', True), 
     'wget' : ('wget', False), 
     'ffmpeg' : ('ffmpeg', False), 
     'mediainfo' : ('mediainfo', False), 
@@ -112,6 +112,8 @@ PVDL_LOG_PREFIX = 'pvdl::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 FILENAME_REPLACE = '-'
 
+# NOTE add pvdl version info in pvdl task log.json file
+pvdl_version = None
 
 ## more data here, global common data
 raw_url = ''
