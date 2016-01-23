@@ -99,7 +99,7 @@ def _do_can_retry():
     _do_in_lock(f, lock_path)
 
 def _do_in_lock(f, lock_file):
-    # TODO on windows, should use tmp file
+    # TODO support check_log file
     lock_fd = None
     # get lock (create lock file)
     try:
@@ -126,6 +126,10 @@ def _do_in_lock(f, lock_file):
         except Exception as e:	# ignore remove Error
             log.w('can not remove lock file \"' + lock_file + '\", ' + str(e))
     # end _do_in_lock
+
+# TODO
+def _create_check_log(task_info):
+    pass
 
 
 def _select_hd(pvinfo):

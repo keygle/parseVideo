@@ -1,5 +1,7 @@
 # log.py, parse_video/pvdl/lib/
 
+# TODO add log to file function, for check_log file; NOTE not remove color chars (ANSI ESC)
+
 # TODO debug log in functions (package) support
 # TODO turn off DEBUG log support
 

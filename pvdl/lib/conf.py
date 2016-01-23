@@ -136,6 +136,8 @@ flag_debug = False	# --debug
 check_status = {
     # TODO
 }
+check_log_file = None	# TODO used to close check_log file
+
 
 # end conf.py
 
