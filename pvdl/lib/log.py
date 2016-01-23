@@ -6,17 +6,25 @@
 import sys
 from colored import fg, bg, attr
 
-from . import conf
+from . import b, conf
 
 
 # base print functions
-def _p(t, file=sys.stderr, *k, **kk):
-    print(t, file=file, *k, **kk)
+def _p(t, file=sys.stderr, add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
+    if not fix_check_log_file:	# NOTE fix logs not print to screen
+        print(t, file=file, *k, **kk)
     # NOTE support print to check_log file; NOTE not remove color chars (ANSI ESC)
     if conf.check_log_file != None:
+        if add_check_log_prefix:
+            t = _gen_check_log_prefix() + t
         blob = t.encode('utf-8')	# NOTE just write utf-8 blob data, not raw text
         conf.check_log_file.write(blob)
     # end base print
+
+def _gen_check_log_prefix(prefix='pvdl.check_log'):
+    out = '[' + prefix + '] ' + b.print_iso_time() + '::'
+    return out
+
 
 # prefix print function
 def _pp(raw, prefix='', color=attr('reset'), *k, **kk):

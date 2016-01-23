@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
+import os, sys
 import time
 import functools
 
@@ -86,6 +86,7 @@ def _do_can_retry():
     tmp_path = task_info['path']['tmp_path']
     lock_file = task_info['path']['lock_file']
     lock_path = b.pjoin(tmp_path, lock_file)
+    task_info['path']['lock_path'] = lock_path	# NOTE save lock_path here
     # NOTE try to create tmp_path
     try:
         if not os.path.isdir(tmp_path):
@@ -123,6 +124,8 @@ def _do_in_lock(f, lock_file):
         # NOTE close check_log file
         if conf.check_log_file != None:
             try:
+                # NOTE write close info
+                log.d('normal closing check_log file ', add_check_log_prefix=True, fix_check_log_file=True)
                 conf.check_log_file.close()
             except Exception as e:
                 log.w('can not close check_log file \"' + str(conf.check_log_file_path) + '\", ' + str(e) + ' ')
@@ -182,8 +185,33 @@ def _do_with_lock(task_info, pvinfo):
     _check_keep_lock(task_info)	# NOTE check keep_lock_file here
 
 def _create_check_log(task_info):
-    # TODO
-    log.w('entry._create_check_log() not finished ')
+    # gen check_log file path
+    tmp_path = task_info['path']['tmp_path']
+    check_log_file = task_info['path']['check_log']
+    check_log_path = b.pjoin(tmp_path, check_log_file)
+    conf.check_log_file_path = check_log_path
+    # open check log file
+    try:	# NOTE open with append blob mode
+        conf.check_log_file = open(conf.check_log_file_path, 'ab')
+    except Exception as e:
+        log.e('can not open check_log file \"' + conf.check_log_file_path + '\" ')
+        er = err.ConfigError('open check_log file', conf.check_log_file_path)
+        raise er from e
+    f = conf.check_log_file
+    # write more info to check_log file
+    def p(t):	# DEBUG log to fix check_log file info
+        log.d(t, add_check_log_prefix=True, fix_check_log_file=True)
+    # add \n for better print
+    f.write(b'\n\n')
+    # create check_log file info
+    p('[fix check_log] create check_log file \"' + check_log_path + '\" ')
+    # print program info
+    args = sys.argv
+    pvdl_version = conf.pvdl_version
+    p('[fix check_log] pvdl_version ' + str(pvdl_version) + ' ---> args ' + str(args) + ' ')
+    # create check_log file and fix check_log info, done
+    log.o('create check_log \"' + check_log_path + '\" ')
+
 
 def _print_task_info(task_info):
     merged_path = b.pjoin(task_info['path']['base_path'], task_info['path']['merged_file'])

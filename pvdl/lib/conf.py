@@ -112,7 +112,7 @@ PVDL_LOG_PREFIX = 'pvdl::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 FILENAME_REPLACE = '-'
 
-# NOTE add pvdl version info in pvdl task log.json file
+# NOTE add pvdl version info for DEBUG
 pvdl_version = None
 
 ## more data here, global common data

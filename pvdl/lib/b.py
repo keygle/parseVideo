@@ -3,6 +3,7 @@
 import os, sys
 import math, json
 import hashlib
+import datetime
 import multiprocessing.dummy as multiprocessing
 
 import colored
@@ -107,6 +108,18 @@ def pjoin(*k, **kk):
 def get_root_path(to_root='../'):
     now_dir = os.path.dirname(__file__)
     out = pjoin(now_dir, to_root)
+    return out
+
+
+## time functions
+
+def get_now():
+    return datetime.datetime.today().utcnow()
+
+def print_iso_time(now=None):
+    if now == None:
+        now = get_now()
+    out = now.isoformat() + 'Z'
     return out
 
 
