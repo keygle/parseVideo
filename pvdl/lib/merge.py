@@ -98,9 +98,10 @@ def _check_merged_size(task_info):
         return
     # check size
     err_s, err_k, er, err_u = b.check_size(local_size, v['size_byte'], b.CHECK_SIZE_MB)
-    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_size']):
-        ui.merge_print_check_merged_size_error(err_s, err_k, merged_path, local_size)
-        raise err.CheckError('merged_size', local_size, v['size_byte'], merged_path)
+    if er:
+        if (abs(err_u) >= conf.CHECK_ERR_K['merged_size_mb']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_size']):
+            ui.merge_print_check_merged_size_error(err_s, err_k, merged_path, local_size)
+            raise err.CheckError('merged_size', local_size, v['size_byte'], merged_path)
     ui.merge_print_check_merged_size_pass(err_s, err_k, er, task_info['path']['merged_file'], local_size)
 
 def _check_merged_time(task_info):
@@ -122,9 +123,10 @@ def _check_merged_time(task_info):
         return
     # check time
     err_s, err_k, er, err_u = b.check_size(local_time, v['time_s'], 1)	# NOTE unit is second
-    if er and (abs(err_u) >= conf.CHECK_ERR_K['merged_time_s']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_time']):
-        ui.merge_print_check_merged_time_error(err_s, err_k, merged_path, local_time)
-        raise err.CheckError('merged_time', local_time, v['time_s'], merged_path)
+    if er:
+        if (abs(err_u) >= conf.CHECK_ERR_K['merged_time_s']) or (abs(err_k) >= conf.CHECK_ERR_K['merged_time']):
+            ui.merge_print_check_merged_time_error(err_s, err_k, merged_path, local_time)
+            raise err.CheckError('merged_time', local_time, v['time_s'], merged_path)
     ui.merge_print_check_merged_time_pass(err_s, err_k, er, task_info['path']['merged_file'], local_time)
 
 # TODO check merged size_px
