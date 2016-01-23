@@ -34,6 +34,25 @@ def _do_gen_title(title, quality, site, title_no=-1, title_sub=''):
     out = ('_').join([title_no, title, title_sub, quality, site])
     return out
 
+# gen short title for base_path_add_title
+def gen_short_title(task_info):
+    info = task_info['info']
+    # check title_no
+    title_no = info.get('title_no', -1)
+    if title_no < 0:
+        return None	# disable this feature
+    # check title_short
+    title_short = info.get('title_short', '').strip()
+    if title_short == '':
+        return None
+    # gen raw title
+    quality = task_info['video']['quality']
+    raw = ('_').join([info['title_short'], quality, info['site_name']])
+    # fix for filename
+    out = b.replace_filename_bad_char(raw)
+    return out
+
+
 # gen pvdl download filename and paths
 
 def gen_tmp_dir_name(title):	# pvdl.TITLE.tmp/

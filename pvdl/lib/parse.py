@@ -104,6 +104,14 @@ def create_task(pvinfo, hd):
     task_info['path'] = {}
     # gen base_path, will save final merged file in base_path
     task_info['path']['base_path'] = os.path.normpath(conf.set_output)
+    # NOTE check base_path_add_title
+    title_short = make_title.gen_short_title(task_info)
+    if conf.FEATURES['base_path_add_title']:
+        if title_short != None:
+            task_info['path']['base_path'] = b.pjoin(task_info['path']['base_path'], title_short)
+            log.o('feature base_path_add_title, base_path changed to \"' + task_info['path']['base_path'] + '\" ')
+        else:
+            log.w('feature base_path_add_title, can not add title info ')
     # NOTE add absolute base_path for DEBUG
     task_info['path']['_base_path_abs'] = os.path.realpath(task_info['path']['base_path'])
     # gen tmp_name and tmp_path

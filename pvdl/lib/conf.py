@@ -32,7 +32,7 @@ FEATURES = {	# --enable, --disable
     
     # create task
     'fix_title_no' : False, 		# TODO try to get check and fix title_no from title text
-    'base_path_add_title' : False, 	# TODO if title_no is add to title, add title_short to base_path (for auto group videos)
+    'base_path_add_title' : True, 	# if title_no is add to title, add title_short to base_path (for auto group videos)
     
     'check_log_file' : True, 		# check log file if exists, and stop if not match
     'check_log_file_strict' : False, 	# check more values in log file
