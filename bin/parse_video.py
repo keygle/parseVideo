@@ -23,8 +23,6 @@ OPTIONS not in --help:
 
     --fix-unicode
     --options-overwrite-once	TODO
-    
-    --network-timeout-s		TODO
 
 '''
 
@@ -35,7 +33,7 @@ import json
 from lib.b import log
 from lib import entry
 
-VERSION_STR = 'parse_video version 0.5.5.0 test201601211902'
+VERSION_STR = 'parse_video version 0.5.6.0 test201601231925'
 
 # global data
 etc = {}
@@ -55,6 +53,7 @@ etc['output'] = '-'	# '-' means stdout
 etc['more'] = None
 
 etc['flag_fix_unicode'] = False
+etc['network_timeout_s'] = -1	# -1 means no limit
 
 
 # print help, version and license info. (--help, --version, --license)
@@ -73,7 +72,9 @@ parse_video: get video info from some web sites.
   
   -o, --output FILE  write result (video info) to file (default to stdout)
       --more FILE    input more info from file to enable more mode
-  
+      
+      --network-timeout-s  set timeout (second) to network operations
+      
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet
       
@@ -176,6 +177,8 @@ def do_parse():
     # NOTE print parse_video version info in debug mode
     if etc['log_level'] == 'debug':
         p('DEBUG: ' + VERSION_STR)
+    # NOTE set network_timeout_s
+    entry.conf.network_timeout_s = etc['network_timeout_s']
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
     # print result, check --output option
@@ -260,6 +263,10 @@ def p_args(args):
         # TODO support --options-overwrite-once
         elif one == '--options-overwrite-once':
             pass	# TODO
+        # network_timeout_s
+        elif one == '--network-timeout-s':
+            etc['network_timeout_s'] = float(rest[0])
+            rest = rest[1:]
         # URL
         else:	# NOTE set URL
             if etc['url'] != '':

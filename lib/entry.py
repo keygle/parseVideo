@@ -39,6 +39,11 @@ def parse(url, extractor='', method=''):
         init()
     # DEBUG log here
     log.d('parse, url = \"' + url + '\", extractor = \"' + extractor + '\", method = \"' + method + '\" ')
+    # log network_timeout_s config
+    timeout = conf.network_timeout_s
+    if timeout >= 0:
+        log.d('set network_timeout_s = ' + str(timeout) + ' ')
+    # do parse works
     try:
         pvinfo = _do_parse(url, raw_extractor=extractor, raw_method=method)
     except err.PVError:

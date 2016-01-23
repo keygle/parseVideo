@@ -1,9 +1,9 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201601082113
+   - test201601231916
   -->
 
-# parse_video version 0.5.4.0
+# parse_video version 0.5.6.0
 
 
 ## Description
@@ -44,7 +44,9 @@ parse_video: get video info from some web sites.
   
   -o, --output FILE  write result (video info) to file (default to stdout)
       --more FILE    input more info from file to enable more mode
-  
+      
+      --network-timeout-s  set timeout (second) to network operations
+      
   -d, --debug  set log level to debug
   -q, --quiet  set log level to quiet
       
