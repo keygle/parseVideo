@@ -8,7 +8,7 @@ auto_select_hd = [-1, 8]
 output_dir = './dl/'	# --output
 
 # error retry times
-error_retry = 20	# -1 means retry forever; --retry
+error_retry = 40	# -1 means retry forever; --retry
 # before error_retry, first sleep some time
 retry_wait_time_s = 1	# --retry-wait
 

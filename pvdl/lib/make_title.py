@@ -67,8 +67,11 @@ def gen_lock_file_name(title):	# pvdl.tmp.TITLE.lock
     out = ('.').join(['pvdl', 'tmp', title, 'lock'])
     return out
 
-def gen_part_file_name(title, index, ext):	# pvdl.tmp.TITLE.part.INDEX.EXT
-    out = ('.').join(['pvdl', 'tmp', title, 'part', str(index), ext])
+def gen_part_file_name(title, index, count, ext):	# pvdl.tmp.TITLE.part.INDEX.of.COUNT.EXT
+    # NOTE add count info
+    i_len = math.floor(math.log(count, 10)) + 1
+    index = str(index).zfill(i_len)
+    out = ('.').join(['pvdl', 'tmp', title, 'part', index, 'of', str(count), ext])
     return out
 
 def gen_ffmpeg_list_file_name(title):	# pvdl.tmp.TITLE.ffmpeg.list

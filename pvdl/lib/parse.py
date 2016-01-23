@@ -124,9 +124,10 @@ def create_task(pvinfo, hd):
     task_info['path']['lock_file'] = make_title.gen_lock_file_name(title)
     # gen each part file name and file path
     ext = task_info['video']['format']
-    for i in range(len(task_info['video']['file'])):
+    count = len(task_info['video']['file'])
+    for i in range(count):
         f = task_info['video']['file'][i]
-        f['_part_name'] = make_title.gen_part_file_name(title, i + 1, ext)
+        f['_part_name'] = make_title.gen_part_file_name(title, i + 1, count, ext)
         f['path'] = b.pjoin(tmp_path, f['_part_name'])	# NOTE gen final part file path here
     # gen merge list, merged file name
     task_info['path']['ffmpeg_list'] = make_title.gen_ffmpeg_list_file_name(title)
