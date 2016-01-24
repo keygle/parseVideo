@@ -54,7 +54,7 @@ FEATURES = {	# --enable, --disable
     'check_local_size' : True, 		# check local file size and skip finished files
     'skip_local_larger_file' : False, 	# if local file is too large, just skip it (ignore Error)
     
-    'check_disk_space' : True, 		# TODO before download to check disk space, and stop when space is not enough
+    'check_disk_space' : True, 		# before download to check disk space, and stop when space is not enough
     
     # after download
     'check_file_size' : True, 		# check part file size
@@ -112,6 +112,10 @@ SUB_BIN = {	# NOTE paths starts with ./ or ../ is from pvdl root path (pvdl/)
 PVDL_LOG_PREFIX = 'pvdl::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 FILENAME_REPLACE = '-'
+
+# for check_disk_space
+disk_space_needed_k = 2.1	# NOTE need download and merge, and add a small extra space
+
 
 # NOTE add pvdl version info for DEBUG
 pvdl_version = None

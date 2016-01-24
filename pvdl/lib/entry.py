@@ -21,6 +21,7 @@
 import os, sys
 import time
 import functools
+import shutil
 
 from . import err, b, conf, log
 from . import parse, dl_worker, merge, ui
@@ -223,9 +224,27 @@ def _print_task_info(task_info):
 
 def _check_disk_space(task_info):
     if not conf.FEATURES['check_disk_space']:
+        log.d('disabled feature check_disk_space ')
         return
-    # TODO do check
-    log.w('entry._check_disk_space() not finished ')
+    # get tmp path
+    tmp_path = task_info['path']['tmp_path']
+    info = shutil.disk_usage(tmp_path)
+    free_byte = info.free
+    free_size = b.byte_to_size(free_byte)
+    # NOTE need to get size_byte info first
+    dl_byte = task_info['video'].get('size_byte', -1)
+    if dl_byte <= 0:
+        log.w('can not check_disk_space, no size_byte info in video (free ' + free_size + ') ')
+        return
+    # check and give result
+    needed_byte = dl_byte * conf.disk_space_needed_k
+    needed_size = b.byte_to_size(needed_byte)
+    if needed_byte < free_byte:
+        log.o('check_disk_space pass, need ' + needed_size + ', free ' + free_size + ' ')
+        return	# check pass
+    # disk space not enough
+    log.e('no enough disk space, can not download: need ' + needed_size + ', free ' + free_size + ' ')
+    raise err.ConfigError('check_disk_space', needed_size, free_size)
 
 def _check_keep_lock(task_info):
     if not conf.FEATURES['keep_lock_file']:
