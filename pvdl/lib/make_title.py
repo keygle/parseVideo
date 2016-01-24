@@ -183,6 +183,24 @@ def _gen_label_info(v):
     return out
 
 
+# NOTE fix_title_no feature is very simple and is not stable
+def fix_title_no(task_info):
+    info = task_info['info']
+    # get numbers in title text
+    num = b.get_num_from_text(info['title'])
+    title_no = info.get('title_no', None)
+    # should get title_no
+    if (title_no == None) and (title_no < 0):
+        if len(num) < 1:	# no num in title, can not get title_no
+            return None	# not fix title_no
+        # FIXME NOTE here just use last num, maybe other method is better
+        title_no = num[-1]
+        return title_no
+    # should check title_no
+    elif not title_no in num:	# not found title_no
+        return -1	# reset and cancel title_no
+    # end fix_title_no
+
 # end make_title.py
 
 

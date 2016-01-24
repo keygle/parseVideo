@@ -89,10 +89,16 @@ def create_task(pvinfo, hd):
         raise err.UnknowError('can not select hd from pvinfo', hd, pvinfo)
     task_info['video'] = v
     # NOTE check --title-no
+    old_title_no = task_info['info'].get('title_no', None)
     if conf.title_no != None:
-        log.i('fix title_no to ' + str(conf.title_no) + ' ')
+        log.i('set title_no to ' + str(conf.title_no) + ' (old ' + old_title_no + ') ')
         task_info['info']['title_no'] = conf.title_no
-    # TODO support fix_title_no
+    # feature fix_title_no
+    elif conf.FEATURES['fix_title_no']:
+        title_no = make_title.fix_title_no(task_info)
+        if title_no != None:
+            log.i('feature fix_title_no, fix title_no to ' + title_no + ' (old ' + old_title_no + ') ')
+            task_info['info']['title_no'] = title_no
     # gen task_title
     title = make_title.gen_title(task_info)
     # NOTE check --title-suffix

@@ -30,14 +30,17 @@ FEATURES = {	# --enable, --disable
     'print_parse_video_output' : False, # print parse_video raw output for DEBUG
     'fix_size' : True, 		# TODO if parse_video not get part file size, try to fix it here
     
+    'parse_twice' : True, 		# TODO first parse only to get video formats, second parse to get file URLs
+    'parse_twice_enable_more' : True, 	# TODO enable_more to speed up second parse
+    
     # create task
-    'fix_title_no' : False, 		# TODO try to get check and fix title_no from title text
+    'fix_title_no' : True, 		# try to get check and fix title_no from title text
     'base_path_add_title' : True, 	# if title_no is add to title, add title_short to base_path (for auto group videos)
     
     'check_log_file' : True, 		# check log file if exists, and stop if not match
     'check_log_file_strict' : False, 	# check more values in log file
     
-    ## entry works
+    ## entry works (lock)
     'check_lock_file' : True, 		# use lock file to prevent two instance of pvdl to work in same directory at the same time
     'keep_lock_file' : True, 		# not remove lock file when task successfully finished, to prevent re-do this work
     'skip_lock_err' : False, 		# if get lock file failed, just skip it (for list download)
@@ -51,6 +54,8 @@ FEATURES = {	# --enable, --disable
     'check_local_size' : True, 		# check local file size and skip finished files
     'skip_local_larger_file' : False, 	# if local file is too large, just skip it (ignore Error)
     
+    'check_disk_space' : True, 		# TODO before download to check disk space, and stop when space is not enough
+    
     # after download
     'check_file_size' : True, 		# check part file size
     'check_file_md5' : True, 		# check part file md5 checksum if possible
@@ -61,13 +66,9 @@ FEATURES = {	# --enable, --disable
     
     'force_merge' : False, 		# TODO remove output file and continue merge, if output file already exists
     'merge_twice' : False, 		# TODO before final merge, do merge each part file first to fix time_s Errors
-    
-    ## other options
-    'parse_twice' : True, 		# TODO first parse only to get video formats, second parse to get file URLs
-    'parse_twice_enable_more' : True, 	# TODO enable_more to speed up second parse
     'merge_single_file' : True, 	# TODO do merge with single file (only one part file) (This is required for check_merged_time)
     
-    'check_disk_space' : True, 		# TODO before download to check disk space, and stop when space is not enough
+    ## other options
     'check_permission' : False, 	# TODO check permission to write files
     
     'fix_unicode' : False, 		# fix_unicode is only for Windows

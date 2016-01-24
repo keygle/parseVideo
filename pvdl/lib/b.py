@@ -27,6 +27,24 @@ def number(raw):
         return int(f)
     return f
 
+def get_num_from_text(raw):	# NOTE for fix_title_no
+    out = []	# can get many numbers from one text
+    rest = raw[:]
+    while len(rest) > 0:
+        one, rest = rest[0], rest[1:]
+        if one.isdigit():
+            # get one number
+            t = one
+            while len(rest) > 0:
+                c, rest = rest[0], rest[1:]
+                if c.isdigit():
+                    t += c
+                else:
+                    break
+            out.append(int(t))
+        # just ignore no number chars
+    return out
+
 
 ## make label (title) base functions
 
