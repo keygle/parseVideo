@@ -91,13 +91,13 @@ def create_task(pvinfo, hd):
     # NOTE check --title-no
     old_title_no = task_info['info'].get('title_no', None)
     if conf.title_no != None:
-        log.i('set title_no to ' + str(conf.title_no) + ' (old ' + old_title_no + ') ')
+        log.i('set title_no to ' + str(conf.title_no) + ' (old ' + str(old_title_no) + ') ')
         task_info['info']['title_no'] = conf.title_no
     # feature fix_title_no
     elif conf.FEATURES['fix_title_no']:
         title_no = make_title.fix_title_no(task_info)
         if title_no != None:
-            log.i('feature fix_title_no, fix title_no to ' + title_no + ' (old ' + old_title_no + ') ')
+            log.i('feature fix_title_no, fix title_no to ' + str(title_no) + ' (old ' + str(old_title_no) + ') ')
             task_info['info']['title_no'] = title_no
     # gen task_title
     title = make_title.gen_title(task_info)
