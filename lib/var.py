@@ -5,7 +5,7 @@
 ## for lyyc_parsev struct
 PVINFO_MARK_UUID = 'd089503d-5ad5-4008-aea1-f2504f95a41a'
 PVINFO_PORT_VERSION = '0.4.0'
-PVINFO_INFO_SOURCE = 'parse_video version 0.5.6.0'
+PVINFO_INFO_SOURCE = 'parse_video version 0.5.6.1'
 
 HD_TO_QUALITY = {
     22 : '16K', 

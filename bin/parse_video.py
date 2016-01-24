@@ -33,7 +33,7 @@ import json
 from lib.b import log
 from lib import entry
 
-VERSION_STR = 'parse_video version 0.5.6.0 test201601231925'
+VERSION_STR = 'parse_video version 0.5.6.1 test201601241323'
 
 # global data
 etc = {}
