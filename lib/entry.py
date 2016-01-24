@@ -147,9 +147,25 @@ def _gen_last_update():
 def _restruct_pvinfo(pvinfo):
     return restruct.restruct_pvinfo(pvinfo)
 
-# used for auto overwrite default method by raw_url
+# used for auto get method for extractor
 def _auto_get_method(extractor_id, raw_url):
+    # get default method
     raw_method = conf.DEFAULT_METHOD[extractor_id]
+    # check and fix enable_more
+    if var._['flag_fix_enable_more']:
+        fix_list = conf.METHOD_ENABLE_MORE
+        if not extractor_id in fix_list:	# NOTE use default add method
+            if not ';' in raw_method:
+                raw_method += ';enable_more'
+            elif raw_method[-1] == ';':
+                raw_method += 'enable_more'
+            elif ';' in raw_method:
+                raw_method += ',enable_more'
+        else:	# just use fix method
+            fix = fix_list[extractor_id]
+            if fix != None:	# None means not support enable_more
+                raw_method = fix
+    # check overwrite method
     for re_text, method_text in conf.OVERWRITE_EXTRACTOR_METHOD.get(extractor_id, {}).items():
         if len(re.findall(re_text, raw_url)) > 0:
             log.d('overwrite extractor method to \"' + method_text + '\" ')

@@ -35,6 +35,11 @@ OVERWRITE_EXTRACTOR_METHOD = {
     }, 
 }
 
+# used for --fix-enable-more
+METHOD_ENABLE_MORE = {
+    'vqq' : None, 	# NOTE extractor vqq now not support enable_more
+}
+
 
 PV_LOG_PREFIX = 'pv::'
 

@@ -50,6 +50,9 @@ def init():
     
     out['flag_no_restruct'] = False
     
+    # NOTE add enable_more method args to extractor
+    out['flag_fix_enable_more'] = False
+    
     # private data
     out['_extractor_id'] = ''
     

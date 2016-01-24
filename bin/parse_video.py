@@ -23,6 +23,8 @@ OPTIONS not in --help:
 
     --fix-unicode
     --options-overwrite-once	TODO
+    
+    --fix-enable-more  add enable_more to extractor method args (used for pvdl)
 
 '''
 
@@ -33,7 +35,7 @@ import json
 from lib.b import log
 from lib import entry
 
-VERSION_STR = 'parse_video version 0.5.6.1 test201601241323'
+VERSION_STR = 'parse_video version 0.5.7.0 test201601242342'
 
 # global data
 etc = {}
@@ -54,6 +56,7 @@ etc['more'] = None
 
 etc['flag_fix_unicode'] = False
 etc['network_timeout_s'] = -1	# -1 means no limit
+etc['flag_fix_enable_more'] = False
 
 
 # print help, version and license info. (--help, --version, --license)
@@ -146,11 +149,19 @@ def main(args):
 
 # NOTE more info file must be json file
 def load_more_file(fpath):
-    with open(fpath, 'rb') as f:
-        blob = f.read()
-    text = blob.decode('utf-8')
+    # NOTE support '-', read more info from stdin
+    if fpath != '-':
+        with open(fpath, 'rb') as f:
+            blob = f.read()
+    else:	# read from stdin
+        blob = sys.stdin.read()	# NOTE just read blob
+    # NOTE parse blob to json
+    text = blob
+    if not isinstance(text, str):	# check to decode
+        text = text.decode('utf-8')
     more_info = json.loads(text)
     return more_info
+
 
 def do_parse():
     if etc['log_level'] != None:
@@ -165,7 +176,6 @@ def do_parse():
     ]
     for key in set_list:
         entry.var._[key] = etc[key]
-    # TODO support '-', read more info from stdin
     # check load more file
     if etc['more'] != None:
         try:
@@ -179,6 +189,9 @@ def do_parse():
         p('DEBUG: ' + VERSION_STR)
     # NOTE set network_timeout_s
     entry.conf.network_timeout_s = etc['network_timeout_s']
+    # NOTE set --fix-enable-more
+    if etc['flag_fix_enable_more']:
+        entry.var._['flag_fix_enable_more'] = True
     # do parse
     pvinfo = entry.parse(etc['url'], extractor=etc['extractor'], method=etc['method'])
     # print result, check --output option
@@ -260,6 +273,9 @@ def p_args(args):
         # --fix-unicode
         elif one == '--fix-unicode':
             etc['flag_fix_unicode'] = True
+        # --fix-enable-more
+        elif one == '--fix-enable-more':
+            etc['flag_fix_enable_more'] = True
         # TODO support --options-overwrite-once
         elif one == '--options-overwrite-once':
             pass	# TODO
