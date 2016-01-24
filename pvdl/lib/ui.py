@@ -1,4 +1,5 @@
 # ui.py, parse_video/pvdl/lib/
+# language: English (en) 
 
 import math
 from colored import fg, bg, attr

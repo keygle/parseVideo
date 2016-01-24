@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # pvdl.py, parse_video/pvdl/bin/
+# language: English (en)
 #
 #    pvdl : A reference implemention of a downloader which uses parse_video. 
 #    Copyright (C) 2016 sceext <sceext@foxmail.com>
@@ -35,7 +36,7 @@ TODO support parse timeout_s
 
 from lib import entry, log, lan, err, conf
 
-VERSION_STR = 'pvdl version 0.0.9.0 test201601242313'
+VERSION_STR = 'pvdl version 0.0.9.0 test201601250006'
 
 # global data
 etc = {}

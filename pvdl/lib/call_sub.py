@@ -7,7 +7,7 @@ import subprocess
 from . import err, b, conf, log
 
 
-def call_parsev(args):
+def call_parsev(args, data=None):
     py_bin = sys.executable
     pv_bin = _make_bin_path(conf.SUB_BIN['parsev'])
     a = [py_bin, pv_bin] + args
@@ -16,8 +16,8 @@ def call_parsev(args):
     
     # call parse_video to do parse
     PIPE = subprocess.PIPE
-    try:
-        p = subprocess.run(a, stdout=PIPE)
+    try:	# NOTE wirte data to stdin
+        p = subprocess.run(a, stdout=PIPE, input=data)
     except Exception as e:
         log.e('can not execute parse_video ', add_check_log_prefix=True)
         er = err.CallError('parse_video', py_bin, pv_bin, args)

@@ -68,19 +68,25 @@ def start():
 
 # NOTE this works can be retry
 def _do_can_retry():
-    # TODO maybe not support parse_twice_enable_more, for lock file
     # TODO support parse_once
-    # TODO support parse_twice enable_more
     
+    # NOTE check parse_twice_enbale_more
+    enable_more = conf.FEATURES['parse_twice_enable_more']
+    if not enable_more:
+        log.d('disabled feature parse_twice_enable_more ')
     # do first parse to get video formats
-    pvinfo = parse.parse()
+    pvinfo = parse.parse(enable_more=enable_more)
     ui.entry_print_pvinfo(pvinfo)
     # select hd
     hd = _select_hd(pvinfo)
     
     # INFO log
     log.i('second parse, call parse_video to get file URLs ')
-    pvinfo = parse.parse(hd=hd)
+    # check parse_twice_enable_more again, to input more info
+    more_info = None
+    if enable_more:
+        more_info = pvinfo
+    pvinfo = parse.parse(hd=hd, pvinfo=more_info)
     # create task
     task_info = parse.create_task(pvinfo, hd)
     

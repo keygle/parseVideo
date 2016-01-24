@@ -7,13 +7,13 @@ from . import err, b, conf, log
 from . import call_sub, make_title
 
 
-# TODO support enable_more
-def parse(hd=None, enable_more=False):
+# NOTE support enable_more, input more info with pvinfo
+def parse(hd=None, enable_more=False, pvinfo=None):
     raw_url = conf.raw_url
     # INFO log
     if hd == None:
         log.i('first parse, call parse_video to parse URL \"' + raw_url + '\" ')
-    pvinfo, raw_text = _do_parse(raw_url, hd=hd, enable_more=enable_more)
+    pvinfo, raw_text = _do_parse(raw_url, hd=hd, enable_more=enable_more, pvinfo=pvinfo)
     # check print parse_video output
     if conf.FEATURES['print_parse_video_output']:
         print(raw_text)	# print raw output
@@ -26,29 +26,32 @@ def parse(hd=None, enable_more=False):
     conf.pvinfo = pvinfo	# save raw pvinfo
     return pvinfo	# done
 
-def _do_parse(raw_url, hd=None, enable_more=False):
+def _do_parse(raw_url, hd=None, enable_more=False, pvinfo=None):
     # make parse_video args
     arg = []
     # check fix_unicode
     if conf.FEATURES['fix_unicode']:
-        arg += ['--fix-unicode']	# TODO parse_video now not support this option
+        arg += ['--fix-unicode']
     # check hd
     if hd == None:	# parse formats
         arg += ['--min', str(1), '--max', str(0)]
     else:	# parse URLs
         arg += ['--min', str(hd), '--max', str(hd)]
+    # check enable_more
+    if enable_more:
+        arg += ['--fix-enable-more']
+    # check and encode pvinfo
+    if pvinfo != None:
+        pvinfo = json.dumps(pvinfo).encode('utf-8')
+        arg += ['--more', '-']	# use more data from stdin
     # check add more raw args
     if len(conf.raw_args) > 0:
-        arg += ['--options-overwrite-once'] + conf.raw_args	# TODO parse_video now not support this option
-    # check add enable_more
-    if enable_more:
-        arg = _check_add_enable_more(arg)
+        arg += ['--options-overwrite-once'] + conf.raw_args
     # add raw_url at last
     arg += [raw_url]
-    
     # call parse_video to do parse
     try:
-        pvinfo, raw_text = call_sub.call_parsev(arg)
+        pvinfo, raw_text = call_sub.call_parsev(arg, data=pvinfo)
     except (err.CallError, err.DecodingError) as e:
         er = err.ConfigError('call', 'parse_video')
         raise er from e
@@ -61,11 +64,6 @@ def _do_parse(raw_url, hd=None, enable_more=False):
         er = err.UnknowError('call', 'parse_video')
         raise er from e
     return pvinfo, raw_text	# OK
-
-def _check_add_enable_more(raw):
-    log.w('parse._check_add_enable_more() not finished ')
-    # TODO
-    return raw
 
 def _fix_size(pvinfo):
     log.w('parse._fix_size() not finished ')

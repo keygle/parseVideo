@@ -1,5 +1,8 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 
+# TODO support parse_timeout_s
+# TODO move language code to lan.py
+
 
 # auto-select hd in this range, will always select max hd
 auto_select_hd = [-1, 8]
@@ -31,7 +34,7 @@ FEATURES = {	# --enable, --disable
     'fix_size' : True, 		# TODO if parse_video not get part file size, try to fix it here
     
     'parse_twice' : True, 		# TODO first parse only to get video formats, second parse to get file URLs
-    'parse_twice_enable_more' : True, 	# TODO enable_more to speed up second parse
+    'parse_twice_enable_more' : True, 	# enable_more to speed up second parse
     
     # create task
     'fix_title_no' : True, 		# try to get check and fix title_no from title text
