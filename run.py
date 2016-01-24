@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
 # author sceext <sceext@foxmail.com>
-# version 0.1.12.0 test201601082117
+# [BUG fix only] version 0.2.0.0 test201601242209
 
 import math
 import os, sys, io, json
@@ -14,18 +14,18 @@ except Exception as e:
     import lyyc_plugin
 
 # global data
-PACK_VERSION = 13
+PACK_VERSION = 20
 
 FLAG_DEBUG = False
-ERR_PREFIX = 'parsev.lyp::'
+ERR_PREFIX = 'pv5.lyp::'
 
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '1.9.0', 
-    'name' : '负锐 解析插件', 
+    'version' : '2.0.0', 
+    'name' : '负锐解析猎影插件', 
     
-    'note' : '负锐视频解析 猎影插件 \n parse_video for lieying_plugin. ', 
+    'note' : '[BUG fix only] 负锐视频解析 猎影插件 \n parse_video for lieying_plugin. ', 
 }
 
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
@@ -59,8 +59,6 @@ def _byte_to_size(size_byte, flag_add_byte=True):
         'MB', 
         'GB', 
         'TB', 
-        'PB', 
-        'EB', 
     ]
     size_byte = int(size_byte)
     # check < 1 Byte
@@ -313,7 +311,7 @@ def _parse(url):
     return out
 
 def _parse_url(url, label, i_min=None, i_max=None):
-    # TODO NOTE not support i_min and i_max now
+    # NOTE not support i_min and i_max now
     hd = _parse_label(label)
     pvinfo = _do_parse(url, hd_min=hd, hd_max=hd)
     out = _t_parse_url(pvinfo, hd)
