@@ -64,7 +64,6 @@ FEATURES = {	# --enable, --disable
     'check_merged_size' : True, 	# check merged file size
     'check_merged_time' : True, 	# check merged video time, if possible (requires mediainfo)
     
-    'force_merge' : False, 		# TODO remove output file and continue merge, if output file already exists
     'merge_twice' : False, 		# TODO before final merge, do merge each part file first to fix time_s Errors
     'merge_single_file' : True, 	# TODO do merge with single file (only one part file) (This is required for check_merged_time)
     
@@ -74,6 +73,7 @@ FEATURES = {	# --enable, --disable
     'fix_unicode' : False, 		# fix_unicode is only for Windows
     
     ## DANGER options
+    'force_merge' : False, 			# remove output file and continue merge, if output file already exists
     'auto_remove_tmp_part_files' : False, 	# TODO remove part files (tmp file) to save disk space after download succeed
     # NOTE this require all needed checks to pass TODO require enable check_merged_time and merge_single_file
 }

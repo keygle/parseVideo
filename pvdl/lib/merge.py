@@ -54,9 +54,15 @@ def _check_force_merge(task_info):
     if not os.path.isfile(merged_path):
         return	# check pass
     if conf.FEATURES['force_merge']:
-        # TODO do force merge, remove file
-        log.w('merge._check_force_merge() not finished ')
-        return
+        # do force merge, remove file
+        log.w('enabled feature force_merge, now will remove file \"' + merged_path + '\" ')
+        try:
+            os.remove(merged_path)
+            return
+        except Exception as e:
+            log.e('can not remove merged_file \"' + merged_path + '\" ')
+            er = err.ConfigError('remove merged_file', merged_path)
+            raise er from e
     log.e('can not merge \"' + merged_path + '\", this output file already exists ', add_check_log_prefix=True)
     raise err.CheckError('output merged_file', merged_path)
 
