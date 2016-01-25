@@ -37,7 +37,7 @@ TODO support parse timeout_s
 from lib import err, b, conf, log
 from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.10.0 test201601251706'
+VERSION_STR = 'pvdl version 0.0.10.0 test201601251735'
 
 # global data
 etc = {}
