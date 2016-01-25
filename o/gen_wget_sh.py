@@ -12,7 +12,7 @@ etc = {}
 etc['pre_args'] = [
     '../parsev', 
     '--method', 
-    'pc_flash_gate;set_flag_v', 
+    'pc_flash_gate;set_um', 
     '--min', 
     '3', 
 ]

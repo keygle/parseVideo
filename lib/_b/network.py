@@ -9,6 +9,13 @@ import xml.etree.ElementTree as ET
 
 from .. import err, conf
 
+# NOTE check conf.network_timeout_s
+def _get_timeout():
+    timeout = conf.network_timeout_s
+    if timeout < 0:
+        timeout = None
+    return timeout
+
 def dl_blob(url, header={}):
     '''
     do http GET to download a file, just return the binary data
@@ -18,7 +25,7 @@ def dl_blob(url, header={}):
         header['User-Agent'] = conf.DEFAULT_USER_AGENT
     try:
         req = urllib.request.Request(url, headers=header, method='GET')
-        res = urllib.request.urlopen(req)
+        res = urllib.request.urlopen(req, timeout=_get_timeout())	# NOTE support network_timeout_s
         blob = res.read()
         return blob
     except Exception as e:
@@ -83,7 +90,7 @@ def post(url, method='POST', post_data=None, header={}):
     '''
     try:
         req = urllib.request.Request(url, headers=header, method=method, data=post_data)
-        res = urllib.request.urlopen(req)
+        res = urllib.request.urlopen(req, timeout=_get_timeout())	# NOTE support network_timeout_s
         blob = res.read()
         return blob
     except Exception as e:

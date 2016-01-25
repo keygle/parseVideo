@@ -84,7 +84,7 @@ def parse_m3u8(raw):	# parse letv's m3u8 file text
     out['file'] = b.simple_m3u8_parse(lines)
     for f in out['file']:	# get size from url
         filename = f['url'].split('?', 1)[0].rsplit('/', 1)[1]
-        size = filename.split('_')[-2]
+        size = filename.split('_')[-3]	# NOTE fix this at 2016-01-24
         f['size'] = int(size)	# update size
     return out
 

@@ -35,11 +35,19 @@ OVERWRITE_EXTRACTOR_METHOD = {
     }, 
 }
 
+# used for --fix-enable-more
+METHOD_ENABLE_MORE = {
+    'vqq' : None, 	# NOTE extractor vqq now not support enable_more
+}
+
 
 PV_LOG_PREFIX = 'pv::'
 
 # firefox/43.0 on Windows 7 (64bit)
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
+
+# network timeout second, -1 means disabled
+network_timeout_s = 5
 
 
 ## extractor config
