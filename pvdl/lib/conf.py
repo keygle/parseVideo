@@ -102,8 +102,8 @@ CHECK_ERR_K = {	# NOTE -1 means unlimit
     'merged_size' : 1, 		# 1 %
     'merged_size_mb' : 32, 	# 32 MB
     # check_merged_time
-    'merged_time' : 0.5, 		# 0.5 %
-    'merged_time_s' : 5, 	# 5 second
+    'merged_time' : 1, 		# 1 %
+    'merged_time_s' : 10, 	# 10 second
 }
 
 
