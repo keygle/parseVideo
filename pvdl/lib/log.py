@@ -6,6 +6,7 @@
 import sys
 
 from . import b, conf
+from . import lan
 
 
 # base print functions
@@ -37,19 +38,19 @@ def p(t, *k, **kk):	# just print, no prefix
     _p(t, *k, **kk)
 
 def e(t, color=b.color_light_red(), *k, **kk):	# ERROR
-    _pp(t, prefix='ERROR: ', color=color, *k, **kk)
+    _pp(t, prefix=lan.log_err(), color=color, *k, **kk)
 
 def w(t, color=b.color_orange(), *k, **kk):	# WARNING
-    _pp(t, prefix='WARNING: ', color=color, *k, **kk)
+    _pp(t, prefix=lan.log_warn(), color=color, *k, **kk)
 
 def i(t, color=b.color_yellow(), *k, **kk):	# INFO
-    _pp(color + t, prefix='INFO: ', color=b.color_grey(), *k, **kk)
+    _pp(color + t, prefix=lan.log_info(), color=b.color_grey(), *k, **kk)
 
 def o(t, color=b.color_light_blue(), *k, **kk):	# [ OK ]
-    _pp(color + t, prefix='[ OK ] ', color=b.color_blue(), *k, **kk)
+    _pp(color + t, prefix=lan.log_ok(), color=b.color_blue(), *k, **kk)
 
 def d(t, color=b.color_grey(), *k, **kk):	# DEBUG
-    _pp(t, prefix='DEBUG: ', color=color, *k, **kk)
+    _pp(t, prefix=lan.log_debug(), color=color, *k, **kk)
 
 def raw(t, *k, **kk):
     _pp(t, *k, **kk)

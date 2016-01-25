@@ -3,21 +3,21 @@
 import os
 
 from . import err, b, conf, log
-from . import call_sub, ui
+from . import call_sub, lan, ui
 
 
 def merge(task_info):
     # checks before merge
     _check_force_merge(task_info)
     # INFO log
-    log.i('call ffmpeg to merge part files ', add_check_log_prefix=True)
+    log.i(lan.m_call_ffmpeg(), add_check_log_prefix=True)
     # TODO Error process
     _do_merge(task_info)
     # some checks after merge
     _check_merged_size(task_info)
     _check_merged_time(task_info)
     # merged OK
-    log.o('merge video succeed ', add_check_log_prefix=True)
+    log.o(lan.m_ok_merge(), add_check_log_prefix=True)
 
 def _do_merge(task_info):
     # gen ffmpeg_list file and write it
@@ -28,7 +28,7 @@ def _do_merge(task_info):
         with open(list_file, 'wb') as f:
             f.write(blob)
     except Exception as e:
-        log.e('can not write ffmpeg list file \"' + list_file + '\" ', add_check_log_prefix=True)
+        log.e(lan.m_err_write_ffmpeg_list(list_file), add_check_log_prefix=True)
         er = err.ConfigError('write ffmpeg_list_file', list_file)
         raise er from e
     # make ffmpeg args
@@ -55,15 +55,15 @@ def _check_force_merge(task_info):
         return	# check pass
     if conf.FEATURES['force_merge']:
         # do force merge, remove file
-        log.w('enabled feature force_merge, now will remove file \"' + merged_path + '\" ')
+        log.w(lan.m_w_force_merge(merged_path))
         try:
             os.remove(merged_path)
             return
         except Exception as e:
-            log.e('can not remove merged_file \"' + merged_path + '\" ')
+            log.e(lan.m_err_rm_merged_path(merged_path))
             er = err.ConfigError('remove merged_file', merged_path)
             raise er from e
-    log.e('can not merge \"' + merged_path + '\", this output file already exists ', add_check_log_prefix=True)
+    log.e(lan.m_err_merge_output_exist(merged_path), add_check_log_prefix=True)
     raise err.CheckError('output merged_file', merged_path)
 
 def _gen_ffmpeg_merge_list(task_info):
@@ -85,24 +85,24 @@ def _fix_ffmpeg_args():
 
 def _check_merged_size(task_info):
     if not conf.FEATURES['check_merged_size']:
-        log.d('disabled feature check_merged_size ', add_check_log_prefix=True)
+        log.d(lan.m_d_disable_check_merged_size(), add_check_log_prefix=True)
         return
     # get file info
     merged_path = task_info['path']['merged_path']
     try:
         s = os.stat(merged_path)
     except Exception as e:
-        log.e('can not check_merged_size \"' + merged_path + '\", can not get file info ', add_check_log_prefix=True)
+        log.e(lan.m_err_check_merged_size_get_info(merged_path), add_check_log_prefix=True)
         er = err.CheckError('merged_size', 'stat file', merged_path)
         raise er from e
     local_size = s.st_size
     # NOTE check no video['size_byte'] info
     v = task_info['video']
     if (not 'size_byte' in v) or (v['size_byte'] <= 0):
-        log.d('local merged file size ' + b.byte_to_size(local_size) + ' ', add_check_log_prefix=True)
+        log.d(lan.m_d_merged_size(b.byte_to_size(local_size)), add_check_log_prefix=True)
         # NOTE mark skip check
         conf.skip_check_list['check_merged_size'] = True
-        log.w('can not check_merged_size, no video size_byte info ', add_check_log_prefix=True)
+        log.w(lan.m_err_check_merged_size_no_info(), add_check_log_prefix=True)
         return
     # check size
     err_s, err_k, er, err_u = b.check_size(local_size, v['size_byte'], b.CHECK_SIZE_MB)
@@ -120,16 +120,16 @@ def _check_merged_time(task_info):
     try:
         local_time = _get_file_time_s(merged_path)
     except Exception as e:
-        log.e('can not check_merged_time \"' + merged_path + '\", can not get file time_s ', add_check_log_prefix=True)
+        log.e(lan.m_err_check_merged_time_get_info(merged_path), add_check_log_prefix=True)
         er = err.CheckError('merged_time', 'get time_s', merged_path)
         raise er from e
     # NOTE check no video['time_s'] info
     v = task_info['video']
     if (not 'time_s' in v) or (v['time_s'] <= 0):
-        log.d('local merged file time_s ' + b.second_to_time(local_time) + ' ', add_check_log_prefix=True)
+        log.d(lan.m_d_merged_time(b.second_to_time(local_time)), add_check_log_prefix=True)
         # NOTE mark skip check
         conf.skip_check_list['check_merged_time'] = True
-        log.w('can to check_merged_time, no video time_s info ', add_check_log_prefix=True)
+        log.w(lan.m_err_check_merged_time_no_info(), add_check_log_prefix=True)
         return
     # check time
     err_s, err_k, er, err_u = b.check_size(local_time, v['time_s'], 1)	# NOTE unit is second
@@ -156,7 +156,7 @@ def _get_file_time_s(fpath):
         if key == 'Duration':	# NOTE unit of value is ms
             time_s = float(value) / 1e3
             return time_s	# got time_s
-    log.e('no Duration info in mediainfo output ', add_check_log_prefix=True)
+    log.e(lan.m_err_mediainfo_output_no_duration(), add_check_log_prefix=True)
     raise err.CheckError('merged_time', 'mediainfo output Duration', stdout)
 
 

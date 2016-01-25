@@ -4,7 +4,7 @@ import os
 import json
 
 from . import err, b, conf, log
-from . import call_sub, make_title
+from . import call_sub, make_title, lan
 
 
 # NOTE support enable_more, input more info with pvinfo
@@ -12,13 +12,13 @@ def parse(hd=None, enable_more=False, pvinfo=None):
     raw_url = conf.raw_url
     # INFO log
     if hd == None:
-        log.i('first parse, call parse_video to parse URL \"' + raw_url + '\" ')
+        log.i(lan.p_first(raw_url))
     pvinfo, raw_text = _do_parse(raw_url, hd=hd, enable_more=enable_more, pvinfo=pvinfo)
     # check print parse_video output
     if conf.FEATURES['print_parse_video_output']:
         print(raw_text)	# print raw output
     else:	# DEBUG log
-        log.d('disabled feature print_parse_video_output ')
+        log.d(lan.p_d_disable_print_parse_video_output())
     # TODO check parse_video output mark_uuid and port_version
     # check fix_size
     if conf.FEATURES['fix_size']:
@@ -56,11 +56,11 @@ def _do_parse(raw_url, hd=None, enable_more=False, pvinfo=None):
         er = err.ConfigError('call', 'parse_video')
         raise er from e
     except err.PvdlError as e:
-        log.e('call parse_video to do parse failed ')
+        log.e(lan.p_err_pv_parse())
         er = err.ParseError('call parse_video', arg)
         raise er from e
     except Exception as e:
-        log.e('unknow call parse_video Error ')
+        log.e(lan.p_err_pv_unknow())
         er = err.UnknowError('call', 'parse_video')
         raise er from e
     return pvinfo, raw_text	# OK
@@ -80,7 +80,7 @@ def _fix_size(pvinfo):	# NOTE not check feature again
         return pvinfo
     pool_size = conf.fix_size_pool_size
     # DEBUG log
-    log.d('start fix_size of ' + str(len(todo)) + ' files, pool_size = ' + str(pool_size) + ' ')
+    log.d(lan.p_d_start_fix_size(len(todo), pool_size))
     # use map_do to fix file size
     result = b.map_do(todo, worker=_get_one_size, pool_size=pool_size)
     # set back result
@@ -140,19 +140,19 @@ def create_task(pvinfo, hd):
     # NOTE check --title-no
     old_title_no = task_info['info'].get('title_no', None)
     if conf.title_no != None:
-        log.i('set title_no to ' + str(conf.title_no) + ' (old ' + str(old_title_no) + ') ')
+        log.i(lan.p_set_title_no(conf.title_no, old_title_no))
         task_info['info']['title_no'] = conf.title_no
     # feature fix_title_no
     elif conf.FEATURES['fix_title_no']:
         title_no = make_title.fix_title_no(task_info)
         if title_no != None:
-            log.i('feature fix_title_no, fix title_no to ' + str(title_no) + ' (old ' + str(old_title_no) + ') ')
+            log.i(lan.p_fix_title_no(title_no, old_title_no))
             task_info['info']['title_no'] = title_no
     # gen task_title
     title = make_title.gen_title(task_info)
     # NOTE check --title-suffix
     if conf.title_suffix != None:
-        log.d('add title_suffix \"' + conf.title_suffix + '\" ')
+        log.d(lan.p_add_title_suffix(conf.title_suffix))
         title += '.' + conf.title_suffix
     task_info['title'] = title
     ## add more to task_info
@@ -164,9 +164,9 @@ def create_task(pvinfo, hd):
     if conf.FEATURES['base_path_add_title']:
         if title_short != None:
             task_info['path']['base_path'] = b.pjoin(task_info['path']['base_path'], title_short)
-            log.o('feature base_path_add_title, base_path changed to \"' + task_info['path']['base_path'] + '\" ')
+            log.o(lan.p_change_base_path(task_info['path']['base_path']))
         else:
-            log.w('feature base_path_add_title, can not add title info ')
+            log.w(lan.p_err_base_path_add_title())
     # NOTE add absolute base_path for DEBUG
     task_info['path']['_base_path_abs'] = os.path.realpath(task_info['path']['base_path'])
     # gen tmp_name and tmp_path
@@ -219,25 +219,25 @@ def _write_log_file(pvinfo, task_info):
             os.fsync(f.fileno())
         os.replace(tmp_log_file, log_path)
     except Exception as e:
-        log.e('can not write log file \"' + log_path + '\" (\"' + tmp_log_file + '\") ')
+        log.e(lan.p_err_write_log_file(log_path, tmp_log_file))
         er = err.ConfigError('write log_file', log_path, tmp_log_file)
         raise er from e
 
 def _check_log_file(task_info):
     if not conf.FEATURES['check_log_file']:
-        log.d('disabled feature check_log_file ')
+        log.d(lan.p_d_disable_check_log_file())
         return
     # check log file exist
     log_path = b.pjoin(task_info['path']['tmp_path'], task_info['path']['log_file'])
     if not os.path.isfile(log_path):
-        log.d('log file not exist, \"' + log_path + '\" ')
+        log.d(lan.p_d_log_file_not_exist(log_path))
         return
     # read log file
     try:
         with open(log_path, 'rb') as f:
             blob = f.read()
     except Exception as e:
-        log.e('can not read log file \"' + log_path + '\" ')
+        log.e(lan.p_err_read_log_file(log_path))
         er = err.ConfigError('read log_file', log_path)
         raise er from e
     # parse json
@@ -246,13 +246,13 @@ def _check_log_file(task_info):
         log_info = json.loads(text)
     except Exception as e:
         # TODO print more error info
-        log.w('can not parse json text of log file \"' + log_path + '\", ' + str(e))
+        log.w(lan.p_err_parse_log_json(log_path, e))
     # do check
     try:	# NOTE get task_info from pvdl log file
         old, now = log_info['_pvdl_task_info'], task_info
         # base check
         def print_check_err(value, new, old):	# base check error print function
-            t = 'check log failed, new ' + value + ' ' + str(new) + ' != old ' + str(old) + ' '
+            t = lan.p_err_check_log(value, new, old)
             log.e(t)
             return err.CheckError('check log_file', value, old, new)
         now_v, old_v = now['video'], old['video']
@@ -274,32 +274,32 @@ def _check_log_file(task_info):
             f, o = now_f[i], old_f[i]
             now_size, old_size = f['size'], o['size']
             now_time, old_time = f['time_s'], o['time_s']
-            t = 'check log failed, part file ' + str(i + 1) + ': '
+            t = lan.p_err_check_log_part_file(i)
             if now_size != old_size:
-                t += 'new size ' + str(now_size) + ' != old ' + str(old_size) + ' '
+                t += lan.p_err_new_is_not_old('size', now_size, old_size)
                 log.e(t)
                 raise err.CheckError('check log_file part_file', i, 'size', old_size, now_size)
             if now_time != old_time:
-                t += 'new time_s ' + str(now_time) + ' != old ' + str(old_time) + ' '
+                t += lan.p_err_new_is_not_old('time_s', now_time, old_time)
                 log.e(t)
                 raise err.CheckError('check log_file part_file', i, 'time_s', old_time, now_time)
             # check checksum
             if not 'checksum' in o:
                 continue	# no checksum info
             if not 'checksum' in f:
-                t += 'no checksum in new file info '
+                t += lan.p_err_check_log_checksum()
                 log.e(t)
                 raise err.CheckError('check log_file part_file', i, 'no checksum', o['checksum'])
             now_checksum, old_checksum = f['checksum'], o['checksum']
             if now_checksum != old_checksum:
-                t += 'new checksum ' + str(now_checksum) + ' != old ' + str(old_checksum) + ' '
+                t += lan.p_err_new_is_not_old('checksum', now_checksum, old_checksum)
                 log.e(t)
                 raise err.CheckError('check log_file part_file', i, 'checksum', old_checksum, now_checksum)
         ## strict check (more checks)
         if conf.FEATURES['check_log_file_strict']:
-            log.i('enabled feature check_log_file_strict ')
+            log.i(lan.p_d_enable_check_log_file_strict())
             def print_strict_err(value, new, old):
-                t = 'strict check log failed, new ' + value + ' ' + str(new) + ' != old ' + str(old) + ' '
+                t = lan.p_err_check_log_strict(value, new, old)
                 log.e(t)
                 return err.CheckError('check log_file strict', value, old, new)
             # check title match
@@ -328,9 +328,9 @@ def _check_log_file(task_info):
     except err.CheckError:
         raise
     except Exception as e:
-        log.w('bad log file \"' + log_path + '\", ' + str(e))
+        log.w(lan.p_err_bad_log_file(log_path, e))
         # TODO print more error info
-    log.o('check log file pass ')
+    log.o(lan.p_ok_check_log_file())
 
 
 # end parse.py

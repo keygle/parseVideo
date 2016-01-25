@@ -43,24 +43,24 @@ def start():
         retry_info = str(retry_count) + ' / ' + str(conf.set_retry)
         # print retry info
         if retry_count > 0:
-            log.i('pvdl task retry ' + retry_info)
+            log.i(lan.e_task_retry(retry_info))
         try:
             _do_can_retry()
             # print retry OK info
             if retry_count > 0:
-                log.o('pvdl task finished at retry ' + retry_info + ' ')
+                log.o(lan.e_retry_ok(retry_info))
             break	# no more retry
         except err.RetryableError as e:	# ignore this Error
             # ERROR log
             if retry_count > 0:
-                log.e('pvdl task failed at retry ' + retry_info + ' ')
+                log.e(lan.e_retry_err(retry_info))
             else:
-                log.e('pvdl task failed ')
+                log.e(lan.e_err_task())
             # update retry count
             retry_count += 1
             # NOTE sleep before retry
             if check_should_retry():
-                log.i('wait ' + str(conf.set_retry_wait) + ' s before next retry ')
+                log.i(lan.e_wait_retry(conf.set_retry_wait))
                 time.sleep(conf.set_retry_wait)
         except Exception:
             raise	# not process other Errors
@@ -73,7 +73,7 @@ def _do_can_retry():
     # NOTE check parse_twice_enbale_more
     enable_more = conf.FEATURES['parse_twice_enable_more']
     if not enable_more:
-        log.d('disabled feature parse_twice_enable_more ')
+        log.d(lan.e_d_disable_parse_twice_enable_more())
     # do first parse to get video formats
     pvinfo = parse.parse(enable_more=enable_more)
     ui.entry_print_pvinfo(pvinfo)
@@ -81,7 +81,7 @@ def _do_can_retry():
     hd = _select_hd(pvinfo)
     
     # INFO log
-    log.i('second parse, call parse_video to get file URLs ')
+    log.i(lan.e_second_parse())
     # check parse_twice_enable_more again, to input more info
     more_info = None
     if enable_more:
@@ -99,7 +99,7 @@ def _do_can_retry():
         if not os.path.isdir(tmp_path):
             os.makedirs(tmp_path)
     except Exception as e:
-        log.e('can not create tmp dir \"' + tmp_path + '\" ')
+        log.e(lan.e_err_mk_tmp_dir(tmp_path))
         er = err.ConfigError('create tmp_dir', tmp_path)
         raise er from e
     # NOTE run _do_with_lock() in _do_in_lock()
@@ -111,19 +111,19 @@ def _do_in_lock(f, lock_file):
     # get lock (create lock file)
     try:
         lock_fd = os.open(lock_file, os.O_CREAT | os.O_EXCL | os.O_TRUNC, mode=0o666)
-        log.d('got lock \"' + lock_file + '\" ')
+        log.d(lan.e_got_lock(lock_file))
     except Exception as e:	# get lock failed
         # check skip_lock_err
         if conf.FEATURES['skip_lock_err']:
-            log.i('skip lock file \"' + lock_file + '\" ')
+            log.i(lan.e_skip_lock(lock_file))
             return	# NOTE with no Error
-        log.e('can not get lock \"' + lock_file + '\", ' + str(e))
+        log.e(lan.e_err_get_lock(lock_file, e))
         if conf.FEATURES['check_lock_file']:
-            log.i('if you are sure that no pvdl instance is operating this directory, you can remove the lock file ')
+            log.i(lan.e_i_rm_lock())
             er = err.ConfigError('check_lock_file', lock_file)
             raise er from e
         else:	# just ignore it
-            log.d('disabled feature check_lock_file ')
+            log.d(lan.e_d_disable_check_lock_file())
     # do with lock
     try:
         return f()
@@ -135,21 +135,21 @@ def _do_in_lock(f, lock_file):
                 log.d('normal closing check_log file ', add_check_log_prefix=True, fix_check_log_file=True)
                 conf.check_log_file.close()
             except Exception as e:
-                log.w('can not close check_log file \"' + str(conf.check_log_file_path) + '\", ' + str(e) + ' ')
+                log.w(lan.e_err_close_check_log(conf.check_log_file_path, e))
             finally:	# NOTE reset check_log file after try close it
                 conf.check_log_file = None
         try:	# close lock file
             os.close(lock_fd)
         except Exception as e:	# ignore close Error
-            log.w('can not close lock file [' + str(lock_fd) + '] \"' + lock_file + '\", ' + str(e))
+            log.w(lan.e_err_close_lock_file(lock_fd, lock_file, e))
         # NOTE check keep_lock_file
         if conf.keep_lock_file:
-            log.i('keep lock file \"' + lock_file + '\" ')
+            log.i(lan.e_keep_lock_file(lock_file))
             return	# NOTE not remove lock file
         try:	# remove lock file
             os.remove(lock_file)
         except Exception as e:	# ignore remove Error
-            log.w('can not remove lock file \"' + lock_file + '\", ' + str(e))
+            log.w(lan.e_err_rm_lock_file(lock_file, e))
     # end _do_in_lock
 
 
@@ -164,7 +164,7 @@ def _select_hd(pvinfo):
         if conf.select_hd in hd_list:
             return conf.select_hd
         # WARNING log
-        log.w('can not select --hd ' + str(b.number(conf.select_hd)) + ', no such hd ')
+        log.w(lan.e_err_select_hd(b.number(conf.select_hd)))
     # select max hd in hd range
     hdr = conf.auto_select_hd
     out = None
@@ -175,7 +175,7 @@ def _select_hd(pvinfo):
     if out != None:
         return b.number(hd)
     # WARNING log
-    log.w('can not select hd in range ' + str(hdr) + ', no hd available ')
+    log.w(lan.e_err_select_hd_range(hdr))
     # just select max hd
     return b.number(hd_list[0])
 
@@ -203,7 +203,7 @@ def _create_check_log(task_info):
     try:	# NOTE open with append blob mode
         conf.check_log_file = open(conf.check_log_file_path, 'ab')
     except Exception as e:
-        log.e('can not open check_log file \"' + conf.check_log_file_path + '\" ')
+        log.e(lan.e_err_open_check_log(conf.check_log_file_path))
         er = err.ConfigError('open check_log file', conf.check_log_file_path)
         raise er from e
     f = conf.check_log_file
@@ -221,7 +221,7 @@ def _create_check_log(task_info):
     # add lock file info
     p('[fix check_log] lock file \"' + task_info['path']['lock_path'] + '\" ')
     # create check_log file and fix check_log info, done
-    log.d('create check_log \"' + check_log_path + '\" ')
+    log.d(lan.e_create_check_log(check_log_path))
 
 
 def _print_task_info(task_info):
@@ -230,7 +230,7 @@ def _print_task_info(task_info):
 
 def _check_disk_space(task_info):
     if not conf.FEATURES['check_disk_space']:
-        log.d('disabled feature check_disk_space ')
+        log.d(lan.e_d_disable_check_disk_space())
         return
     # get tmp path
     tmp_path = task_info['path']['tmp_path']
@@ -240,16 +240,16 @@ def _check_disk_space(task_info):
     # NOTE need to get size_byte info first
     dl_byte = task_info['video'].get('size_byte', -1)
     if dl_byte <= 0:
-        log.w('can not check_disk_space, no size_byte info in video (free ' + free_size + ') ')
+        log.w(lan.e_err_check_disk_space_no_info(free_size))
         return
     # check and give result
     needed_byte = dl_byte * conf.disk_space_needed_k
     needed_size = b.byte_to_size(needed_byte)
     if needed_byte < free_byte:
-        log.o('check_disk_space pass, need ' + needed_size + ', free ' + free_size + ' ')
+        log.o(lan.e_pass_check_disk_space(needed_size, free_size))
         return	# check pass
     # disk space not enough
-    log.e('no enough disk space, can not download: need ' + needed_size + ', free ' + free_size + ' ')
+    log.e(lan.e_no_enough_disk_space(needed_size, free_size))
     raise err.ConfigError('check_disk_space', needed_size, free_size)
 
 def _check_keep_lock(task_info):
@@ -295,10 +295,10 @@ def _do_download(task_info):
         ui.entry_print_download_status(count_err, count_ok, done_size, v['size_byte'], done_time, v['time_s'], rest_size, rest_time)
     # download done, check download succeed
     if count_err > 0:
-        log.e('download part files failed, err ' + str(count_err) + '/' + str(count) + ' ', add_check_log_prefix=True)
+        log.e(lan.e_err_dl_part_files(count_err, count), add_check_log_prefix=True)
         raise err.DownloadError('part file', count_err, count)
     # download OK
-    log.o('download part files finished, OK ' + str(count_ok) + '/' + str(count) + ' ', add_check_log_prefix=True)
+    log.o(lan.e_ok_dl_part_files(count_ok, count), add_check_log_prefix=True)
 
 def _auto_remove_tmp_part_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_part_files']:
@@ -318,7 +318,7 @@ def _auto_remove_tmp_part_files(task_info):
     ]
     for f in need_enable_feature_list:
         if not conf.FEATURES[f]:
-            log.e('can not auto_remove_tmp_part_files, feature [' + f + '] not enabled. To do auto remove, this feature must be enabled! ')
+            log.e(lan.e_err_auto_remove_tmp_part_feature_disable(f))
             return	# check failed
     # check skip checks
     can_not_skip_check_list = [
@@ -328,18 +328,18 @@ def _auto_remove_tmp_part_files(task_info):
     ]
     for c in can_not_skip_check_list:
         if conf.skip_check_list[c]:
-            log.e('can not auto_remove_tmp_part_files, skiped check [' + f + ']. To do auto remove, this check must not be skiped! ')
+            log.e(lan.e_err_auto_remove_tmp_part_pass_check(c))
             return	# check failed
     # all checks passed, do auto remove
     f = task_info['video']['file']
-    log.w('enabled feature auto_remove_tmp_part_files: all checks passed, now will do remove ' + str(len(f)) + ' tmp part files ')
+    log.w(lan.e_w_before_auto_remove_tmp_part_files(len(f)))
     for i in f:
         p = i['path']
         try:
-            log.d('remove tmp part file \"' + p + '\" ')
+            log.d(lan.e_d_remove_tmp_part_file(p))
             os.remove(p)
         except Exception as e:	# ignore remove Error
-            log.e('can not remove tmp part file \"' + p + '\", ' + str(e) + ' ')
+            log.e(lan.e_err_rm_tmp_part(fpath, e))
     # auto remove done
 
 
