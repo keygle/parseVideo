@@ -6,7 +6,7 @@ A small tool of `parse_video`:
 # pvdl : parse_video Downloader
 A *reference implemention* of a downloader which uses `parse_video`. 
 
-`pvdl version 0.0.9.0`
+`pvdl version 0.0.10.0`
 
 
 ## Install

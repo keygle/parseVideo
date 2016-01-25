@@ -85,6 +85,8 @@ def _check_file_size(f):
     # NOTE check no f['size'] info
     if (not 'size' in f) or (f['size'] <= 0):
         log.d('local file_size ' + b.byte_to_size(local_size) + ' ', add_check_log_prefix=True)
+        # NOTE set skip check
+        conf.skip_check_list['check_file_size'] = True
         log.w('can not check_file_size, no file size info ', add_check_log_prefix=True)
         return
     # check size
@@ -104,9 +106,13 @@ def _check_file_md5(f):
     # check md5 info
     if not 'checksum' in f:
         log.d('no checksum info for this file ', add_check_log_prefix=True)
+        # NOTE set skip check
+        conf.skip_check_list['check_file_md5'] = True
         return False
     if not 'md5' in f['checksum']:
         log.d('no checksum.md5 info for this file ', add_check_log_prefix=True)
+        # NOTE set skip check
+        conf.skip_check_list['check_file_md5'] = True
         return False
     ok_md5 = f['checksum']['md5']
     # INFO log

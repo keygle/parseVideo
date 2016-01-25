@@ -81,8 +81,8 @@ FEATURES = {	# --enable, --disable
     
     ## DANGER options
     'force_merge' : False, 			# remove output file and continue merge, if output file already exists
-    'auto_remove_tmp_part_files' : False, 	# TODO remove part files (tmp file) to save disk space after download succeed
-    # NOTE this require all needed checks to pass TODO require enable check_merged_time and merge_single_file
+    'auto_remove_tmp_part_files' : False, 	# remove part files (tmp file) to save disk space after download succeed
+    # NOTE this require all needed checks to pass, require enable many features
 }
 
 
@@ -147,8 +147,11 @@ flag_debug = False	# --debug
 limit_kb = None		# TODO download speed limit, unit KB
 
 # NOTE save checks status, for final check remove part file
-check_status = {
-    # TODO
+skip_check_list = {	# NOTE if skip checks, set to True
+    'check_file_size' : False, 
+    'check_file_md5' : False, 
+    'check_merged_size' : False, 
+    'check_merged_time' : False, 
 }
 
 keep_lock_file = False		# if True, will not remove lock file

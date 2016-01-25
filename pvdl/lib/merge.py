@@ -100,6 +100,8 @@ def _check_merged_size(task_info):
     v = task_info['video']
     if (not 'size_byte' in v) or (v['size_byte'] <= 0):
         log.d('local merged file size ' + b.byte_to_size(local_size) + ' ', add_check_log_prefix=True)
+        # NOTE mark skip check
+        conf.skip_check_list['check_merged_size'] = True
         log.w('can not check_merged_size, no video size_byte info ', add_check_log_prefix=True)
         return
     # check size
@@ -125,6 +127,8 @@ def _check_merged_time(task_info):
     v = task_info['video']
     if (not 'time_s' in v) or (v['time_s'] <= 0):
         log.d('local merged file time_s ' + b.second_to_time(local_time) + ' ', add_check_log_prefix=True)
+        # NOTE mark skip check
+        conf.skip_check_list['check_merged_time'] = True
         log.w('can to check_merged_time, no video time_s info ', add_check_log_prefix=True)
         return
     # check time

@@ -262,7 +262,7 @@ def _check_keep_lock(task_info):
 ## main download works
 
 def _do_download(task_info):
-    # TODO fix task_info video count info before download
+    # NOTE task_info video count info fixed before download
     v = task_info['video']
     count = len(v['file'])
     ui.entry_print_start_download(count, v['size_byte'], v['time_s'])
@@ -303,16 +303,45 @@ def _do_download(task_info):
 def _auto_remove_tmp_part_files(task_info):
     if not conf.FEATURES['auto_remove_tmp_part_files']:
         return
-    # TODO more check on checks' status
-    # check required features
-    if not conf.FEATURES['check_merged_time']:
-        log.e('disabled feature auto_remove_tmp_files. To enable this, feature check_merged_time must be enabled ')
-        return
-    if not conf.FEATURES['merge_single_file']:
-        log.e('disabled feature auto_remove_tmp_files. To enable this, feature merge_single_file must be enabled ')
-        return
-    # TODO do remove
-    log.w('entry._auto_remove_tmp_part_files() not finished ')
+    # do needed checks to pass
+    
+    # check enabled features
+    need_enable_feature_list = [
+        'fix_size', 
+        'check_log_file', 
+        'check_lock_file', 
+        'check_file_size', 
+        'check_file_md5', 
+        'check_merged_size', 
+        'check_merged_time', 
+        'merge_single_file', 
+    ]
+    for f in need_enable_feature_list:
+        if not conf.FEATURES[f]:
+            log.e('can not auto_remove_tmp_part_files, feature [' + f + '] not enabled. To do auto remove, this feature must be enabled! ')
+            return	# check failed
+    # check skip checks
+    can_not_skip_check_list = [
+        'check_file_size', 
+        'check_merged_size', 
+        'check_merged_time', 
+    ]
+    for c in can_not_skip_check_list:
+        if conf.skip_check_list[c]:
+            log.e('can not auto_remove_tmp_part_files, skiped check [' + f + ']. To do auto remove, this check must not be skiped! ')
+            return	# check failed
+    # all checks passed, do auto remove
+    f = task_info['video']['file']
+    log.w('enabled feature auto_remove_tmp_part_files: all checks passed, now will do remove ' + str(len(f)) + ' tmp part files ')
+    for i in f:
+        p = i['path']
+        try:
+            log.d('remove tmp part file \"' + p + '\" ')
+            os.remove(p)
+        except Exception as e:	# ignore remove Error
+            log.e('can not remove tmp part file \"' + p + '\", ' + str(e) + ' ')
+    # auto remove done
+
 
 # end entry.py
 
