@@ -5,6 +5,7 @@ import math, json
 import hashlib
 import datetime
 import multiprocessing.dummy as multiprocessing
+import urllib.request
 
 import colored
 
@@ -180,6 +181,20 @@ def md5sum(fpath, chunk_size=pow(1024, 2) * 16):	# NOTE default chunk size to ro
                 break
             md5.update(data)
     out = md5.hexdigest()
+    return out
+
+## network functions
+
+# http HEAD request
+def http_head(url, header=None):
+    headers={}
+    if header != None:
+        headers=header
+    req = urllib.request.Request(url, headers=headers, method='HEAD')
+    # TODO support timeout, TODO Error process
+    res = urllib.request.urlopen(req)
+    # NOTE just return headers
+    out = res.info()
     return out
 
 

@@ -1,4 +1,5 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
+# language: English (en) 
 
 # TODO support parse_timeout_s
 # TODO move language code to lan.py
@@ -18,6 +19,9 @@ retry_wait_time_s = 1	# --retry-wait
 # parse timeout
 parse_timeout_s = 180	# TODO -1 means disabled; default 3 minute (180s); after this second, will stop parse (as parse failed)
 
+# map_do() to fix_size, pool_size
+fix_size_pool_size = 16
+
 
 
 ## !!! WARNING !!! ADVANCED OPTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -31,7 +35,7 @@ merge_output_format = 'mp4'	# NOTE other formats may not work
 FEATURES = {	# --enable, --disable
     ## parse stage
     'print_parse_video_output' : False, # print parse_video raw output for DEBUG
-    'fix_size' : True, 		# TODO if parse_video not get part file size, try to fix it here
+    'fix_size' : True, 			# if parse_video not get part file size, try to fix it here
     
     'parse_twice' : True, 		# TODO first parse only to get video formats, second parse to get file URLs
     'parse_twice_enable_more' : True, 	# enable_more to speed up second parse

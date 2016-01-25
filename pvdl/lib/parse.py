@@ -65,10 +65,61 @@ def _do_parse(raw_url, hd=None, enable_more=False, pvinfo=None):
         raise er from e
     return pvinfo, raw_text	# OK
 
-def _fix_size(pvinfo):
-    log.w('parse._fix_size() not finished ')
-    # TODO
-    return pvinfo
+def _fix_size(pvinfo):	# NOTE not check feature again
+    def check_raw_f(f):
+        if (not 'size' in f) or (f['size'] < 0):
+            return True
+        return False
+    # NOTE make todo list
+    todo = []
+    for v in pvinfo['video']:
+        for f in v['file']:
+            if check_raw_f(f):
+                todo.append(f.copy())
+    if len(todo) < 1:	# not fix, no need
+        return pvinfo
+    pool_size = conf.fix_size_pool_size
+    # DEBUG log
+    log.d('start fix_size of ' + str(len(todo)) + ' files, pool_size = ' + str(pool_size) + ' ')
+    # use map_do to fix file size
+    result = b.map_do(todo, worker=_get_one_size, pool_size=pool_size)
+    # set back result
+    for v in pvinfo['video']:
+        for i in range(len(v['file'])):
+            if check_raw_f(v['file'][i]):
+                v['file'][i], result = result[0], result[1:]
+    # update size_byte count
+    out = _fix_pvinfo_count(pvinfo)
+    return out
+
+# NOTE use http HEAD to fix size, NOTE may not work for some web sites
+def _get_one_size(f):
+    # TODO check no http files, can not fix (such as pv_tvsohu_http)
+    # TODO DEBUG to print more info
+    try:
+        header = None
+        if 'header' in f:	# NOTE support http header in file
+            header = f['header']
+        info = b.http_head(f['url'], header=header)
+        # get Content-Length header
+        content_length = info['Content-Length']
+        f['size'] = int(content_length)
+    except Exception as e:	# ignore error
+        pass	# TODO print fix ERROR info
+    return f
+
+# fix pvinfo count after fix_size
+def _fix_pvinfo_count(pvinfo):
+    for v in pvinfo['video']:
+        count = 0
+        for f in v['file']:
+            size = f['size']
+            if size < 0:	# check count
+                count = -1
+            elif count >= 0:
+                count += size
+        v['size_byte'] = count
+    return pvinfo	# fix video size_byte count done
 
 
 # NOTE do fix_size before create_task
