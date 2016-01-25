@@ -2,23 +2,22 @@
 # language: English (en) 
 
 import math
-from colored import fg, bg, attr
 
 from . import b, log
 from . import make_title
 
 # global styles
-_reset = attr('reset')
-_bold = attr('bold')
+_reset = b.color_reset()
+_bold = b.color_bold()
 
-_white = fg('white')
-_grey = fg('grey_50')
-_blue = fg('blue')
-_light_blue = fg('light_blue')
-_yellow = fg('yellow')
-_light_yellow = fg('light_yellow')
-_red = fg('red')
-_light_red = fg('light_red')
+_grey = b.color_grey()
+_white = b.color_white()
+_blue = b.color_blue()
+_light_blue = b.color_light_blue()
+_yellow = b.color_yellow()
+_light_yellow = b.color_light_yellow()
+_red = b.color_red()
+_light_red = b.color_light_red()
 
 
 # ui print functions

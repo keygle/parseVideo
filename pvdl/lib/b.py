@@ -11,6 +11,37 @@ import colored
 
 from . import err, conf
 
+## colors
+
+def color_reset():
+    return colored.attr('reset')
+def color_bold():
+    return colored.attr('bold')
+
+def color_grey():
+    return colored.fg('grey_50')
+def color_white():
+    return colored.fg('white')
+
+def color_red():
+    return colored.fg('red')
+def color_light_red():
+    return colored.fg('light_red')
+
+def color_orange():
+    return colored.fg('orange_1')
+
+def color_yellow():
+    return colored.fg('yellow')
+def color_light_yellow():
+    return colored.fg('light_yellow')
+
+def color_blue():
+    return colored.fg('blue')
+def color_light_blue():
+    return colored.fg('light_blue')
+
+
 ## text functions
 
 def replace_filename_bad_char(raw, replace=conf.FILENAME_REPLACE):
@@ -89,7 +120,7 @@ def byte_to_size(size_byte, flag_add_byte=True, flag_add_grey=False):
     size_str = less_than_0 + size_t + ' ' + unit
     if flag_add_byte:
         if flag_add_grey:
-            size_str += colored.fg('grey_50')
+            size_str += color_grey()
         size_str += ' (' + less_than_0 + str(size_byte) + ' Byte)'
     return size_str
 

@@ -34,9 +34,10 @@ TODO support parse timeout_s
 
 '''
 
-from lib import entry, log, lan, err, conf
+from lib import err, b, conf, log
+from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.10.0 test201601251413'
+VERSION_STR = 'pvdl version 0.0.10.0 test201601251517'
 
 # global data
 etc = {}
@@ -241,12 +242,11 @@ def start_normal():
         raise er from e
 
 def input_url():
-    from colored import fg, attr
-    log.p(attr('reset') + fg('light_yellow'), end='')
+    log.p(b.color_reset() + b.color_light_yellow(), end='')
     log.p('pvdl:: please input URL of a video play page: ', end='')
-    log.p(attr('reset') + fg('white') + attr('bold'), end='')
+    log.p(b.color_reset() + b.color_white() + b.color_bold(), end='')
     raw = input()
-    log.p(attr('reset'), end='')
+    log.p(b.color_reset(), end='')
     # check input URL
     out = raw.strip()
     if out == '':

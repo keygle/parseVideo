@@ -4,7 +4,6 @@
 # TODO turn off DEBUG log support
 
 import sys
-from colored import fg, bg, attr
 
 from . import b, conf
 
@@ -12,7 +11,7 @@ from . import b, conf
 # base print functions
 def _p(t, file=sys.stderr, end='\n', add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
     if not fix_check_log_file:	# NOTE fix logs not print to screen
-        print(t, file=file, *k, **kk)
+        print(t, file=file, end=end, *k, **kk)
     # NOTE support print to check_log file; NOTE not remove color chars (ANSI ESC)
     if conf.check_log_file != None:
         t += end	# fix line end here
@@ -28,8 +27,8 @@ def _gen_check_log_prefix(prefix='pvdl.check_log'):
 
 
 # prefix print function
-def _pp(raw, prefix='', color=attr('reset'), *k, **kk):
-    t = fg('grey_50') + conf.PVDL_LOG_PREFIX + color + prefix + raw + attr('reset')
+def _pp(raw, prefix='', color=b.color_reset(), *k, **kk):
+    t = b.color_grey() + conf.PVDL_LOG_PREFIX + color + prefix + raw + b.color_reset()
     _p(t, *k, **kk)
 
 # exports log functions
@@ -37,19 +36,19 @@ def _pp(raw, prefix='', color=attr('reset'), *k, **kk):
 def p(t, *k, **kk):	# just print, no prefix
     _p(t, *k, **kk)
 
-def e(t, color=fg('light_red'), *k, **kk):	# ERROR
+def e(t, color=b.color_light_red(), *k, **kk):	# ERROR
     _pp(t, prefix='ERROR: ', color=color, *k, **kk)
 
-def w(t, color=fg('orange_1'), *k, **kk):	# WARNING
+def w(t, color=b.color_orange(), *k, **kk):	# WARNING
     _pp(t, prefix='WARNING: ', color=color, *k, **kk)
 
-def i(t, color=fg('yellow'), *k, **kk):	# INFO
-    _pp(color + t, prefix='INFO: ', color=fg('grey_50'), *k, **kk)
+def i(t, color=b.color_yellow(), *k, **kk):	# INFO
+    _pp(color + t, prefix='INFO: ', color=b.color_grey(), *k, **kk)
 
-def o(t, color=fg('light_blue'), *k, **kk):	# [ OK ]
-    _pp(color + t, prefix='[ OK ] ', color=fg('blue'), *k, **kk)
+def o(t, color=b.color_light_blue(), *k, **kk):	# [ OK ]
+    _pp(color + t, prefix='[ OK ] ', color=b.color_blue(), *k, **kk)
 
-def d(t, color=fg('grey_50'), *k, **kk):	# DEBUG
+def d(t, color=b.color_grey(), *k, **kk):	# DEBUG
     _pp(t, prefix='DEBUG: ', color=color, *k, **kk)
 
 def raw(t, *k, **kk):
