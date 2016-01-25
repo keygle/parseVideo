@@ -255,7 +255,7 @@ def e_got_lock(lock_file):
 def e_skip_lock(lock_file):
     return ('skip lock file \"' + lock_file + '\" ')
 
-def e_err_get_lock(lock_file, e)
+def e_err_get_lock(lock_file, e):
     return ('can not get lock \"' + lock_file + '\", ' + str(e))
 
 def e_i_rm_lock():
