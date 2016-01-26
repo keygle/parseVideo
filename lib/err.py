@@ -7,8 +7,8 @@ Error class for parse_video
 Exception			# python 3 base Error class
     PVError			# parse_video Error
         UnknowError
-        NotSupportURLError	# not support the given URL
         ConfigError		# config item or user input error
+            NotSupportURLError	# not support the given URL
         
         ParseError		# parse video info Error
             NetworkError	# download network resources failed
@@ -25,11 +25,12 @@ class PVError(Exception):
 
 class UnknowError(PVError):
     pass
-class NotSupportURLError(PVError):
-    pass
 class ConfigError(PVError):
     pass
 class ParseError(PVError):
+    pass
+
+class NotSupportURLError(ConfigError):
     pass
 
 class NetworkError(ParseError):

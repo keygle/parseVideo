@@ -1,0 +1,17 @@
+#!/usr/bin/env python3.5
+# -*- coding: utf-8 -*-
+# pl, parse_video/o/plist/
+# TODO
+
+import os, sys
+
+def start():
+    sys.path.insert(0, os.path.dirname(__file__))
+    from bin import plist
+    plist.main(sys.argv[1:])
+
+if __name__ == '__main__':
+    start()
+# end pl
+
+
