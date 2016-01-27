@@ -11,14 +11,14 @@ URL_TO_EXTRACTOR = {
 PLIST_LOG_PREFIX = 'plist::'
 
 # for PLINFO
+PLINFO_MARK_UUID = 'b0b0e371-df34-45cb-b625-626a54621180'
 PLINFO_PORT_VERSION = '0.1.0'
 
 # NOTE runtime data
 plist_version = None
 
-raw_url = ''
+_extractor_id = None
 
-# TODO
 # end conf.py
 
 
