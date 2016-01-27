@@ -9,8 +9,11 @@ from . import b, conf
 from . import lan
 
 
-# base print functions
-def _p(t, file=sys.stderr, end='\n', add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
+# base print function
+def _p(t, file=None, end='\n', add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
+    # NOTE default output file is sys.stderr
+    if file == None:
+        file = sys.stderr
     if not fix_check_log_file:	# NOTE fix logs not print to screen
         print(t, file=file, end=end, *k, **kk)
     # NOTE support print to check_log file; NOTE not remove color chars (ANSI ESC)

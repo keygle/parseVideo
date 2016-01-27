@@ -6,7 +6,7 @@ A small tool of `parse_video`:
 # pvdl : parse_video Downloader
 A *reference implemention* of a downloader which uses `parse_video`. 
 
-`pvdl version 0.0.10.0`
+`pvdl version 0.0.11.0`
 
 
 ## Install
@@ -48,6 +48,9 @@ pvdl: A reference implemention of a downloader which uses parse_video.
       
       --enable FEATURE   enable pvdl features
       --disable FEATURE  disable pvdl features
+      
+      --list FILE         download each item in list file
+      --list-retry TIMES  set list retry times
       
       --  directly pass options to parse_video
   
