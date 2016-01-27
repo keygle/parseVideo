@@ -26,6 +26,13 @@ parse_timeout_s = 180
 fix_size_pool_size = 16
 #### map_do() to fix_size, pool_size
 
+list_retry_times = 1
+#### retry times for --list mode
+# -1 means forever; --list-retry
+
+list_retry_wait_s = 1
+#### before retry list, wait seconds
+
 
 
 ## !!! WARNING !!! ADVANCED OPTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
