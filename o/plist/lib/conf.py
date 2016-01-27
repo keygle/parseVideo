@@ -10,6 +10,14 @@ URL_TO_EXTRACTOR = {
 
 PLIST_LOG_PREFIX = 'plist::'
 
+# for PLINFO
+PLINFO_PORT_VERSION = '0.1.0'
+
+# NOTE runtime data
+plist_version = None
+
+raw_url = ''
+
 # TODO
 # end conf.py
 
