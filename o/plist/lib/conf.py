@@ -8,6 +8,8 @@ URL_TO_EXTRACTOR = {
 }
 
 
+PLIST_LOG_PREFIX = 'plist::'
+
 # TODO
 # end conf.py
 
