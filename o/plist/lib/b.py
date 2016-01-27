@@ -118,6 +118,20 @@ def print_iso_time(now=None):
     out = now.isoformat() + 'Z'
     return out
 
+# path functions
+
+# join paths
+def pjoin(*k, **kk):
+    raw = os.path.join(*k, **kk)
+    out = os.path.normpath(raw)
+    return out
+
+def replace_filename_bad_char(raw, replace=conf.FILENAME_REPLACE):
+    bad_chars = conf.FILENAME_BAD_CHAR
+    out = ('').join([i if not i in bad_chars else replace for i in raw])
+    return out
+
+
 # end b.py
 
 

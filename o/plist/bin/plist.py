@@ -16,7 +16,7 @@ import json
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.2.0 test201601271406'
+VERSION_STR = 'plist version 0.0.2.0 test201601271615'
 
 # global data
 etc = {}
@@ -113,9 +113,21 @@ def _print_result(plinfo):
     print(text)
 
 def _write_list_file(plinfo):
-    # TODO support not write list file
-    log.w('bin._write_list_file() not finished ')
-    pass
+    # gen text
+    text, file_name = gen_list_file.make_list_text(plinfo)
+    # make list file path
+    fpath = b.pjoin(etc['output'], file_name)
+    # write it
+    blob = text.encode('utf-8')
+    try:
+        with open(fpath, 'wb') as f:
+            f.write(blob)
+    except Exception as e:
+        er = err.ConfigError('can not write list file', fpath)
+        er.blob = blob
+        raise er from e
+    log.o('created list file \"' + fpath + '\" ')	# done
+
 
 # end plist.py
 
