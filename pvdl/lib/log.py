@@ -9,7 +9,7 @@ from . import b, conf
 from . import lan
 
 
-# base print functions
+# base print function
 def _p(t, file=None, end='\n', add_check_log_prefix=False, fix_check_log_file=False, *k, **kk):
     # NOTE default output file is sys.stderr
     if file == None:
