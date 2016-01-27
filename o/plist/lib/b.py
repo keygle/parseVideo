@@ -10,6 +10,12 @@ import htmldom.htmldom
 
 from . import err, conf
 
+
+# deep clone a object with json
+def json_clone(raw):
+    out = json.loads(json.dumps(raw))
+    return out
+
 # decoding functions
 def decode_utf8(blob, ignore_err=False):
     try:

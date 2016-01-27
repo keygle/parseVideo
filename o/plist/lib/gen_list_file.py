@@ -33,7 +33,7 @@ def _gen_start_lines(plinfo):
     one += 'And this file is used by pvdl. '
     out += [one]
     # second INFO line
-    info = plinfo
+    info = plinfo['info']
     title = _gen_title(plinfo)
     one = 'count ' + str(plinfo['count']) + ' [' + title + '] '
     one += ' URL: ' + info['url']
@@ -55,7 +55,7 @@ def _gen_list_lines(plinfo):
         title = _gen_sub_title(raw, i, plinfo)
         # TODO support time_s
         time = raw.get('time', '')
-        one = '(' + str(i) + '/' + str(plinfo['count']) + ') ' + title + ' ' + time + ' '
+        one = '(' + str(i + 1) + '/' + str(plinfo['count']) + ') ' + title + ' ' + time + ' '
         item += ['# ' + one]
         out += item
     return out

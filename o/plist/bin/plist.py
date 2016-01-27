@@ -11,12 +11,13 @@ TODO
 
 '''
 
+import os
 import json
 
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.2.0 test201601271615'
+VERSION_STR = 'plist version 0.0.3.0 test201601271630'
 
 # global data
 etc = {}
@@ -107,19 +108,25 @@ def start_normal():
     # end start_normal
 
 def _print_result(plinfo):
+    raw = b.json_clone(plinfo)
     # NOTE do restruct before print
-    to = restruct.restruct_plinfo(plinfo)
+    to = restruct.restruct_plinfo(raw)
     text = json.dumps(to, indent=4, sort_keys=False, ensure_ascii=False)
     print(text)
 
 def _write_list_file(plinfo):
+    raw = b.json_clone(plinfo)
     # gen text
-    text, file_name = gen_list_file.make_list_text(plinfo)
+    text, file_name = gen_list_file.make_list_text(raw)
     # make list file path
     fpath = b.pjoin(etc['output'], file_name)
     # write it
     blob = text.encode('utf-8')
     try:
+        # try to create dir before write file
+        dir_path = os.path.dirname(fpath)
+        if not os.path.isdir(dir_path):
+            os.makedirs(dir_path)
         with open(fpath, 'wb') as f:
             f.write(blob)
     except Exception as e:
