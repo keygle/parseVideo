@@ -4,7 +4,9 @@ output_dir = '../../list'
 
 
 URL_TO_EXTRACTOR = {
-    '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
+    # http://www.iqiyi.com/a_19rrha9kmt.html
+    '^http://www\.iqiyi\.com/a_[0-9a-z]+\.html' : 'iqiyi', 
+    #'^http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
 }
 
 

@@ -8,7 +8,7 @@ from . import err, b, conf, log
 
 # TODO support set extractor (not auto select)
 # TODO support output json restruct
-
+# TODO support more method
 
 # plist/lib, entry function
 def parse(url):
