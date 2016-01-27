@@ -19,7 +19,7 @@ def _pp(raw, prefix='', *k, **kk):
 # just print, no prefix
 p = functools.partial(_p)
 
-def _export_log(prefix):
+def _export_log(prefix=''):
     return functools.partial(_pp, prefix=prefix)
 # ERROR
 e = _export_log('ERROR: ')
@@ -29,11 +29,15 @@ w = _export_log('WARNING: ')
 i = _export_log('INFO: ')
 # OK
 o = _export_log('[ OK ] ')
-# DEBUG
-d = _export_log('DEBUG: ')
 # RAW
-raw = _export_log('')
+raw = _export_log()
 r = raw
+
+_d = _export_log('DEBUG: ')
+# DEBUG, NOTE check flag_debug
+def d(*k, **kk):
+    if conf.flag_debug:
+        _d(*k, **kk)
 
 # end log.py
 

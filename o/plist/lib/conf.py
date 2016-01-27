@@ -19,6 +19,7 @@ PLINFO_PORT_VERSION = '0.1.0'
 # NOTE runtime data
 plist_version = None
 
+flag_debug = False
 _extractor_id = None
 
 # end conf.py

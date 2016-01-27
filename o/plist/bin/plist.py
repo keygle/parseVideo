@@ -14,9 +14,9 @@ TODO
 import json
 
 from lib import err, b, conf, log
-from lib import entry, gen_list_file
+from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.1.0 test201601271232'
+VERSION_STR = 'plist version 0.0.2.0 test201601271344'
 
 # global data
 etc = {}
@@ -83,7 +83,7 @@ def p_args(args):
             etc['output'] = out_dir
         # -d, --debug
         elif one in ['-d', '--debug']:
-            pass	# TODO support DEBUG mode
+            conf.flag_debug = True
         else:	# set URL
             if etc['raw_url'] != '':
                 log.w('already set URL to \"' + etc['raw_url'] + '\", now set to \"' + one + '\" ')
@@ -93,7 +93,7 @@ def p_args(args):
 def start_normal():
     # check raw_url
     if etc['raw_url'] == '':
-        log.w('input empty URL ! ')
+        log.e('input empty URL ! ')
         p_cline_err()
         return
     # set plist_version
@@ -108,8 +108,9 @@ def start_normal():
     # end start_normal
 
 def _print_result(plinfo):
-    # TODO support restruct
-    text = json.dumps(plinfo, indent=4, sort_keys=True, ensure_ascii=False)
+    # NOTE do restruct before print
+    to = restruct.restruct_plinfo(plinfo)
+    text = json.dumps(to, indent=4, sort_keys=False, ensure_ascii=False)
     print(text)
 
 def _write_list_file(plinfo):

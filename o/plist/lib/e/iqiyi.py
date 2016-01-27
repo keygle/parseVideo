@@ -1,12 +1,13 @@
 # iqiyi.py, parse_video/o/plist/lib/e/
 
+from .. import err, b, log
 from .. import common
 
 class Var(common.ExtractorVar):
     EXTRACTOR_ID = 'iqiyi'
     EXTRACTOR_NAME = 'iqiyi_1'
     SITE = 'iqiyi'
-    SITE_NAME = 'IQIYI'	# TODO
+    SITE_NAME = '癌弃医'
 
 class Entry(common.ExtractorEntry):
     def _do_parse(self, url):
@@ -28,7 +29,7 @@ def _parse_a_page(page):
     
     # get title
     crumb = root.find('div.crumb-item')
-    crumb_s = crumb.findall('a>strong')
+    crumb_s = crumb[0].find('a>strong')
     title = crumb_s[-1].text()
     
     info['title'] = title
