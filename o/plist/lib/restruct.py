@@ -53,7 +53,12 @@ def restruct_plinfo(plinfo):
         'url', 
     ]
     list_list = [	# plinfo.list[]
-        # TODO
+        'title', 
+        'title_sub', 
+        'title_no', 
+        'time', 
+        'time_s', 
+        'url', 
     ]
     # restruct plinfo
     out = _restruct_key(plinfo, plinfo_list)

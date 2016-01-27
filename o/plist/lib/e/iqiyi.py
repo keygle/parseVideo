@@ -3,6 +3,8 @@
 from .. import err, b, log
 from .. import common
 
+# TODO use list api to get more info
+
 class Var(common.ExtractorVar):
     EXTRACTOR_ID = 'iqiyi'
     EXTRACTOR_NAME = 'iqiyi_1'
@@ -28,18 +30,37 @@ def _parse_a_page(page):
     info = out['info']
     
     # get title
-    crumb = root.find('div.crumb-item')
-    crumb_s = crumb[0].find('a>strong')
+    crumb = root.find('div.crumb-item')[0]
+    crumb_s = crumb.find('a>strong')
     title = crumb_s[-1].text()
     
     info['title'] = title
     
-    log.w('iqiyi._parse_a_page() not finished ')
-    
     # get video list info
     out['list'] = []
-    # TODO
-    return out
+    
+    block_i = root.find('div#block-I')[0]
+    li = block_i.find('ul>li')
+    for i in li:	# get each video item info
+        one = {}
+        
+        a = i.find('div.site-piclist_info a')
+        title = a[0].text()
+        title_sub = a[1].text()
+        time = i.find('span.mod-listTitle_right').text()
+        # TODO add time_s
+        one['title'] = title
+        one['title_sub'] = title_sub
+        one['time'] = time
+        
+        url = i.find('a')[0].attr('href')
+        one['url'] = url
+        
+        out['list'].append(one)
+    # add title_no
+    for i in range(len(out['list'])):
+        out['list'][i]['title_no'] = i + 1
+    return out	# end _parse_a_page
 
 # exports
 var = Var()

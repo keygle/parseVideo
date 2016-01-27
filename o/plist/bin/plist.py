@@ -16,7 +16,7 @@ import json
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.2.0 test201601271344'
+VERSION_STR = 'plist version 0.0.2.0 test201601271406'
 
 # global data
 etc = {}
@@ -43,9 +43,8 @@ More information online: <https://github.com/sceext2/parse_video> \
 ''')
 
 def p_version():
-    print(VERSION_STR + '''
-    TODO
-''')
+    print(VERSION_STR)
+    # TODO
 
 def p_cline_err():
     log.e('bad command line format, please try \"--help\". ')
