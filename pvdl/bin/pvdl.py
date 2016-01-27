@@ -22,10 +22,6 @@
 
 OPTIONS not in --help: 
 
-
-TODO support options (new functions)
-  --list  LIST file
-
 TODO support speed limit (only for wget)
   --limit-kb  VALUE  limit download speed to value (unit KB/s)
 
@@ -33,15 +29,20 @@ TODO support parse timeout_s
   --parse-timeout-s
 
 '''
+# NOTE support --list mode here
+
+import time
 
 from lib import err, b, conf, log
 from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.10.0 test201601251735'
+VERSION_STR = 'pvdl version 0.0.11.0 test201601280013'
 
 # global data
 etc = {}
-etc['start_mode'] = 'normal'	# ['normal', '--help', '--version', '--license']
+etc['start_mode'] = 'normal'	# ['normal', '--help', '--version', '--license', 'list']
+etc['list_file'] = ''
+etc['list_retry'] = conf.list_retry_times	# NOTE use default value
 
 
 # print functions
@@ -60,6 +61,9 @@ pvdl: A reference implemention of a downloader which uses parse_video.
       
       --enable FEATURE   enable pvdl features
       --disable FEATURE  disable pvdl features
+      
+      --list FILE         download each item in list file
+      --list-retry TIMES  set list retry times
       
       --  directly pass options to parse_video
   
@@ -115,6 +119,7 @@ def main(args):
     # check main start mode
     mode_list = {
         'normal' : start_normal, 
+        'list' : start_list, 
         '--help' : p_help, 
         '--version' : p_version, 
         '--license' : p_license, 
@@ -202,6 +207,21 @@ def p_args(args):
             if conf.set_parse_timeout != conf.parse_timeout_s:
                 log.w('already set parse_timeout_s to ' + str(conf.set_parse_timeout) + ', now set to ' + str(timeout) + ' ')
             conf.set_parse_timeout = timeout
+        # --list
+        elif one == '--list':
+            fname, rest = rest[0], rest[1:]
+            if etc['list_file'] != '':
+                log.w('already set list file to \"' + etc['list_file'] + '\", now set to \"' + fname + '\" ')
+            etc['list_file'] = fname
+            # NOTE set start mode to list
+            etc['start_mode'] = 'list'
+        # --list-retry
+        elif one == '--list-retry':
+            retry, rest = rest[0], rest[1:]
+            retry = int(retry)
+            if etc['list_retry'] != conf.list_retry_times:
+                log.w('already set list retry to ' + str(etc['list_retry']) + ', now set to ' + str(retry) + ' ')
+            etc['list_retry'] = retry
         else:	# NOTE set URL
             if conf.raw_url != '':
                 log.w('already set raw_url to \"' + conf.raw_url + '\", now set to \"' + one + '\" ')
@@ -253,6 +273,100 @@ def input_url():
         log.e('can not input empty URL ')
         raise err.ConfigError('input empty URL', out)
     return out
+
+# --list mode
+def start_list():
+    # TODO support read list file from stdin
+    todo = _load_list_file()
+    # [ OK ] log
+    log.o('got ' + str(len(todo)) + ' URLs ')
+    # do list with retry
+    _do_with_retry(todo)
+    # end start_list
+
+def _load_list_file():
+    fpath = etc['list_file']
+    log.i('loading list file \"' + fpath + '\" ')
+    try:
+        with open(fpath, 'rb') as f:
+            blob = f.read()
+        text = blob.decode('utf-8', 'ignore')	# NOTE ignore decoding Error
+        info = _parse_list_file(text)
+    except Exception as e:
+        log.e('can not load list file \"' + fpath + '\" ')
+        er = err.ConfigError('load list_file', fpath)
+        raise er from e
+    return info
+
+def _parse_list_file(text):
+    line = text.splitlines()
+    out = []
+    for l in line:	# process each line
+        if l.startswith('#'):
+            continue	# ignore line startswith '#', comment line
+        elif l.strip() == '':
+            continue	# ignore null line
+        out.append(l)	# add URL line
+    return out
+
+def _do_with_retry(raw):
+    # NOTE in list mode, will ignore all Errors
+    retry_max = etc['list_retry']
+    retry_count = 0
+    def check_should_retry():
+        if retry_max < 0:	# -1 means retry forever
+            return True
+        if retry_count <= retry_max:
+            return True
+    while check_should_retry():
+        retry_info = str(retry_count) + '/' + str(retry_max)
+        # print retry info
+        if retry_count > 0:
+            log.i('[list] start retry ' + retry_info)
+        # count info
+        count = len(raw)
+        count_ok = 0
+        count_err = 0
+        # do each task
+        log.i('[list] start ' + str(count) + ' task ')
+        for i in range(count):
+            task_info = str(i + 1) + ' / ' + str(count)
+            item = raw[i]
+            log.p('')	# NOTE for better print
+            log.i('[list] (ok ' + str(count_ok) + ', err ' + str(count_err) + ') start task ' + task_info + ', ' + item + ' ')
+            try:
+                _do_one_task(item)
+            except Exception as e:
+                log.e('[list] task ' + task_info + ' failed, ' + str(e) + ' \n')
+                # NOTE ignore Error in list mode
+                count_err += 1
+            else:
+                log.o('[list] task ' + task_info + ' finished \n')
+                count_ok += 1
+        # check retry
+        retry_text = ''
+        if retry_count > 0:
+            retry_text = ', retry ' + retry_info
+        if count_err == 0:	# no Error, not retry
+            log.o('[list] all task finished ' + str(count_ok) + ' / ' + str(count) + retry_text + ' ')
+            break	# not retry
+        # should retry
+        log.e('[list] task failed ' + str(count_err) + ' / ' + str(count) + retry_text + ' ')
+        # update retry count
+        retry_count += 1
+        # check should retry
+        if check_should_retry():
+            log.i('[list] before next retry wait ' + str(conf.list_retry_wait_s) + ' seconds ')
+            time.sleep(conf.list_retry_wait_s)
+        else:
+            log.e('[list] task retry failed' + retry_text + ' ')
+    # end _do_with_retry
+
+def _do_one_task(url):
+    # NOTE just set URL and call entry
+    conf.raw_url = url
+    # NOTE just start_normal
+    start_normal()
 
 
 # end pvdl.py

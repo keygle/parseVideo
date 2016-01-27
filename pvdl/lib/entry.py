@@ -124,6 +124,8 @@ def _do_in_lock(f, lock_file):
             raise er from e
         else:	# just ignore it
             log.d(lan.e_d_disable_check_lock_file())
+    # NOTE reset keep_lock file to fix list download BUG
+    conf.keep_lock_file = False
     # do with lock
     try:
         return f()
