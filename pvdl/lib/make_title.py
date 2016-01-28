@@ -190,7 +190,7 @@ def fix_title_no(task_info):
     num = b.get_num_from_text(info['title'])
     title_no = info.get('title_no', None)
     # should get title_no
-    if (title_no == None) and (title_no < 0):
+    if (title_no == None) or (title_no < 0):
         if len(num) < 1:	# no num in title, can not get title_no
             return None	# not fix title_no
         # FIXME NOTE here just use last num, maybe other method is better
