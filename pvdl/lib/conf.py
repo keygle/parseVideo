@@ -1,8 +1,6 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 # language: English (en) 
 
-# TODO support parse_timeout_s
-
 
 auto_select_hd = [-1, 8]
 #### auto-select hd in this range, will always select max hd
@@ -134,7 +132,7 @@ FEATURES = {	# --enable, --disable
     #### fix_unicode is only for Windows
 
     'list_ignore_task_err' : True, 
-    # TODO ignore task Error in --list mode
+    #### ignore task Error in --list mode
 
 ## DANGER options
 

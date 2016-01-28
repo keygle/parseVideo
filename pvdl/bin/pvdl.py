@@ -33,7 +33,7 @@ import time
 from lib import err, b, conf, log
 from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.11.0 test201601281312'
+VERSION_STR = 'pvdl version 0.0.12.0 test201601281323'
 
 # global data
 etc = {}
@@ -336,7 +336,11 @@ def _do_with_retry(raw):
                 _do_one_task(item)
             except Exception as e:
                 log.e('[list] task ' + task_info + ' failed, ' + str(e) + ' \n')
-                # NOTE ignore Error in list mode
+                # NOTE check feature list_ignore_task_err
+                if not conf.FEATURES['list_ignore_task_err']:
+                    log.d('disabled feature list_ignore_task_err')
+                    raise	# not ignore Error here
+                # ignore Error here
                 count_err += 1
             else:
                 log.o('[list] task ' + task_info + ' finished \n')
