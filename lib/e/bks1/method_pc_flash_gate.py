@@ -7,20 +7,17 @@ from ... import err, b, lan
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from .var import var
 from .o import mixer_remote
 from .vv import vv_default
 
-# method_pc_flash_gate.parse(), entry function
-def parse(method_arg_text):
-    # check --more mode
-    data_list = [
-        'vid_info', 
-        'raw_first_json', 
-    ]
-    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
-    # parse method args
-    def rest(r):
+class Method(common.ExtractorMethod):
+    def _init_data(self):
+        self._more_data_list += [
+            'raw_first_json', 
+        ]
+    
+    def _parse_arg_rest(self, r):
         if r == 'set_um':
             var._['set_um'] = True
         elif r == 'set_vv':
@@ -33,31 +30,60 @@ def parse(method_arg_text):
             var._['flag_enable_vv_error'] = True
         else:	# unknow method arg
             return True
-    common.method_parse_method_args(method_arg_text, var, rest)
-    # get vid_info from more if possible
-    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var, _get_vid_info)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
-    # check enable_vv_error
-    if var._['flag_enable_vv_error'] and vid_info['flag_vv']:
-        raise err.NotSupportURLError(lan.zh_cn_not_support_vip_video(), var._['_raw_url'])
     
-    # check use more mode to get raw_first_json
-    if not var._['_use_more']:
-        pvinfo = _get_video_info(vid_info)
-    else:
-        var._['_raw_first_json'] = raw_more['_data']['raw_first_json']	# set var._
-        pvinfo = _get_video_info_2(var._['_raw_first_json'])	# just parse vms json info
-    # check flag_v mode
-    if var._['flag_v']:
-        pvinfo = vv_default.add_tokens(pvinfo, vid_info)
-    out = _get_file_urls(pvinfo)
-    out = _add_checksum(pvinfo)	# add part files checksum info
-    # check enable_more
-    if var._['enable_more']:	# add more info
-        out['_data'] = {}
-        out['_data']['vid_info'] = vid_info
-        out['_data']['raw_first_json'] = var._['_raw_first_json']
-    return out
+    def _fix_vid_info(self, raw):
+        # TODO start
+        common.method_parse_method_args(method_arg_text, var, rest)
+        # get vid_info from more if possible
+        default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var, _get_vid_info)
+        vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
+        # TODO
+        # check enable_vv_error
+        if var._['flag_enable_vv_error'] and vid_info['flag_vv']:
+            raise err.NotSupportURLError(lan.zh_cn_not_support_vip_video(), var._['_raw_url'])
+        # TODO end
+        # TODO
+    
+    def _get_video_info(self, vid_info):
+        # TODO start
+        # check use more mode to get raw_first_json
+        if not var._['_use_more']:
+            pvinfo = _get_video_info(vid_info)
+        else:
+            var._['_raw_first_json'] = raw_more['_data']['raw_first_json']	# set var._
+            pvinfo = _get_video_info_2(var._['_raw_first_json'])	# just parse vms json info
+        # TODO end
+        # TODO
+    
+    def _get_file_urls(self, pvinfo):
+        # TODO start
+        # check flag_v mode
+        if var._['flag_v']:
+            pvinfo = vv_default.add_tokens(pvinfo, vid_info)
+        out = _get_file_urls(pvinfo)
+        # TODO end
+        # TODO
+    
+    def _extra_process(self, raw):
+        # TODO start
+        out = _add_checksum(pvinfo)	# add part files checksum info
+        # TODO end
+        # TODO
+    
+    def _check_add_more_info(self, raw):
+        # TODO start
+        if var._['enable_more']:	# add more info
+            out['_data'] = {}
+            out['_data']['vid_info'] = vid_info
+            out['_data']['raw_first_json'] = var._['_raw_first_json']
+        return out
+        # TODO end
+        # TODO
+# exports
+method = Method(var)
+parse = method.parse
+# TODO
+    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
 
 # TODO may be can clean here
 def _get_vid_info(raw_html_text):
