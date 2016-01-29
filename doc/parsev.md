@@ -53,6 +53,15 @@ parse_video version 0.5.7.0
   
   这使得 parse_video 很容易被其它程序调用和使用. 
 
++ **跨平台** <br />
+  parse_video 使用 `python 3` 编写, 具有良好的跨平台特性. 
+  
+  目前 parse_video 能够在下列平台上正常工作: 
+  
+  + GNU/Linux (如 `ArchLinux`)
+  + Windows (如 *Windows 10*)
+  + Android (如 *Android 5.1*)
+
 
 ## 支持网站 限制
 
