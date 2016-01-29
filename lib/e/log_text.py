@@ -1,5 +1,4 @@
 # log_text.py, parse_video/lib/e/
-# TODO support other languages
 
 from ..b import str_or_str
 
