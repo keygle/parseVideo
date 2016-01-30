@@ -115,7 +115,7 @@ class ExtractorEntry(object):
         raise NotImplementedError
     # end ExtractorEntry class
 
-# TODO
+
 class ExtractorMethod(object):
     def __init__(self, var_):
         self.var = var_
@@ -149,87 +149,89 @@ class ExtractorMethod(object):
     
     # main parse stage
     def _check_use_more(self, method_arg_text):
-        # TODO start
-        # check more data exist
-        if var._['more'] == None:
-            return False	# no more data
-        raw_more = var._['more']
-        if not '_data' in raw_more:
-            return False
-        # check extractor match
-        extractor_id = b.split_raw_extractor(raw_more['extractor'])[0]
-        if extractor_id != var.EXTRACTOR_ID:
-            return False	# not this extractor
-        # check url match
-        if var._['_raw_url'] != raw_more['info']['url']:
-            return False
-        # check needed data exist
-        raw_data = raw_more['_data']
-        for d in data_list:
-            if not d in raw_data:
+        var = self.var
+        def check_more_data(data_list):
+            # check more data exist
+            if var._['more'] == None:
+                return False	# no more data
+            raw_more = var._['more']
+            if not '_data' in raw_more:
                 return False
-        return True	# check pass, use more mode
-        # TODO
-        # TODO check method match
+            # check extractor match
+            extractor_id = b.split_raw_extractor(raw_more['extractor'])[0]
+            if extractor_id != var.EXTRACTOR_ID:
+                return False	# not this extractor
+            # check url match
+            if var._['_raw_url'] != raw_more['info']['url']:
+                return False
+            # check needed data exist
+            raw_data = raw_more['_data']
+            for d in data_list:
+                if not d in raw_data:
+                    return False
+            return True	# check pass, use more mode
+        # reset flags before check
+        var._['_use_more'] = False
+        # check use more mode
+        try:
+            if check_more_data(self._more_data_list):
+                # set flags
+                var._['_use_more'] = True
+                raw_more = var._['more']
+        except Exception as e:
+            pass	# NOTE ignore check more Error
+        if not var._['_use_more']:
+            return	# not use more, no more process
         # check method args match
         raw_method_arg = b.split_raw_method(raw_more['method'])[1]
-        if raw_method_arg != method_arg_text:	# WARNING log
+        if raw_method_arg != method_arg_text:
             log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
-        # TODO
-        if not method_check_use_more(var, data_list):
-            return None	# not use more
-        # set flags
-        var._['_use_more'] = True
-        raw_more = var._['more']
-        # [ OK ] log
+        # TODO check method name match
         log.o(log_text.method_enable_more())
-        # check method
-        method_more_check_method(method_arg_text, raw_more)
-        return raw_more
-        # TODO end
-        pass	# TODO
+        # end _check_use_more
     
     def _parse_arg(self, method_arg_text):
-        # TODO parse default args
-        # TODO start
+        # parse common args
         if method_arg_text != None:
             args = method_arg_text.split(',')
             for r in args:
                 # process common method args
                 if r == 'enable_more':
-                    var._['enable_more'] = True
-                else:	# use rest to process args
-                    if rest(r):	# unknow args
+                    self.var._['enable_more'] = True
+                else:	# parse rest args
+                    if self._parse_arg_rest(r):	# unknow args
                         log.w('unknow method arg \"' + r + '\" ')
-        # TODO end
-        # TODO parse rest args
-        pass
+        # end _parse_arg
     
     def _get_vid_info(self):
-        # TODO get vid_info in --more mode
-        pass
+        # check _use_more and get vid_info
+        if self.var._['_use_more']:
+            more_data = self.var._['more']['_data']
+            vid_info = more_data['vid_info']
+        else:
+            try:
+                vid_info = self._do_get_vid_info()
+            except Exception as e:
+                er = err.NotSupportURLError('get vid_info failed', self.var._['_raw_url'])
+                raise er from e
+        # set var._
+        self.var._['_vid_info'] = vid_info
+        # DEBUG log, got vid_info
+        log.d(log_text.method_got_vid_info(vid_info))
+        return vid_info
     
     def _do_get_vid_info(self):	# get vid_info from html page, without --more mode
-        # TODO load page
-        # TODO use re to get vid list from html page
-        # TODO start
-        raw_more = var._['more']
-        if not var._['_use_more']:
-            vid_info = f()
-        else:
-            raw_data = raw_more['_data']
-            vid_info = raw_data['vid_info']
-            # set var._
-            var._['_vid_info'] = vid_info
-        return vid_info
-        # TODO
-        try:
-            return do_get(raw_html_text)
-        except Exception as e:
-            er = err.NotSupportURLError('get vid info failed', var._['_raw_url'])
-            raise er from e
-        # TODO end
-        pass
+        raw_url = self.var._['_raw_url']
+        # INFO log, loading raw html page
+        log.i(log_text.method_loading_page(raw_url))
+        raw_html_text = self._load_page(raw_url)
+        var._['_raw_page_html'] = raw_html_text
+        
+        # use re to get vid list from page html text
+        vid_info = self._re_get_vid(raw_html_text)
+        # fix vid_info
+        out = self._fix_vid_info(vid_info)
+        return out
     
     def _get_video_info(self, vid_info):
         raise NotImplementedError	# for sub class
@@ -241,69 +243,54 @@ class ExtractorMethod(object):
         return raw
     
     def _check_add_more_info(self, raw):
-        # TODO by default, should add vid_info
-        pass
+        # check enable_more and add info
+        if self.var._['enable_more']:
+            raw['_data'] = self._gen_more_data()
     
     # sub parse stage
     def _parse_arg_rest(self, r):
         return True	# default nothing todo
     
-    def _load_page(self):
-        # TODO
-        # TODO start
-        raw_url = var._['_raw_url']
-        # INFO log, loading raw html page
-        log.i(log_text.method_loading_page(raw_url))
-        raw_html_text = b.dl_html(raw_url)
-        var._['_raw_page_html'] = raw_html_text
-        
-        if get_vid_info == None:
-            vid_info = parse_simple_get_vid_info(raw_html_text, var)
-        else:
-            vid_info = get_vid_info(raw_html_text)
-        var._['_vid_info'] = vid_info
-        log.d(log_text.method_got_vid_info(vid_info))
-        return vid_info
-        # TODO
-        def do_get(raw_html_text):
-            return method_vid_re_get(raw_html_text, var.RE_VID_LIST)
-        return method_get_vid_info(raw_html_text, var, do_get)
-        # TODO end
-        pass
+    def _load_page(self, raw_url):
+        # default just download raw page
+        text = b.dl_html(raw_url)
+        return text
     
-    def _re_get_vid(self):
-        # TODO start
+    def _re_get_vid(self, raw_text):
+        re_list = self.var.RE_VID_LIST
         out = {}
         for key, r in re_list.items():
-            one = re.findall(r, raw_html_text)[0]
+            one = re.findall(r, raw_text)[0]
             # check empty result
             if (one == None) or (one == ''):
                 raise err.ParseError('vid_info \"' + key + '\" empty', one)
             out[key] = one
         return out
-        # TODO end
-        # TODO
-        pass
     
     def _fix_vid_info(self, raw):
-        pass	# default nothing todo
+        return raw	# default nothing todo
     
     # NOTE keep for sub class
     def _make_first_url(self):
         pass
     def _parse_raw_first(self, first):
-        pass
-        # TODO start
+        # TODO may be more process here
         try:
-            pvinfo = do_parse(first)
+            pvinfo = self._do_parse_first(first)
         except Exception as e:
             er = err.MethodError(log_text.method_err_parse_raw_first())
             raise er from e
         method_sort_video(pvinfo)
         return pvinfo
-        # TODO end
+    
     def _do_parse_first(self, first):
-        pass	# TODO
+        pass	# for sub class
+    
+    def _gen_more_data(self):
+        out = {}
+        # NOTE default should save vid_info
+        out['vid_info'] = self.var._['_vid_info']
+        return out
     # end ExtractorMethod class
 
 
@@ -382,7 +369,7 @@ def method_select_file(pvinfo, var):
 
 # map_do() network functions
 
-# TODO start
+# TODO just keep this here
 def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
     # TODO maybe retry here
     # make todo list
@@ -412,7 +399,7 @@ def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
             if v['file'][j]['url'] != '':
                 v['file'][j], i = result[i], i + 1
     return pvinfo	# done
-# TODO end
+
 
 # end common.py
 
