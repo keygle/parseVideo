@@ -4,7 +4,7 @@ from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from .var import var
 from .o import mango_tv3
 
 class Method(common.ExtractorMethod):   # common method class for extractor hunantv
