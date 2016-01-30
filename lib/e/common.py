@@ -271,9 +271,6 @@ class ExtractorMethod(object):
     def _fix_vid_info(self, raw):
         return raw	# default nothing todo
     
-    # NOTE keep for sub class
-    def _make_first_url(self):
-        pass
     def _parse_raw_first(self, first):
         # TODO may be more process here
         try:
@@ -284,8 +281,11 @@ class ExtractorMethod(object):
         method_sort_video(pvinfo)
         return pvinfo
     
+    # NOTE keep for sub class
+    def _make_first_url(self):
+        pass
     def _do_parse_first(self, first):
-        pass	# for sub class
+        pass
     
     def _gen_more_data(self):
         out = {}
