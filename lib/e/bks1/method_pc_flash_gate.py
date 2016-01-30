@@ -60,7 +60,7 @@ class Method(common.ExtractorMethod):
     
     def _get_video_info(self, vid_info):
         # get first json
-        first = self._get_first_json()
+        first = self._get_first_json(vid_info)
         # check code
         if first['code'] != var._FIRST_OK_CODE:
             raise err.MethodError(log_text.method_err_first_code(first['code'], var))

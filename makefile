@@ -1,8 +1,8 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.3.0 test201601062058
+# version 0.1.3.0 test201601301316
 
 # parse_video bin
-PV_BIN=./parsev
+PV_BIN=./pv
 
 # extractor test URLs
 ET_URL_BKS1_1=http://www.iqiyi.com/v_19rrkfbay8.html

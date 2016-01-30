@@ -4,7 +4,7 @@ from .. import common
 from .var import var
 
 class Entry(common.ExtractorEntry):
-    def _check_method(method):
+    def _check_method(self, method):
         if method == 'pc_flash_gate':
             from . import method_pc_flash_gate as method_worker
         elif method == 'cdn_only_key':

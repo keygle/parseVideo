@@ -73,13 +73,13 @@ class ExtractorEntry(object):
         self.var = var_
     # init extractor.var
     def init(self):
-        self.var.var.push()
-        self.var._ = self.var.var.init()
-        self.var.var.init_flag = True
+        self.var.push()
+        self.var._ = self.var.init()
+        self.var.init_flag = True
     
     # extractor parse entry function, return lyyc_parsev struct
     def parse(self, raw_url, raw_arg='', raw_method=''):
-        if not self.var.var.init_flag:
+        if not self.var.init_flag:
             self.init()
         # set var data
         self.var._['raw_arg'] = raw_arg
@@ -95,8 +95,8 @@ class ExtractorEntry(object):
             er = err.UnknowError('unknow extractor Error', self.var.EXTRACTOR_ID)
             raise er from e
         finally:
-            self.var.var.pop()	# clean var data
-            self.var.var.init_flag = False
+            self.var.pop()	# clean var data
+            self.var.init_flag = False
         return pvinfo
     
     def _do_parse(self, raw_method):
@@ -108,10 +108,10 @@ class ExtractorEntry(object):
         log.d(log_text.entry_log_use_method(method, method_arg_text))	# DEBUG log
         
         pvinfo = worker.parse(method_arg_text)
-        return common.entry_add_more_info(pvinfo, var)
+        return entry_add_more_info(pvinfo, self.var)
     
     # should be implemented by extractor
-    def _check_method(method):
+    def _check_method(self, method):
         raise NotImplementedError
     # end ExtractorEntry class
 
@@ -225,7 +225,7 @@ class ExtractorMethod(object):
         # INFO log, loading raw html page
         log.i(log_text.method_loading_page(raw_url))
         raw_html_text = self._load_page(raw_url)
-        var._['_raw_page_html'] = raw_html_text
+        self.var._['_raw_page_html'] = raw_html_text
         
         # use re to get vid list from page html text
         vid_info = self._re_get_vid(raw_html_text)
@@ -246,6 +246,7 @@ class ExtractorMethod(object):
         # check enable_more and add info
         if self.var._['enable_more']:
             raw['_data'] = self._gen_more_data()
+        return raw
     
     # sub parse stage
     def _parse_arg_rest(self, r):
