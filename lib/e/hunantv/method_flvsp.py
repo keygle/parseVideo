@@ -49,8 +49,8 @@ def _gen_one_file_url(raw):
     return out
 
 # exports
-method = Method(var)
-parse = method.parse
+_method = Method(var)
+parse = _method.parse
 # end method_flvsp.py
 
 

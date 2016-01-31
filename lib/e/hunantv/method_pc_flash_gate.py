@@ -42,8 +42,8 @@ class Method(method.Method):
         # TODO support parse m3u8 and count here
         return pvinfo
 # exports
-method = Method(var)
-parse = method.parse
+_method = Method(var)
+parse = _method.parse
 # end method_pc_flash_gate.py
 
 

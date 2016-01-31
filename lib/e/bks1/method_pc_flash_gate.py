@@ -196,8 +196,8 @@ def _get_one_checksum(f):
     return out
 
 # exports
-method = Method(var)
-parse = method.parse
+_method = Method(var)
+parse = _method.parse
 # end method_pc_flash_gate.py
 
 
