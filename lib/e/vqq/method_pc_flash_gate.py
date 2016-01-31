@@ -1,20 +1,21 @@
 # method_pc_flash_gate.py, parse_video/lib/e/vqq/
+# TODO rewrite and clean code here
 
 import re
 import xml.etree.ElementTree as ET
 
 from ... import err, b
 from ...b import log
-from .. import common, log_text
+from .. import common
 
-from . import var
+from .var import var
 from .o import player
 
-# method_pc_flash_gate.parse(), entry function
-def parse(method_arg_text):
-    # TODO support --more
-    # process method args
-    def rest(r):
+class Method(common.ExtractorMethod):
+    def _init_data(self):
+        self._v1080 = None  # for fix_1080p
+    
+    def _parse_arg_rest(self, r):
         if r == 'fix_1080p':
             var._['flag_fix_1080p'] = True
         elif r == 'ignore_fix_1080p_error':
@@ -26,96 +27,121 @@ def parse(method_arg_text):
             var._['flag_fast_parse'] = True
         elif r == 'add_raw_quality':
             var._['flag_add_raw_quality'] = True
-        else:	# unknow args
+        else:
             return True
-    common.method_parse_method_args(method_arg_text, var, rest)
     
-    # TODO support fast_parse here
-    # TODO support --more here for vid_info
-    # get vid info
-    vid_info = common.parse_load_page_and_get_vid(var, _get_vid_info)
-    pvinfo = _get_video_info(vid_info)
-    if var._['flag_fix_1080p']:	# NOTE fix_1080p
-        v1080p = _fix_1080p(pvinfo)
-    pvinfo = common.method_simple_count_and_select(pvinfo, var)
-    out = _get_raw_file_urls(pvinfo)	# NOTE count and select before get file URLs
-    # add 1080p video info
-    if var._['flag_fix_1080p'] and (v1080p != None):
-        common.method_count_one_video(v1080p)
-        out['video'].append(v1080p)
-    common.method_sort_video(out)
-    out = _gen_final_urls(out)	# gen final url, NOTE will also gen fix_1080p file URLs
-    # TODO support enable_more
-    return out
+    # NOTE get vid info from vqq html page is not very easy
+    def _re_get_vid(self, raw_text):
+        # TODO rewrite and clean code here
+        raw_url = var._['_raw_url']
+        # get scripts
+        raw_scripts = raw_text.split('<script')
+        scripts = [r.split('</script>')[0] for r in raw_scripts]
+        # get key script part
+        script = None
+        for s in scripts:	# check key words
+            if ('COVER_INFO' in s) and ('VIDEO_INFO' in s):
+                script = s
+                break
+        if not script:	# check found
+            er = err.NotSupportURLError('get vid_info, find script text failed ', raw_url)
+            er.html_text = raw_text
+            raise er
+        # get info from the script
+        try:
+            parts = {}	# get parts from script
+            raw_parts = script.split('var ')
+            for r in raw_parts:
+                if 'COVER_INFO' in r:
+                    parts['cover_info'] = r
+                elif 'VIDEO_INFO' in r:
+                    parts['video_info'] = r
+            raw_cover = parts['cover_info']
+            raw_video = parts['video_info']
+            # get some info items
+            def re_get(r, raw):
+                return re.findall(re_list[r], raw)[0]
+            re_list = var.RE_VID_LIST
+            out = {}
+            out['title_short'] = re_get('title_short', raw_cover)
+            out['title_sub'] = re_get('title_sub', raw_cover)
+            out['title_no'] = re_get('title_no', raw_video)
+            out['vid'] = re_get('vid', raw_video)
+        except Exception as e:
+            er = err.NotSupportURLError('get vid_info items from page html script text failed ', raw_url)
+            er.html_text = raw_text
+            er.script_text = script
+            raise er from e
+        # NOTE check URL format, such as http://v.qq.com/cover/e/e7hi6lep1yc51ca.html?vid=u0018rahda3
+        uparts = raw_url.split('://', 1)[1]
+        if '?' in uparts:
+            uparts = uparts.split('?', 1)[1]
+        else:
+            uparts = ''
+        if uparts and ('#' in uparts):
+            uparts = uparts.split('#', 1)[0]
+        if uparts:
+            parts = uparts.split('&')
+            uparts = {}
+            for p in parts:
+                if '=' in p:
+                    key, value = p.split('=', 1)
+                    uparts[key] = value
+            if ('vid' in uparts) and uparts['vid']:
+                out['vid'] = uparts['vid']
+                out['title_no'] = -1	# NOTE fix title_no here
+                log.d('reset vid to \"' + out['vid'] + '\" to fix URL \"' + raw_url + '\" ')
+        try:	# NOTE fix Error here, int(title_no)
+            out['title_no'] = int(out['title_no'])
+        except Exception as e:
+            # WARNING log
+            log.w('get title_no failed, \"' + str(out['title_no']) + '\", ' + str(e) + ' ')
+            out['title_sub'] += '-' + str(out['title_no'])	# NOTE add title_no to title_sub first
+            # get title_no failed, NOTE reset title_no
+            out['title_no'] = -1
+        return out	# get vid_info done
+    
+    def _get_video_info(self, vid_info):
+        # TODO support fast_parse here
+        pvinfo = _do_get_video_info(vid_info)
+        if var._['flag_fix_1080p']:	# NOTE fix_1080p
+            self._v1080 = self._fix_1080p(pvinfo)
+        out = common.method_simple_count_and_select(pvinfo, var)
+        return out
+    
+    def _do_parse_first(self, first):
+        return _do_parse_one_first(raw)
+    
+    def _fix_1080p(self, pvinfo):
+        try:
+            out = _do_fix_1080p(pvinfo)
+        except Exception as e:
+            if var._['flag_ignore_fix_1080p_error']:
+                # WARNING log
+                log.w('ignored fix_1080p Error ', str(e))
+                out = None	# NOTE if failed, return None
+            else:
+                er = err.ParseError('fix_1080p failed')
+                raise er from e
+        return out
+    
+    def _get_file_urls(self, pvinfo):
+        out = _get_raw_file_urls(pvinfo)	# NOTE count and select before get file URLs
+        # add 1080p video info
+        v1080p = self._v1080
+        if var._['flag_fix_1080p'] and (v1080p != None):
+            common.method_count_one_video(v1080p)
+            out['video'].append(v1080p)
+        common.method_sort_video(out)
+        out = _gen_final_urls(out)	# gen final url, NOTE will also gen fix_1080p file URLs
+        return out
+    # end Method class
 
-def _get_vid_info(raw_html_text):
-    raw_url = var._['_raw_url']
-    # get scripts
-    raw_scripts = raw_html_text.split('<script')
-    scripts = [r.split('</script>')[0] for r in raw_scripts]
-    # get key script part
-    script = None
-    for s in scripts:	# check key words
-        if ('COVER_INFO' in s) and ('VIDEO_INFO' in s):
-            script = s
-            break
-    if not script:	# check found
-        er = err.NotSupportURLError('get vid_info, find script text failed ', raw_url)
-        er.html_text = raw_html
-        raise er
-    # get info from the script
-    try:
-        parts = {}	# get parts from script
-        raw_parts = script.split('var ')
-        for r in raw_parts:
-            if 'COVER_INFO' in r:
-                parts['cover_info'] = r
-            elif 'VIDEO_INFO' in r:
-                parts['video_info'] = r
-        raw_cover = parts['cover_info']
-        raw_video = parts['video_info']
-        # get some info items
-        re_list = var.RE_VID_LIST
-        out = {}
-        out['title_short'] = re.findall(re_list['title_short'], raw_cover)[0]
-        out['title_sub'] = re.findall(re_list['title_sub'], raw_cover)[0]
-        out['title_no'] = re.findall(re_list['title_no'], raw_video)[0]
-        out['vid'] = re.findall(re_list['vid'], raw_video)[0]
-    except Exception as e:
-        er = err.NotSupportURLError('get vid_info items from page html script text failed ', raw_url)
-        er.html_text = raw_html
-        er.script_text = script
-        raise er from e
-    # NOTE check URL format, such as http://v.qq.com/cover/e/e7hi6lep1yc51ca.html?vid=u0018rahda3
-    uparts = raw_url.split('://', 1)[1]
-    if '?' in uparts:
-        uparts = uparts.split('?', 1)[1]
-    else:
-        uparts = ''
-    if uparts and ('#' in uparts):
-        uparts = uparts.split('#', 1)[0]
-    if uparts:
-        parts = uparts.split('&')
-        uparts = {}
-        for p in parts:
-            if '=' in p:
-                key, value = p.split('=', 1)
-                uparts[key] = value
-        if ('vid' in uparts) and uparts['vid']:
-            out['vid'] = uparts['vid']
-            out['title_no'] = -1	# NOTE fix title_no here
-            log.d('reset vid to \"' + out['vid'] + '\" to fix URL \"' + raw_url + '\" ')
-    try:	# NOTE fix Error here, int(title_no)
-        out['title_no'] = int(out['title_no'])
-    except Exception as e:
-        # WARNING log
-        log.w('get title_no failed, \"' + str(out['title_no']) + '\", ' + str(e) + ' ')
-        out['title_sub'] += '-' + str(out['title_no'])	# NOTE add title_no to title_sub first
-        # get title_no failed, NOTE reset title_no
-        out['title_no'] = -1
-    return out	# get vid_info done
+# base parse functions
 
-def _get_video_info(vid_info):
+# get raw first
+
+def _do_get_video_info(vid_info):
     _get_first_xml_info(vid_info)
     # create pvinfo
     out = {}
@@ -200,38 +226,7 @@ def _dl_one_first(info):
     out['format'] = info[0]
     return out
 
-# do one POST and get xml info
-def _do_one_post_xml(raw, log_debug=True, prefix=''):
-    # do log text
-    log_text = prefix + 'POST \"' + raw['url'] + '\" with data \"' + b.make_post_str(raw['post_data'], quote=True) + '\" '
-    if log_debug:
-        log.d(log_text)	# DEBUG log
-    else:
-        log.i(log_text)	# INFO log
-    raw_blob = b.post_form(raw['url'], header=raw['header'], post_data=raw['post_data'], quote=True)
-    # decode as xml, NOTE only support utf-8 encoding here
-    try:
-        raw_xml = raw_blob.decode('utf-8')
-    except Exception as e:
-        er = err.DecodingError('can not decode raw blob with utf-8 ')
-        er.blob = raw_blob
-        raise er from e
-    try:
-        root = ET.fromstring(raw_xml)
-    except Exception as e:
-        er = err.ParseXMLError('can not parse raw xml text ')
-        er.text = raw_xml
-        raise er from e
-    return root, raw_xml	# done
-
-def _parse_one_first(raw):
-    try:
-        return _do_parse_one_first(raw)
-    except err.PVError:
-        raise
-    except Exception as e:
-        raise err.MethodError('parse first info xml failed ')
-
+# parse raw first
 def _do_parse_one_first(root):
     # TODO check first OK code
     out = {}
@@ -289,6 +284,8 @@ def _do_parse_one_first(root):
         v['file'].append(one)
     out['video'] = v
     return out	# parse first xml and get info done
+
+# get file urls
 
 def _get_raw_file_urls(pvinfo):
     # NOTE just use first server here
@@ -349,20 +346,31 @@ def _gen_one_final_url(f, server):
     out = server_url + filename + '?vkey=' + vkey
     return out
 
-# fix 1080p
-def _fix_1080p(pvinfo):
+# do one POST and get xml info
+def _do_one_post_xml(raw, log_debug=True, prefix=''):
+    # do log text
+    log_text = prefix + 'POST \"' + raw['url'] + '\" with data \"' + b.make_post_str(raw['post_data'], quote=True) + '\" '
+    if log_debug:
+        log.d(log_text)	# DEBUG log
+    else:
+        log.i(log_text)	# INFO log
+    raw_blob = b.post_form(raw['url'], header=raw['header'], post_data=raw['post_data'], quote=True)
+    # decode as xml, NOTE only support utf-8 encoding here
     try:
-        out = _do_fix_1080p(pvinfo)
+        raw_xml = raw_blob.decode('utf-8')
     except Exception as e:
-        if var._['flag_ignore_fix_1080p_error']:
-            # WARNING log
-            log.w('ignored fix_1080p Error ', str(e))
-            out = None	# NOTE if failed, return None
-        else:
-            er = err.ParseError('fix_1080p failed')
-            raise er from e
-    return out
+        er = err.DecodingError('can not decode raw blob with utf-8 ')
+        er.blob = raw_blob
+        raise er from e
+    try:
+        root = ET.fromstring(raw_xml)
+    except Exception as e:
+        er = err.ParseXMLError('can not parse raw xml text ')
+        er.text = raw_xml
+        raise er from e
+    return root, raw_xml	# done
 
+# fix 1080p
 def _do_fix_1080p(pvinfo):
     # get 720p info from pvinfo
     v720 = None
@@ -437,6 +445,9 @@ def _do_fix_1080p(pvinfo):
         v['file'].append(one)
     return v	# fix_1080p, finished
 
+# exports
+_method = Method(var)
+parse = _method.parse
 # end method_pc_flash_gate.py
 
 
