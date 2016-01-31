@@ -43,7 +43,7 @@ class Method(common.ExtractorMethod):   # common method class for extractor tvso
         # NOTE count and select here
         return common.method_simple_count_and_select(out, var)
     
-    def _make_first_url(vid_info):
+    def _make_first_url(self, vid_info):
         first_url = main.gen_first_url(vid_info['vid'])
         log.o(log_text.method_got_first_url(first_url))
         return first_url
@@ -113,7 +113,7 @@ def _do_parse_one_first(raw, vid, gen_one_before_url):
     info['title_no'] = data['num']
     out['info'] = info
     # get vid list
-    name_list = var.VID_NAME_LIST
+    name_list = var._VID_NAME_LIST
     vid_list = {}
     for i in name_list:
         vid_list[i] = data[i]

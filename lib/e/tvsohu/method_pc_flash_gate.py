@@ -49,7 +49,7 @@ def _do_get_file_urls(pvinfo):
 def _add_headers(pvinfo):
     # NOTE add type and user_agent header for each file
     user_agent = main.gen_user_agent()
-    file_type = var.TVSOHU_FILE_TYPE
+    file_type = var._TVSOHU_FILE_TYPE
     for v in pvinfo['video']:
         for f in v['file']:
             if f['url'] != '':
