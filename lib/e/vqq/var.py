@@ -49,8 +49,8 @@ class Var(common.ExtractorVar):
         out['pool_size']['get_file_url'] = 16
         out['pool_size']['fix_1080p'] = 16
         
-        out['platform'] = DEFAULT_PLATFORM
-        out['utype'] = DEFAULT_UTYPE
+        out['platform'] = self._DEFAULT_PLATFORM
+        out['utype'] = self._DEFAULT_UTYPE
         out['fmt_black_list'] = conf.E_VQQ_FMT_BLACK_LIST
         
         out['flag_fast_parse'] = False

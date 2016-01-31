@@ -118,7 +118,7 @@ class Method(common.ExtractorMethod):
         except Exception as e:
             if var._['flag_ignore_fix_1080p_error']:
                 # WARNING log
-                log.w('ignored fix_1080p Error ', str(e))
+                log.w('ignored fix_1080p Error, ' + str(e))
                 out = None	# NOTE if failed, return None
             else:
                 er = err.ParseError('fix_1080p failed')
@@ -152,7 +152,7 @@ def _do_get_video_info(vid_info):
     raw_list = var._['_raw_xml_root']
     out['video'] = []
     for fmt, raw in raw_list.items():
-        info = _parse_one_first(raw[0])
+        info = _do_parse_one_first(raw[0])
         one = info['video']
         one['hd'] = var.TO_HD[fmt]
         # add more info for later parse
@@ -176,7 +176,7 @@ def _get_first_xml_info(vid_info):
     first_post = player.getvinfo(vid)
     first_root, first_xml = _do_one_post_xml(first_post, log_debug=False)	# INFO log
     # TODO to get first type here, to dec one POST request
-    first_info = _parse_one_first(first_root)
+    first_info = _do_parse_one_first(first_root)
     var._['_server_list'] = first_info['server']	# save server list
     # save title to vid_info
     vid_info['title'] = first_info['title']
