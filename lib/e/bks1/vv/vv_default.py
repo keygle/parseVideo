@@ -6,7 +6,7 @@ from .... import b, err, conf
 from ....b import log
 from ... import common
 
-from .. import var
+from ..var import var
 from ..o import (
     mixer_remote, 
     authentication_remote, 

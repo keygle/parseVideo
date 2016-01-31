@@ -1,26 +1,28 @@
 # method_pc_flash_gate.py, parse_video/lib/e/bks1/
 
 import re
-import functools
 
 from ... import err, b, lan
 from ...b import log
 from .. import common, log_text
 
-from . import var
+from .var import var
 from .o import mixer_remote
 from .vv import vv_default
 
-# method_pc_flash_gate.parse(), entry function
-def parse(method_arg_text):
-    # check --more mode
-    data_list = [
-        'vid_info', 
-        'raw_first_json', 
-    ]
-    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
-    # parse method args
-    def rest(r):
+class Method(common.ExtractorMethod):
+    def _init_data(self):
+        self._more_data_list += [
+            'raw_first_json', 
+        ]
+    
+    def _gen_more_data(self):
+        out = super()._gen_more_data()
+        # add first_json info
+        out['raw_first_json'] = var._['_raw_first_json']
+        return out
+    
+    def _parse_arg_rest(self, r):
         if r == 'set_um':
             var._['set_um'] = True
         elif r == 'set_vv':
@@ -33,36 +35,9 @@ def parse(method_arg_text):
             var._['flag_enable_vv_error'] = True
         else:	# unknow method arg
             return True
-    common.method_parse_method_args(method_arg_text, var, rest)
-    # get vid_info from more if possible
-    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var, _get_vid_info)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
-    # check enable_vv_error
-    if var._['flag_enable_vv_error'] and vid_info['flag_vv']:
-        raise err.NotSupportURLError(lan.zh_cn_not_support_vip_video(), var._['_raw_url'])
     
-    # check use more mode to get raw_first_json
-    if not var._['_use_more']:
-        pvinfo = _get_video_info(vid_info)
-    else:
-        var._['_raw_first_json'] = raw_more['_data']['raw_first_json']	# set var._
-        pvinfo = _get_video_info_2(var._['_raw_first_json'])	# just parse vms json info
-    # check flag_v mode
-    if var._['flag_v']:
-        pvinfo = vv_default.add_tokens(pvinfo, vid_info)
-    out = _get_file_urls(pvinfo)
-    out = _add_checksum(pvinfo)	# add part files checksum info
-    # check enable_more
-    if var._['enable_more']:	# add more info
-        out['_data'] = {}
-        out['_data']['vid_info'] = vid_info
-        out['_data']['raw_first_json'] = var._['_raw_first_json']
-    return out
-
-# TODO may be can clean here
-def _get_vid_info(raw_html_text):
-    def do_get(raw_html_text):
-        out = common.method_vid_re_get(raw_html_text, var.RE_VID_LIST)
+    def _fix_vid_info(self, raw):
+        out = raw
         # convert flag_vv
         to_flag_vv = {
             'true' : True, 
@@ -70,44 +45,91 @@ def _get_vid_info(raw_html_text):
         }
         out['flag_vv'] = to_flag_vv.get(out['flag_vv'], None)
         # get aid
-        for key, r in var.RE_VID_LIST2.items():
+        raw_html_text = var._['_raw_page_html']
+        for key, r in var._RE_VID_LIST2.items():
             try:
                 out[key] = re.findall(r, raw_html_text)[0]
             except Exception as e:	# NOTE just ignore Error
                 out['key'] = ''	# set empty value
                 # WARNING log
                 log.w('vid_info [' + key + '] empty ')
+        # check enable_vv_error
+        if var._['flag_enable_vv_error'] and vid_info['flag_vv']:
+            raise err.NotSupportURLError(lan.zh_cn_not_support_vip_video(), var._['_raw_url'])
         return out
-    return common.method_get_vid_info(raw_html_text, var, do_get)
+    
+    def _get_video_info(self, vid_info):
+        # get first json
+        first = self._get_first_json(vid_info)
+        # check code
+        if first['code'] != var._FIRST_OK_CODE:
+            raise err.MethodError(log_text.method_err_first_code(first['code'], var))
+        # parse raw first json
+        pvinfo = self._parse_raw_first(first)
+        # count and select, hd_min, hd_max, i_min, i_max
+        out = common.method_simple_count_and_select(pvinfo, var)
+        return out
+    
+    def _get_first_json(self, vid_info):
+        # check get first json from --more
+        if var._['_use_more']:
+            more_data = var._['more']['_data']
+            first_json = more_data['raw_first_json']
+        else:
+            # make first url
+            first_url = self._make_first_url(vid_info)
+            # download first json
+            first_json = b.dl_json(first_url)
+        var._['_raw_first_json'] = first_json	# save to var
+        return first_json
+    
+    def _make_first_url(self, vid_info):
+        if var._['flag_v']:	# check flag_v mode
+            first_url = vv_default.make_first_url(vid_info)
+            prefix = 'flag_v, '
+        else:
+            first_url = _make_first_url(vid_info)
+            prefix = ''
+        # check fix_4k
+        if var._['flag_fix_4k']:
+            first_url = _first_url_fix_4k(first_url)
+        # [ OK ] log, got first url
+        log.o(log_text.method_got_first_url(first_url, prefix=prefix))
+        return first_url
+    
+    def _do_parse_first(self, first):
+        # NOTE just parse it, TODO may be more works here
+        return _parse_raw_first_info(first)
+    
+    def _get_file_urls(self, pvinfo):
+        if var._['flag_v']:	# check flag_v mode
+            vid_info = var._['_vid_info']
+            pvinfo = vv_default.add_tokens(pvinfo, vid_info)
+        # get each part file URL
+        def worker(f, i):
+            raw_info = b.dl_json(f['url'])
+            try:
+                f['url'] = raw_info['l']	# update url
+                return f
+            except Exception as e:
+                er = err.MethodError('get final file URL failed', f['url'])
+                raise er from e
+        pool_size = var._['pool_size']['get_file_url']
+        return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
+    
+    def _extra_process(self, pvinfo):
+        # add part files checksum info
+        for v in pvinfo['video']:
+            for f in v['file']:
+                if f['url'] != '':
+                    f['checksum'] = _get_one_checksum(f)
+        return pvinfo
+    # end Method class
 
-def _get_video_info(vid_info):
-    # check flag_v mode
-    if var._['flag_v']:
-        first_url = vv_default.make_first_url(vid_info)
-        log.o(log_text.method_got_first_url(first_url, prefix='flag_v, '))
-    else:
-        first_url = _make_first_url(vid_info)
-        # [ OK ] log, load first vms info json
-        log.o(log_text.method_got_first_url(first_url))
-    # check fix_4k
-    if var._['flag_fix_4k']:
-        first_url = _first_url_fix_4k(first_url)
-    first = b.dl_json(first_url)
-    var._['_raw_first_json'] = first
-    # check code
-    if first['code'] != var.FIRST_OK_CODE:
-        raise err.MethodError(log_text.method_err_first_code(first['code'], var))
-    # parse raw_vms json
-    return _get_video_info_2(first)
+## base parse functions
 
 def _first_url_fix_4k(raw):
     return raw.split('&src=', 1)[0] + '&' + raw.split('&src=', 1)[1].split('&', 1)[1]
-
-def _get_video_info_2(first):
-    pvinfo = common.parse_raw_first(first, _parse_raw_first_info)
-    # select by hd_min, hd_max, i_min, i_max. count sum data, and sort videos by hd
-    out = common.method_simple_count_and_select(pvinfo, var)
-    return out
 
 def _make_first_url(vid_info):
     tvid = vid_info['tvid']
@@ -118,6 +140,8 @@ def _make_first_url(vid_info):
     
     out = mixer_remote.get_request(tvid, vid, flag_set_um=set_um, flag_set_vv=set_vv)
     return out
+
+# parse raw first
 
 def _parse_raw_first_info(first):
     out = {}
@@ -159,24 +183,7 @@ def _parse_one_file_info(raw, du):
     out['url'] = du + l	# NOTE before final url, just concat 'du' and 'l'
     return out
 
-def _get_file_urls(pvinfo):
-    def worker(f, i):
-        raw_info = b.dl_json(f['url'])
-        try:
-            f['url'] = raw_info['l']	# update url
-            return f
-        except Exception as e:
-            er = err.MethodError('get final file URL failed', f['url'])
-            raise er from e
-    pool_size = var._['pool_size']['get_file_url']
-    return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
-
-def _add_checksum(pvinfo):
-    for v in pvinfo['video']:
-        for f in v['file']:
-            if f['url'] != '':
-                f['checksum'] = _get_one_checksum(f)
-    return pvinfo
+# add checksum
 
 def _get_one_checksum(f):
     raw = f['url']
@@ -188,6 +195,9 @@ def _get_one_checksum(f):
     }
     return out
 
+# exports
+_method = Method(var)
+parse = _method.parse
 # end method_pc_flash_gate.py
 
 
