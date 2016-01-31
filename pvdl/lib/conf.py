@@ -1,8 +1,6 @@
 # conf.py, parse_video/pvdl/lib/, config file for pvdl
 # language: English (en) 
 
-# TODO support parse_timeout_s
-
 
 auto_select_hd = [-1, 8]
 #### auto-select hd in this range, will always select max hd
@@ -21,7 +19,7 @@ retry_wait_time_s = 1
 
 parse_timeout_s = 180
 #### parse timeout
-# TODO -1 means disabled; default 3 minute (180s); after this second, will stop parse (as parse failed)
+# -1 means disabled; default 3 minute (180s); after this second, will stop parse (as parse failed)
 
 fix_size_pool_size = 16
 #### map_do() to fix_size, pool_size
@@ -132,6 +130,9 @@ FEATURES = {	# --enable, --disable
 
     'fix_unicode' : False, 
     #### fix_unicode is only for Windows
+
+    'list_ignore_task_err' : True, 
+    #### ignore task Error in --list mode
 
 ## DANGER options
 

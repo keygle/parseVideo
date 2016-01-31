@@ -12,13 +12,22 @@ def call_parsev(args, data=None):
     py_bin = sys.executable
     pv_bin = _make_bin_path(conf.SUB_BIN['parsev'])
     a = [py_bin, pv_bin] + args
+    raw_timeout = conf.set_parse_timeout
     # DEBUG log
-    log.d(lan.cs_d_call_pv(args), add_check_log_prefix=True)
+    log.d(lan.cs_d_call_pv(args, raw_timeout), add_check_log_prefix=True)
     
+    # NOTE support parse timeout
+    timeout = raw_timeout
+    if raw_timeout < 0:	# NOTE -1 means wait forever
+        timeout = None
     # call parse_video to do parse
     PIPE = subprocess.PIPE
     try:	# NOTE wirte data to stdin
-        p = subprocess.run(a, stdout=PIPE, input=data)
+        p = subprocess.run(a, stdout=PIPE, timeout=timeout, input=data)
+    except subprocess.TimeoutExpired as e:
+        log.e(lan.cs_err_pv_timeout(timeout), add_check_log_prefix=True)
+        er = err.ParseError('parse_video timeout', timeout, args)
+        raise er from e
     except Exception as e:
         log.e(lan.cs_err_can_not_exe('parse_video'), add_check_log_prefix=True)
         er = err.CallError('parse_video', py_bin, pv_bin, args)

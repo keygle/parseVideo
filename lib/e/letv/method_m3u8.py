@@ -2,23 +2,22 @@
 
 from ... import err, b
 from ...b import log
-from .. import common, log_text
+from .. import common
 
-from . import var, method
+from .var import var
+from . import method
 
 # method_m3u8.parse(), entry function
 def parse(method_arg_text):
-    # NOTE not support --more
-    def rest(r):
-        return True	# NOTE no args here
-    common.method_parse_method_args(method_arg_text, var, rest)
+    # NOTE not support method args
+    # TODO WARNING (not support method arg) here
     
     # get m3u8 blob data
     m3u8_blob = _get_raw_m3u8(var._['_raw_url'])
     # parse m3u8 to get video info
     pvinfo = _do_parse_one_m3u8(m3u8_blob)
     # count it
-    common.method_simple_count(pvinfo)
+    common.method_count_video(pvinfo)
     # NOTE not support enable_more here
     return pvinfo
 

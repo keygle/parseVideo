@@ -3,7 +3,7 @@
   -->
 
 # pvdl : parse_video Downloader
-`pvdl version 0.0.10.0`
+`pvdl version 0.0.12.0`
 
 **负锐下载** (`pvdl`) 是一个使用 `parse_video` 的 *下载程序* 的 **参考实现**. 
 
@@ -61,9 +61,6 @@
 
 
 `-> version 0.1.0.0` 之后实现的功能特性: *(优先级)*
-
-+ *(高)* `list`: **下载列表** <br />
-  根据列表文件自动下载多个视频. 
 
 + *(高)* `wget`: wget 增强 <br />
   支持 http header, 支持 **下载限速**

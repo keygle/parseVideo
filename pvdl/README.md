@@ -6,7 +6,7 @@ A small tool of `parse_video`:
 # pvdl : parse_video Downloader
 A *reference implemention* of a downloader which uses `parse_video`. 
 
-`pvdl version 0.0.11.0`
+`pvdl version 0.0.12.0`
 
 
 ## Install
@@ -39,12 +39,13 @@ $ ./pvdl --help
 Usage: pvdl [OPTION]... URL
 pvdl: A reference implemention of a downloader which uses parse_video. 
 
-      --hd HD                set hd to select
-  -o, --output DIR           save downloaded file to DIR
-      --title-suffix SUFFIX  add suffix to resolve name conflicts
-      --title-no NO          set title_no
-      --retry TIMES          set retry times
-      --retry-wait SECONDS   wait seconds before retry
+      --hd HD                  set hd to select
+  -o, --output DIR             save downloaded file to DIR
+      --title-suffix SUFFIX    add suffix to resolve name conflicts
+      --title-no NO            set title_no
+      --retry TIMES            set retry times
+      --retry-wait SECONDS     wait seconds before retry
+      --parse-timeout SECONDS  set parse timeout
       
       --enable FEATURE   enable pvdl features
       --disable FEATURE  disable pvdl features

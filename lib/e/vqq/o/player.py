@@ -2,7 +2,8 @@
 
 import random
 
-from .. import var, bridge
+from ..var import var
+from .. import bridge
 
 APP_VER = '3.2.19.346'
 
@@ -57,7 +58,7 @@ def getvinfo(vid, video_format=None, charge=0):
             'defn' 		: video_format, 
         })
     # add other info
-    post_header = var.BASE_POST_HEADER
+    post_header = var._BASE_POST_HEADER
     return {
         'url' : CGI_GETVINFO, 
         'post_data' : post_data, 
@@ -86,7 +87,7 @@ def getvkey(vid, format_, vt, filename, charge=0):
         #'ehost' 	: TODO
     }
     # add more info
-    post_header = var.BASE_POST_HEADER
+    post_header = var._BASE_POST_HEADER
     return {
         'url' : CGI_GETKEY, 
         'post_data' : post_data, 
@@ -119,7 +120,7 @@ def getvclip(vid, idx, fmt, format_, vt, charge=0):
         #'ehost' 	: TODO
         #'speed' 	: TODO
     }
-    post_header = var.BASE_POST_HEADER
+    post_header = var._BASE_POST_HEADER
     return {
         'url' : CGI_GETCLIP, 
         'post_data' : post_data, 

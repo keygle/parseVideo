@@ -22,8 +22,11 @@ def log_debug():
 
 ## call_sub.py
 
-def cs_d_call_pv(args):	# call_sub_debug log
-    return ('call parse_video to parse, with args ' + str(args) + ' ')
+def cs_d_call_pv(args, timeout):	# call_sub_debug log
+    return ('call parse_video to parse, (timeout = ' + str(timeout) + ') with args ' + str(args) + ' ')
+
+def cs_err_pv_timeout(timeout):
+    return ('parse_video timeout after ' + str(timeout) + ' seconds ')
 
 def cs_err_can_not_exe(name):
     return ('can not execute ' + name + ' ')

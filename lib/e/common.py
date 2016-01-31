@@ -8,6 +8,17 @@ from . import log_text
 
 # extractor common parts
 class ExtractorVar(object):
+    # common static data, NOTE should be set by the extractor
+    EXTRACTOR_ID = ''
+    EXTRACTOR_NAME = ''
+    SITE = ''
+    SITE_NAME = ''
+    
+    RE_SUPPORT_URL = []
+    METHOD_LIST = []
+    RE_VID_LIST = {}
+    TO_HD = {}
+    
     def __init__(self):
         self.__ = {}	# NOTE this object not change
         self._old = []
@@ -49,8 +60,12 @@ class ExtractorVar(object):
         out['_raw_page_html'] = ''
         out['_vid_info'] = None
         
-        # add data done
-        return out
+        out = self._add_more_data(out)
+        return out	# add data done
+    
+    # NOTE do nothing by default
+    def _add_more_data(self, raw):
+        return raw
     # end ExtractorVar class
 
 class ExtractorEntry(object):
@@ -58,13 +73,13 @@ class ExtractorEntry(object):
         self.var = var_
     # init extractor.var
     def init(self):
-        self.var.var.push()
-        self.var._ = self.var.var.init()
-        self.var.var.init_flag = True
+        self.var.push()
+        self.var._ = self.var.init()
+        self.var.init_flag = True
     
     # extractor parse entry function, return lyyc_parsev struct
     def parse(self, raw_url, raw_arg='', raw_method=''):
-        if not self.var.var.init_flag:
+        if not self.var.init_flag:
             self.init()
         # set var data
         self.var._['raw_arg'] = raw_arg
@@ -80,18 +95,209 @@ class ExtractorEntry(object):
             er = err.UnknowError('unknow extractor Error', self.var.EXTRACTOR_ID)
             raise er from e
         finally:
-            self.var.var.pop()	# clean var data
-            self.var.var.init_flag = False
+            self.var.pop()	# clean var data
+            self.var.init_flag = False
         return pvinfo
     
-    # should be implemented by extractor
     def _do_parse(self, raw_method):
+        method, method_arg_text = b.split_raw_method(raw_method)
+        # check method name
+        worker = self._check_method(method)
+        if worker == None:	# no such method
+            raise err.ConfigError(log_text.entry_err_no_method(method))
+        log.d(log_text.entry_log_use_method(method, method_arg_text))	# DEBUG log
+        
+        pvinfo = worker.parse(method_arg_text)
+        return entry_add_more_info(pvinfo, self.var)
+    
+    # should be implemented by extractor
+    def _check_method(self, method):
         raise NotImplementedError
     # end ExtractorEntry class
 
+
+class ExtractorMethod(object):
+    def __init__(self, var_):
+        self.var = var_
+        
+        # for check_use_more
+        self._more_data_list = [
+            'vid_info', 	# default support vid_info for --more mode
+        ]
+        
+        # NOTE do init
+        self._init_data()
+    
+    # init before start parse
+    def _init_data(self):
+        pass	# default nothing todo
+    
+    # method parse entry function, default common parse process
+    def parse(self, method_arg_text):
+        self._check_use_more(method_arg_text)
+        self._parse_arg(method_arg_text)
+        
+        vid_info = self._get_vid_info()
+        pvinfo = self._get_video_info(vid_info)
+        
+        out = self._get_file_urls(pvinfo)
+        # NOTE add extra process here
+        out = self._extra_process(out)
+        
+        out = self._check_add_more_info(out)
+        return out	# parse done
+    
+    # main parse stage
+    def _check_use_more(self, method_arg_text):
+        var = self.var
+        def check_more_data(data_list):
+            # check more data exist
+            if var._['more'] == None:
+                return False	# no more data
+            raw_more = var._['more']
+            if not '_data' in raw_more:
+                return False
+            # check extractor match
+            extractor_id = b.split_raw_extractor(raw_more['extractor'])[0]
+            if extractor_id != var.EXTRACTOR_ID:
+                return False	# not this extractor
+            # check url match
+            if var._['_raw_url'] != raw_more['info']['url']:
+                return False
+            # check needed data exist
+            raw_data = raw_more['_data']
+            for d in data_list:
+                if not d in raw_data:
+                    return False
+            return True	# check pass, use more mode
+        # reset flags before check
+        var._['_use_more'] = False
+        # check use more mode
+        try:
+            if check_more_data(self._more_data_list):
+                # set flags
+                var._['_use_more'] = True
+                raw_more = var._['more']
+        except Exception as e:
+            pass	# NOTE ignore check more Error
+        if not var._['_use_more']:
+            return	# not use more, no more process
+        # check method args match
+        raw_method_arg = b.split_raw_method(raw_more['method'])[1]
+        if raw_method_arg != method_arg_text:
+            log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
+        # TODO check method name match
+        log.o(log_text.method_enable_more())
+        # end _check_use_more
+    
+    def _parse_arg(self, method_arg_text):
+        # parse common args
+        if method_arg_text != None:
+            args = method_arg_text.split(',')
+            for r in args:
+                # process common method args
+                if r == 'enable_more':
+                    self.var._['enable_more'] = True
+                else:	# parse rest args
+                    if self._parse_arg_rest(r):	# unknow args
+                        log.w('unknow method arg \"' + r + '\" ')
+        # end _parse_arg
+    
+    def _get_vid_info(self):
+        # check _use_more and get vid_info
+        if self.var._['_use_more']:
+            more_data = self.var._['more']['_data']
+            vid_info = more_data['vid_info']
+        else:
+            try:
+                vid_info = self._do_get_vid_info()
+            except Exception as e:
+                er = err.NotSupportURLError('get vid_info failed', self.var._['_raw_url'])
+                raise er from e
+        # set var._
+        self.var._['_vid_info'] = vid_info
+        # DEBUG log, got vid_info
+        log.d(log_text.method_got_vid_info(vid_info))
+        return vid_info
+    
+    def _do_get_vid_info(self):	# get vid_info from html page, without --more mode
+        raw_url = self.var._['_raw_url']
+        # INFO log, loading raw html page
+        log.i(log_text.method_loading_page(raw_url))
+        raw_html_text = self._load_page(raw_url)
+        self.var._['_raw_page_html'] = raw_html_text
+        
+        # use re to get vid list from page html text
+        vid_info = self._re_get_vid(raw_html_text)
+        # fix vid_info
+        out = self._fix_vid_info(vid_info)
+        return out
+    
+    def _get_video_info(self, vid_info):
+        raise NotImplementedError	# for sub class
+    
+    # NOTE by default, do nothing
+    def _get_file_urls(self, pvinfo):
+        return pvinfo
+    def _extra_process(self, raw):
+        return raw
+    
+    def _check_add_more_info(self, raw):
+        # check enable_more and add info
+        if self.var._['enable_more']:
+            raw['_data'] = self._gen_more_data()
+        return raw
+    
+    # sub parse stage
+    def _parse_arg_rest(self, r):
+        return True	# default nothing todo
+    
+    def _load_page(self, raw_url):
+        # default just download raw page
+        text = b.dl_html(raw_url)
+        return text
+    
+    def _re_get_vid(self, raw_text):
+        re_list = self.var.RE_VID_LIST
+        out = {}
+        for key, r in re_list.items():
+            one = re.findall(r, raw_text)[0]
+            # check empty result
+            if (one == None) or (one == ''):
+                raise err.ParseError('vid_info \"' + key + '\" empty', one)
+            out[key] = one
+        return out
+    
+    def _fix_vid_info(self, raw):
+        return raw	# default nothing todo
+    
+    def _parse_raw_first(self, first):
+        # TODO may be more process here
+        try:
+            pvinfo = self._do_parse_first(first)
+        except Exception as e:
+            er = err.MethodError(log_text.method_err_parse_raw_first())
+            raise er from e
+        method_sort_video(pvinfo)
+        return pvinfo
+    
+    # NOTE keep for sub class
+    def _make_first_url(self):
+        pass
+    def _do_parse_first(self, first):
+        pass
+    
+    def _gen_more_data(self):
+        out = {}
+        # NOTE default should save vid_info
+        out['vid_info'] = self.var._['_vid_info']
+        return out
+    # end ExtractorMethod class
+
+
 ## extractor common functions
 
-# extractor.entry
+# entry
 
 def entry_add_more_info(pvinfo, var):
     # add more info to pvinfo
@@ -105,96 +311,7 @@ def entry_add_more_info(pvinfo, var):
     pvinfo['info']['url'] = var._['_raw_url']
     return pvinfo
 
-# extractor.method_pc_flash_gate
-
-def method_parse_method_args(method_arg_text, var, rest):
-    if method_arg_text != None:
-        args = method_arg_text.split(',')
-        for r in args:
-            # process common method args
-            if r == 'enable_more':
-                var._['enable_more'] = True
-            else:	# use rest to process args
-                if rest(r):	# unknow args
-                    log.w('unknow method arg \"' + r + '\" ')
-    # done parse method arg_text
-
-# check use more mode
-def method_check_use_more(var, data_list=[]):
-    try:
-        return _method_do_check_use_more(var, data_list)
-    except Exception as e:
-        # TODO more Error process
-        return False
-
-def _method_do_check_use_more(var, data_list):
-    # check more data exist
-    if var._['more'] == None:
-        return False	# no more data
-    raw_more = var._['more']
-    if not '_data' in raw_more:
-        return False
-    # check extractor match
-    extractor_id = b.split_raw_extractor(raw_more['extractor'])[0]
-    if extractor_id != var.EXTRACTOR_ID:
-        return False	# not this extractor
-    # check url match
-    if var._['_raw_url'] != raw_more['info']['url']:
-        return False
-    # check needed data exist
-    raw_data = raw_more['_data']
-    for d in data_list:
-        if not d in raw_data:
-            return False
-    return True	# check pass, use more mode
-
-def method_more_check_method(method_arg_text, raw_more):
-    # TODO check method match
-    # check method args match
-    raw_method_arg = b.split_raw_method(raw_more['method'])[1]
-    if raw_method_arg != method_arg_text:	# WARNING log
-        log.w('now method args ' + b.str_or_str(method_arg_text) + ' is different from old method args ' + b.str_or_str(raw_method_arg) + ' in more info ')
-
-def method_simple_check_use_more(var, method_arg_text, data_list=[]):
-    if not method_check_use_more(var, data_list):
-        return None	# not use more
-    # set flags
-    var._['_use_more'] = True
-    raw_more = var._['more']
-    # [ OK ] log
-    log.o(log_text.method_enable_more())
-    # check method
-    method_more_check_method(method_arg_text, raw_more)
-    return raw_more
-
-def method_more_simple_get_vid_info(var, f):
-    raw_more = var._['more']
-    if not var._['_use_more']:
-        vid_info = f()
-    else:
-        raw_data = raw_more['_data']
-        vid_info = raw_data['vid_info']
-        # set var._
-        var._['_vid_info'] = vid_info
-    return vid_info
-
-# get vid info
-def method_get_vid_info(raw_html_text, var, do_get):
-    try:
-        return do_get(raw_html_text)
-    except Exception as e:
-        er = err.NotSupportURLError('get vid info failed', var._['_raw_url'])
-        raise er from e
-
-def method_vid_re_get(raw_html_text, re_list):
-    out = {}
-    for key, r in re_list.items():
-        one = re.findall(r, raw_html_text)[0]
-        # check empty result
-        if (one == None) or (one == ''):
-            raise err.ParseError('vid_info \"' + key + '\" empty', one)
-        out[key] = one
-    return out
+# method
 
 def method_get_size_px(x=-1, y=-1):
     out = [-1, -1]
@@ -212,7 +329,7 @@ def method_get_size_px(x=-1, y=-1):
 
 def method_simple_count_and_select(pvinfo, var):
     method_sort_video(pvinfo)
-    method_simple_count(pvinfo)
+    method_count_videos(pvinfo)
     method_select_hd(pvinfo, var)
     method_select_file(pvinfo, var)
     return pvinfo
@@ -221,11 +338,11 @@ def method_sort_video(pvinfo):
     # sort video by hd
     pvinfo['video'].sort(key= lambda x: x['hd'], reverse=True)
 
-def method_simple_count(pvinfo):
+def method_count_videos(pvinfo):
     for v in pvinfo['video']:
         method_count_one_video(v)
 
-# NOTE this count method does not much Error process
+# NOTE this count method does not much Error process (simple)
 def method_count_one_video(v):
     v['size_byte'] = 0
     v['time_s'] = 0
@@ -250,39 +367,10 @@ def method_select_file(pvinfo, var):
             if ((i_min != None) and (i < i_min)) or ((i_max != None) and (i > i_max)):
                 v['file'][i]['url'] = ''	# clear file URL
 
-# extractor.method.parse, common parse functions
-
-def parse_load_page_and_get_vid(var, get_vid_info=None):
-    raw_url = var._['_raw_url']
-    # INFO log, loading raw html page
-    log.i(log_text.method_loading_page(raw_url))
-    raw_html_text = b.dl_html(raw_url)
-    var._['_raw_page_html'] = raw_html_text
-    
-    if get_vid_info == None:
-        vid_info = parse_simple_get_vid_info(raw_html_text, var)
-    else:
-        vid_info = get_vid_info(raw_html_text)
-    var._['_vid_info'] = vid_info
-    log.d(log_text.method_got_vid_info(vid_info))
-    return vid_info
-
-def parse_simple_get_vid_info(raw_html_text, var):
-    def do_get(raw_html_text):
-        return method_vid_re_get(raw_html_text, var.RE_VID_LIST)
-    return method_get_vid_info(raw_html_text, var, do_get)
-
-def parse_raw_first(first, do_parse):
-    try:
-        pvinfo = do_parse(first)
-    except Exception as e:
-        er = err.MethodError(log_text.method_err_parse_raw_first())
-        raise er from e
-    method_sort_video(pvinfo)
-    return pvinfo
 
 # map_do() network functions
 
+# TODO just keep this here
 def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
     # TODO maybe retry here
     # make todo list
@@ -312,6 +400,7 @@ def simple_get_file_urls(pvinfo, worker, msg='', pool_size=1):
             if v['file'][j]['url'] != '':
                 v['file'][j], i = result[i], i + 1
     return pvinfo	# done
+
 
 # end common.py
 

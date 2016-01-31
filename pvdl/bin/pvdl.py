@@ -25,9 +25,6 @@ OPTIONS not in --help:
 TODO support speed limit (only for wget)
   --limit-kb  VALUE  limit download speed to value (unit KB/s)
 
-TODO support parse timeout_s
-  --parse-timeout-s
-
 '''
 # NOTE support --list mode here
 
@@ -36,7 +33,7 @@ import time
 from lib import err, b, conf, log
 from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.11.0 test201601280013'
+VERSION_STR = 'pvdl version 0.0.12.0 test201601281323'
 
 # global data
 etc = {}
@@ -52,12 +49,13 @@ def p_help():
 Usage: pvdl [OPTION]... URL
 pvdl: A reference implemention of a downloader which uses parse_video. 
 
-      --hd HD                set hd to select
-  -o, --output DIR           save downloaded file to DIR
-      --title-suffix SUFFIX  add suffix to resolve name conflicts
-      --title-no NO          set title_no
-      --retry TIMES          set retry times
-      --retry-wait SECONDS   wait seconds before retry
+      --hd HD                  set hd to select
+  -o, --output DIR             save downloaded file to DIR
+      --title-suffix SUFFIX    add suffix to resolve name conflicts
+      --title-no NO            set title_no
+      --retry TIMES            set retry times
+      --retry-wait SECONDS     wait seconds before retry
+      --parse-timeout SECONDS  set parse timeout
       
       --enable FEATURE   enable pvdl features
       --disable FEATURE  disable pvdl features
@@ -200,8 +198,8 @@ def p_args(args):
             if conf.limit_kb != None:
                 log.w('already set limit_kb to ' + str(conf.limit_kb) + ', now set to ' + str(limit) + ' ')
             conf.limit_kb = limit
-        # --parse-timeout-s
-        elif one == '--parse-timeout-s':
+        # --parse-timeout
+        elif one == '--parse-timeout':
             timeout, rest = rest[0], rest[1:]
             timeout = float(timeout)
             if conf.set_parse_timeout != conf.parse_timeout_s:
@@ -338,7 +336,11 @@ def _do_with_retry(raw):
                 _do_one_task(item)
             except Exception as e:
                 log.e('[list] task ' + task_info + ' failed, ' + str(e) + ' \n')
-                # NOTE ignore Error in list mode
+                # NOTE check feature list_ignore_task_err
+                if not conf.FEATURES['list_ignore_task_err']:
+                    log.d('disabled feature list_ignore_task_err')
+                    raise	# not ignore Error here
+                # ignore Error here
                 count_err += 1
             else:
                 log.o('[list] task ' + task_info + ' finished \n')
