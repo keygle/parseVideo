@@ -1,49 +1,60 @@
 # method.py, parse_video/lib/e/letv/, method common code
 
-import functools
-
 from ... import err, b
 from ...b import log
 from .. import common, log_text
 
-from . import var
-try:
+from .var import var
+try:    # m3u8_encrypt2 is faster than m3u8_encrypt
     from .o import m3u8_encrypt2 as m3u8_encrypt
 except Exception:
     from .o import m3u8_encrypt
 
-# NOTE support --more, try to enable more mode
-def get_raw_more(method_arg_text):
-    data_list = [	# NOTE --more mode to just get vid_info
-        'vid_info', 
-    ]
-    raw_more = common.method_simple_check_use_more(var, method_arg_text, data_list)
-    return raw_more
+class Method(common.ExtractorMethod):   # common method class for extractor letv
+    
+    def _parse_arg_rest(self, r):
+        if r == 'set_flag_v':
+            var._['flag_v'] = True
+        else:
+            return True
+    
+    def _dl_first_json(self, first_url):
+        log.o(log_text.method_got_first_url(first_url))
+        first = b.dl_json(first_url)
+        var._['_raw_first_json'] = first
+        # check code
+        if first['statuscode'] != var._FIRST_OK_CODE:
+            raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
+        return first
+    
+    def _get_video_info(self, vid_info):
+        first_url = self._make_first_url(self, vid_info)
+        first = self._dl_first_json(first_url)
+        
+        pvinfo = self._parse_raw_first(first)
+        return pvinfo
+    
+    def _do_parse_first(self, first):
+        out, playurl = raw_first_get_base_info(first)
+        # get video list
+        domain, dispatch = playurl['domain'], playurl['dispatch']
+        
+        vid = playurl['vid']
+        out['video'] = [self._parse_one_video(vid, domain, i) for i in dispatch.items()]
+        return out
+    
+    # sub parse first info process
+    def _parse_one_video(self, vid, domain, dispatch):
+        rateid = dispatch[0]
+        one = {}
+        one['hd'] = var.TO_HD[rateid]
+        # set default values
+        one['size_px'] = [-1, -1]
+        
+        return one
+    # end Method class
 
-# try to get vid_info from more
-def get_vid_info():
-    # get vid_info from more if possible
-    default_get_vid_info = functools.partial(common.parse_load_page_and_get_vid, var)
-    vid_info = common.method_more_simple_get_vid_info(var, default_get_vid_info)
-    return vid_info
-
-# add --more data to out
-def check_enable_more(out):
-    # check enable_more
-    if var._['enable_more']:
-        out['_data'] = {}
-        out['_data']['vid_info'] = var._['_vid_info']
-    return out
-
-def dl_first_json(first_url):
-    # [ OK ] log
-    log.o(log_text.method_got_first_url(first_url))
-    first = b.dl_json(first_url)
-    var._['_raw_first_json'] = first
-    # check code
-    if first['statuscode'] != var.FIRST_OK_CODE:
-        raise err.MethodError(log_text.method_err_first_code(first['statuscode'], var))
-    return first
+# base parse functions
 
 def raw_first_get_base_info(first):
     playurl = first['playurl']
