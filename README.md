@@ -1,9 +1,9 @@
 <!-- README.md, parse_video/, <https://github.com/sceext2/parse_video>
    - author sceext <sceext@foxmail.com>
-   - test201601242343
+   - test201601312253
   -->
 
-# parse_video version 0.5.7.0
+# parse_video version 0.5.9.0
 
 `parse_video` is used to get video information (video file download URL) 
 from some web sites. 

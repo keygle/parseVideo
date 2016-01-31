@@ -3,7 +3,7 @@
   -->
 
 # 负锐 视频解析 (parse_video) : 小型 纯解析 程序
-parse_video version 0.5.7.0
+parse_video version 0.5.9.0
 
 
 ## 已支持网站 (6)
@@ -18,7 +18,7 @@ parse_video version 0.5.7.0
 |  6 | vqq     | 1080p         | `vqq`     | *ckey5.4* |
 
 
-## parse_video 特色 (TODO)
+## parse_video 特色
 
 + **本地解析** <br />
   parse_video 的 解析过程, 完全在本地完成, 不依赖中心服务器. 
@@ -85,13 +85,13 @@ parse_video version 0.5.7.0
 ## 计划支持的网站 (2)
 (`extractor`)
 
-+ kankan (`1080p`, `h265`)
-
 + youku (TODO)
+
++ kankan (`1080p`, `h265`)
 
 *实现顺序*
 
-1. kankan
+1. youku
 
 
 ## version 0.5.x 特性

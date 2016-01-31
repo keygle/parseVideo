@@ -3,7 +3,7 @@
   -->
 
 # parse_video 功能特性
-parse_video version 0.5.4.0
+parse_video version 0.5.9.0
 
 | extractor | `method` | quality | format | `--more` |     |
 | :-------- | :------- | :-----: | :----- | :------- | :-- |
@@ -17,7 +17,7 @@ parse_video version 0.5.4.0
 |           | `flvsp`       |               |             |              | |
 | pptv      | pc_flash_gate | `1080p` *高码* | mp4         | vid_info     | `expire` |
 |           | `android`     | 1080p         | mp4 *(单段)* |              | `expire` |
-| vqq       | pc_flash_gate | 1080p         | mp4         | 不支持        | `checksum.md5` |
+| vqq       | pc_flash_gate | 1080p         | mp4         | vid_info     | `checksum.md5` |
 
 *注*
 
