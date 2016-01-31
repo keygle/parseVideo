@@ -132,8 +132,8 @@ def _download_one_m3u8(info):
     log.d('rateid [' + rateid + '] load raw before URL \"' + url + '\" ')
     raw_before = b.dl_json(url)
     # check status code
-    if raw_before['status'] != var.BEFORE_OK_CODE:
-        raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var.BEFORE_OK_CODE) + ' ')
+    if raw_before['status'] != var._BEFORE_OK_CODE:
+        raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var._BEFORE_OK_CODE) + ' ')
     location = raw_before['location']
     log.d('got final m3u8 location \"' + location + '\" ')
     raw_m3u8 = b.dl_blob(location)

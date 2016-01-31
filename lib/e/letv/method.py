@@ -28,7 +28,7 @@ class Method(common.ExtractorMethod):   # common method class for extractor letv
         return first
     
     def _get_video_info(self, vid_info):
-        first_url = self._make_first_url(self, vid_info)
+        first_url = self._make_first_url(vid_info)
         first = self._dl_first_json(first_url)
         
         pvinfo = self._parse_raw_first(first)
