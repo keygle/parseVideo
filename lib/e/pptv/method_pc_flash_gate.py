@@ -33,9 +33,9 @@ class Method(method.Method):
     
     # sub parse first functions
     def _collect_info(self, channel, first):
-        raw = super()._collect_info(channel)
+        raw = super()._collect_info(channel, first)
         # NOTE get dragdata
-        out = self._get_drag_data(first, raw)
+        out = self._get_dragdata(first, raw)
         return out
     
     def _get_dragdata(self, first, info):

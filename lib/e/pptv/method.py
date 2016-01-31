@@ -66,7 +66,7 @@ class Method(common.ExtractorMethod):   # common method class for extractor pptv
             one['format'] = 'mp4'	# NOTE the video file format should be mp4
             
             # gen file list
-            one['file'] = self._get_file_info(self, data, channel)
+            one['file'] = self._get_file_info(data, channel)
             # add expire time
             expire = get_expire(data['dt'])
             for f in one['file']:
