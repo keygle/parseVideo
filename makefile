@@ -1,8 +1,8 @@
 # makefile for parse_video/, <https://github.com/sceext2/parse_video>, used for parse_video test
-# version 0.1.3.0 test201601062058
+# version 0.1.4.0 test201601312237
 
 # parse_video bin
-PV_BIN=./parsev
+PV_BIN=./pv
 
 # extractor test URLs
 ET_URL_BKS1_1=http://www.iqiyi.com/v_19rrkfbay8.html
@@ -95,12 +95,14 @@ test_more: \
 	test_more_letv \
 	test_more_hunantv \
 	test_more_tvsohu \
-	test_more_pptv
+	test_more_pptv \
+	test_more_vqq
 .PHONY: test_more_bks1 \
 	test_more_letv \
 	test_more_hunantv \
 	test_more_tvsohu \
-	test_more_pptv
+	test_more_pptv \
+	test_more_vqq
 
 test_more_bks1:
 	# pv_test:: INFO: more test extractor bks1
@@ -127,6 +129,11 @@ test_more_pptv:
 	$(PV_BIN) $(ET_URL_PPTV_1) -i 1 -M 0 -m "pc_flash_gate;enable_more" -o "test_more.e_pptv.tmp.json"
 	$(PV_BIN) $(ET_URL_PPTV_1) -i 5 --more "test_more.e_pptv.tmp.json"
 
+test_more_vqq:
+	# pv_test:: INFO: more test extractor vqq
+	$(PV_BIN) $(ET_URL_VQQ_1) -i 1 -M 0 -m "pc_flash_gate;enable_fmt_black_list,enable_more" -o "test_more.e_vqq.tmp.json"
+	$(PV_BIN) $(ET_URL_VQQ_1) -i 5 --more "test_more.e_vqq.tmp.json"
+
 # remove test tmp files
 clean_test:
 	- rm test_more.e_bks1.tmp.json
@@ -134,6 +141,7 @@ clean_test:
 	- rm test_more.e_hunantv.tmp.json
 	- rm test_more.e_tvsohu.tmp.json
 	- rm test_more.e_pptv.tmp.json
+	- rm test_more.e_vqq.tmp.json
 
 # test extractor vv mode
 test_v:

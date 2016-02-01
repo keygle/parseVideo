@@ -1,5 +1,4 @@
 # log_text.py, parse_video/lib/e/
-# TODO support other languages
 
 from ..b import str_or_str
 
@@ -26,7 +25,7 @@ def entry_err_no_method(method):
     return ('no method \"' + method + '\" ')
 
 def method_err_first_code(code, var):
-    return ('first info code ' + str_or_str(code) + ' is not ' + str(var.FIRST_OK_CODE) + ' ')
+    return ('first info code ' + str_or_str(code) + ' is not ' + str(var._FIRST_OK_CODE) + ' ')
 
 def method_err_parse_raw_first():
     return ('parse raw first info failed')

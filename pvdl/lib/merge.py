@@ -34,7 +34,8 @@ def _do_merge(task_info):
     # make ffmpeg args
     merged_file = task_info['path']['merged_path']
     arg = ['-f', 'concat', '-i', list_file, '-c', 'copy', merged_file]
-    # TODO fix_ffmpeg_args
+    # NOTE fix_ffmpeg_args, NOTE last arg is the output file
+    arg = _fix_ffmpeg_args(arg, task_info)
     # TODO Error process
     # just call ffmpeg to merge
     call_sub.call_ffmpeg(arg)
@@ -79,9 +80,17 @@ def _gen_ffmpeg_merge_list(task_info):
     return out
 
 
-# TODO
-def _fix_ffmpeg_args():
-    pass
+# fix ffmpeg args
+def _fix_ffmpeg_args(arg, task_info):
+    v = task_info['video']
+    # NOTE fix for merge .ts (m3u8) files
+    if v['format'] == 'ts':
+        to_add = ['-bsf:a', 'aac_adtstoasc']
+        # NOTE add args before output file
+        arg = arg[:-1] + to_add + [arg[-1]]
+        log.i(lan.m_i_fix_ffmpeg_arg_ts(to_add))
+    # TODO support more fix
+    return arg
 
 def _check_merged_size(task_info):
     if not conf.FEATURES['check_merged_size']:

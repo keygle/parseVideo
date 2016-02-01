@@ -33,7 +33,7 @@ import time
 from lib import err, b, conf, log
 from lib import entry, lan
 
-VERSION_STR = 'pvdl version 0.0.12.0 test201601281323'
+VERSION_STR = 'pvdl version 0.0.12.1 test201602010007'
 
 # global data
 etc = {}

@@ -2,77 +2,65 @@
 
 from ... import err, b
 from ...b import log
-from .. import common, log_text
+from .. import common
 
-from . import var, method
+from .var import var
+from . import method
 from .o import (
     id_transfer, 
     gslb_item_data, 
 )
 from .vv import vv_default
 
-# method_pc_flash_gate.parse(), entry function
-def parse(method_arg_text):
-    raw_more = method.get_raw_more(method_arg_text)
-    # process method args
-    def rest(r):
+class Method(method.Method):
+    
+    def _parse_arg_rest(self, r):
         if r == 'fast_parse':
             var._['flag_fast_parse'] = True
-        elif r == 'set_flag_v':
-            var._['flag_v'] = True
-        else:	# unknow args
-            return True
-    common.method_parse_method_args(method_arg_text, var, rest)
+        else:
+            return super()._parse_arg_rest(r)
     
-    vid_info = method.get_vid_info()
-    pvinfo = _get_video_info(vid_info)
-    if var._['flag_fast_parse']:	# NOTE support fast_parse here
-        pvinfo = _select_fast_parse(pvinfo)
-    # NOTE check flag_v
-    if var._['flag_v']:
-        pvinfo = vv_default.add_args(pvinfo)
-    out = _get_file_urls(pvinfo)
-    out = _count_and_select(out)	# NOTE count after get file urls
-    out = method.check_enable_more(out)
-    return out
-
-def _get_video_info(vid_info):
-    # make first url
-    first_url = id_transfer.get_url(vid_info['vid'])
-    first = method.dl_first_json(first_url)
-    return common.parse_raw_first(first, _parse_raw_first_json)
-
-def _parse_raw_first_json(first):
-    out, playurl = method.raw_first_get_base_info(first)
-    # get video list
-    domain, dispatch = playurl['domain'], playurl['dispatch']
+    def _make_first_url(self, vid_info):
+        first_url = id_transfer.get_url(vid_info['vid'])
+        return first_url
     
-    vid = playurl['vid']
-    out['video'] = [_parse_one_video_info(vid, domain, i) for i in dispatch.items()]
-    return out
-
-def _parse_one_video_info(vid, domain, dispatch):
-    out = {}
-    rateid, raw_dispatch = dispatch
-    out['hd'] = var.TO_HD[rateid]
-    # set default values
-    out['size_px'] = [-1, -1]
-    out['format'] = 'ts'	# NOTE video file format should be ts, from m3u8
+    def _get_video_info(self, vid_info):
+        pvinfo = super()._get_video_info(vid_info)
+        if var._['flag_fast_parse']:	# NOTE support fast_parse here
+            pvinfo = _select_fast_parse(pvinfo)
+        return pvinfo
     
-    out['size_byte'] = -1
-    out['time_s'] = -1
-    out['count'] = -1
-    out['file'] = []
-    # only save raw data here
-    out['_data'] = {}
-    out['_data']['rateid'] = rateid
-    # NOTE use domain[0]
-    d = domain[0]
-    # gen video info URL
-    raw_url = d + raw_dispatch[0]
-    out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
-    out['_data']['filename'] = raw_dispatch[1]	# NOTE add for vv
-    return out
+    def _parse_one_video(self, vid, domain, dispatch):
+        out = super()._parse_one_video(vid, domain, dispatch)
+        out['format'] = 'ts'	# NOTE video file format should be ts, from m3u8
+        
+        out['size_byte'] = -1
+        out['time_s'] = -1
+        out['count'] = -1
+        out['file'] = []
+        
+        rateid, raw_dispatch = dispatch
+        # only save raw data here
+        out['_data'] = {}
+        out['_data']['rateid'] = rateid
+        # NOTE use domain[0]
+        d = domain[0]
+        # gen video info URL
+        raw_url = d + raw_dispatch[0]
+        out['_data']['url'] = gslb_item_data.gen_before_url(raw_url, vid, rateid)
+        out['_data']['filename'] = raw_dispatch[1]	# NOTE add for vv
+        return out
+    
+    def _get_file_urls(self, pvinfo):
+        # check flag_v
+        if var._['flag_v']:
+            pvinfo = vv_default.add_args(pvinfo)
+        out = _do_get_file_urls(pvinfo)
+        out = _count_and_select(out)	# NOTE count after get file urls
+        return out
+    # end Method class
+
+# base parse functions
 
 def _select_fast_parse(pvinfo):
     # select by hd
@@ -94,7 +82,9 @@ def _count_and_select(pvinfo):
     common.method_select_hd(pvinfo, var)
     return pvinfo
 
-def _get_file_urls(pvinfo):
+# get file urls
+
+def _do_get_file_urls(pvinfo):
     # download m3u8
     todo_list = []
     for v in pvinfo['video']:
@@ -142,13 +132,16 @@ def _download_one_m3u8(info):
     log.d('rateid [' + rateid + '] load raw before URL \"' + url + '\" ')
     raw_before = b.dl_json(url)
     # check status code
-    if raw_before['status'] != var.BEFORE_OK_CODE:
-        raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var.BEFORE_OK_CODE) + ' ')
+    if raw_before['status'] != var._BEFORE_OK_CODE:
+        raise err.MethodError('before json status code \"' + str(raw_before['status']) + '\" is not ' + str(var._BEFORE_OK_CODE) + ' ')
     location = raw_before['location']
     log.d('got final m3u8 location \"' + location + '\" ')
     raw_m3u8 = b.dl_blob(location)
     return raw_m3u8
 
+# exports
+_method = Method(var)
+parse = _method.parse
 # end method_pc_flash_gate.py
 
 

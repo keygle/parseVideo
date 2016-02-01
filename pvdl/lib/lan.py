@@ -80,6 +80,9 @@ def m_err_rm_merged_path(merged_path):
 def m_err_merge_output_exist(merged_path):
     return ('can not merge \"' + merged_path + '\", this output file already exists ')
 
+def m_i_fix_ffmpeg_arg_ts(to_add):
+    return ('fix ffmpeg args for file format [ts], add ' + str(to_add) + ' ')
+
 def m_d_disable_check_merged_size():
     return ('disabled feature check_merged_size ')
 
