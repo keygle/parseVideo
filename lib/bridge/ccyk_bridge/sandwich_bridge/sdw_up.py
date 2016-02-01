@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # sdw_up.py, kill_ccyouku, kill_cmodule/sandwich_bridge/, the up side of the sandwich 
-# LICENSE GNU GPLv3+, sceext <sceext@foxmail.com> 
-# version 0.0.1.0 test201601291303
+# version 0.0.2.0 test201602011930
 
 import os, sys
 import json
@@ -17,13 +16,14 @@ import io_one_line_only as _ioo
 
 # global data
 etc = {}
-etc['sandwich_bridge_uuid'] = '_a76eba34-049e-40f1-8b7c-7264c346cd68'
+etc['sandwich_bridge_uuid'] = '_a093c7d0-9f80-4c13-9601-745ad486aa14'
 etc['this_uuid'] = None
 etc['down_path'] = './sdw_down.py'
 #etc['sub_pre_args'] = []
-etc['sub_pre_args'] = ['adl', './bin/kcyk.xml', '--']
+etc['adl'] = ['adl']
+etc['bridge_core'] = './bin/kcyk.xml'
 etc['sub_after_args'] = ['--swf-file']
-etc['default_swf_file'] = './player/player_yknpsv_.swf'
+etc['swf_file'] = './player/player_yknpsv_.swf'
 
 # global instance data
 etc['p'] = None	# subprocess object
@@ -46,10 +46,10 @@ def _start_sub(pipe_name, more_args=[]):
     py_bin = sys.executable
     # make sub args
     bridge_arg = ['--pipe-name', pipe_name, '--bridge-host', py_bin, '--bridge-worker', down_path]
-    args = etc['sub_pre_args'] + bridge_arg + more_args
+    args = etc['adl'] + [etc['bridge_core'], '--'] + bridge_arg + more_args
     
     # FIXME DEBUG here
-    print('DEBUG: start sub with ' + str(args) + ' ')
+    print('DEBUG: start sub with ' + str(args) + ' ', file=sys.stderr)
     # just start sub
     p = subprocess.Popen(args, shell=False)
     # start sub done
@@ -76,7 +76,7 @@ def _get_sub_out():
 # exports function
 
 # start sub function
-def start(swf_file=etc['default_swf_file']):
+def start():
     # TODO check sub exited
     # check started
     if etc['p']:
@@ -92,7 +92,7 @@ def start(swf_file=etc['default_swf_file']):
     swf_file = os.path.realpath(swf_file)
     
     # start sub process
-    p = _start_sub(pipe_name, more_args=(etc['sub_after_args'] + [swf_file]))
+    p = _start_sub(pipe_name, more_args=(etc['sub_after_args'] + [etc['swf_file']]))
     etc['p'] = p
     # accept sub
     try:
