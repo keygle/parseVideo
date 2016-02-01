@@ -162,12 +162,12 @@ def _gen_before_urls(pvinfo, more):
     return pvinfo
 
 def _gen_one_before_url(index, f, v, more):
-    
-    # FIXME maybe BUG here
     filetype = 'flv'	# NOTE just use flv
     
     key = f['url']
     fileid = v['_data']['fileid']
+    # NOTE gen fileid for this file
+    fileid = play_service_proxy.get_fileid(fileid, index)
     
     sid = more['sid']
     oip = more['oip']

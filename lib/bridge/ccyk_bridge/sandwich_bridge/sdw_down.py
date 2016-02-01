@@ -8,6 +8,7 @@
 
 import os, sys
 import threading
+import time
 
 # import win_pipe
 now_dir = os.path.dirname(__file__)
@@ -52,6 +53,9 @@ def main(argv):
     # start download thread, pipe --> stdout
     t = threading.Thread(target=download_thread, args=(pipe_name, ), daemon=True)
     t.start()
+    # FIXME sleep to wait sub thread
+    time.sleep(0.5)
+    
     # NOTE start download_thread before open given pipe
     # connect to the pipe
     f = win_pipe.open_named_pipe(pipe_name)

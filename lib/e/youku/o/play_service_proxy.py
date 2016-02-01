@@ -60,6 +60,15 @@ def decode_security(ip, encrypt_string):
     }
     return out
 
+# PlayServiceProxy.getFileId
+def get_fileid(raw, index):
+    # private function getFileId(param1 :String, param2 :int) :String
+    _loc5 = format(index, 'x')
+    if len(_loc5) == 1:
+        _loc5 = '0' + _loc5
+    out = raw[0:8] + _loc5.upper() + raw[10:]
+    return out
+
 # end play_service_proxy.py
 
 
