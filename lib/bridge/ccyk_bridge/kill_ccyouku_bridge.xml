@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<application xmlns="http://ns.adobe.com/air/application/20.0" >
+<!-- kill_ccyouku_bridge.xml for kill_ccyouku <https://github.com/sceext2/kill_cmodule/tree/kill_ccyouku> 
+   - version 0.0.1.0 test201601291149
+  -->
+	<id>org.killcmodule.killccyoukubridge</id>
+	<filename>kill_ccyouku_file</filename>
+	<versionNumber>0.1.0</versionNumber>
+	<initialWindow>
+		<content>kill_ccyouku_bridge.swf</content>
+		<visible>false</visible>
+	</initialWindow>
+	<supportedProfiles>extendedDesktop</supportedProfiles>
+</application>
+
+

@@ -12,6 +12,7 @@ DEFAULT_METHOD = {
     'tvsohu' : 'flvsp', 
     'pptv' : 'pc_flash_gate', 
     'vqq' : 'pc_flash_gate;enable_fmt_black_list,fix_1080p,ignore_fix_1080p_error', 
+    'youku' : 'pc_flash_gate', 
 }
 
 # URL (RE) to extractor_id
@@ -25,6 +26,9 @@ URL_TO_EXTRACTOR = {
     # NOTE for extractor letv method m3u8
     '^file:///.+\.m3u8$' : 'letv', 	# TODO may be not stable
     '^http://.+/letv-uts/.+/ver_.+\.m3u8?' : 'letv', 
+    
+    # youku TODO support more URL types
+    '^http://v\.youku\.com/v_show/id_[A-Za-z0-9]+\.html' : 'youku', 
 }
 
 # overwrite extractor default method by URL RE match
@@ -37,8 +41,7 @@ OVERWRITE_EXTRACTOR_METHOD = {
 
 # used for --fix-enable-more
 METHOD_ENABLE_MORE = {
-    #'vqq' : None, 
-    # NOTE extractor vqq now support --more vid_info
+    'youku' : None, 	# NOTE extractor youku not support --more
 }
 
 
@@ -58,6 +61,9 @@ E_VQQ_FMT_BLACK_LIST = [
     'mp4', 
     'flv', 
 ]
+
+
+## TODO support sandwich_bridge
 
 
 # end conf.py
