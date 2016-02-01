@@ -167,7 +167,7 @@ def _gen_one_before_url(index, f, v, more):
     filetype = 'flv'	# NOTE just use flv
     
     key = f['url']
-    fileid = v['_data']['stream_fileid']
+    fileid = v['_data']['fileid']
     
     sid = more['sid']
     oip = more['oip']

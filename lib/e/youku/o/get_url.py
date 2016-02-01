@@ -90,10 +90,10 @@ def get_file_paras(
             out += '&ymovie=1'
     #out += '&ypp=' + ypp
     
-    out += '&ctype=' + CTYPE + '&ev=' + EV
+    out += '&ctype=' + str(CTYPE) + '&ev=' + str(EV)
     
     # TODO gen token
-    out += '&token=' + tk + '&oip=' + oip
+    out += '&token=' + str(tk) + '&oip=' + str(oip)
     # NOTE gen ep here, use bridge (ccyouku)
     _loc12 = sid + '_' + fileid + '_' + tk + '_' + str(bctime)
     #_loc13 = PlayListUtil.getInstance().changeSize(_loc12)

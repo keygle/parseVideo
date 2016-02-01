@@ -89,10 +89,11 @@ def start():
     etc['dl_pipe'] = dl_pipe
     # FIXME DEBUG here
     # FIXME try to fix swf_file with realpath
+    swf_file = etc['swf_file']
     swf_file = os.path.realpath(swf_file)
     
     # start sub process
-    p = _start_sub(pipe_name, more_args=(etc['sub_after_args'] + [etc['swf_file']]))
+    p = _start_sub(pipe_name, more_args=(etc['sub_after_args'] + [swf_file]))
     etc['p'] = p
     # accept sub
     try:
