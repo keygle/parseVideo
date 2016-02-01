@@ -16,13 +16,18 @@ class Var(common.ExtractorVar):
         'pc_flash_gate', 
     ]
     RE_VID_LIST = {
-        # TODO
+        # NOTE http://v.youku.com/v_show/id_XMTA3MDAzMDM2.html
+        'vid' : 'v\.youku\.com/v_show/id_([A-Za-z0-9]+)\.html', 
+        # TODO support more URL types
     }
-    # site TODO to parse_video hd quality
+    # site stream_type to parse_video hd quality
     TO_HD = {
-        # TODO
+        'mp4hd3' : 4, 	# 1080p, about 1920x1080
+        'mp4hd2' : 2, 	# 720p, about 1104x622
+        'mp4hd' : -1, 	# about 672x378
+        'flvhd' : -3, 	# about 512x288
     }
-    _FIRST_OK_CODE = ''	# TODO
+    _FIRST_OK_CODE = 0
     
     
     def _add_more_data(self, out):	# var data
@@ -31,6 +36,7 @@ class Var(common.ExtractorVar):
         
         # private data
         out['_raw_first_json'] = ''
+        out['_parse_more'] = None	# more data for next parse
         return out
 # var exports
 var = Var()
