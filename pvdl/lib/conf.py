@@ -174,20 +174,20 @@ CHECK_ERR_K = {
     'file_size_mb' : 16, 
     # 16 MB
 
-# check_merged_size
+# check_merged_size, NOTE more Errors for merge .ts (m3u8) files
 
-    'merged_size' : 1, 
+    'merged_size' : 5, 
     # 1 %
 
-    'merged_size_mb' : 32, 
+    'merged_size_mb' : 128, 
     # 32 MB
 
-# check_merged_time
+# check_merged_time, NOTE more Errors for merge .ts (m3u8) files
 
     'merged_time' : 1, 
     # 1 %
 
-    'merged_time_s' : 10, 
+    'merged_time_s' : 60, 
     # 10 second
 }
 
