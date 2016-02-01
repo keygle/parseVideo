@@ -176,9 +176,14 @@ def _gen_one_before_url(index, f, v, more):
     return out
 
 def _get_final_urls(pvinfo):
-    
-    # TODO
-    return pvinfo
+    # get each part file URL
+    def worker(f, i):
+        # TODO Error process
+        raw_info = b.dl_json(f['url'])
+        f['url'] = raw_info[0]['server']
+        return f
+    pool_size = var._['pool_size']['get_file_url']
+    return common.simple_get_file_urls(pvinfo, worker, msg='getting part file URLs', pool_size=pool_size)
 
 # exports
 _method = Method(var)
