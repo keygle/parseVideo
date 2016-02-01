@@ -24,7 +24,7 @@ class Method(common.ExtractorMethod):
         # TODO Error process
         # NOTE http://v.youku.com/v_show/id_XMTA3MDAzMDM2.html
         re_list = var.RE_VID_LIST
-        vid = re.findall(re_list['vid'])[0]
+        vid = re.findall(re_list['vid'], raw_url)[0]
         out = {
            'vid' : vid, 
         }
@@ -101,12 +101,12 @@ def _parse_raw_first_info(first):
         one['file'] = []
         for se in s['segs']:
             f = {}
-            f['size'] = se['size']
+            f['size'] = int(se['size'])
             # NOTE just get video time_s here
             raw_ms = int(se['total_milliseconds_video'])
             f['time_s'] = raw_ms / 1e3	# ms to second
             # NOTE save key in f['url']
-            f['url'] = f['key']
+            f['url'] = se['key']
             one['file'].append(f)
         # NOTE add more info for next parse
         one['_data'] = {}
@@ -116,10 +116,11 @@ def _parse_raw_first_info(first):
         # get one video done
         out['video'].append(one)
     # get more data for next parse
+    more = {}
     more['security'] = data['security']
     return out, more	# done
 
-def _parse_first_get_title_no(videos):
+def _parse_first_get_title_no(data):
     # check has title_no
     if not 'videos' in data:
         return -1
@@ -128,7 +129,7 @@ def _parse_first_get_title_no(videos):
         return -1
     l = v['list']
     # check id match
-    id_ = data['id']
+    id_ = str(data['id'])
     one = None
     for item in l:
         if item['vid'] == id_:
