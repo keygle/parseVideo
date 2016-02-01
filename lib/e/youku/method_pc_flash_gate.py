@@ -52,16 +52,24 @@ class Method(common.ExtractorMethod):
     def _do_parse_first(self, first):
         # NOTE just parse it
         pvinfo, more = _parse_raw_first_info(first)
-        # TODO save more data
-        # TODO maybe gen more data for next parse
+        # NOTE save more data for next parse
+        var._['_parse_more'] = more
         return pvinfo
     
     def _get_file_urls(self, pvinfo):
-        # TODO
-        # TODO remove _data in video info
-        return pvinfo
-    
-    # TODO
+        # gen more info for next parse
+        raw = var._['_parse_more']['security']
+        more = play_service_proxy.decode_security(raw['ip'], raw['encrypt_string'])
+        # DEBUG log
+        log.d('decode_security, before ' + str(raw) + ', after ' + str(more) + ' ')
+        
+        pvinfo = _gen_before_urls(pvinfo, more)
+        # NOTE remove _data in video info
+        for v in pvinfo['video']:
+            if '_data' in v:
+                v.pop('_data')
+        out = _get_final_urls(pvinfo)
+        return out
     # end Method class
 
 # base parse functions
@@ -141,7 +149,37 @@ def _parse_first_get_title_no(data):
     title_no = int(one['seq'])
     return title_no
 
-# TODO
+# get file urls
+def _gen_before_urls(pvinfo, more):
+    for v in pvinfo['video']:
+        for i in range(len(v['file'])):
+            f = v['file'][i]
+            # check skip this file
+            if (not 'url' in f) or (f['url'] == ''):
+                continue
+            # gen before URL
+            f['url'] = _gen_one_before_url(i, f, v, more)
+    return pvinfo
+
+def _gen_one_before_url(index, f, v, more):
+    
+    # FIXME maybe BUG here
+    filetype = 'flv'	# NOTE just use flv
+    
+    key = f['url']
+    fileid = v['_data']['stream_fileid']
+    
+    sid = more['sid']
+    oip = more['oip']
+    tk = more['tk']
+    out = get_url.request_file_url(index, sid, filetype, fileid, tk, oip, key)
+    return out
+
+def _get_final_urls(pvinfo):
+    
+    # TODO
+    return pvinfo
+
 # exports
 _method = Method(var)
 parse = _method.parse
