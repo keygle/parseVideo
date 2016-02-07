@@ -7,7 +7,7 @@ e_letv_vv_conf = 'private.e_letv_vv.conf.json'
 # default method for extractors
 DEFAULT_METHOD = {
     'bks1' : 'pc_flash_gate;fix_4k', 
-    'letv' : 'flvsp', 
+    'letv' : 'pc_flash_gate', 
     'hunantv' : 'flvsp', 
     'tvsohu' : 'flvsp', 
     'pptv' : 'pc_flash_gate', 
