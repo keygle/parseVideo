@@ -147,8 +147,6 @@ int _start_normal(void) {
 	if (!write_stdout(&output)) {
 		ret = OK;
 	}
-	// NOTE print \n
-	printf("\n");
 clean_up:
 	free_text(&input);
 	free_text(&output);
@@ -313,6 +311,8 @@ int _decode_bytes_v1(text * raw, text * out) {
 	}
 	for (int i = 0; i < data.len; i++) {
 		first.p[2 * i] = data.p[i] >> 4;
+		first.p[2 * i] &= 0x0f;	// NOTE fix BUG here
+		
 		first.p[2 * i + 1] = data.p[i] & 15;
 	}
 	
