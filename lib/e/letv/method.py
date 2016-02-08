@@ -5,10 +5,7 @@ from ...b import log
 from .. import common, log_text
 
 from .var import var
-try:    # m3u8_encrypt2 is faster than m3u8_encrypt
-    from .o import m3u8_encrypt2 as m3u8_encrypt
-except Exception:
-    from .o import m3u8_encrypt
+from .o.m3u8_encrypt import m3u8_encrypt
 
 class Method(common.ExtractorMethod):   # common method class for extractor letv
     

@@ -1,7 +1,7 @@
 # m3u8_encrypt.py, parse_video/lib/e/letv/o/
 # KLetvPlayer package M3U8Encryption, this is a reference version use flash.ByteArray
 
-from ....b import flash
+from .....b import flash
 ByteArray = flash.ByteArray
 
 # M3U8Encryption.decodeB2T()
