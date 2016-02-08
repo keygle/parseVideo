@@ -139,13 +139,16 @@ int _start_normal(void) {
 	if (read_stdin(&input)) {
 		return ERR;
 	}
+	
 	if (decode_m3u8(&input, &output)) {
 		goto clean_up;
 	}
+	
 	if (!write_stdout(&output)) {
 		ret = OK;
 	}
-
+	// NOTE print \n
+	printf("\n");
 clean_up:
 	free_text(&input);
 	free_text(&output);
@@ -236,7 +239,9 @@ text init_text_raw(void) {
 
 int free_text(text * p) {
 	if (p != 0) {
-		free(p -> p);
+		if (p -> p != 0) {
+			free(p -> p);
+		}
 		return OK;
 	} else {
 		return ERR;
@@ -266,7 +271,6 @@ int _do_decode(text * raw, text * out) {
 	}
 	// check version
 	memcpy(version, raw -> p, 5);
-	// FIXME NOTE maybe BUG here
 	if (is_str(version, "VC_01") || is_str(version, "vc_01")) {
 		if (_decode_bytes_v1(raw, out)) {
 			return ERR;
@@ -318,7 +322,7 @@ int _decode_bytes_v1(text * raw, text * out) {
 		goto clean_up;
 	}
 	memcpy(second.p, first.p + first.len -11, 11);
-	memcpy(second.p + second.len - 11, first.p, first.len -11);
+	memcpy(second.p + 11, first.p, first.len -11);	// NOTE fix BUG here
 	
 	// before = bytearray(len(data))
 	before.len = data.len;
