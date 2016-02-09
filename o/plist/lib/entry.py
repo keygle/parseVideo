@@ -25,7 +25,7 @@ def _parse(url, extractor=None, method=None):
     return plinfo
 
 def _do_parse(url, extractor=None, method=None):
-    if extractor = None:	# auto select extractor
+    if extractor == None:	# auto select extractor
         extractor = _get_extractor(url)
     extractor_id = b.split_extractor(extractor)[0]
     # get default method

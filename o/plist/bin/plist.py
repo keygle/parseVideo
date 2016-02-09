@@ -17,7 +17,7 @@ import json
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.5.0 test201602091538'
+VERSION_STR = 'plist version 0.0.5.0 test201602091604'
 
 # global data
 etc = {}
@@ -111,7 +111,7 @@ def start_normal():
     conf.plist_version = VERSION_STR
     
     # use lib to do parse
-    plinfo = entry.parse(etc['raw_url'], extractor=etc['extractor'], method=['method'])
+    plinfo = entry.parse(etc['raw_url'], extractor=etc['extractor'], method=etc['method'])
     # print result to stdout as json
     _print_result(plinfo)
     

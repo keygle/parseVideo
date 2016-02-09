@@ -38,12 +38,11 @@ class ExtractorEntry(object):
     
     def _parse_method_args(self):
         method_name, raw_args = b.split_method(self.var._method)
-        if raw_args == None:
-            return
-        args = raw_args.split(',')
-        for a in args:
-            if self._parse_rest_arg(a):
-                log.w('unknow method arg \"' + a + '\" ')
+        if raw_args != None:
+            args = raw_args.split(',')
+            for a in args:
+                if self._parse_rest_arg(a):
+                    log.w('unknow method arg \"' + a + '\" ')
         return method_name
     
     def _parse_rest_arg(self, r):
