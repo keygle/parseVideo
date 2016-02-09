@@ -6,6 +6,8 @@ import json
 from .. import err, b, log
 from .. import common
 
+# TODO support more list page types
+
 class Var(common.ExtractorVar):
     EXTRACTOR_ID = 'iqiyi'
     EXTRACTOR_NAME = 'iqiyi_1'
@@ -18,6 +20,13 @@ class Var(common.ExtractorVar):
     _LIST_API_PAGE_SIZE = 50
     # http://cache.video.qiyi.com/jp/avlist/203288601/3/50/
     _LIST_API_BASE = 'http://cache.video.qiyi.com/jp/avlist'
+    
+    # v page to a page
+    _CSS_TO_A = '#datainfo-navlist a'
+    # http://www.iqiyi.com/v_19rrl5b1rc.html
+    _RE_V_PAGE = '^http://www\.iqiyi\.com/v_([0-9a-z]+)\.html'
+    # http://www.iqiyi.com/a_19rrha9kmt.html
+    _RE_A_PAGE = '^http://www\.iqiyi\.com/a_([0-9a-z]+)\.html'
     
     # runtime vars data
     _flag_use_list_api = False
@@ -35,10 +44,14 @@ class Entry(common.ExtractorEntry):
         # check method_name
         if method_name != 'html':
             raise err.ConfigError('no such method', method_name)
-        # TODO support more list page types
         page = common.load_page(url)
+        # NOTE check v page
+        try:
+            url, page = _check_v_page(url, page)
+        except Exception as e:
+            er = err.NotSupportURLError('not support this url', url)
+            raise er from e
         out = _parse_a_page(page)
-        
         # check use_list_api
         if var._flag_use_list_api:
             out = _do_use_list_api(out, page)
@@ -46,6 +59,26 @@ class Entry(common.ExtractorEntry):
         out['info']['list_url'] = url
         return out
 # base parse functions
+
+# http://www.iqiyi.com/v_19rrl5b1rc.html
+def _check_v_page(url, page):	# get a page from v page
+    # check v page url
+    if len(re.findall(var._RE_V_PAGE, url)) < 1:
+        return url, page	# not v page
+    # try to get a page url
+    try:
+        root = page['dom']
+        a = root.find(var._CSS_TO_A)[-1]
+        a_url = a.attr('href')
+        # check match
+        if len(re.findall(var._RE_A_PAGE, a_url)) < 1:
+            raise err.MethodError('can not get a_page url', a_url)
+    except Exception as e:
+        er = err.ConfigError('get a_page url failed')
+        raise er from e
+    # loading page
+    page = common.load_page(a_url)
+    return a_url, page
 
 # http://www.iqiyi.com/a_19rrha9kmt.html
 def _parse_a_page(page):
