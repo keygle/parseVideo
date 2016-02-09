@@ -12,6 +12,11 @@ URL_TO_EXTRACTOR = {
     '^http://www\.letv\.com/tv/[0-9]+\.html' : 'letv', 
 }
 
+DEFAULT_METHOD = {
+    'iqiyi' : 'html', 
+    'letv' : 'html', 
+}
+
 
 PLIST_LOG_PREFIX = 'plist::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'

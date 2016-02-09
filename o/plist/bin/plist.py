@@ -17,13 +17,15 @@ import json
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.4.0 test201601280052'
+VERSION_STR = 'plist version 0.0.5.0 test201602091538'
 
 # global data
 etc = {}
 etc['start_mode'] = 'normal'	# ['normal', '--help', '--version']
 etc['raw_url'] = ''
 etc['output'] = conf.output_dir	# use default value
+etc['extractor'] = None
+etc['method'] = None
 
 
 # print functions
@@ -32,6 +34,9 @@ def p_help():
     print('''\
 Usage: plist [OPTION]... URL
 plist: (parse list) video list support for pvdl. 
+
+  -e, --extractor EXTRACTOR  set parse extractor (and args)
+  -m, --method METHOD        set parse method (and args)
 
   -o, --output DIR  set list file output dir
   
@@ -77,6 +82,12 @@ def p_args(args):
         if one in ['--help', '--version']:
             # TODO check --help mode
             etc['start_mode'] = one
+        # -e, --extractor
+        elif one in ['-e', '--extractor']:
+            etc['extractor'], rest = rest[0], rest[1:]
+        # -m, --method
+        elif one in ['-m', '--method']:
+            etc['method'], rest = rest[0], rest[1:]
         # -o, --output
         elif one in ['-o', '--output']:
             out_dir, rest = rest[0], rest[1:]
@@ -100,7 +111,7 @@ def start_normal():
     conf.plist_version = VERSION_STR
     
     # use lib to do parse
-    plinfo = entry.parse(etc['raw_url'])
+    plinfo = entry.parse(etc['raw_url'], extractor=etc['extractor'], method=['method'])
     # print result to stdout as json
     _print_result(plinfo)
     

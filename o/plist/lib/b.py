@@ -138,6 +138,22 @@ def replace_filename_bad_char(raw, replace=conf.FILENAME_REPLACE):
     return out
 
 
+# text functions
+
+def _split_semicolon(raw):
+    if ';' in raw:
+        return raw.split(';', 1)
+    return raw, None
+
+def split_extractor(raw):
+    extractor, extractor_arg_text = _split_semicolon(raw)
+    return extractor, extractor_arg_text
+
+def split_method(raw):
+    method, method_arg_text = _split_semicolon(raw)
+    return method, method_arg_text
+
+
 # end b.py
 
 
