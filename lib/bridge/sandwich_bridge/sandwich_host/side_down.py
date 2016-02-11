@@ -49,7 +49,7 @@ def create_pipe_name():
     return pipe_name, pipe
 
 def get_pipe_name(pipe):
-    pipe_path = _gen_pipe_path(pipe)
+    pipe_path, pipe_file = _gen_pipe_path(pipe)
     with open(pipe_path, 'rb') as f:
         blob = f.read()
     pipe_name = json.loads(blob.decode('utf-8'))
@@ -94,7 +94,7 @@ def up_thread(*k, **kk):
         if len(text) < 1:
             text = '\n'
         elif text[-1] != '\n':
-            text += \n
+            text += '\n'
         blob = text.encode('utf-8')
         pipe.write(blob)
     # end up_thread
@@ -108,7 +108,7 @@ def init_down_side():
     create_daemon_thread(dl_thread)
     
     # connect up_pipe
-    etc['up_pipe'] = win_pipe.open_named_pipe(up_pipe)
+    etc['up_pipe'] = win_pipe.open_named_pipe(up_name)
     
     up_thread()	# do upload
     # end init_down_side

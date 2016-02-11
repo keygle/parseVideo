@@ -2,9 +2,9 @@
 <application xmlns="http://ns.adobe.com/air/application/20.0" >
 <!-- sandwich_bridge_host.xml for kill_cmodule/sandwich_bridge 
    - <https://github.com/sceext2/kill_cmodule/tree/sandwich_bridge> 
-   - test201602111145
+   - test201602111440
   -->
-	<id>org.killcmodule.sandwich_bridge_2</id>
+	<id>org.killcmodule.sandwichbridge2</id>
 	<filename>kill_cmodule_sandwich_bridge_2</filename>
 	<versionNumber>0.2.0</versionNumber>
 	<initialWindow>
