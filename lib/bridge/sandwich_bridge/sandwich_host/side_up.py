@@ -24,7 +24,7 @@ etc['adl'] = ['adl']	# start adl args
 etc['bridge_host'] = '../bridge_host/sandwich_bridge_host.xml'
 etc['down_side'] = './side_down.py'
 # NOTE auto load bridge_core path
-etc['bridge_core'] = './test/kill_ccyouku.swf'	# NOTE a test core path
+etc['bridge_core'] = './test/kill_ccyouku_test.swf'	# NOTE a test core path
 etc['to_root'] = '../../'	# to bridge root path
 
 etc['connect_dl_pipe_wait_s'] = 0.1	# 0.1 s
