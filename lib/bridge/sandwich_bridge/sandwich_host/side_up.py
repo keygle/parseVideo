@@ -1,5 +1,9 @@
 # side_up.py, parse_video/lib/bridge/sandwich_bridge/sandwich_host/
 # up_side of sandwich_bridge 2 (sandwich_host)
+#
+# support command line args
+#	--core CORE_PATH
+#
 
 import os, sys
 import threading
@@ -19,7 +23,9 @@ etc = {}
 etc['adl'] = ['adl']	# start adl args
 etc['bridge_host'] = '../bridge_host/sandwich_bridge_host.xml'
 etc['down_side'] = './side_down.py'
-etc['bridge_core'] = None	# TODO
+# NOTE auto load bridge_core path
+etc['bridge_core'] = './test/kill_ccyouku.swf'	# NOTE a test core path
+etc['to_root'] = '../../'	# to bridge root path
 
 etc['connect_dl_pipe_wait_s'] = 0.1	# 0.1 s
 etc['connect_dl_pipe_retry_time'] = 50	# 0.1s * 50 = 5s
@@ -31,13 +37,13 @@ etc['p'] = None
 # runtime vars
 etc['pipe_name'] = None
 etc['pipe'] = None
+etc['_msg_id'] = 1
 # TODO
 
 # init functions
 def init_up_side():
     # NOTE up_side only use 1 thread
-    
-    # TODO create up_pipe
+    # create up_pipe
     pipe_name, pipe = side_down.create_pipe_name()
     etc['pipe_name'] = pipe_name
     etc['pipe'] = pipe
@@ -50,19 +56,20 @@ def init_up_side():
     # connect dl_pipe
     _connect_dl_pipe()
     
-    # TODO load bridge_core
-    # TODO NOTE not support load bridge_core here now
-    
-    # FIXME DEBUG here
-    print('DEBUG: init_up_side done ')
+    # load bridge_core
+    raw = _load_bridge_core()
+    # print result first
+    print(iooc.encode(raw))
+    # check result
+    result = raw[2]
+    if result != 'done':	# load core error
+        raise Exception('side_up.init_up_side: load_core error', etc['bridge_core'])
     # up_side init done
 
 def _start_sandwich_core():
     raw_args, bridge_host = _make_sandwich_core_args()
     # gen adl args
     args = etc['adl'] + [bridge_host, '--'] + raw_args
-    # FIXME DEBUG here
-    print('DEBUG: start core ' + str(args) + ' ')
     # TODO prevent re-init
     # start sub process
     etc['p'] = subprocess.Popen(args, shell=False)
@@ -84,12 +91,8 @@ def _make_sandwich_core_args():
     return out, bridge_host
 
 def _connect_dl_pipe():
-    # TODO Error process
     # accept up_pipe
     etc['up_pipe'].accept()
-    
-    # FIXME DEBUG log here
-    print('DEBUG: connect dl_pipe ')
     
     # try many times to connect dl_pipe
     retry = 0
@@ -115,13 +118,31 @@ def _connect_dl_pipe():
     # done
 
 def _load_bridge_core():
-    # TODO
-    pass
+    # make core path
+    now_dir = os.path.dirname(__file__)
+    bridge_root = os.path.normpath(os.path.join(now_dir, etc['to_root']))
+    raw_core_path = etc['bridge_core']
+    
+    if raw_core_path.startswith('./') or raw_core_path.startswith('../'):
+        raw_core_path = os.path.join(bridge_root, raw_core_path)
+    core_path = os.path.realpath(raw_core_path)
+    # send load core command
+    raw = ['load_core', core_path]
+    sandwich_write(raw, flag_debug=True)
+    # wait done
+    return sandwich_read()
 
 # sandwich_bridge base io functions
-def sandwich_write(raw):
+def sandwich_write(raw, to=0, flag_debug=False):
+    # NOTE add msg id and to id here
+    info = [str(etc['_msg_id']), str(to)] + raw
+    etc['_msg_id'] += 2	# NOTE add msg id here
+    # check debug
+    if flag_debug:
+        out = '-> ' + iooc.encode(info)
+        print(out)
     # encode with io_one_line_json
-    text = iooj.encode(raw)
+    text = iooj.encode(info)
     blob = text.encode('utf-8')
     etc['dl_pipe'].write(blob)
 
@@ -144,7 +165,7 @@ def _bin_stdio():
         info = iooc.decode(raw)
         
         # write to sub
-        sandwich_write(info)
+        sandwich_write(info, flag_debug=True)
         # wait response
         raw = sandwich_read()
         
@@ -160,7 +181,15 @@ def main(argv):
     _bin_stdio()
 
 def _p_args(argv):
-    pass	# TODO support more config
+    rest = argv[:]
+    while len(rest) > 0:
+        one, rest = rest[0], rest[1:]
+        # --core
+        if one == '--core':
+            etc['bridge_core'], rest = rest[0], rest[1:]
+        else:
+            pass	# TODO log error here
+    # end p_args
 
 # end side_up.py
 
