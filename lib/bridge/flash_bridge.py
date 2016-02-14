@@ -1,21 +1,17 @@
 # flash_bridge.py, parse_video/lib/bridge/
-# NOTE sandwich_bridge only works on Windows
+# NOTE handwich_bridge only works on Windows
 
 from .. import err, b, conf
 from ..b import log
 
-# TODO sandwich_bridge support
+from .handwich_bridge import handwich_host
 
-# sandwich_bridge
-def init_sandwich_bridge(core):
-    
-    # TODO
-    pass
+# NOTE handwich_bridge support
+def init_handwich_bridge(core, core_path):
+    return handwich_host.init(core, core_path)
 
-def sandwich_call(raw):
-    
-    # TODO
-    pass
+def handwich_call(core, f='about', a=[]):
+    return handwich_host.call(core, f=f, a=a)
 
 # end flash_bridge.py
 

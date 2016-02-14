@@ -63,8 +63,7 @@ E_VQQ_FMT_BLACK_LIST = [
 ]
 
 
-## TODO support sandwich_bridge
-
+# NOTE config of handwich_bridge is not here
 
 # end conf.py
 
