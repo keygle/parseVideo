@@ -41,6 +41,8 @@ def _do_init_bridge():
 
 def _do_call(f, a):
     _init_bridge()
+    # FIXME DEBUG here
+    log.d('DEBUG: kill_ccyouku_bridge.call [' + str(f) + '], a = \"' + str(a) + '\" ')
     try:	# NOTE error process here
         raw = flash_bridge.handwich_call(etc['core'], f=f, a=[a])
     except Exception as e:

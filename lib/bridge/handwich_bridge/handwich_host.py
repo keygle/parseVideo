@@ -97,10 +97,14 @@ def _do_init(core, core_path):
 
 def call(core, f='about', a=[]):
     a = a[:]
-    # TODO maybe DEBUG here
+    # gen api url
     to = _gen_call_core_url(core, f=f, a=a)
+    # FIXME DEBUG here
+    log.d('handwich_host.call \"' + to + '\" ')
     try:
         raw = b.dl_json(to)
+        # FIXME DEBUG here
+        log.d('handwich_host.call, ret ' + str(raw) + ' ')
     except Exception as e:
         er = err.UnknowError('handwich_bridge.handwich_host.call', 'dl json', core, f, a, to)
         raise er from e
