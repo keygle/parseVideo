@@ -1,61 +1,64 @@
 # kill_ccyouku_bridge.py, parse_video/lib/bridge/, for extractor youku
 # package com.youku.utils.PlayListUtil
-
-# TODO improve sandwich_bridge support for parse_video
+#
+# NOTE use handwich_bridge here
 
 import os
-from .ccyk_bridge.sandwich_bridge import sdw_up as up
 
+from .. import err, b, conf
 from ..b import log
+
+from . import ccyk_bridge
+from . import flash_bridge
 
 # NOTE set bridge callback function here
 youku_set_size = None		# setSize(str) -> str
 youku_get_size = None		# getSize(str) -> str
 youku_change_size = None	# changeSize(str) -> str
 
-# NOTE link to sandwich_bridge (kill_cmodule/kill_ccyouku)
+# NOTE link to handwich_bridge (kill_cmodule/handwich_bridge)
 etc = {}
-etc['flag_inited'] = False
-etc['swf_file'] = './ccyk_bridge/player_yknpsv_.swf'
-etc['bridge_core'] = './ccyk_bridge/kill_ccyouku_bridge.xml'
+etc['_flag_init_ed'] = False
+etc['core'] = 'kill_ccyouku'
+# core .swf for handwich_bridge
+#etc['bridge_core'] = './ccyk_bridge/kill_ccyouku_c.swf'
+# FIXME DEBUG here
+etc['bridge_core'] = 'c:/users/a201508w/sandwich_bridge/kill_ccyouku.swf'
+
+
+# TODO Error process
 
 def _init_bridge():
-    # FIXME maybe BUG here
-    if etc['flag_inited']:
+    if etc['_flag_init_ed']:
         return	# not re-init
-    # do init bridge
-    _fix_up()	# fix sdw_up config here
-    
-    # INFO log here
-    log.i('starting sandwich_bridge for kill_cmodule/kill_ccyouku ')
-    # FIXME maybe BUG here
-    up.start()
-    
+    _do_init_bridge()
     # NOTE init done, mark it
-    etc['flag_inited'] = True
+    etc['_flag_init_ed'] = True
 
-def _fix_up():
-    now_dir = os.path.dirname(__file__)
-    swf_file = os.path.join(now_dir, etc['swf_file'])
-    bridge_core = os.path.join(now_dir, etc['bridge_core'])
-    
-    e = up.etc
-    e['bridge_core'] = bridge_core
-    e['swf_file'] = swf_file
-    # fix done
+def _do_init_bridge():
+    # TODO support make core path
+    flash_bridge.init_handwich_bridge(etc['core'], etc['bridge_core'])
 
-# FIXME TODO maybe some DEBUG here
-def _set_size(raw):
+def _do_call(f, a):
     _init_bridge()
-    return up.set_size(raw)
+    try:	# NOTE error process here
+        raw = flash_bridge.handwich_call(etc['core'], f=f, a=[a])
+    except Exception as e:
+        er = err.UnknowError('kill_ccyouku_bridge', 'call handwich_bridge', f, a)
+        raise er from e
+    result = raw[1]	# raw: ['ret', result]
+    return result
+    # TODO maybe some DEBUG here
+
+# exports functions
+def _set_size(raw):
+    return _do_call('set_size', raw)
 
 def _get_size(raw):
-    _init_bridge()
-    return up.get_size(raw)
+    return _do_call('get_size', raw)
 
 def _change_size(raw):
-    _init_bridge()
-    return up.change_size(raw)
+    return _do_call('change_size', raw)
 
 # update callbacks here
 youku_set_size = _set_size
