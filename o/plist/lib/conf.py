@@ -5,11 +5,17 @@ output_dir = '../../list'
 
 URL_TO_EXTRACTOR = {
     # http://www.iqiyi.com/a_19rrha9kmt.html
-    '^http://www\.iqiyi\.com/a_[0-9a-z]+\.html' : 'iqiyi', 
+    # http://www.iqiyi.com/v_19rrl5b1rc.html
+    '^http://www\.iqiyi\.com/[av]_[0-9a-z]+\.html' : 'iqiyi', 
     #'^http://[a-z]+\.iqiyi\.com/.+\.html' : 'iqiyi', 
     
     # http://www.letv.com/tv/10016481.html
     '^http://www\.letv\.com/tv/[0-9]+\.html' : 'letv', 
+}
+
+DEFAULT_METHOD = {
+    'iqiyi' : 'html', 
+    'letv' : 'html', 
 }
 
 

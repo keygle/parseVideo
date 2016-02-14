@@ -10,7 +10,7 @@ class Var(common.ExtractorVar):
     SITE_NAME = '乐视视频'
 
 class Entry(common.ExtractorEntry):
-    def _do_parse(self, url):
+    def _do_parse(self, url, method_name=None):
         # TODO support more list page types
         page = common.load_page(url)
         out = _parse_tv_page(page)

@@ -6,16 +6,17 @@ import importlib
 
 from . import err, b, conf, log
 
-# TODO support set extractor (not auto select)
-# TODO support output json restruct
-# TODO support more method
+# entry data
+class Var(object):
+    pass
+    # end Var class
 
 # plist/lib, entry function
-def parse(url):
+def _parse(url, extractor=None, method=None):
     # DEBUG log
-    log.d('parse URL \"' + url + '\" ')
+    log.d('parse extractor = \"' + str(extractor) + '\", method = \"' + str(method) + '\", URL \"' + url + '\" ')
     try:
-        plinfo = _do_parse(url)
+        plinfo = _do_parse(url, extractor=extractor, method=method)
     except err.PlistError:
         raise
     except Exception as e:
@@ -23,24 +24,28 @@ def parse(url):
         raise er from e
     return plinfo
 
-def _do_parse(url):
-    # auto select extractor
-    extractor_id = _get_extractor(url)
+def _do_parse(url, extractor=None, method=None):
+    if extractor == None:	# auto select extractor
+        extractor = _get_extractor(url)
+    extractor_id = b.split_extractor(extractor)[0]
+    # get default method
+    if method == None:
+        method = conf.DEFAULT_METHOD[extractor_id]
     
-    extractor = _import_extractor(extractor_id)
+    e = _import_extractor(extractor_id)
     # DEBUG log
-    log.d('use extractor \"' + extractor_id + '\" ')
+    log.d('use extractor \"' + extractor + '\", method = \"' + method + '\" ')
     # do parse
-    plinfo = _call_extractor(extractor, url)
+    plinfo = _call_extractor(e, url, extractor=extractor, method=method)
     
     out = _add_more_info(plinfo)
     return out
 
 def _get_extractor(url):
     raw_list = conf.URL_TO_EXTRACTOR
-    for re_text, extractor_id in raw_list.items():
+    for re_text, extractor in raw_list.items():
         if len(re.findall(re_text, url)) > 0:
-            return extractor_id
+            return extractor
     # not found
     raise err.NotSupportURLError('no extractor can parse this url', url)
 
@@ -53,11 +58,10 @@ def _import_extractor(extractor_id):
         er = err.ConfigError('can not import extractor \"' + extractor_id + '\" ')
         raise er from e
 
-def _call_extractor(extractor, url):
-    # TODO maybe support set extractor before parse
+def _call_extractor(e, url, extractor=None, method=None):
     # call it
     try:
-        plinfo = extractor.parse(url)
+        plinfo = e.parse(url, extractor=extractor, method=method)
     except err.PlistError:
         raise
     except Exception as e:
@@ -78,6 +82,9 @@ def _add_more_info(plinfo):
     # done
     return plinfo
 
+# entry exports
+var = Var()
+parse = _parse
 # end entry.py
 
 
