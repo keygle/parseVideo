@@ -14,7 +14,8 @@ etc = {}
 # TODO support start server here
 # FIXME DEBUG here
 etc['handwich_server'] = '192.168.222.3:48271'
-
+# debug flag
+flag_handwich_debug = False
 
 def _gen_base_url(f=''):
     out = 'http://' + etc['handwich_server'] + '/handwich_bridge/' + f
@@ -99,12 +100,14 @@ def call(core, f='about', a=[]):
     a = a[:]
     # gen api url
     to = _gen_call_core_url(core, f=f, a=a)
-    # FIXME DEBUG here
-    log.d('handwich_host.call \"' + to + '\" ')
+    # DEBUG
+    if flag_handwich_debug:
+        log.d('handwich_host.call \"' + to + '\" ')
     try:
         raw = b.dl_json(to)
-        # FIXME DEBUG here
-        log.d('handwich_host.call, ret ' + str(raw) + ' ')
+        # DEBUG
+        if flag_handwich_debug:
+            log.d('handwich_host.call, ret ' + str(raw) + ' ')
     except Exception as e:
         er = err.UnknowError('handwich_bridge.handwich_host.call', 'dl json', core, f, a, to)
         raise er from e
