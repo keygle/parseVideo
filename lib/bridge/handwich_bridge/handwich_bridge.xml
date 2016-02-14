@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<application xmlns="http://ns.adobe.com/air/application/20.0" >
+<!-- handwich_bridge.xml for kill_cmodule/handwich_bridge
+   - <https://github.com/sceext2/kill_cmodule/tree/handwich_bridge> 
+   - test201602122349
+  -->
+	<id>org.killcmodule.handwichbridge</id>
+	<filename>kill_cmodule_handwich_bridge</filename>
+	<versionNumber>0.1.0</versionNumber>
+	<initialWindow>
+		<content>handwich_bridge.swf</content>
+		<visible>false</visible>
+	</initialWindow>
+	<supportedProfiles>extendedDesktop</supportedProfiles>
+</application>
+
+
