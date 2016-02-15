@@ -23,7 +23,8 @@ def _gen_base_url(f=''):
 
 def _gen_load_core_url(core, core_path):
     out = _gen_base_url('load_core')
-    out += '?id=' + str(core) + '&path=' + str(core_path)
+    core_path = urllib.parse.quote(str(core_path))
+    out += '?id=' + str(core) + '&path=' + core_path
     return out
 
 def _gen_call_core_url(core, f='about', a=None):
