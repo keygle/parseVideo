@@ -17,7 +17,7 @@ import json
 from lib import err, b, conf, log
 from lib import entry, gen_list_file, restruct
 
-VERSION_STR = 'plist version 0.0.5.0 test201602091628'
+VERSION_STR = 'plist version 0.0.6.0 test201602161723'
 
 # global data
 etc = {}

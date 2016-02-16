@@ -1,7 +1,6 @@
 # iqiyi.py, parse_video/o/plist/lib/e/
 
 import re
-import json
 
 from .. import err, b, log
 from .. import common
@@ -163,7 +162,7 @@ def _make_list_api_url(aid, page_no=1, page_size=None):
 def _parse_one_list_info(raw):
     # get json text
     text = raw.split('=', 1)[1]
-    info = json.loads(text)
+    info = b.parse_json(text)
     
     out = info['data']['vlist']
     return out

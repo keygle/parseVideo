@@ -29,10 +29,12 @@ class ExtractorEntry(object):
         
         plinfo = self._do_parse(url, method_name=method_name)
         # add more info
-        plinfo['extractor'] = self.var.EXTRACTOR_ID
         plinfo['info']['site'] = self.var.SITE
         plinfo['info']['site_name'] = self.var.SITE_NAME
         plinfo['info']['url'] = url	# add raw_url
+        # add extractor and method
+        plinfo['extractor'] = extractor
+        plinfo['method'] = method
         
         return plinfo	# done
     
