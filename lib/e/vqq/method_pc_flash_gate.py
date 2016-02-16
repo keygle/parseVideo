@@ -272,10 +272,11 @@ def _do_parse_one_first(root):
         one = {}
         one['size'] = int(ci.find('cs').text)
         one['time_s'] = float(ci.find('cd').text)
-        # NOTE add checksum.md5
-        one['checksum'] = {
-            'md5' : ci.find('cmd5').text, 
-        }
+        # NOTE the md5 is not right
+        ## NOTE add checksum.md5
+        #one['checksum'] = {
+        #    'md5' : ci.find('cmd5').text, 
+        #}
         # NOTE add info for later parse
         one['url'] = {
             'idx' : ci.find('idx').text, 
