@@ -437,9 +437,10 @@ def _do_fix_1080p(pvinfo):
         one = {}
         one['size'] = r['size']
         one['time_s'] = raw[i]['time_s']
-        one['checksum'] = {	# add checksum
-            'md5' : r['md5'], 
-        }
+        # NOTE disable checksum.md5, not works
+        #one['checksum'] = {	# add checksum
+        #    'md5' : r['md5'], 
+        #}
         # save filename in f.url
         one['url'] = r['filename']
         one['_vkey'] = r['vkey']
