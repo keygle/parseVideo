@@ -135,8 +135,10 @@ def _check_file_md5(f):
 def _dl_wget(f):
     # TODO support speed limit
     # TODO support more http headers
+    # gen timeout
+    timeout = '--timeout=' + str(conf.dl_wget_timeout_s)
     # gen wget args, NOTE enable -c by default
-    arg = ['-c', '-O', f['path'], f['url']]
+    arg = ['-c', timeout, '-O', f['path'], f['url']]
     # just call wget to do download
     call_sub.call_wget(arg)
 
