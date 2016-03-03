@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 # -*- coding: utf-8 -*-
-# lyyc_plugin.py, parse_video/, support lyyc_plugin port_version 0.1.0
+# lyyc_plugin.py, parse_video/, support lyyc_plugin port_version 0.2.0
 
 import json
 

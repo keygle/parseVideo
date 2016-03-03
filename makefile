@@ -6,8 +6,8 @@ PV_BIN=./pv
 
 # extractor test URLs
 ET_URL_BKS1_1=http://www.iqiyi.com/v_19rrkfbay8.html
-ET_URL_LETV_1=http://www.letv.com/ptv/vplay/24185834.html
-ET_URL_HUNANTV_1=http://www.hunantv.com/v/2/168868/f/2928760.html
+ET_URL_LETV_1=http://www.le.com/ptv/vplay/1903731.html
+ET_URL_HUNANTV_1=http://www.mgtv.com/v/2/168868/f/2992014.html
 ET_URL_TVSOHU_1=http://tv.sohu.com/20140914/n404300963.shtml
 ET_URL_PPTV_1=http://v.pptv.com/show/0UyKCXHXR4XoZs4.html
 ET_URL_VQQ_1=http://v.qq.com/cover/w/wldxl2tsezs0jzt/h00154yrbvi.html

@@ -1,70 +1,83 @@
 # -*- coding: utf-8 -*-
-# plugin.py, parse_video/lib/, support lyyc_plugin port_version 0.1.0
-
-# TODO support more functions for lyyc_plugin
+# plugin.py, parse_video/lib/, support lyyc_plugin port_version 0.2.0
 
 from . import err, entry
 from .b import log
+from . import version
 
 # exports functions
 
 def lyyc_about():
     out = {	# raw output info obj
-        'port_version' : '0.1.0', 
-        'type' : 'parse', 
+        'port_version' : '0.2.0', 
         'uuid' : 'cf01a87e-d4b1-4c49-bd87-b21392559cb9', 
-        'version' : '0.5.10.0', 
-        'name' : 'parse_video', 
-        'note' : '负锐视频解析 \n parse_video for lyyc_plugin. ', 
+        'id' : 'parse_video', 
+        'type' : [
+            'parse', 
+        ], 
+        'version' : version.parse_video_version, 
+        
+        'info' : {
+            'name' : 'parse_video', 
+            'note' : '负锐视频解析 \n parse_video for lyyc_plugin. ', 
+            'author' : 'sceext <sceext@foxmail.com> ', 
+            'copyright' : 'copyright 2015-2016 sceext ', 
+            'license' : 'GNU GPL v3+ <http://www.gnu.org/licenses/> ', 
+            'home' : 'https://github.com/sceext2/parse_video', 
+        }, 
         
         'parse' : [
+            '^http://www\.le\.com/.+\.html', 
+            '^http://www\.mgtv\.com/.+\.html', 
             '^http://[a-z]+\.iqiyi\.com/.+\.html', 
-            '^http://www\.letv\.com/.+\.html', 
-            '^http://www\.hunantv\.com/.+\.html', 
             '^http://tv\.sohu\.com/.+\.shtml', 
             '^http://v\.pptv\.com/.+\.html', 
-            # NOTE for letv.m3u8
-            '^file:///.+\.m3u8$', 	# TODO may be not stable
+            '^http://v\.qq\.com/.+', 
+            '^http://v\.youku\.com/v_show/id_[A-Za-z0-9]+\.html', 
+            
+            '^file:///.+\.m3u8$', 
             '^http://.+/letv-uts/.+/ver_.+\.m3u8?', 
         ], 
         
-        'author' : 'sceext <sceext@foxmail.com> ', 
-        'copyright' : 'copyright 2015-2016 sceext ', 
-        'license' : 'GNU GPL v3+ <http://www.gnu.org/licenses/> ', 
-        'home' : 'https://github.com/sceext2/parse_video', 
+        'pack_version' : version.pack_version, 
     }
     return out
 
 def lyyc_import(lyyc_phost_api):
-    pass	# NOTE nothing to do here
+    version.lyyc_phost_api = lyyc_phost_api
 
-# TODO more functions here
+# TODO maybe support
+#lyyc_install(upgrade=False)
+#lyyc_config(update=False)
+#lyyc_new_obj(obj_type='')
 
-def lyyc_parse(url, hd_min=None, hd_max=None, i_min=None, i_max=None, 
-        more=None, debug=False):
-    # get extractor and method from more
-    extractor = ''
-    method = ''
-    if more != None:
-        if 'extractor' in more:
-            extractor = more['extractor']
-        if 'method' in more:
-            method = more['method']
+def lyyc_parse(url, **kk):
+    default_k = {	# NOTE for lyyc_plugin.lyyc_parse(), port_version 0.2.0
+        'hd_min' : None, 
+        'hd_max' : None, 
+        'i_min' : None, 
+        'i_max' : None, 
+        'extractor' : '', 	# NOTE set default values
+        'method' : '', 
+        'debug' : False, 
+        'more' : None, 
+    }
+    k = default_k.update(kk)
     # set log level
-    if debug:
+    if k['debug']:
         log.set_log_level('debug')
     else:	# set log level to default
         log.set_log_level()
     # set entry.var
     entry.init()
-    entry.var._['hd_min'] = hd_min
-    entry.var._['hd_max'] = hd_max
-    entry.var._['i_min'] = i_min
-    entry.var._['i_max'] = i_max
-    entry.var._['more'] = more
+    entry.var._['hd_min'] = k['hd_min']
+    entry.var._['hd_max'] = k['hd_max']
+    entry.var._['i_min'] = k['i_min']
+    entry.var._['i_max'] = k['i_max']
+    entry.var._['more'] = k['more']
     # do parse
     try:
-        pvinfo = entry.parse(url, extractor=extractor, method=method)
+        pvinfo = entry.parse(url, extractor=k['extractor'], method=k['method'])
     except err.PVError:
         raise
     except Exception as e:

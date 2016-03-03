@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.5
 # -*- coding: utf-8 -*-
-# run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.1.0 
+# run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.2.0 
 # author sceext <sceext@foxmail.com>
-# [BUG fix only] version 0.2.0.0 test201601242209
+# [BUG fix only] version 0.2.1.0 test201603032052
 
 import math
 import os, sys, io, json
@@ -14,15 +14,13 @@ except Exception as e:
     import lyyc_plugin
 
 # global data
-PACK_VERSION = 20
-
 FLAG_DEBUG = False
-ERR_PREFIX = 'pv5.lyp::'
+ERR_PREFIX = 'pv6.lyp::'
 
 RAW_VERSION_INFO = {	# raw output info obj
     'port_version' : '0.3.0', 
     'type' : 'parse', 
-    'version' : '2.0.0', 
+    'version' : '2.1.0', 
     'name' : '负锐解析猎影插件', 
     
     'note' : '[BUG fix only] 负锐视频解析 猎影插件 \n parse_video for lieying_plugin. ', 
@@ -280,27 +278,26 @@ def _parse_label(label):
 
 # before exports
 def _get_version():
-    raw = RAW_VERSION_INFO
-    # get version info from lyyc_plugin
-    out = lyyc_plugin.lyyc_about()
-    old = out.copy()	# save raw lyyc_plugin info
-    # add and overwrite some values
-    for key, value in raw.items():
-        out[key] = value
-    # remove some values
-    remove_list = [
-        'mark_uuid', 
-        'parse', 
+    out = RAW_VERSION_INFO
+    # get about info from lyyc_plugin
+    raw = lyyc_plugin.lyyc_about()
+    # add more info
+    add_list = [
+        'author', 
+        'copyright', 
+        'license', 
+        'home', 
     ]
-    for r in remove_list:
-        if r in out:
-            out.pop(r)
+    for i in add_list:
+        out[i] = raw['info'][i]
+    # add uuid
+    out['uuid'] = raw['uuid']
     # set filter, pack_version
-    out['filter'] = old['parse']
-    out['pack_version'] = PACK_VERSION
+    out['filter'] = raw['parse']
+    out['pack_version'] = str(raw['pack_version'])
     # update plugin name
     name = out['name']
-    name += ' [' + str(out['pack_version']) + '] ' + old['name'] + ' version ' + old['version'] + ' '
+    name += ' [' + str(out['pack_version']) + '] ' + raw['info']['name'] + ' version ' + raw['version'] + ' '
     out['name'] = name
     # make version info done
     return out

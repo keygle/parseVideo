@@ -219,7 +219,7 @@ FILENAME_REPLACE = '-'
 
 # wget config
 
-dl_wget_timeout_s = 2
+dl_wget_timeout_s = 5
 #### --timeout for wget
 
 ## !!! WARNING !!! important data for pvdl to run, please DO NOT change. 
