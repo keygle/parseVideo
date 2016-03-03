@@ -52,7 +52,7 @@ def lyyc_import(lyyc_phost_api):
 #lyyc_new_obj(obj_type='')
 
 def lyyc_parse(url, **kk):
-    default_k = {	# NOTE for lyyc_plugin.lyyc_parse(), port_version 0.2.0
+    k = {	# NOTE for lyyc_plugin.lyyc_parse(), port_version 0.2.0
         'hd_min' : None, 
         'hd_max' : None, 
         'i_min' : None, 
@@ -61,8 +61,8 @@ def lyyc_parse(url, **kk):
         'method' : '', 
         'debug' : False, 
         'more' : None, 
-    }
-    k = default_k.update(kk)
+    }	# update default values
+    k.update(kk)
     # set log level
     if k['debug']:
         log.set_log_level('debug')
