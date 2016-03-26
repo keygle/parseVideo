@@ -17,9 +17,12 @@ DEFAULT_METHOD = {
 
 # URL (RE) to extractor_id
 URL_TO_EXTRACTOR = {
+    # http://www.le.com/ptv/vplay/1903731.html
+    '^http://www\.le\.com/.+\.html' : 'letv', 
+    # http://www.mgtv.com/v/2/168868/f/2992014.html
+    '^http://www\.mgtv\.com/.+\.html' : 'hunantv', 
+    
     '^http://[a-z]+\.iqiyi\.com/.+\.html' : 'bks1', 
-    '^http://www\.letv\.com/.+\.html' : 'letv', 
-    '^http://www\.hunantv\.com/.+\.html' : 'hunantv', 
     '^http://tv\.sohu\.com/.+\.shtml' : 'tvsohu', 
     '^http://v\.pptv\.com/.+\.html' : 'pptv', 
     '^http://v\.qq\.com/.+' : 'vqq', 
@@ -63,8 +66,7 @@ E_VQQ_FMT_BLACK_LIST = [
 ]
 
 
-## TODO support sandwich_bridge
-
+# NOTE config of handwich_bridge is not here
 
 # end conf.py
 

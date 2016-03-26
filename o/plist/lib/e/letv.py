@@ -24,8 +24,7 @@ def _parse_tv_page(page):
     root = page['dom']
     out = {}
     # get base info
-    out['info'] = {}
-    info = out['info']
+    out['info'] = info = {}
     
     title_i = root.find('div.listTab p.p1 i')[0]
     title = title_i.text()

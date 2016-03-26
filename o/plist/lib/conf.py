@@ -11,11 +11,15 @@ URL_TO_EXTRACTOR = {
     
     # http://www.letv.com/tv/10016481.html
     '^http://www\.letv\.com/tv/[0-9]+\.html' : 'letv', 
+    
+    # http://v.qq.com/detail/m/mhlu0ezl5yxg9ru.html
+    '^http://v\.qq\.com/detail/m/[0-9a-z]+\.html' : 'vqq', 
 }
 
 DEFAULT_METHOD = {
     'iqiyi' : 'html', 
     'letv' : 'html', 
+    'vqq' : 'html_api', 
 }
 
 

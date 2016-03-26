@@ -9,7 +9,7 @@ output_dir = './dl/'
 #### save downloaded file here
 # --output
 
-error_retry = 10
+error_retry = 50
 #### error retry times
 # -1 means retry forever; --retry
 
@@ -24,7 +24,7 @@ parse_timeout_s = 180
 fix_size_pool_size = 16
 #### map_do() to fix_size, pool_size
 
-list_retry_times = 1
+list_retry_times = 10
 #### retry times for --list mode
 # -1 means forever; --list-retry
 
@@ -79,7 +79,7 @@ FEATURES = {	# --enable, --disable
     'keep_lock_file' : True, 
     #### not remove lock file when task successfully finished, to prevent re-do this work
 
-    'skip_lock_err' : False, 
+    'skip_lock_err' : True, 
     #### if get lock file failed, just skip it (for list download)
 
 ## download stage
@@ -216,6 +216,11 @@ SUB_BIN = {
 PVDL_LOG_PREFIX = 'pvdl::'
 FILENAME_BAD_CHAR = ' \\:"/|?*<>'
 FILENAME_REPLACE = '-'
+
+# wget config
+
+dl_wget_timeout_s = 5
+#### --timeout for wget
 
 ## !!! WARNING !!! important data for pvdl to run, please DO NOT change. 
 

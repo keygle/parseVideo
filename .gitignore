@@ -21,6 +21,9 @@ __pycache__/
 /pvdl/dl
 /list
 
+*.pipe
+*.swf
+
 # end .gitignore
 
 
