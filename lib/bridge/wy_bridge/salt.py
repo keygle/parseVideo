@@ -2,8 +2,8 @@
 
 from ...b import md5_hash
 
-# SALT = 'd7184ccc20a84a9d8be798087386b6b8'	# disabled 2016-01-19
-SALT = '6ab6d0280511493ba85594779759d4ed'
+# update from you-get <https://github.com/soimort/you-get/blob/develop/src/you_get/extractors/iqiyi.py#L48> at 2016-03-26 T 15:01 GMT+0800 (CST) 
+SALT = '4a1caba4b4465345366f28da7c117d20'
 
 def bite(tvid, tm):
     raw = SALT + str(tm) + tvid

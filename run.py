@@ -1,26 +1,23 @@
 #!/usr/bin/env python3.5
 # -*- coding: utf-8 -*-
-# run.py, parse_video/, support lieying python3 parse plugin port_version 0.3.0, based on lyyc_plugin port_version 0.2.0 
+# run.py, parse_video/, support lieying python3 parse plugin port_version 0.4.0, based on pv command line
 # author sceext <sceext@foxmail.com>
-# [BUG fix only] version 0.2.1.0 test201603032052
+# [BUG fix only] version 0.3.0.0 test201603261452
 
+import os, sys
 import math
-import os, sys, io, json
-import functools, traceback, tempfile
-
-try:
-    from . import lyyc_plugin
-except Exception as e:
-    import lyyc_plugin
+import json
+import functools
+import subprocess
 
 # global data
-FLAG_DEBUG = False
-ERR_PREFIX = 'pv6.lyp::'
+FLAG_DEBUG = True
+ERR_PREFIX = 'pv6.lyp4::'
 
-RAW_VERSION_INFO = {	# raw output info obj
-    'port_version' : '0.3.0', 
+RAW_VERSION_INFO = {
+    'port_version' : '0.4.0', 
     'type' : 'parse', 
-    'version' : '2.1.0', 
+    'version' : '3.0.0', 
     'name' : '负锐解析猎影插件', 
     
     'note' : '[BUG fix only] 负锐视频解析 猎影插件 \n parse_video for lieying_plugin. ', 
@@ -99,43 +96,56 @@ def _p_json(raw):
         text = json.dumps(raw)
     return text
 
-def _print_err(e):
-    line = traceback.format_exception(Exception, e, e.__traceback__)
-    text = ERR_PREFIX + ('').join(line) + '\n'
-    return text
+def _print_err(raw):
+    line = raw.splitlines()
+    out = ERR_PREFIX + ('\n').join(line) + '\n'
+    return out
 
-def _gen_tmp_buffer():
-    f = tempfile.TemporaryFile()
-    w = io.TextIOWrapper(f)
-    return w
-
-# set sys.stdout and sys.stderr for lyyc_plugin
-def _init_stdout_stderr():
-    # check to set
-    if not isinstance(sys.stdout, io.TextIOWrapper):
-        sys.stdout = _gen_tmp_buffer()
-    if not isinstance(sys.stderr, io.TextIOWrapper):
-        sys.stderr = _gen_tmp_buffer()
+# call pv from command line
+def _call_pv(args):
+    # TODO support parse timeout
+    py_bin = sys.executable
+    now_dir = os.path.dirname(__file__)
+    pv_bin = os.path.normpath(os.path.join(now_dir, './pv'))
+    # run it
+    argv = [py_bin, pv_bin] + args
+    # TODO DEBUG log
+    PIPE = subprocess.PIPE
+    p = subprocess.run(argv, stdout=PIPE, stderr=PIPE)
+    flag_err = False
+    if p.returncode != 0:
+        flag_err = True
+    try:
+        text = p.stdout.decode('utf-8')
+        out = json.loads(text)
+    except Exception as e:
+        flag_err = True
+    # process error
+    if flag_err:
+        stderr = p.stderr.decode('utf-8', 'ignore')
+        stdout = p.stdout.decode('utf-8', 'ignore')
+        err_text = 'pv Error, stderr \n' + stderr + '--> stdout \n' + stdout
+        out = {
+        	'type' : 'error', 
+        	'error' : _print_err(err_text), 
+        }
+    return out	# done
 
 # compatible functions
 def _call_wrapper(f):
-    try:	# NOTE common Error process here
-        out = f()
-    except Exception as e:
-        if FLAG_DEBUG:
-            raise
-        out = {
-            'error' : _print_err(e), 
-        }
-    text = _p_json(out)
-    return text
+    # NOTE nothing to do now
+    return f()
 
 def _do_parse(url, hd_min=None, hd_max=None):
-    # init for parse_video core
-    _init_stdout_stderr()
-    # use lyyc_plugin to do parse
-    pvinfo = lyyc_plugin.lyyc_parse(url, hd_min=hd_min, hd_max=hd_max)
-    return pvinfo
+    # make pv command line arguments
+    args = ['--fix-unicode']
+    if hd_min != None:
+        args += ['--min', str(hd_min)]
+    if hd_max != None:
+        args += ['--max', str(hd_max)]
+    args += [url]
+    # do call pv, NOTE just return json info
+    return _call_pv(args)
 
 def _t_parse_url(pvinfo, hd):
     # select video by hd
@@ -151,9 +161,14 @@ def _t_parse_url(pvinfo, hd):
     for f in video['file']:
         one = {}
         one['protocol'] = 'http'
-        one['value'] = f['url']
+        one['urls'] = [f['url']]
         if 'header' in f:
             one['args'] = f['header']
+        # add more info for this file
+        one['duration'] = f['time_s'] * 1e3
+        one['length'] = f['size']
+        
+        one['maxDown'] = 1	# he he he he
         out.append(one)
     # fix protocol for m3u8
     if video['format'] == 'm3u8':
@@ -164,9 +179,14 @@ def _t_parse_url(pvinfo, hd):
 def _t_parse(pvinfo):
     out = {
         'type' : 'formats', 
+        'icon' : 'http://www.ilewo.cn/images/qrcode.png', 
+        'caption' : 'pv6.lyp4-result', 
+        'warning' : 'N/A', 
+        'sorted' : True, 
         'data' : [], 
     }
     out['name'] = _make_title(pvinfo['info'])
+    out['provider'] = pvinfo['info']['site_name']
     out['data'] = _make_label_data(pvinfo['video'])
     return out
 
@@ -276,11 +296,19 @@ def _parse_label(label):
     out = float(hd)
     return out
 
+# call lyyc_plugin
+def _lyyc_about():
+    try:
+        from . import lyyc_plugin
+    except Exception as e:
+        import lyyc_plugin
+    return lyyc_plugin.lyyc_about()
+
 # before exports
 def _get_version():
     out = RAW_VERSION_INFO
     # get about info from lyyc_plugin
-    raw = lyyc_plugin.lyyc_about()
+    raw = _lyyc_about()
     # add more info
     add_list = [
         'author', 
@@ -290,8 +318,9 @@ def _get_version():
     ]
     for i in add_list:
         out[i] = raw['info'][i]
-    # add uuid
-    out['uuid'] = raw['uuid']
+    # add uuid, NOTE not overwrite
+    if not 'uuid' in out:
+        out['uuid'] = raw['uuid']
     # set filter, pack_version
     out['filter'] = raw['parse']
     out['pack_version'] = str(raw['pack_version'])
@@ -304,13 +333,18 @@ def _get_version():
 
 def _parse(url):
     pvinfo = _do_parse(url, hd_min=1, hd_max=0)
+    # NOTE check error
+    if 'error' in pvinfo:
+        return pvinfo
     out = _t_parse(pvinfo)
     return out
 
-def _parse_url(url, label, i_min=None, i_max=None):
-    # NOTE not support i_min and i_max now
+def _parse_url(url, label, *k, **kk):
+    # NOTE not support more features for lieying plugin ParseURL()
     hd = _parse_label(label)
     pvinfo = _do_parse(url, hd_min=hd, hd_max=hd)
+    if 'error' in pvinfo:
+        return pvinfo
     out = _t_parse_url(pvinfo, hd)
     return out
 
@@ -319,17 +353,17 @@ def GetVersion():
     f = functools.partial(_get_version)
     return _call_wrapper(f)
 
-def Parse(url):
+def Parse(url, *k, **kk):
     f = functools.partial(_parse, url)
     return _call_wrapper(f)
 
-def ParseURL(url, label, i_min=None, i_max=None):
-    f = functools.partial(_parse_url, url, label, i_min=i_min, i_max=i_max)
+def ParseURL(url, label, *k, **kk):
+    f = functools.partial(_parse_url, url, label, *k, **kk)
     return _call_wrapper(f)
 
 # DEBUG functions
 def p(o):
-    print(json.dumps(json.loads(o), indent=4, sort_keys=True, ensure_ascii=False))
+    print(json.dumps(o, indent=4, sort_keys=True, ensure_ascii=False))
 
 # end run.py
 
