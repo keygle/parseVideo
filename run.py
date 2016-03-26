@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # run.py, parse_video/, support lieying python3 parse plugin port_version 0.4.0, based on pv command line
 # author sceext <sceext@foxmail.com>
-# [BUG fix only] version 0.3.0.0 test201603161301
+# [BUG fix only] version 0.3.0.0 test201603261452
 
 import os, sys
 import math
@@ -15,9 +15,9 @@ FLAG_DEBUG = True
 ERR_PREFIX = 'pv6.lyp4::'
 
 RAW_VERSION_INFO = {
-    'port_version' : '0.4.0-1', 
+    'port_version' : '0.4.0', 
     'type' : 'parse', 
-    'version' : '3.0.0-1', 
+    'version' : '3.0.0', 
     'name' : '负锐解析猎影插件', 
     
     'note' : '[BUG fix only] 负锐视频解析 猎影插件 \n parse_video for lieying_plugin. ', 
@@ -126,6 +126,7 @@ def _call_pv(args):
         stdout = p.stdout.decode('utf-8', 'ignore')
         err_text = 'pv Error, stderr \n' + stderr + '--> stdout \n' + stdout
         out = {
+        	'type' : 'error', 
         	'error' : _print_err(err_text), 
         }
     return out	# done
@@ -352,7 +353,7 @@ def GetVersion():
     f = functools.partial(_get_version)
     return _call_wrapper(f)
 
-def Parse(url):
+def Parse(url, *k, **kk):
     f = functools.partial(_parse, url)
     return _call_wrapper(f)
 
